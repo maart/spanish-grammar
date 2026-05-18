@@ -502,6 +502,27 @@ input[type="search"] {
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
 }
 
+.filter-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 9px;
+  background: var(--bg);
+  color: var(--text-muted);
+  margin-left: 4px;
+  line-height: 1;
+}
+
+.small-button.is-active .filter-count {
+  background: rgba(255,255,255,0.25);
+  color: white;
+}
+
 .mood-tabs {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1412,7 +1433,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.12 · обновлено: 19.05.2026 06:30</footer>
+      <footer class="app-footer">Версия MVP 0.12 · обновлено: 19.05.2026 07:00</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -3535,10 +3556,20 @@ const TABLE_GROUPS = [
 const TABLE_FILTERS = [
   { id: "all", label: "Все" },
   { id: "pronouns", label: "Местоимения" },
+  { id: "nouns", label: "Существительные" },
   { id: "verbs", label: "Глаголы" },
+  { id: "service", label: "Служебные" },
   { id: "prepositions", label: "Предлоги" },
   { id: "time", label: "Время" }
 ];
+
+const TABLE_FILTER_GROUPS = {
+  pronouns: ["Местоимения и объекты"],
+  nouns: ["Существительные и указатели"],
+  verbs: ["Глагольные шпаргалки"],
+  service: ["Служебные слова и степень"],
+  prepositions: ["Предлоги и время"],
+};
 
 const MOODS = [
   {
@@ -5115,7 +5146,7 @@ function renderTables() {
     <div class="filter-tabs table-filter-tabs" aria-label="Фильтр шпаргалок">
       ${TABLE_FILTERS.map((filter) => `
         <button class="small-button ${state.tableFilter === filter.id ? "is-active" : ""}" type="button" data-table-filter="${filter.id}">
-          ${filter.label}
+          ${filter.label} <span class="filter-count">${countFilteredTables(filter.id)}</span>
         </button>
       `).join("")}
     </div>
@@ -5197,11 +5228,20 @@ function renderUsefulTableCard(item) {
 function tableMatchesFilter(item) {
   const filter = state.tableFilter;
   if (filter === "all") return true;
-  if (filter === "pronouns") return item.group === "Местоимения и объекты";
-  if (filter === "verbs") return item.group === "Глагольные шпаргалки";
-  if (filter === "prepositions") return item.group === "Предлоги и время";
   if (filter === "time") return item.group === "Предлоги и время" || /время|услов|косвенная|imperfecto|indefinido|desde|hace/i.test(item.title + " " + item.description);
-  return true;
+  const groups = TABLE_FILTER_GROUPS[filter];
+  if (!groups) return true;
+  return groups.some((g) => item.group === g);
+}
+
+function countFilteredTables(filterId) {
+  return USEFUL_TABLES.filter((item) => {
+    if (filterId === "all") return true;
+    if (filterId === "time") return item.group === "Предлоги и время" || /время|услов|косвенная|imperfecto|indefinido|desde|hace/i.test(item.title + " " + item.description);
+    const groups = TABLE_FILTER_GROUPS[filterId];
+    if (!groups) return true;
+    return groups.some((g) => item.group === g);
+  }).length;
 }
 
 function tableSummary(item) {

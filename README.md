@@ -45,6 +45,7 @@ http://localhost:8001/spanish-grammar.html
 
 ```text
 .
+├── LICENSE
 ├── README.md
 └── spanish-grammar.html
 ```
@@ -63,4 +64,4 @@ MVP 0.10. Приложение уже можно использовать как
 
 ## Лицензия
 
-Лицензия пока не выбрана.
+Проект распространяется под лицензией MIT. Подробности см. в файле [LICENSE](LICENSE).

@@ -1395,7 +1395,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.11 · обновлено: 18.05.2026 19:25</footer>
+      <footer class="app-footer">Версия MVP 0.11 · обновлено: 18.05.2026 19:29</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -4583,8 +4583,8 @@ function subjuntivoMoreTriggersMarkup() {
       </button>
     </div>
     ${state.showSubjuntivoMoreTriggers ? `
-      <div class="detail-list">
-        ${SUBJUNTIVO_MORE_TRIGGERS.map(([ru, es]) => `<div><dt>${ru}</dt><dd>${es}</dd></div>`).join("")}
+      <div class="mood-trigger-groups">
+        ${SUBJUNTIVO_MORE_TRIGGERS.map(([ru, es]) => `<div class="mood-trigger-group"><strong>${ru}</strong><span>${es}</span></div>`).join("")}
       </div>
     ` : ""}
   `;

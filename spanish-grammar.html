@@ -1450,7 +1450,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.12 · обновлено: 19.05.2026 00:54</footer>
+      <footer class="app-footer">Версия MVP 0.12 · обновлено: 19.05.2026 01:05</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -2673,6 +2673,7 @@ const TENSE_EXAMPLES = {
 };
 
 const USEFUL_TABLES = [
+
   {
     group: "Местоимения и объекты",
     subgroup: "Прямые и косвенные объекты",
@@ -2685,6 +2686,7 @@ const USEFUL_TABLES = [
       <tr><th>ж. мн.</th><td>las</td><td>Las leo. - Я их читаю.</td></tr>
     </tbody></table>`
   },
+
   {
     group: "Местоимения и объекты",
     subgroup: "Прямые и косвенные объекты",
@@ -2696,6 +2698,7 @@ const USEFUL_TABLES = [
       <tr><th>уточнение</th><td>a él / a ella</td><td>Le llamo a ella. - Я звоню ей.</td></tr>
     </tbody></table>`
   },
+
   {
     group: "Местоимения и объекты",
     subgroup: "Порядок местоимений",
@@ -2707,6 +2710,39 @@ const USEFUL_TABLES = [
       <tr><td>les + las -> se las</td><td>Se las envío.</td><td>Я отправляю их им.</td></tr>
     </tbody></table>`
   },
+
+  {
+    group: "Местоимения и объекты",
+    subgroup: "Возвратные местоимения",
+    title: "Me/te/se: возвратные местоимения",
+    description: "Используются с возвратными глаголами и ставятся перед спрягаемым глаголом.",
+    table: `<table><thead><tr><th>Лицо</th><th>Местоимение</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>yo</th><td>me</td><td>Me levanto.</td></tr>
+      <tr><th>tú</th><td>te</td><td>Te duchas.</td></tr>
+      <tr><th>él/ella/usted</th><td>se</td><td>Se llama Ana.</td></tr>
+      <tr><th>nosotros</th><td>nos</td><td>Nos acostamos.</td></tr>
+      <tr><th>vosotros</th><td>os</td><td>Os levantáis.</td></tr>
+      <tr><th>ellos/ustedes</th><td>se</td><td>Se preparan.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Местоимения и объекты",
+    subgroup: "Притяжательные местоимения",
+    title: "Mi/mío, tu/tuyo: притяжательные местоимения",
+    description: "Короткие притяжательные перед существительным; длинные (с артиклем) после или без существительного.",
+    table: `<table><thead><tr><th>Лицо</th><th>Краткая форма</th><th>Длинная форма</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>yo</th><td>mi / mis</td><td>mío/a/os/as</td><td>mi libro / el libro mío</td></tr>
+      <tr><th>tú</th><td>tu / tus</td><td>tuyo/a/os/as</td><td>tu casa / la casa tuya</td></tr>
+      <tr><th>él / ella / usted</th><td>su / sus</td><td>suyo/a/os/as</td><td>su coche / el coche suyo</td></tr>
+      <tr><th>nosotros</th><td>nuestro/a/os/as</td><td>nuestro/a/os/as</td><td>nuestro amigo / un amigo nuestro</td></tr>
+      <tr><th>vosotros</th><td>vuestro/a/os/as</td><td>vuestro/a/os/as</td><td>vuestra opinión / una opinión vuestra</td></tr>
+      <tr><th>ellos / ustedes</th><td>su / sus</td><td>suyo/a/os/as</td><td>sus hijos / los hijos suyos</td></tr>
+      <tr><th colspan="4">Краткая форма — ПЕРЕД существительным: mi libro.</th></tr>
+      <tr><th colspan="4">Длинная форма — ПОСЛЕ существительного или с артиклем: el libro mío, esta casa es mía.</th></tr>
+    </tbody></table>`
+  },
+
   {
     group: "Существительные и указатели",
     subgroup: "Артикли",
@@ -2719,6 +2755,7 @@ const USEFUL_TABLES = [
       <tr><th>женский, неопределенный</th><td>una</td><td>unas</td><td>una mesa, unas mesas</td></tr>
     </tbody></table>`
   },
+
   {
     group: "Существительные и указатели",
     subgroup: "Числительные",
@@ -2744,6 +2781,7 @@ const USEFUL_TABLES = [
       <tr><th colspan="6">Порядковые выше 20-го заменяют на cardinal: el siglo veintiuno, el capítulo treinta</th></tr>
     </tbody></table>`
   },
+
   {
     group: "Существительные и указатели",
     subgroup: "Апокопа",
@@ -2763,54 +2801,38 @@ const USEFUL_TABLES = [
       <tr><th>santo</th><td>san</td><td>имя святого (кроме Santo Tomás, Domingo, Toribio)</td><td>San Juan, San Pedro, San José</td></tr>
     </tbody></table>`
   },
+
   {
-    group: "Предлоги и время",
-    subgroup: "Основные предлоги",
-    title: "Por/para: причина или цель",
-    description: "Короткая таблица для самой частой пары предлогов.",
-    table: `<table><thead><tr><th>Предлог</th><th>Главная идея</th><th>Пример</th></tr></thead><tbody>
-      <tr><th>por</th><td>причина, путь, обмен, длительность</td><td>Gracias por tu ayuda.</td></tr>
-      <tr><th>por</th><td>движение через место, средство связи</td><td>Paseo por el parque. Hablamos por teléfono.</td></tr>
-      <tr><th>para</th><td>цель, адресат, срок, назначение</td><td>Este regalo es para ti.</td></tr>
-      <tr><th>para</th><td>направление и мнение</td><td>Salgo para Madrid. Para mí, es importante.</td></tr>
-      <tr><th>por vs para</th><td>причина / цель</td><td>Lo hago por ti. (ради тебя) vs Lo hago para ti. (для тебя)</td></tr>
+    group: "Существительные и указатели",
+    subgroup: "Указатели",
+    title: "Este/ese/aquel: здесь, там, далеко",
+    description: "Показывают близость к говорящему, собеседнику или удаленность.",
+    table: `<table><thead><tr><th>Близость</th><th>Муж.</th><th>Жен.</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>здесь</th><td>este / estos</td><td>esta / estas</td><td>este libro</td></tr>
+      <tr><th>там у тебя</th><td>ese / esos</td><td>esa / esas</td><td>esa mesa</td></tr>
+      <tr><th>далеко</th><td>aquel / aquellos</td><td>aquella / aquellas</td><td>aquella casa</td></tr>
     </tbody></table>`
   },
+
   {
-    group: "Предлоги и время",
-    subgroup: "Основные предлоги",
-    title: "A/en/de/con/sin: ключевые предлоги",
-    description: "Семь ключевых предлогов: направление, место, происхождение, сопровождение, отсутствие, тема, расположение.",
-    table: `<table><thead><tr><th>Предлог</th><th>Главная идея</th><th>Пример</th></tr></thead><tbody>
-      <tr><th>a</th><td>направление, адресат, время</td><td>Voy a Madrid. Escribo a Ana. A las ocho.</td></tr>
-      <tr><th>en</th><td>место, транспорт, период</td><td>Vivo en Valencia. Voy en tren. En verano.</td></tr>
-      <tr><th>de</th><td>происхождение, принадлежность, материал</td><td>Soy de Sevilla. El libro de Marta. Una mesa de madera.</td></tr>
-      <tr><th>con</th><td>с кем/чем, инструмент, признак</td><td>Voy con mi hermana. Café con leche.</td></tr>
-      <tr><th>sin</th><td>без кого/чего</td><td>Sin azúcar, por favor. Sin ti no puedo.</td></tr>
-      <tr><th>sobre</th><td>на поверхности, о / про</td><td>El libro está sobre la mesa. Hablamos sobre política.</td></tr>
-      <tr><th>entre</th><td>между, среди</td><td>Entre la espada y la pared. Entre tú y yo.</td></tr>
+    group: "Существительные и указатели",
+    subgroup: "Вопросительные слова",
+    title: "Qué, quién, cuál, cómo...",
+    description: "Вопросительные слова всегда с ударением; они различают предмет, человека, выбор и способ.",
+    table: `<table><thead><tr><th>Слово</th><th>Когда использовать</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>qué</th><td>что? / какой? (предмет, действие)</td><td>¿Qué haces? ¿Qué libro?</td></tr>
+      <tr><th>quién / quiénes</th><td>кто? (ед. / мн.)</td><td>¿Quién es? ¿Quiénes vienen?</td></tr>
+      <tr><th>cuál / cuáles</th><td>который? (выбор из набора)</td><td>¿Cuál prefieres?</td></tr>
+      <tr><th>cómo</th><td>как? (способ, состояние)</td><td>¿Cómo estás? ¿Cómo se dice?</td></tr>
+      <tr><th>cuándo</th><td>когда? (время)</td><td>¿Cuándo llegas?</td></tr>
+      <tr><th>dónde</th><td>где? / куда? (место)</td><td>¿Dónde vives? ¿Adónde vas?</td></tr>
+      <tr><th>por qué</th><td>почему? (причина)</td><td>¿Por qué estudias español?</td></tr>
+      <tr><th>cuánto / a / os / as</th><td>сколько? (количество)</td><td>¿Cuánto cuesta? ¿Cuántas hay?</td></tr>
     </tbody></table>`
   },
+
   {
-    group: "Предлоги и время",
-    subgroup: "Основные предлоги",
-    title: "Preposiciones de lugar: entre, sobre, bajo...",
-    description: "Предлоги и наречия места: положение в пространстве относительно других объектов.",
-    table: `<table><thead><tr><th>Предлог / наречие</th><th>Смысл</th><th>Пример</th></tr></thead><tbody>
-      <tr><th>entre</th><td>между</td><td>El perro está entre la mesa y la silla.</td></tr>
-      <tr><th>sobre / encima de</th><td>на / над</td><td>El libro está sobre la mesa. Vuela encima de la ciudad.</td></tr>
-      <tr><th>bajo / debajo de</th><td>под</td><td>El gato está debajo de la cama. Bajo el agua.</td></tr>
-      <tr><th>detrás de</th><td>за / позади</td><td>Detrás de la puerta hay un armario.</td></tr>
-      <tr><th>delante de</th><td>перед / впереди</td><td>El coche está delante de la casa.</td></tr>
-      <tr><th>cerca de</th><td>близко / рядом с</td><td>Vivo cerca del centro.</td></tr>
-      <tr><th>lejos de</th><td>далеко от</td><td>El pueblo está lejos de la ciudad.</td></tr>
-      <tr><th>al lado de</th><td>рядом с</td><td>El banco está al lado del supermercado.</td></tr>
-      <tr><th>enfrente de</th><td>напротив</td><td>Hay una farmacia enfrente de mi casa.</td></tr>
-      <tr><th>dentro de / fuera de</th><td>внутри / снаружи</td><td>Dentro de la caja. Fuera de casa.</td></tr>
-    </tbody></table>`
-  },
-  {
-    group: "Глагольные шпаргалки",
+    group: "Глагольные пары и времена",
     subgroup: "Самые частые пары",
     title: "Ser/estar: сущность или состояние",
     description: "Два варианта 'быть': характеристика/идентичность против состояния/местоположения.",
@@ -2825,8 +2847,9 @@ const USEFUL_TABLES = [
       <tr><th>⚠️</th><td>es rico (богатый) vs está rico (вкусно сделано)</td><td>Es una persona rica. La sopa está rica.</td></tr>
     </tbody></table>`
   },
+
   {
-    group: "Глагольные шпаргалки",
+    group: "Глагольные пары и времена",
     subgroup: "Самые частые пары",
     title: "Gustar и похожие глаголы",
     description: "Эти глаголы строятся через косвенное местоимение: мне нравится, тебе важно, ему болит, не хватает.",
@@ -2840,8 +2863,9 @@ const USEFUL_TABLES = [
       <tr><th>faltar</th><td>me/te/le + falta/faltan</td><td>Me falta tiempo. Nos faltan dos personas.</td></tr>
     </tbody></table>`
   },
+
   {
-    group: "Глагольные шпаргалки",
+    group: "Глагольные пары и времена",
     subgroup: "Самые частые пары",
     title: "Saber/conocer: знать факт или быть знакомым",
     description: "Saber про информацию и умение; conocer про знакомство с человеком, местом или объектом.",
@@ -2851,8 +2875,9 @@ const USEFUL_TABLES = [
       <tr><th>conocer</th><td>быть знакомым с человеком/местом</td><td>Conozco a Ana. Conozco Madrid.</td></tr>
     </tbody></table>`
   },
+
   {
-    group: "Глагольные шпаргалки",
+    group: "Глагольные пары и времена",
     subgroup: "Самые частые пары",
     title: "Ir/venir/llevar/traer: идти, приходить, нести",
     description: "Пары движения зависят от точки зрения говорящего и направления.",
@@ -2863,8 +2888,9 @@ const USEFUL_TABLES = [
       <tr><th>traer</th><td>нести/везти сюда</td><td>Trae el libro aquí. - Принеси книгу сюда.</td></tr>
     </tbody></table>`
   },
+
   {
-    group: "Глагольные шпаргалки",
+    group: "Глагольные пары и времена",
     subgroup: "Самые частые пары",
     title: "Pedir/preguntar: просить или спрашивать",
     description: "Pedir значит просить что-то; preguntar значит задавать вопрос.",
@@ -2874,8 +2900,9 @@ const USEFUL_TABLES = [
       <tr><th>preguntar</th><td>спрашивать, задавать вопрос</td><td>Pregunto la dirección. - Я спрашиваю адрес.</td></tr>
     </tbody></table>`
   },
+
   {
-    group: "Глагольные шпаргалки",
+    group: "Глагольные пары и времена",
     subgroup: "Времена и согласование",
     title: "Imperfecto vs Indefinido: фон или событие",
     description: "Как отличать описание/фон в прошлом от завершенного события.",
@@ -2888,8 +2915,9 @@ const USEFUL_TABLES = [
       <tr><th>событие на фоне</th><td>Imperfecto + Indefinido</td><td>Dormía cuando llamó Ana.</td></tr>
     </tbody></table>`
   },
+
   {
-    group: "Глагольные шпаргалки",
+    group: "Глагольные пары и времена",
     subgroup: "Времена и согласование",
     title: "Косвенная речь: какие времена менять",
     description: "Как обычно меняется время, если вводящий глагол стоит в прошлом: dijo que, explicó que, pensaba que.",
@@ -2902,8 +2930,9 @@ const USEFUL_TABLES = [
       <tr><th>Presente de Subjuntivo</th><td>Imperfecto de Subjuntivo</td><td>Quiere que venga -> Quería que viniera.</td></tr>
     </tbody></table>`
   },
+
   {
-    group: "Глагольные шпаргалки",
+    group: "Глагольные пары и времена",
     subgroup: "Условные конструкции",
     title: "Условные предложения",
     description: "Основные схемы с si: реальные условия, возможные будущие ситуации и нереальные сценарии.",
@@ -2916,8 +2945,9 @@ const USEFUL_TABLES = [
       <div class="condition-card"><strong>Важно</strong><code>после si не ставим futuro simple</code><span>Si tengo tiempo, iré. Не: si tendré tiempo.</span></div>
     </div>`
   },
+
   {
-    group: "Глагольные шпаргалки",
+    group: "Глагольные пары и времена",
     subgroup: "Времена и согласование",
     title: "Futuro: ir a vs Futuro Simple — «собираюсь» vs будущее время",
     description: "Ближайшее намерение или план против отдалённого будущего и предположения.",
@@ -2928,8 +2958,9 @@ const USEFUL_TABLES = [
       <tr><th>Прогноз / догадка</th><td>не используется</td><td>Serán las ocho. — Сейчас, наверное, восемь.</td></tr>
     </tbody></table>`
   },
+
   {
-    group: "Глагольные шпаргалки",
+    group: "Глагольные пары и времена",
     subgroup: "Времена и согласование",
     title: "Voz pasiva: ser + participio vs se impersonal",
     description: "Пассивный залог: когда действие важнее того, кто его выполняет. Два способа образования в испанском.",
@@ -2943,8 +2974,9 @@ const USEFUL_TABLES = [
       <tr><th>⚠️ естественный пассив</th><td>испанцы часто избегают ser + participio, используя se</td><td>Se habla español (лучше чем «español es hablado»).</td></tr>
     </tbody></table>`
   },
+
   {
-    group: "Глагольные шпаргалки",
+    group: "Глагольные пары и времена",
     subgroup: "Времена и согласование",
     title: "Estilo indirecto: preguntas y órdenes",
     description: "Как передавать вопросы и просьбы/приказы в косвенной речи. Прямой вопрос становится придаточным.",
@@ -2961,8 +2993,9 @@ const USEFUL_TABLES = [
       <tr><th>⚠️ cambio de tiempo</th><td>те же сдвиги, что в declarativa: presente → imperfecto, etc.</td><td>Preguntó dónde vivía (vivía, не vive).</td></tr>
     </tbody></table>`
   },
+
   {
-    group: "Глагольные шпаргалки",
+    group: "Глагольные конструкции",
     subgroup: "Глагольные конструкции и управление",
     title: "Estar + gerundio / Llevar + gerundio",
     description: "Действие прямо сейчас или которое уже длится какое-то время.",
@@ -2974,8 +3007,9 @@ const USEFUL_TABLES = [
       <tr><th>seguir + gerundio</th><td>всё ещё продолжаю</td><td>Sigo viviendo en Madrid.</td></tr>
     </tbody></table>`
   },
+
   {
-    group: "Глагольные шпаргалки",
+    group: "Глагольные конструкции",
     subgroup: "Глагольные конструкции и управление",
     title: "Acabar de / Volver a / Dejar de — глагольные конструкции",
     description: "Три ключевые конструкции: только что сделать, сделать снова, перестать делать.",
@@ -2987,8 +3021,9 @@ const USEFUL_TABLES = [
       <tr><th>empezar a + infinitivo</th><td>начать делать</td><td>Empiezo a entender. — Я начинаю понимать.</td></tr>
     </tbody></table>`
   },
+
   {
-    group: "Глагольные шпаргалки",
+    group: "Глагольные конструкции",
     subgroup: "Глагольные конструкции и управление",
     title: "Deber / Tener que / Hay que — долженствование",
     description: "Слабая, сильная и безличная необходимость.",
@@ -2999,8 +3034,9 @@ const USEFUL_TABLES = [
       <tr><th>hay que + infinitivo</th><td>безличная необходимость</td><td>Hay que pagar antes. — Нужно заплатить заранее.</td></tr>
     </tbody></table>`
   },
+
   {
-    group: "Глагольные шпаргалки",
+    group: "Глагольные конструкции",
     subgroup: "Глагольные конструкции и управление",
     title: "Глаголы с предлогами: pensar en, soñar con...",
     description: "Многие испанские глаголы требуют определённого предлога, который не совпадает с русским.",
@@ -3016,8 +3052,9 @@ const USEFUL_TABLES = [
       <tr><th>contar con</th><td>рассчитывать на</td><td>Cuento con tu ayuda.</td></tr>
     </tbody></table>`
   },
+
   {
-    group: "Глагольные шпаргалки",
+    group: "Глагольные конструкции",
     subgroup: "Глагольные конструкции и управление",
     title: "Verbos con preposición fija: дополнительный список",
     description: "Ещё глаголы, которые требуют определённого предлога, часто не совпадающего с русским.",
@@ -3044,8 +3081,9 @@ const USEFUL_TABLES = [
       <tr><th>interesarse por</th><td>интересоваться</td><td>Se interesa por la historia.</td></tr>
     </tbody></table>`
   },
+
   {
-    group: "Глагольные шпаргалки",
+    group: "Глагольные конструкции",
     subgroup: "Глагольные конструкции и управление",
     title: "Gerundio: образование и употребление",
     description: "Как образуется и когда используется gerundio.",
@@ -3060,8 +3098,9 @@ const USEFUL_TABLES = [
       <tr><th>seguir + gerundio</th><td>всё ещё делаю</td><td>Sigue lloviendo.</td></tr>
     </tbody></table>`
   },
+
   {
-    group: "Глагольные шпаргалки",
+    group: "Глагольные конструкции",
     subgroup: "Глагольные конструкции и управление",
     title: "Tener + sustantivo: tener hambre, tener sed...",
     description: "Во многих бытовых выражениях испанский использует tener + существительное, а не ser/estar + прилагательное.",
@@ -3080,8 +3119,9 @@ const USEFUL_TABLES = [
       <tr><th>tener ganas (de)</th><td>хотеть / быть в настроении</td><td>Tengo ganas de viajar.</td></tr>
     </tbody></table>`
   },
+
   {
-    group: "Глагольные шпаргалки",
+    group: "Глагольные конструкции",
     subgroup: "Глагольные конструкции и управление",
     title: "Ponerse / Volverse / Hacerse / Llegar a ser: «становиться»",
     description: "Четыре глагола для разных оттенков изменения: внезапно, постепенно, по выбору, с течением времени.",
@@ -3093,8 +3133,9 @@ const USEFUL_TABLES = [
       <tr><th>⚠️</th><td>ponerse — реакция; volverse — перемена личности; hacerse — осознанный выбор; llegar a ser — вершина пути</td><td>Se puso triste. Se volvió agresivo. Se hizo budista. Llegó a ser escritor.</td></tr>
     </tbody></table>`
   },
+
   {
-    group: "Глагольные шпаргалки",
+    group: "Глагольные конструкции",
     subgroup: "Глагольные конструкции и управление",
     title: "Perífrasis verbales: сводная таблица",
     description: "Сводка всех глагольных оборотов: ir a, acabar de, volver a, dejar de, estar + gerundio, llevar + gerundio, seguir + gerundio, hay que, tener que, deber, ponerse a, soler.",
@@ -3115,8 +3156,9 @@ const USEFUL_TABLES = [
       <tr><th>empezar a + infinitivo</th><td>начать делать</td><td>Empiezo a entender.</td></tr>
     </tbody></table>`
   },
+
   {
-    group: "Глагольные шпаргалки",
+    group: "Глагольные конструкции",
     subgroup: "Глагольные конструкции и управление",
     title: "Dar + sustantivo: dar un paseo, dar miedo, dar igual...",
     description: "Глагол dar образует множество устойчивых выражений с существительными и местоимениями.",
@@ -3136,8 +3178,9 @@ const USEFUL_TABLES = [
       <tr><th>dar por + participio</th><td>считать / признать</td><td>Doy por terminada la reunión.</td></tr>
     </tbody></table>`
   },
+
   {
-    group: "Глагольные шпаргалки",
+    group: "Глагольные конструкции",
     subgroup: "Глагольные конструкции и управление",
     title: "Expresiones con «echar»: echar de menos, echar una mano...",
     description: "Глагол echar образует много устойчивых выражений с разными предлогами и местоимениями.",
@@ -3154,8 +3197,9 @@ const USEFUL_TABLES = [
       <tr><th>echarse atrás</th><td>отступить / передумать</td><td>Se echó atrás en el último momento.</td></tr>
     </tbody></table>`
   },
+
   {
-    group: "Глагольные шпаргалки",
+    group: "Глагольные конструкции",
     subgroup: "Глагольные конструкции и управление",
     title: "Expresiones con «hacer»: hacer la cama, hacer caso, hacer daño...",
     description: "Глагол hacer образует множество бытовых и идиоматических выражений.",
@@ -3174,6 +3218,7 @@ const USEFUL_TABLES = [
       <tr><th>hacerse + profesión</th><td>стать кем-то (по выбору)</td><td>Se hizo médico.</td></tr>
     </tbody></table>`
   },
+
   {
     group: "Служебные слова и степень",
     subgroup: "Неопределенность и отрицание",
@@ -3187,6 +3232,7 @@ const USEFUL_TABLES = [
       <tr><th>alguno/ninguno</th><td>какой-то / никакой</td><td>¿Tienes algún libro? No tengo ninguno.</td></tr>
     </tbody></table>`
   },
+
   {
     group: "Служебные слова и степень",
     subgroup: "Степень и количество",
@@ -3198,6 +3244,7 @@ const USEFUL_TABLES = [
       <tr><th>mucho/a/os/as</th><td>существительное</td><td>mucho trabajo, muchas casas</td></tr>
     </tbody></table>`
   },
+
   {
     group: "Служебные слова и степень",
     subgroup: "Присоединение и связь",
@@ -3209,99 +3256,7 @@ const USEFUL_TABLES = [
       <tr><th>no ... tampoco</th><td>отрицание сохраняется</td><td>No voy tampoco.</td></tr>
     </tbody></table>`
   },
-  {
-    group: "Существительные и указатели",
-    subgroup: "Указатели",
-    title: "Este/ese/aquel: здесь, там, далеко",
-    description: "Показывают близость к говорящему, собеседнику или удаленность.",
-    table: `<table><thead><tr><th>Близость</th><th>Муж.</th><th>Жен.</th><th>Пример</th></tr></thead><tbody>
-      <tr><th>здесь</th><td>este / estos</td><td>esta / estas</td><td>este libro</td></tr>
-      <tr><th>там у тебя</th><td>ese / esos</td><td>esa / esas</td><td>esa mesa</td></tr>
-      <tr><th>далеко</th><td>aquel / aquellos</td><td>aquella / aquellas</td><td>aquella casa</td></tr>
-    </tbody></table>`
-  },
-  {
-    group: "Существительные и указатели",
-    subgroup: "Вопросительные слова",
-    title: "Qué, quién, cuál, cómo...",
-    description: "Вопросительные слова всегда с ударением; они различают предмет, человека, выбор и способ.",
-    table: `<table><thead><tr><th>Слово</th><th>Когда использовать</th><th>Пример</th></tr></thead><tbody>
-      <tr><th>qué</th><td>что? / какой? (предмет, действие)</td><td>¿Qué haces? ¿Qué libro?</td></tr>
-      <tr><th>quién / quiénes</th><td>кто? (ед. / мн.)</td><td>¿Quién es? ¿Quiénes vienen?</td></tr>
-      <tr><th>cuál / cuáles</th><td>который? (выбор из набора)</td><td>¿Cuál prefieres?</td></tr>
-      <tr><th>cómo</th><td>как? (способ, состояние)</td><td>¿Cómo estás? ¿Cómo se dice?</td></tr>
-      <tr><th>cuándo</th><td>когда? (время)</td><td>¿Cuándo llegas?</td></tr>
-      <tr><th>dónde</th><td>где? / куда? (место)</td><td>¿Dónde vives? ¿Adónde vas?</td></tr>
-      <tr><th>por qué</th><td>почему? (причина)</td><td>¿Por qué estudias español?</td></tr>
-      <tr><th>cuánto / a / os / as</th><td>сколько? (количество)</td><td>¿Cuánto cuesta? ¿Cuántas hay?</td></tr>
-    </tbody></table>`
-  },
-  {
-    group: "Местоимения и объекты",
-    subgroup: "Возвратные местоимения",
-    title: "Me/te/se: возвратные местоимения",
-    description: "Используются с возвратными глаголами и ставятся перед спрягаемым глаголом.",
-    table: `<table><thead><tr><th>Лицо</th><th>Местоимение</th><th>Пример</th></tr></thead><tbody>
-      <tr><th>yo</th><td>me</td><td>Me levanto.</td></tr>
-      <tr><th>tú</th><td>te</td><td>Te duchas.</td></tr>
-      <tr><th>él/ella/usted</th><td>se</td><td>Se llama Ana.</td></tr>
-      <tr><th>nosotros</th><td>nos</td><td>Nos acostamos.</td></tr>
-      <tr><th>vosotros</th><td>os</td><td>Os levantáis.</td></tr>
-      <tr><th>ellos/ustedes</th><td>se</td><td>Se preparan.</td></tr>
-    </tbody></table>`
-  },
-  {
-    group: "Местоимения и объекты",
-    subgroup: "Притяжательные местоимения",
-    title: "Mi/mío, tu/tuyo: притяжательные местоимения",
-    description: "Короткие притяжательные перед существительным; длинные (с артиклем) после или без существительного.",
-    table: `<table><thead><tr><th>Лицо</th><th>Краткая форма</th><th>Длинная форма</th><th>Пример</th></tr></thead><tbody>
-      <tr><th>yo</th><td>mi / mis</td><td>mío/a/os/as</td><td>mi libro / el libro mío</td></tr>
-      <tr><th>tú</th><td>tu / tus</td><td>tuyo/a/os/as</td><td>tu casa / la casa tuya</td></tr>
-      <tr><th>él / ella / usted</th><td>su / sus</td><td>suyo/a/os/as</td><td>su coche / el coche suyo</td></tr>
-      <tr><th>nosotros</th><td>nuestro/a/os/as</td><td>nuestro/a/os/as</td><td>nuestro amigo / un amigo nuestro</td></tr>
-      <tr><th>vosotros</th><td>vuestro/a/os/as</td><td>vuestro/a/os/as</td><td>vuestra opinión / una opinión vuestra</td></tr>
-      <tr><th>ellos / ustedes</th><td>su / sus</td><td>suyo/a/os/as</td><td>sus hijos / los hijos suyos</td></tr>
-      <tr><th colspan="4">Краткая форма — ПЕРЕД существительным: mi libro.</th></tr>
-      <tr><th colspan="4">Длинная форма — ПОСЛЕ существительного или с артиклем: el libro mío, esta casa es mía.</th></tr>
-    </tbody></table>`
-  },
-  {
-    group: "Предлоги и время",
-    subgroup: "Выражение времени",
-    title: "Desde/hace/durante: время и длительность",
-    description: "Шпаргалка для длительности и точки начала.",
-    table: `<table><thead><tr><th>Выражение</th><th>Смысл</th><th>Пример</th></tr></thead><tbody>
-      <tr><th>desde</th><td>с конкретной точки</td><td>Vivo aquí desde 2020.</td></tr>
-      <tr><th>hace</th><td>назад</td><td>Llegué hace dos días.</td></tr>
-      <tr><th>desde hace</th><td>уже сколько-то времени</td><td>Estudio español desde hace un año.</td></tr>
-      <tr><th>durante</th><td>в течение периода</td><td>Trabajé durante tres horas.</td></tr>
-    </tbody></table>`
-  },
-  {
-    group: "Предлоги и время",
-    subgroup: "Выражение времени",
-    title: "La hora y la fecha: время, дни, месяцы",
-    description: "Как называть время, дни недели и месяцы в испанском. Предлоги для дат: en, del, de.",
-    table: `<table><thead><tr><th>Время / Дата</th><th>Испанский</th><th>Пример</th></tr></thead><tbody>
-      <tr><th>Который час?</th><td>¿Qué hora es?</td><td></td></tr>
-      <tr><th>1:00</th><td>Es la una en punto.</td><td>La clase es a la una.</td></tr>
-      <tr><th>2:00</th><td>Son las dos en punto.</td><td>Son las dos de la tarde.</td></tr>
-      <tr><th>2:15</th><td>Son las dos y cuarto.</td><td></td></tr>
-      <tr><th>2:30</th><td>Son las dos y media.</td><td></td></tr>
-      <tr><th>2:45</th><td>Son las tres menos cuarto.</td><td>Faltan cuarto para las tres.</td></tr>
-      <tr><th>2:05</th><td>Son las dos y cinco.</td><td></td></tr>
-      <tr><th>2:40</th><td>Son las tres menos veinte.</td><td></td></tr>
-      <tr><th>утра / дня / ночи</th><td>de la mañana / de la tarde / de la noche</td><td>Son las ocho de la mañana.</td></tr>
-      <tr><th>Дни недели</th><td>lunes, martes, miércoles, jueves, viernes, sábado, domingo</td><td>Hoy es lunes. <span class="muted">(все мужского рода)</span></td></tr>
-      <tr><th>Месяцы</th><td>enero, febrero, marzo, abril, mayo, junio, julio, agosto, septiembre, octubre, noviembre, diciembre</td><td></td></tr>
-      <tr><th>Дата</th><td>[el] [число] de [месяц] de [год]</td><td>Hoy es el 15 de mayo de 2026.</td></tr>
-      <tr><th>Год</th><td>2000 → dos mil</td><td>1998 → mil novecientos noventa y ocho</td></tr>
-      <tr><th>Предлоги с днями</th><td>el / los + день</td><td>el lunes (в понедельник), los lunes (по понедельникам)</td></tr>
-      <tr><th>Предлоги с месяцами</th><td>en + месяц</td><td>en enero, en verano</td></tr>
-      <tr><th>«Сейчас / в этом»</th><td>ahora / este</td><td>Ahora son las tres. Este mes, esta semana, este año.</td></tr>
-    </tbody></table>`
-  },
+
   {
     group: "Служебные слова и степень",
     subgroup: "Присоединение и связь",
@@ -3317,6 +3272,7 @@ const USEFUL_TABLES = [
       <tr><th>sin que</th><td>без того чтобы; требует subjuntivo</td><td>Se fue sin que nadie lo viera.</td></tr>
     </tbody></table>`
   },
+
   {
     group: "Служебные слова и степень",
     subgroup: "Присоединение и связь",
@@ -3333,6 +3289,7 @@ const USEFUL_TABLES = [
       <tr><th>en cambio / por el contrario</th><td>с другой стороны / наоборот</td><td>Él trabaja mucho; yo, en cambio, descanso.</td></tr>
     </tbody></table>`
   },
+
   {
     group: "Служебные слова и степень",
     subgroup: "Присоединение и связь",
@@ -3351,6 +3308,7 @@ const USEFUL_TABLES = [
       <tr><th>en definitiva / en resumen</th><td>в итоге / вкратце</td><td>En definitiva, no vale la pena.</td></tr>
     </tbody></table>`
   },
+
   {
     group: "Служебные слова и степень",
     subgroup: "Присоединение и связь",
@@ -3369,6 +3327,7 @@ const USEFUL_TABLES = [
       <tr><th>⚠️ cuyo</th><td>согласуется с обладаемым, не с обладателем</td><td>El hombre cuyo coche (машина → м.р.)... La mujer cuya casa (дом → ж.р.)...</td></tr>
     </tbody></table>`
   },
+
   {
     group: "Служебные слова и степень",
     subgroup: "Степень и количество",
@@ -3386,6 +3345,7 @@ const USEFUL_TABLES = [
       <tr><th>превосходная</th><td>el/la más + adj + de</td><td>Es el más alto de la clase.</td></tr>
     </tbody></table>`
   },
+
   {
     group: "Служебные слова и степень",
     subgroup: "Степень и количество",
@@ -3399,6 +3359,7 @@ const USEFUL_TABLES = [
       <tr><th>aún (sin ещё)</th><td>даже</td><td>Aún más importante. — Ещё более важно.</td></tr>
     </tbody></table>`
   },
+
   {
     group: "Служебные слова и степень",
     subgroup: "Степень и количество",
@@ -3417,6 +3378,7 @@ const USEFUL_TABLES = [
       <tr><th>nunca / jamás</th><td>никогда</td><td>Nunca bebo alcohol.</td></tr>
     </tbody></table>`
   },
+
   {
     group: "Служебные слова и степень",
     subgroup: "Лексические ловушки",
@@ -3442,6 +3404,7 @@ const USEFUL_TABLES = [
       <tr><th>billón</th><td>триллион (не «миллиард»)</td><td>Un billón = 1.000.000.000.000</td></tr>
     </tbody></table>`
   },
+
   {
     group: "Служебные слова и степень",
     subgroup: "Словообразование",
@@ -3459,6 +3422,7 @@ const USEFUL_TABLES = [
       <tr><th>entre-</th><td>взаимно / между</td><td>entrecruzar (перекрещивать), entreabrir (приоткрыть)</td></tr>
     </tbody></table>`
   },
+
   {
     group: "Служебные слова и степень",
     subgroup: "Словообразование",
@@ -3476,6 +3440,7 @@ const USEFUL_TABLES = [
       <tr><th>⚠️ -ito может менять корень</th><td>c → qu, z → c, g → gu</td><td>poco → poquito, lápiz → lapicito, amigo → amiguito</td></tr>
     </tbody></table>`
   },
+
   {
     group: "Служебные слова и степень",
     subgroup: "Словообразование",
@@ -3494,6 +3459,7 @@ const USEFUL_TABLES = [
       <tr><th>-ivo / -iva</th><td>прилагательное от глагола</td><td>actuar → activo, educar → educativo, decidir → decisivo</td></tr>
     </tbody></table>`
   },
+
   {
     group: "Служебные слова и степень",
     subgroup: "Словообразование",
@@ -3511,6 +3477,94 @@ const USEFUL_TABLES = [
       <tr><th>⚠️ род</th><td>большинство меняют -o на -a для женщин</td><td>español → española, argentino → argentina, francés → francesa</td></tr>
     </tbody></table>`
   }
+];,
+
+  {
+    group: "Предлоги и время",
+    subgroup: "Основные предлоги",
+    title: "Por/para: причина или цель",
+    description: "Короткая таблица для самой частой пары предлогов.",
+    table: `<table><thead><tr><th>Предлог</th><th>Главная идея</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>por</th><td>причина, путь, обмен, длительность</td><td>Gracias por tu ayuda.</td></tr>
+      <tr><th>por</th><td>движение через место, средство связи</td><td>Paseo por el parque. Hablamos por teléfono.</td></tr>
+      <tr><th>para</th><td>цель, адресат, срок, назначение</td><td>Este regalo es para ti.</td></tr>
+      <tr><th>para</th><td>направление и мнение</td><td>Salgo para Madrid. Para mí, es importante.</td></tr>
+      <tr><th>por vs para</th><td>причина / цель</td><td>Lo hago por ti. (ради тебя) vs Lo hago para ti. (для тебя)</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Предлоги и время",
+    subgroup: "Основные предлоги",
+    title: "A/en/de/con/sin: ключевые предлоги",
+    description: "Семь ключевых предлогов: направление, место, происхождение, сопровождение, отсутствие, тема, расположение.",
+    table: `<table><thead><tr><th>Предлог</th><th>Главная идея</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>a</th><td>направление, адресат, время</td><td>Voy a Madrid. Escribo a Ana. A las ocho.</td></tr>
+      <tr><th>en</th><td>место, транспорт, период</td><td>Vivo en Valencia. Voy en tren. En verano.</td></tr>
+      <tr><th>de</th><td>происхождение, принадлежность, материал</td><td>Soy de Sevilla. El libro de Marta. Una mesa de madera.</td></tr>
+      <tr><th>con</th><td>с кем/чем, инструмент, признак</td><td>Voy con mi hermana. Café con leche.</td></tr>
+      <tr><th>sin</th><td>без кого/чего</td><td>Sin azúcar, por favor. Sin ti no puedo.</td></tr>
+      <tr><th>sobre</th><td>на поверхности, о / про</td><td>El libro está sobre la mesa. Hablamos sobre política.</td></tr>
+      <tr><th>entre</th><td>между, среди</td><td>Entre la espada y la pared. Entre tú y yo.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Предлоги и время",
+    subgroup: "Основные предлоги",
+    title: "Preposiciones de lugar: entre, sobre, bajo...",
+    description: "Предлоги и наречия места: положение в пространстве относительно других объектов.",
+    table: `<table><thead><tr><th>Предлог / наречие</th><th>Смысл</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>entre</th><td>между</td><td>El perro está entre la mesa y la silla.</td></tr>
+      <tr><th>sobre / encima de</th><td>на / над</td><td>El libro está sobre la mesa. Vuela encima de la ciudad.</td></tr>
+      <tr><th>bajo / debajo de</th><td>под</td><td>El gato está debajo de la cama. Bajo el agua.</td></tr>
+      <tr><th>detrás de</th><td>за / позади</td><td>Detrás de la puerta hay un armario.</td></tr>
+      <tr><th>delante de</th><td>перед / впереди</td><td>El coche está delante de la casa.</td></tr>
+      <tr><th>cerca de</th><td>близко / рядом с</td><td>Vivo cerca del centro.</td></tr>
+      <tr><th>lejos de</th><td>далеко от</td><td>El pueblo está lejos de la ciudad.</td></tr>
+      <tr><th>al lado de</th><td>рядом с</td><td>El banco está al lado del supermercado.</td></tr>
+      <tr><th>enfrente de</th><td>напротив</td><td>Hay una farmacia enfrente de mi casa.</td></tr>
+      <tr><th>dentro de / fuera de</th><td>внутри / снаружи</td><td>Dentro de la caja. Fuera de casa.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Предлоги и время",
+    subgroup: "Выражение времени",
+    title: "Desde/hace/durante: время и длительность",
+    description: "Шпаргалка для длительности и точки начала.",
+    table: `<table><thead><tr><th>Выражение</th><th>Смысл</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>desde</th><td>с конкретной точки</td><td>Vivo aquí desde 2020.</td></tr>
+      <tr><th>hace</th><td>назад</td><td>Llegué hace dos días.</td></tr>
+      <tr><th>desde hace</th><td>уже сколько-то времени</td><td>Estudio español desde hace un año.</td></tr>
+      <tr><th>durante</th><td>в течение периода</td><td>Trabajé durante tres horas.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Предлоги и время",
+    subgroup: "Выражение времени",
+    title: "La hora y la fecha: время, дни, месяцы",
+    description: "Как называть время, дни недели и месяцы в испанском. Предлоги для дат: en, del, de.",
+    table: `<table><thead><tr><th>Время / Дата</th><th>Испанский</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>Который час?</th><td>¿Qué hora es?</td><td></td></tr>
+      <tr><th>1:00</th><td>Es la una en punto.</td><td>La clase es a la una.</td></tr>
+      <tr><th>2:00</th><td>Son las dos en punto.</td><td>Son las dos de la tarde.</td></tr>
+      <tr><th>2:15</th><td>Son las dos y cuarto.</td><td></td></tr>
+      <tr><th>2:30</th><td>Son las dos y media.</td><td></td></tr>
+      <tr><th>2:45</th><td>Son las tres menos cuarto.</td><td>Faltan cuarto para las tres.</td></tr>
+      <tr><th>2:05</th><td>Son las dos y cinco.</td><td></td></tr>
+      <tr><th>2:40</th><td>Son las tres menos veinte.</td><td></td></tr>
+      <tr><th>утра / дня / ночи</th><td>de la mañana / de la tarde / de la noche</td><td>Son las ocho de la mañana.</td></tr>
+      <tr><th>Дни недели</th><td>lunes, martes, miércoles, jueves, viernes, sábado, domingo</td><td>Hoy es lunes. <span class="muted">(все мужского рода)</span></td></tr>
+      <tr><th>Месяцы</th><td>enero, febrero, marzo, abril, mayo, junio, julio, agosto, septiembre, octubre, noviembre, diciembre</td><td></td></tr>
+      <tr><th>Дата</th><td>[el] [число] de [месяц] de [год]</td><td>Hoy es el 15 de mayo de 2026.</td></tr>
+      <tr><th>Год</th><td>2000 → dos mil</td><td>1998 → mil novecientos noventa y ocho</td></tr>
+      <tr><th>Предлоги с днями</th><td>el / los + день</td><td>el lunes (в понедельник), los lunes (по понедельникам)</td></tr>
+      <tr><th>Предлоги с месяцами</th><td>en + месяц</td><td>en enero, en verano</td></tr>
+      <tr><th>«Сейчас / в этом»</th><td>ahora / este</td><td>Ahora son las tres. Este mes, esta semana, este año.</td></tr>
+    </tbody></table>`
+  }
 ];
 
 const TABLE_GROUPS = [
@@ -3523,8 +3577,12 @@ const TABLE_GROUPS = [
     description: "Артикли и слова, которые уточняют род, число и расстояние."
   },
   {
-    title: "Глагольные шпаргалки",
-    description: "Частые пары и конструкции, где легко ошибиться."
+    title: "Глагольные пары и времена",
+    description: "Выбор между похожими глаголами и согласование времён."
+  },
+  {
+    title: "Глагольные конструкции",
+    description: "Устойчивые глагольные обороты и управление."
   },
   {
     title: "Служебные слова и степень",
@@ -3549,7 +3607,7 @@ const TABLE_FILTERS = [
 const TABLE_FILTER_GROUPS = {
   pronouns: ["Местоимения и объекты"],
   nouns: ["Существительные и указатели"],
-  verbs: ["Глагольные шпаргалки"],
+  verbs: ["Глагольные пары и времена", "Глагольные конструкции"],
   service: ["Служебные слова и степень"],
   prepositions: ["Предлоги и время"],
 };
@@ -5223,7 +5281,7 @@ function renderUsefulTableCard(item) {
 function tableMatchesFilter(item) {
   const filter = state.tableFilter;
   if (filter === "all") return true;
-  if (filter === "time") return item.group === "Предлоги и время" || /время|услов|косвенная|imperfecto|indefinido|desde|hace/i.test(item.title + " " + item.description);
+  if (filter === "time") return item.group === "Предлоги и время" || /время|услов|косвен|imperfecto|indefinido|desde|hace|futuro|estilo/i.test(item.title + " " + item.description);
   const groups = TABLE_FILTER_GROUPS[filter];
   if (!groups) return true;
   return groups.some((g) => item.group === g);
@@ -5232,7 +5290,7 @@ function tableMatchesFilter(item) {
 function countFilteredTables(filterId) {
   return USEFUL_TABLES.filter((item) => {
     if (filterId === "all") return true;
-    if (filterId === "time") return item.group === "Предлоги и время" || /время|услов|косвенная|imperfecto|indefinido|desde|hace/i.test(item.title + " " + item.description);
+    if (filterId === "time") return item.group === "Предлоги и время" || /время|услов|косвен|imperfecto|indefinido|desde|hace|futuro|estilo/i.test(item.title + " " + item.description);
     const groups = TABLE_FILTER_GROUPS[filterId];
     if (!groups) return true;
     return groups.some((g) => item.group === g);

@@ -1395,7 +1395,7 @@ select {
           </div>
           <p class="brand-kicker">Глаголы, времена, наклонения и шпаргалки в одном HTML-файле</p>
           <div class="brand-stats" aria-label="Кратко о справочнике">
-            <span>1000 глаголов</span>
+            <span>2000 глаголов</span>
             <span>19 времен</span>
             <span>офлайн</span>
           </div>
@@ -1412,7 +1412,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.12 · обновлено: 19.05.2026 00:21</footer>
+      <footer class="app-footer">Версия MVP 0.12 · обновлено: 19.05.2026 00:28</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -5534,6 +5534,19 @@ document.addEventListener("keydown", (e) => {
     e.preventDefault();
     const input = document.getElementById("searchInput");
     if (input) { input.focus(); input.select(); }
+    return;
+  }
+
+  if (e.key === "Enter" && isInput && state.view === "verbs" && normalize(state.query)) {
+    e.preventDefault();
+    const verbs = filteredVerbs();
+    if (verbs.length > 0) {
+      state.selectedVerb = verbs[0];
+      state.verbCardMode = "basic";
+      state.query = verbs[0];
+      render();
+      scrollToCard("content");
+    }
     return;
   }
 

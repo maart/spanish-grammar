@@ -804,6 +804,9 @@ dd {
   overflow-x: visible;
 }
 
+.table-card .table-wrap { display: none; }
+.table-card.is-open .table-wrap { display: block; }
+
 table {
   width: 100%;
   min-width: 0;
@@ -1450,7 +1453,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.12 · обновлено: 19.05.2026 01:55</footer>
+      <footer class="app-footer">Версия MVP 0.12 · обновлено: 19.05.2026 02:20</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -5176,8 +5179,7 @@ function formatFormula(value) {
 
 function renderTables() {
   const content = clearContent();
-  const indexedTables = USEFUL_TABLES.map((item, index) => ({ ...item, index }));
-  const visibleTables = indexedTables.filter((item) => tableMatchesFilter(item));
+  const visibleTables = INDEXED_TABLES.filter((item) => tableMatchesFilter(item));
   const nav = infoSection({
     id: "tablesTop",
     html: `
@@ -5185,10 +5187,10 @@ function renderTables() {
     <p class="muted">Выбери раздел: ниже останутся только нужные шпаргалки, сгруппированные по смыслу.</p>
     <div class="filter-tabs table-filter-tabs" aria-label="Фильтр шпаргалок">
       ${TABLE_FILTERS.slice(0, 1).concat(
-        TABLE_FILTERS.slice(1).sort((a, b) => countFilteredTables(b.id) - countFilteredTables(a.id))
+        TABLE_FILTERS.slice(1).sort((a, b) => TABLE_FILTER_COUNTS[b.id] - TABLE_FILTER_COUNTS[a.id])
       ).map((filter) => `
         <button class="small-button ${state.tableFilter === filter.id ? "is-active" : ""}" type="button" data-table-filter="${filter.id}">
-          ${filter.label} <span class="filter-count">${countFilteredTables(filter.id)}</span>
+          ${filter.label} <span class="filter-count">${TABLE_FILTER_COUNTS[filter.id]}</span>
         </button>
       `).join("")}
     </div>
@@ -5253,7 +5255,7 @@ function renderUsefulTableCard(item) {
   const isOpen = state.openTables[index] === true;
   const section = infoSection({
     id: `table-${index}`,
-    className: "info-card table-card",
+    className: `info-card table-card${isOpen ? " is-open" : ""}`,
     html: `
       <h2>${item.title}</h2>
       <p class="muted">${item.description}</p>
@@ -5262,13 +5264,17 @@ function renderUsefulTableCard(item) {
       <div class="table-card-actions">
         ${disclosureButton({ open: isOpen, target: index, label: "Показать шпаргалку", hideLabel: "Скрыть шпаргалку", action: "toggle-table" })}
       </div>
-      ${isOpen ? `<div class="table-wrap">${linkTableTenses(item.table)}</div>` : ""}
+      <div class="table-wrap">${LINKED_TABLE_HTML[index]}</div>
     `
   });
   section.querySelector("[data-toggle-table]").addEventListener("click", () => {
-    state.openTables[index] = !isOpen;
-    renderTables();
-    scrollToCard(`table-${index}`);
+    const btn = section.querySelector("[data-toggle-table]");
+    const isNowOpen = section.classList.toggle("is-open");
+    state.openTables[index] = isNowOpen;
+    btn.textContent = isNowOpen ? "Скрыть шпаргалку" : "Показать шпаргалку";
+    btn.classList.toggle("danger", isNowOpen);
+    btn.classList.toggle("success", !isNowOpen);
+    if (isNowOpen) scrollToCard(`table-${index}`);
   });
   bindClickAll(section, "[data-open-tense]", (event) => {
     openTenseFromVerb(event.currentTarget.dataset.openTense);
@@ -6093,6 +6099,10 @@ function renderExceptionCard(verb, tenseId) {
   card.appendChild(wrap);
   return card;
 }
+
+const INDEXED_TABLES = USEFUL_TABLES.map((item, index) => ({ ...item, index }));
+const LINKED_TABLE_HTML = INDEXED_TABLES.map((item) => linkTableTenses(item.table));
+const TABLE_FILTER_COUNTS = TABLE_FILTERS.reduce((acc, f) => { acc[f.id] = countFilteredTables(f.id); return acc; }, {});
 
 const VIEW_RENDERERS = {
   verbs: renderVerbs,

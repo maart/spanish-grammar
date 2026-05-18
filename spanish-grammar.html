@@ -524,21 +524,6 @@ input[type="search"] {
   font-weight: 700;
 }
 
-#tablesTop {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: var(--surface);
-}
-#tablesTop::after {
-  content: "";
-  position: absolute;
-  inset: auto -1px -1px;
-  height: 12px;
-  background: linear-gradient(to bottom, var(--surface), transparent);
-  pointer-events: none;
-}
-
 @media (min-width: 640px) {
   .table-filter-tabs {
     grid-template-columns: repeat(4, 1fr);
@@ -1504,7 +1489,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.12 · обновлено: 19.05.2026 03:40</footer>
+      <footer class="app-footer">Версия MVP 0.12 · обновлено: 19.05.2026 03:50</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 

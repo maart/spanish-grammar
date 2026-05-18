@@ -1412,7 +1412,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.12 · обновлено: 18.05.2026 23:56</footer>
+      <footer class="app-footer">Версия MVP 0.12 · обновлено: 19.05.2026 00:15</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -1998,126 +1998,209 @@ Object.assign(TRANSLATIONS, {
 });
 
 const RAW_VERBS = `
-ser estar haber tener hacer decir ir ver dar saber querer poder poner venir salir traer caer oir valer caber andar
-hablar comer vivir amar trabajar estudiar comprar vender escribir leer abrir cerrar pensar creer mirar escuchar tomar
-necesitar usar encontrar llamar llegar pasar dejar llevar esperar quedar seguir conseguir pedir repetir servir vestir dormir
-morir volver devolver recordar contar costar mostrar probar jugar empezar comenzar almorzar buscar tocar explicar pagar llegar
-apagar entregar negar navegar practicar sacar colocar cruzar utilizar organizar realizar analizar cambiar crear aceptar ayudar
-preguntar responder aprender comprender entender perder beber correr romper meter prometer permitir recibir subir sufrir cubrir
-descubrir decidir existir insistir compartir partir repartir cumplir construir destruir incluir excluir huir sustituir contribuir
-conocer reconocer aparecer desaparecer nacer crecer ofrecer parecer merecer conducir traducir producir reducir introducir elegir
-corregir proteger dirigir exigir coger escoger recoger fingir surgir distinguir conseguir perseguir preferir sentir mentir convertir
-divertir advertir sugerir hervir competir impedir medir despedir reir sonreir freir enviar confiar variar actuar continuar graduar
-evaluar averiguar adecuar limpiar ensuciar copiar copiarse anunciar denunciar negociar apreciar despreciar iniciar financiar
-odiar estudiar cambiar pasear desear emplear planear bloquear desbloquear aparcar arrancar marcar pescar secar chocar fabricar
-criticar publicar duplicar aplicar explicar multiplicar verificar identificar justificar significar clasificar comunicar indicar
-dedicar educar colocar provocar equivocar convocar enfocar atacar destacar tocar practicar apagar cargar descargar encargar
-alargar colgar obligar investigar castigar navegar rogar jugar juzgar cruzar gozar empezar lanzar alcanzar avanzar rechazar
-tropezar almorzar cazar abrazar comenzar organizar realizar utilizar actualizar autorizar analizar canalizar finalizar garantizar
-memorizar visualizar ahorrar alquilar arreglar bañar besar cocinar cenar desayunar dibujar descansar ducharse entrenar fumar
-ganar gastar gritar guardar invitar lavar limpiar llamar llorar nadar olvidar pagar peinarse preparar quedar quemar regalar
-reparar reservar robar saltar terminar viajar visitar votar bailar cantar celebrar cortar cuidar doblar durar entrar enviar
-firmar formar ganar gustar importar intentar levantar llenar mandar matar montar mostrar necesitar notar ocupar ordenar parar
-prestar quitar sacar sentar tirar tratar visitar arreglar asustar atacar aumentar bajar borrar callar caminar cancelar casar
-charlar cobrar comparar conservar contestar controlar cortar cuidar declarar descansar dibujar dudar durar echar entregar
-entrar escapar escuchar esperar estacionar firmar funcionar ganar gastar grabar guardar imaginar informar intentar invitar juntar
-lavar levantar llenar mandar mirar montar nadar necesitar observar olvidar pasar pintar preparar presentar probar quedar quitar
-regresar reparar respirar saltar saludar sentar separar soñar terminar tirar tomar trabajar viajar abandonar abrir absorber
-acceder agradecer admitir adquirir advertir afectar afirmar agotar añadir apoyar aprobar asistir atraer atravesar avanzar avisar
-bastar batir beneficiar borrar brindar calcular calentar celebrar cenar citar colaborar coleccionar colocar comentar cometer
-comparar compartir comportarse comprobar conceder concluir conectar confiar confirmar confundir conservar consistir constar
-consultar consumir contener contratar convencer corresponder crear crecer cumplir depender describir descubrir desear detener
-devolver diferenciar dirigir discutir disponer dividir doler dormir echar elegir eliminar emocionar encantar encender encontrar
-enfadar enseñar entender entrar entregar escapar escoger esconder esperar establecer estimar evitar exigir existir expresar faltar
-fijar formar ganar gozar guardar gustar importar imprimir incluir indicar informar inscribir intentar interesar interrumpir
-introducir invertir investigar juntar jurar lanzar lavar levantar lograr mantener matar mejorar mencionar merecer mirar molestar
-nacer negar notar obedecer obtener ocurrir ofrecer olvidar oponerse organizar participar partir pasar pertenecer pesar pintar
-plantear poseer practicar preferir preocupar preparar presentar prestar producir prometer proponer proteger provocar publicar
-quedar quemar quitar alcanzar realizar recibir reconocer recorrer recordar recuperar reducir referir regalar regresar relacionar
-repartir representar resolver resultar reunir revisar romper salvar seguir sentar sentir separar servir significar solicitar
-soltar soportar subir suceder sufrir suponer surgir sustituir temer terminar tocar tomar traducir traer tratar unir usar vender
-vestir viajar visitar vivir votar
-acompanar aconsejar acostumbrar administrar admirar adoptar alegrar alimentar alojar amenazar ampliar anular apartar
-aprovechar argumentar arreglar asegurar asociar aspirar atravesar aumentar autorizar bajar barrer bendecir bloquear
-bostezar brindar bromear bucear calmar cambiar cancelar cansar capacitar capturar caracterizar carecer celebrar cepillar
-charlar circular citar clasificar colaborar coleccionar combatir combinar comparar competir componer comprometer comunicar
-concentrar concretar confesar conectar conquistar considerar consultar contemplar contratar convencer cocinar coordinar
-copiar corregir corresponder cortar criar cruzar culminar curar debilitar decorar dedicar defender definir demostrar
-depender depositar derribar desarrollar desayunar descansar descubrir desempeñar despertar dibujar diferir dirigir discutir
-disenar disfrutar disminuir distraer doblar dominar duchar durar editar efectuar elaborar elegir elevar eliminar emocionar
-empujar enamorar encender encerrar encuestar enfermar enfriar engañar enriquecer ensayar ensuciar entretener envolver
-escalar escapar esconder especializar estacionar estirar estrenar estudiar examinar excusar experimentar explorar exportar
-fallar felicitar festejar fijar financiar flotar formular fortalecer fracasar frenar fundar funcionar golpear gobernar
-grabar gritar habitar herir iluminar imaginar implementar importar imprimir inaugurar inclinar ingresar inscribir insertar
-instalar integrar interrogar investigar invitar jubilar juzgar lamentar lanzar localizar luchar madurar manifestar manejar
-mantener marcar medir mejorar mezclar molestar nombrar obedecer observar ocultar ocupar oler operar opinar ordenar
-orientar pasear patrullar peinar perdonar permanecer pertenecer pesar planchar poseer practicar precisar prestar producir
-progresar prohibir pronunciar publicar pulir reaccionar rechazar reciclar redactar regalar registrar regular renovar reparar
-resistir respirar restaurar resumir retirar revelar revisar rezar rodear salvar sancionar secar sembrar senalar separar
-simplificar situar solicitar sorprender soportar sospechar superar temblar tender transformar trasladar unir valorar verificar
-abastecer abreviar absolver aburrir abusar acelerar aclarar acomodar acontecer acordar activar actualizar acudir adivinar
-adjuntar ajustar aliviar alterar amanecer amargar ambientar ampliar analizar anhelar animar anticipar anunciar apostar
-apoyar aportar apreciar apretar archivar arrastrar arrepentir arriesgar arrojar ascender asesinar asesorar asignar
-asumir atar atender aterrizar atraer atravesar atrasar atreverse atribuir autorizar avanzar avergonzar bailar batallar
-beneficiar besar bloquear bordar botar brillar buscar calcular callar cambiar cantar capturar causar ceder cenar censurar
-centrar cepillar cerrar charlar chatear chocar circular citar cobrar coincidir colgar combatir comenzar cometer compadecer
-compensar competir complicar comportar componer comprar comprobar comunicar concebir concentrar conceder concluir concretar
-conducir confesar confirmar confundir conquistar consentir conservar considerar constar consultar consumir contactar contener
-continuar contribuir convencer convivir cooperar copiar corregir corresponder cosechar criar criticar cruzar cubrir cuestionar
-culpar cultivar curar debatir deber decidir declarar decorar defender dejar demostrar depender depositar derramar derrotar
-desaparecer desarrollar descargar describir descubrir desear desesperar despedir despertar destruir detectar detener devolver
-devorar diferir difundir dirigir disfrutar disminuir diseñar disparar disponer distinguir distraer distribuir dividir dominar
-donar dudar echar editar efectuar elaborar elevar eliminar elogiar emigrar emitir emocionar empezar emplear enamorar encargar
-encender encerrar encontrar encuestar enfadar enfermar enfocar enfriar engañar enriquecer ensayar enseñar entender entregar
-entrenar entrevistar enviar envolver equilibrar equivocar escapar escoger esconder escribir escuchar esforzar especializar
-esperar establecer estallar estimar estirar estorbar estrenar evitar examinar exceder exclamar excluir existir expandir
-expedir explicar explorar exponer exportar expresar extraer fabricar facilitar fallar fascinar favorecer felicitar festejar
-fiar figurar fijar filtrar financiar fingir firmar flotar fomentar forzar fracasar frenar fundar ganar garantizar gastar
-generar gestionar girar gobernar golpear gozar grabar graduar gritar guardar guiar habilitar habitar hallar heredar herir
-hervir iluminar ilustrar imaginar impedir implementar importar imponer imprimir inaugurar inclinar incorporar indicar ingresar
-iniciar innovar inscribir insertar insistir instalar integrar intentar interesar interpretar interrumpir intervenir intimidar
-introducir inventar invertir investigar invitar irritar juzgar jurar justificar ladrar lamentar lanzar lastimar lavar leer
-liberar liderar limitar limpiar localizar lograr luchar madrugar maltratar manejar manifestar maquillar marcar marchar marear
-medir mejorar mencionar mentir merecer mezclar mirar moderar molestar montar morder mover mudar multiplicar nadar narrar
-navegar negar negociar nombrar notar obedecer obligar observar obtener ocupar ocurrir odiar ofrecer oler olvidar operar
-opinar oponerse ordenar organizar orientar originar pagar parar parecer participar partir pasear patrullar pedir peinar
-perdonar perder permanecer permitir pertenecer pesar pescar pintar planchar plantear practicar precisar preferir preguntar
-preocupar preparar presentar preservar prestar prevenir probar proceder producir programar prohibir prometer pronunciar proponer
-proteger protestar provocar publicar pulir quedar quemar querer quitar razonar reaccionar realizar recibir reciclar reclamar
-recoger recomendar reconocer reconstruir recordar recorrer recuperar redactar reducir referir reflejar reformar regalar regresar
-regular reinar relacionar relajar relatar rellenar remitir renovar renunciar reparar repetir representar reproducir reservar
-resolver respetar respirar responder restaurar resultar resumir retirar reunir revelar revisar rezar robar rodear romper
-saber sacar salir salvar saltar saludar sanar sancionar satisfacer secar seguir sembrar sentar sentir señalar separar
-servir significar silbar simplificar situar sobrar solicitar soltar solucionar someter sonar soportar sorprender sospechar
-subir suceder sufrir sugerir sumar superar suponer surgir sustituir temblar temer tender terminar tirar tocar tolerar
-tomar trabajar traducir transferir transformar transmitir transportar trasladar tratar triunfar unir usar utilizar vaciar
-valer variar vender vencer vestir viajar vigilar vincular violar visitar vivir volar volver votar
-abaratar abdicar ablandar abogar aborrecer abrasar abrigar abstener acampar acarrear acariciar acatar acceder
-acechar acentuar acertar aclamar acoger acortar acreditar activar acumular acusar adaptar adherir admirar adoptar
-adorar adornar afeitar afinar aflojar afrontar agachar agarrar agitar agotar agradar agrandar agravar agrupar
-  ahogar aislar alarmar albergar alertar alinear alisar alistar alterar alternar alzar amortiguar amplificar
-  anotar ansiar apagar apartar apelar aplazar aplicar apoderar aprender apresurar aprobar apuntar archivar arder
-  arrebatar arreglar arropar arruinar asegurar asustar atacar atenuar aterrizar atinar atormentar atrapar aumentar
-  ausentar avalar barrer bautizar bostezar boxear broncear brotar bucear burlar caducar calificar calmar caminar
-  camuflar cancelar capacitar cargar casar castigar catar cazar cegar cenar cepillar certificar cesar chillar
-  chirriar chismear chupar cicatrizar colisionar colonizar colorear compactar compilar complementar comprimir
-  condensar conmemorar conmutar consolidar conspirar contaminar contextualizar contrastar coronar cotizar
-  crujir deambular decepcionar declarar declinar decomisar decretar deducir defraudar delimitar denunciar
-  deprimir derrapar derrumbar desactivar desalojar desarmar desatar descartar desconectar desconfiar descontar
-  descuidar desequilibrar deshacer desinfectar desmontar desobedecer despegar desplazar destinar destrozar
-  diagnosticar dialogar diluir discrepar doblar documentar dosificar dramatizar economizar edificar elogiar
-  empacar empeorar encajar encantar encoger endeudar enfocar enfurecer enojar enrollar ensanchar ensuciar
-  enumerar equivaler escasear escolarizar especular estafar estacionar eternizar evocar exagerar excavar
-  exhortar exiliar factorizar facturar falsear flexibilizar florecer fusionar hospedar humillar ignorar
-  igualar incendiar incumplir inducir influir infringir inspeccionar instruir intensificar liderar lubricar
-  maximizar minimizar monitorear neutralizar notificar optimizar paralizar patinar percibir perfeccionar
-  perforar perjudicar prosperar purificar ratificar reanudar rebotar recaudar rechinar reclutar recopilar
-  redactar reembolsar reforzar refrescar rehusar reincidir remar remodelar rentar rescatar restringir
-  retener revelar rivalizar sabotear saquear seleccionar simular sincronizar sintetizar solidificar subrayar
-  suspirar tapar teclear telefonear titubear tramitar triturar ubicar unificar validar
+ser estar haber tener hacer decir ir ver dar saber
+querer poder poner venir salir traer caer oir valer caber
+andar hablar comer vivir amar trabajar estudiar comprar vender escribir
+leer abrir cerrar pensar creer mirar escuchar tomar necesitar usar
+encontrar llamar llegar pasar dejar llevar esperar quedar seguir conseguir
+pedir repetir servir vestir dormir morir volver devolver recordar contar
+costar mostrar probar jugar empezar comenzar almorzar buscar tocar explicar
+pagar apagar entregar negar navegar practicar sacar colocar cruzar utilizar
+organizar realizar analizar cambiar crear aceptar ayudar preguntar responder aprender
+comprender entender perder beber correr romper meter prometer permitir recibir
+subir sufrir cubrir descubrir decidir existir insistir compartir partir repartir
+cumplir construir destruir incluir excluir huir sustituir contribuir conocer reconocer
+aparecer desaparecer nacer crecer ofrecer parecer merecer conducir traducir producir
+reducir introducir elegir corregir proteger dirigir exigir coger escoger recoger
+fingir surgir distinguir perseguir preferir sentir mentir convertir divertir advertir
+sugerir hervir competir impedir medir despedir reir sonreir freir enviar
+confiar variar actuar continuar graduar evaluar averiguar adecuar limpiar ensuciar
+copiar copiarse anunciar denunciar negociar apreciar despreciar iniciar financiar odiar
+pasear desear emplear planear bloquear desbloquear aparcar arrancar marcar pescar
+secar chocar fabricar criticar publicar duplicar aplicar multiplicar verificar identificar
+justificar significar clasificar comunicar indicar dedicar educar provocar equivocar convocar
+enfocar atacar destacar cargar descargar encargar alargar colgar obligar investigar
+castigar rogar juzgar gozar lanzar alcanzar avanzar rechazar tropezar cazar
+abrazar actualizar autorizar canalizar finalizar garantizar memorizar visualizar ahorrar alquilar
+arreglar bañar besar cocinar cenar desayunar dibujar descansar ducharse entrenar
+fumar ganar gastar gritar guardar invitar lavar llorar nadar olvidar
+peinarse preparar quemar regalar reparar reservar robar saltar terminar viajar
+visitar votar bailar cantar celebrar cortar cuidar doblar durar entrar
+firmar formar gustar importar intentar levantar llenar mandar matar montar
+notar ocupar ordenar parar prestar quitar sentar tirar tratar asustar
+aumentar bajar borrar callar caminar cancelar casar charlar cobrar comparar
+conservar contestar controlar declarar dudar echar escapar estacionar funcionar grabar
+imaginar informar juntar observar pintar presentar regresar respirar saludar separar
+soñar abandonar absorber acceder agradecer admitir adquirir afectar afirmar agotar
+añadir apoyar aprobar asistir atraer atravesar avisar bastar batir beneficiar
+brindar calcular calentar citar colaborar coleccionar comentar cometer comportarse comprobar
+conceder concluir conectar confirmar confundir consistir constar consultar consumir contener
+contratar convencer corresponder depender describir detener diferenciar discutir disponer dividir
+doler eliminar emocionar encantar encender enfadar enseñar esconder establecer estimar
+evitar expresar faltar fijar imprimir inscribir interesar interrumpir invertir jurar
+lograr mantener mejorar mencionar molestar obedecer obtener ocurrir oponerse participar
+pertenecer pesar plantear poseer preocupar proponer recorrer recuperar referir relacionar
+representar resolver resultar reunir revisar salvar solicitar soltar soportar suceder
+suponer temer unir acompanar aconsejar acostumbrar administrar admirar adoptar alegrar
+alimentar alojar amenazar ampliar anular apartar aprovechar argumentar asegurar asociar
+aspirar barrer bendecir bostezar bromear bucear calmar cansar capacitar capturar
+caracterizar carecer cepillar circular combatir combinar componer comprometer concentrar concretar
+confesar conquistar considerar contemplar coordinar criar culminar curar debilitar decorar
+defender definir demostrar depositar derribar desarrollar desempeñar despertar diferir disenar
+disfrutar disminuir distraer dominar duchar editar efectuar elaborar elevar empujar
+enamorar encerrar encuestar enfermar enfriar engañar enriquecer ensayar entretener envolver
+escalar especializar estirar estrenar examinar excusar experimentar explorar exportar fallar
+felicitar festejar flotar formular fortalecer fracasar frenar fundar golpear gobernar
+habitar herir iluminar implementar inaugurar inclinar ingresar insertar instalar integrar
+interrogar jubilar lamentar localizar luchar madurar manifestar manejar mezclar nombrar
+ocultar oler operar opinar orientar patrullar peinar perdonar permanecer planchar
+precisar progresar prohibir pronunciar pulir reaccionar reciclar redactar registrar regular
+renovar resistir restaurar resumir retirar revelar rezar rodear sancionar sembrar
+senalar simplificar situar sorprender sospechar superar temblar tender transformar trasladar
+valorar abastecer abreviar absolver aburrir abusar acelerar aclarar acomodar acontecer
+acordar activar acudir adivinar adjuntar ajustar aliviar alterar amanecer amargar
+ambientar anhelar animar anticipar apostar aportar apretar archivar arrastrar arrepentir
+arriesgar arrojar ascender asesinar asesorar asignar asumir atar atender aterrizar
+atrasar atreverse atribuir avergonzar batallar bordar botar brillar causar ceder
+censurar centrar chatear coincidir compadecer compensar complicar comportar concebir consentir
+contactar convivir cooperar cosechar cuestionar culpar cultivar debatir deber derramar
+derrotar desesperar detectar devorar difundir diseñar disparar distribuir donar elogiar
+emigrar emitir entrevistar equilibrar esforzar estallar estorbar exceder exclamar expandir
+expedir exponer extraer facilitar fascinar favorecer fiar figurar filtrar fomentar
+forzar generar gestionar girar guiar habilitar hallar heredar ilustrar imponer
+incorporar innovar interpretar intervenir intimidar inventar irritar ladrar lastimar liberar
+liderar limitar madrugar maltratar maquillar marchar marear moderar morder mover
+mudar narrar originar preservar prevenir proceder programar protestar razonar reclamar
+recomendar reconstruir reflejar reformar reinar relajar relatar rellenar remitir renunciar
+reproducir respetar sanar satisfacer señalar silbar sobrar solucionar someter sonar
+sumar tolerar transferir transmitir transportar triunfar vaciar vencer vigilar vincular
+violar volar abaratar abdicar ablandar abogar aborrecer abrasar abrigar abstener
+acampar acarrear acariciar acatar acechar acentuar acertar aclamar acoger acortar
+acreditar acumular acusar adaptar adherir adorar adornar afeitar afinar aflojar
+afrontar agachar agarrar agitar agradar agrandar agravar agrupar ahogar aislar
+alarmar albergar alertar alinear alisar alistar alternar alzar amortiguar amplificar
+anotar ansiar apelar aplazar apoderar apresurar apuntar arder arrebatar arropar
+arruinar atenuar atinar atormentar atrapar ausentar avalar bautizar boxear broncear
+brotar burlar caducar calificar camuflar catar cegar certificar cesar chillar
+chirriar chismear chupar cicatrizar colisionar colonizar colorear compactar compilar complementar
+comprimir condensar conmemorar conmutar consolidar conspirar contaminar contextualizar contrastar coronar
+cotizar crujir deambular decepcionar declinar decomisar decretar deducir defraudar delimitar
+deprimir derrapar derrumbar desactivar desalojar desarmar desatar descartar desconectar desconfiar
+descontar descuidar desequilibrar deshacer desinfectar desmontar desobedecer despegar desplazar destinar
+destrozar diagnosticar dialogar diluir discrepar documentar dosificar dramatizar economizar edificar
+empacar empeorar encajar encoger endeudar enfurecer enojar enrollar ensanchar enumerar
+equivaler escasear escolarizar especular estafar eternizar evocar exagerar excavar exhortar
+exiliar factorizar facturar falsear flexibilizar florecer fusionar hospedar humillar ignorar
+igualar incendiar incumplir inducir influir infringir inspeccionar instruir intensificar lubricar
+maximizar minimizar monitorear neutralizar notificar optimizar paralizar patinar percibir perfeccionar
+perforar perjudicar prosperar purificar ratificar reanudar rebotar recaudar rechinar reclutar
+recopilar reembolsar reforzar refrescar rehusar reincidir remar remodelar rentar rescatar
+restringir retener rivalizar sabotear saquear seleccionar simular sincronizar sintetizar solidificar
+subrayar suspirar tapar teclear telefonear titubear tramitar triturar ubicar unificar
+validar promover determinar proporcionar abordar modificar alentar incrementar ejecutar supervisar
+ejercer completar sobrevivir quedarse enfrentar pelear intercambiar estimular movilizar impulsar
+acabar agregar restablecer erradicar proseguir recurrir casarse armonizar emprender mitigar
+respaldar sostener constituir reemplazar planificar explotar suprimir moverse sentarse reiterar
+extender salvaguardar proveer configurar reflexionar especificar procesar suspender preocuparse abarcar
+otorgar prever potenciar almacenar orar designar reafirmar estabilizar requerir encarar
+predecir sufragar impartir condenar racionalizar profundizar optar entablar socavar rastrear
+rendir presionar modernizar retirarse resaltar procurar sensibilizar manipular interactuar captar
+forjar sacrificar honrar desplegar testificar remediar revitalizar invocar enjuiciar divulgar
+enmendar recalcar implicar prorrogar promulgar retrasar arrestar dotar enterrar conversar
+subsanar agilizar coser prolongar obstaculizar eludir denegar rodar reconsiderar diversificar
+levantarse conciliar cavar inspirar revertir abolir expulsar remover aguantar plantar
+demandar concertar filmar reprimir promocionar involucrar proclamar congelar desafiar reestructurar
+contraer impresionar cuantificar penetrar aplastar comercializar evolucionar tardar dictar persuadir
+desviar afianzar propiciar implantar impugnar imitar desestabilizar recortar disuadir revocar
+rehabilitar reportar secuestrar paliar tragar constatar reiniciar reactivar acercar evacuar
+descifrar trazar acostarse motivar incitar rectificar quejarse pegar disolver librar
+revivir desmantelar discernir lucir complacer desalentar proyectar instaurar incoar ultimar
+llover invadir olvidarse posponer institucionalizar presidir colmar retornar clarificar privar
+encomiar incentivar reglamentar pretender retroceder traicionar subestimar basar delegar reorganizar
+armar residir sangrar derogar presenciar posibilitar pulsar alejarse perturbar concienciar
+desperdiciar menoscabar abonar prevalecer disipar repasar despejar comparecer convenir evadir
+descender idear perpetuar obrar placer sustentar esclarecer interponer retomar prescindir
+suscribir vengar estructurar estrechar reorientar envejecer instituir presumir asimilar afiliarse
+encubrir indemnizar lidiar discriminar articular atajar quebrar acrecentar sobrepasar legislar
+espiar liquidar cocer adelantar velar conferir demorar suscitar trepar traspasar
+esparcir rebajar alejar suicidarse pillar mojar fundamentar encauzar maldecir pisar
+padecer ligar tentar exprimir decidirse consignar nevar gemir rugir poblar
+errar yacer multar roer pudrir engrosar serrar helar enraizar militar
+granizar trabar plegar pasmar tensar revolver titular engranar suministrar contrarrestar
+inundar recabar redoblar precipitar personalizar redondear derretir degustar predicar tejer
+realzar afluir saborear cursar atestiguar gotear fluir meditar equipar emparejar
+sellar ejercitar acometer recrear derrocar conformar seducir accionar sujetar redefinir
+recargar enfatizar extirpar verter recobrar desechar codificar picar reposar abortar
+plasmar regar ofender sudar insultar suavizar repercutir reponer interceptar rehacer
+inculcar formalizar materializar corroborar incidir ocasionar susurrar masticar hundir esquivar
+solventar aplaudir comerciar patrocinar normalizar improvisar modelar desencadenar resucitar reexaminar
+alegar encomendar transcurrir torturar soplar interferir tranquilizar perseverar saldar consagrar
+aunar patear omitir dificultar derivar recompensar calibrar ingerir penalizar liberalizar
+eximir recitar regir confiscar irrumpir desestimar escupir reivindicar enlazar frustrar
+legitimar transitar sopesar embarcar domesticar trascender suplir pelar refutar emerger
+mediar restituir dispensar subsistir objetar persistir falsificar cumplimentar bombardear dimitir
+desacreditar reventar encabezar detallar desistir disimular generalizar prender latir reintegrar
+moldear esbozar malgastar detonar distorsionar obstruir entorpecer adjudicar recaer sobrellevar
+asaltar infundir relanzar replicar confeccionar indagar portar socializar alabar desembarcar
+estipular reutilizar infectar enderezar dispersar reformular regenerar contradecir contabilizar voltear
+aniquilar desembocar maniobrar sortear fluctuar repensar expirar ahondar exacerbar gravar
+instar acosar rebasar tipificar revaluar denominar equiparar pilotar vacunar valorizar
+soldar disculpar enunciar redescubrir restar reavivar endurecer reasignar fiscalizar asar
+demoler canjear conmover legalizar conjugar desconocer frotar depurar zarpar enmarcar
+ensamblar asentar aproximar posar colapsar capitalizar engendrar moler impactar postergar
+clausurar desenterrar revestir vislumbrar oponer reprogramar fundir suplicar vibrar desvelar
+lamer disputar profesar replantear reescribir aligerar atracar dirimir sofocar apuntalar
+individualizar facultar deliberar invalidar obviar rescindir manchar coexistir dilucidar tumbar
+imputar adelgazar sobresalir engordar volcar erigir compaginar apaciguar mendigar procrear
+empaquetar exterminar platicar enmascarar sobrecargar pronosticar destituir corromper sintonizar rociar
+inferir fregar oscurecer catalogar estrangular repeler husmear desenmascarar digitalizar trasmitir
+reajustar deslizar batear redirigir desembolsar blanquear delatar reconstituir encarnar testimoniar
+aminorar parir resurgir oscilar despachar enganchar concurrir insinuar concordar dinamizar
+postular aducir privilegiar extinguir arrendar aterrorizar sanear conllevar aguardar encaminar
+saciar ponderar degradar allanar resguardar parpadear instigar perfilar soslayar perecer
+balancear nivelar reinventar sumergir tallar cotejar regularizar aplacar desbaratar disfrazar
+arbitrar untar menospreciar descomponer jalar desaprovechar socorrer remontar virar inflar
+retratar afilar quebrantar purgar colar propugnar apilar custodiar esterilizar matricular
+vulnerar perdurar cifrar conjurar ventilar acoplar avivar amasar izar contraatacar
+embellecer rasgar subcontratar reaparecer aludir embalar desterrar rematar puntualizar evidenciar
+triplicar reestablecer frecuentar torcer hurgar traficar vacilar amparar escurrir repostar
+contravenir abatir decodificar tachar podar faenar mermar pujar compatibilizar atropellar
+regatear apurar resonar sondear despojar amortizar remarcar sobrevolar difamar pisotear
+desvincular provenir machacar rebatir recomponer preceder cimentar destapar deteriorar mascar
+pactar relevar suplantar condonar azotar desglosar inculpar acaparar legar recomenzar
+revender desmentir espantar incautarse interceder exonerar cejar retocar escarbar mimar
+embargar usurpar divisar reanimar simbolizar agudizar raspar refrendar doblegar reconectar
+amarrar disociar rascar lesionar reinstalar recubrir fichar reordenar morar inmovilizar
+secundar repudiar disentir saltear apestar contagiar reagrupar reenviar hojear excitar
+masacrar asfixiar estrellar derrochar alumbrar proscribir dilatar labrar descomprimir desvirtuar
+aflorar implorar primar ostentar cuadrar lloriquear desprender incurrir litigar arraigar
+murmurar descongelar cautivar mutilar venerar consumar revalorizar chasquear merodear impregnar
+homenajear endulzar denigrar recapitular bregar congregar desarticular interconectar intuir abundar
+brincar clamar fantasear limar reconquistar rondar escatimar circunscribir rehuir hidratar
+rentabilizar retribuir sucumbir zafar retransmitir humedecer eclipsar intimar rayar airear
+trastornar deponer estampar desmayar desenredar despistar fructificar mamar asentir reprobar
+descalificar incinerar licitar reprender cercar parlotear asestar desgarrar predominar atizar
+galvanizar rebosar rememorar enredar salpicar aglutinar deshonrar dorar retorcer encadenar
+malinterpretar coartar curiosear sentenciar flaquear vendar babear entonar descongestionar tonificar
+ensalzar comulgar cristalizar adormecer deformar infravalorar homologar matizar reconvertir remendar
+superponer incomodar recusar rajar repoblar esgrimir amedrentar emborrachar capear atemorizar
+desgastar ondear rozar despedazar anexar contraponer calumniar devastar tramar desprestigiar
+tantear cotillear despuntar rebuscar reprochar amonestar conjeturar hipnotizar reconducir fraccionar
+acorralar segregar asomar entusiasmar empapar contrariar engullir intercalar achicar desintegrar
+fisgonear amontonar desfallecer palpitar tambalear presagiar reabastecer reincorporar argollar manar
+sermonear timar estremecer difuminar hinchar desbordar amenizar imposibilitar ojear despilfarrar
+menguar dimanar disgustar sobrestimar surcar bordear blasfemar curvar mancillar desvanecer
+naufragar reacondicionar tasar castrar confluir cuajar desaprobar distender mecer desenrollar
+empapelar corretear desorientar calzar forcejear engatusar menear anestesiar desahogar uniformizar
+retumbar entrelazar congeniar transbordar tronar idealizar rehogar inquietar reelegir encolar
+exteriorizar desangrar ensombrecer hechizar pregonar imbuir refundar desmenuzar malograr oxidar
+destrabar forrar importunar cablear desacoplar desordenar macerar distanciar embutir personificar
+arrollar trenzar desvestir aguar cohabitar desfigurar hurtar reeditar adscribir deslindar
+desnaturalizar aromatizar confraternizar pastorear enturbiar zozobrar agasajar embestir mordisquear revolotear
+abrochar disecar desligar opacar recalentar alborotar apacentar desenganchar desenroscar recolocar
 `.trim().split(/\s+/);
 
-const BASE_VERBS = Array.from(new Set(RAW_VERBS)).slice(0, 1000);
+const BASE_VERBS = Array.from(new Set(RAW_VERBS)).slice(0, 2000);
 
 const DEFAULT_SIGNAL_SECTIONS = [
   ["Основные маркеры", "Смотри на союзы, наречия времени и вводные конструкции рядом с глаголом."],

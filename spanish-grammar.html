@@ -1412,7 +1412,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.12 · обновлено: 19.05.2026 02:31</footer>
+      <footer class="app-footer">Версия MVP 0.12 · обновлено: 19.05.2026 04:00</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -2684,30 +2684,26 @@ const USEFUL_TABLES = [
   {
     group: "Существительные и указатели",
     subgroup: "Числительные",
-    title: "Числительные: 1–100",
-    description: "Количественные числительные от 1 до 100 с правилами написания.",
-    table: `<table><thead><tr><th>Число</th><th>Испанский</th><th>Число</th><th>Испанский</th></tr></thead><tbody>
-      <tr><th>1</th><td>uno</td><th>2</th><td>dos</td></tr>
-      <tr><th>3</th><td>tres</td><th>4</th><td>cuatro</td></tr>
-      <tr><th>5</th><td>cinco</td><th>6</th><td>seis</td></tr>
-      <tr><th>7</th><td>siete</td><th>8</th><td>ocho</td></tr>
-      <tr><th>9</th><td>nueve</td><th>10</th><td>diez</td></tr>
-      <tr><th>11</th><td>once</td><th>12</th><td>doce</td></tr>
-      <tr><th>13</th><td>trece</td><th>14</th><td>catorce</td></tr>
-      <tr><th>15</th><td>quince</th><th>16</th><td>dieciséis</td></tr>
-      <tr><th>17</th><td>diecisiete</th><th>18</th><td>dieciocho</td></tr>
-      <tr><th>19</th><td>diecinueve</th><th>20</th><td>veinte</td></tr>
-      <tr><th>21</th><td>veintiuno</th><th>22</th><td>veintidós</td></tr>
-      <tr><th>23</th><td>veintitrés</th><th>24</th><td>veinticuatro</td></tr>
-      <tr><th>25</th><td>veinticinco</th><th>26</th><td>veintiséis</td></tr>
-      <tr><th>27</th><td>veintisiete</th><th>28</th><td>veintiocho</td></tr>
-      <tr><th>29</th><td>veintinueve</th><th>30</th><td>treinta</td></tr>
-      <tr><th>31</th><td>treinta y uno</th><th>40</th><td>cuarenta</td></tr>
-      <tr><th>50</th><td>cincuenta</th><th>60</th><td>sesenta</td></tr>
-      <tr><th>70</th><td>setenta</th><th>80</th><td>ochenta</td></tr>
-      <tr><th>90</th><td>noventa</th><th>100</th><td>cien</td></tr>
-      <tr><th colspan="2">uno → un перед сущ. м.р.</th><td colspan="2">un libro</td></tr>
-      <tr><th colspan="2">cien → cien перед сущ.</th><td colspan="2">cien páginas</td></tr>
+    title: "Números: количественные и порядковые",
+    description: "Количественные числительные (1, 2, 3…) и порядковые (первый, второй, третий…).",
+    table: `<table><thead><tr><th colspan="3">Количественные</th><th colspan="3">Порядковые</th></tr></thead><tbody>
+      <tr><th>1</th><td>uno</td><th>2</th><td>dos</td><th>1-й</th><td>primero</td></tr>
+      <tr><th>3</th><td>tres</td><th>4</th><td>cuatro</td><th>2-й</th><td>segundo</td></tr>
+      <tr><th>5</th><td>cinco</td><th>6</th><td>seis</td><th>3-й</th><td>tercero</td></tr>
+      <tr><th>7</th><td>siete</td><th>8</th><td>ocho</td><th>4-й</th><td>cuarto</td></tr>
+      <tr><th>9</th><td>nueve</td><th>10</th><td>diez</td><th>5-й</th><td>quinto</td></tr>
+      <tr><th>11</th><td>once</td><th>12</th><td>doce</td><th>6-й</th><td>sexto</td></tr>
+      <tr><th>13</th><td>trece</td><th>14</th><td>catorce</td><th>7-й</th><td>séptimo</td></tr>
+      <tr><th>15</th><td>quince</td><th>16</th><td>dieciséis</td><th>8-й</th><td>octavo</td></tr>
+      <tr><th>17</th><td>diecisiete</td><th>18</th><td>dieciocho</td><th>9-й</th><td>noveno</td></tr>
+      <tr><th>19</th><td>diecinueve</td><th>20</th><td>veinte</td><th>10-й</th><td>décimo</td></tr>
+      <tr><th>21</th><td>veintiuno</td><th>30</th><td>treinta</td><th>11-й</th><td>undécimo</td></tr>
+      <tr><th>40</th><td>cuarenta</td><th>50</th><td>cincuenta</td><th>12-й</th><td>duodécimo</td></tr>
+      <tr><th>60</th><td>sesenta</td><th>70</th><td>setenta</td><th>20-й</th><td>vigésimo</td></tr>
+      <tr><th>80</th><td>ochenta</td><th>90</th><td>noventa</td><th>100-й</th><td>centésimo</td></tr>
+      <tr><th>100</th><td>cien</td><td colspan="4">cien páginas; 101 → ciento uno</td></tr>
+      <tr><th colspan="6">uno → un перед сущ. м.р.: un libro; primero/tercero → primer/tercer: el primer día</th></tr>
+      <tr><th colspan="6">Порядковые выше 20-го заменяют на cardinal: el siglo veintiuno, el capítulo treinta</th></tr>
     </tbody></table>`
   },
   {
@@ -2736,6 +2732,24 @@ const USEFUL_TABLES = [
       <tr><th>sin</th><td>без кого/чего</td><td>Sin azúcar, por favor. Sin ti no puedo.</td></tr>
       <tr><th>sobre</th><td>на поверхности, о / про</td><td>El libro está sobre la mesa. Hablamos sobre política.</td></tr>
       <tr><th>entre</th><td>между, среди</td><td>Entre la espada y la pared. Entre tú y yo.</td></tr>
+    </tbody></table>`
+  },
+  {
+    group: "Предлоги и время",
+    subgroup: "Основные предлоги",
+    title: "Preposiciones de lugar: entre, sobre, bajo...",
+    description: "Предлоги и наречия места: положение в пространстве относительно других объектов.",
+    table: `<table><thead><tr><th>Предлог / наречие</th><th>Смысл</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>entre</th><td>между</td><td>El perro está entre la mesa y la silla.</td></tr>
+      <tr><th>sobre / encima de</th><td>на / над</td><td>El libro está sobre la mesa. Vuela encima de la ciudad.</td></tr>
+      <tr><th>bajo / debajo de</th><td>под</td><td>El gato está debajo de la cama. Bajo el agua.</td></tr>
+      <tr><th>detrás de</th><td>за / позади</td><td>Detrás de la puerta hay un armario.</td></tr>
+      <tr><th>delante de</th><td>перед / впереди</td><td>El coche está delante de la casa.</td></tr>
+      <tr><th>cerca de</th><td>близко / рядом с</td><td>Vivo cerca del centro.</td></tr>
+      <tr><th>lejos de</th><td>далеко от</td><td>El pueblo está lejos de la ciudad.</td></tr>
+      <tr><th>al lado de</th><td>рядом с</td><td>El banco está al lado del supermercado.</td></tr>
+      <tr><th>enfrente de</th><td>напротив</td><td>Hay una farmacia enfrente de mi casa.</td></tr>
+      <tr><th>dentro de / fuera de</th><td>внутри / снаружи</td><td>Dentro de la caja. Fuera de casa.</td></tr>
     </tbody></table>`
   },
   {
@@ -2882,13 +2896,31 @@ const USEFUL_TABLES = [
   {
     group: "Глагольные шпаргалки",
     subgroup: "Времена и согласование",
-    title: "Futuro: ir a vs Futuro Simple — разница",
+    title: "Futuro: ir a vs Futuro Simple — «собираюсь» vs будущее время",
     description: "Ближайшее намерение или план против отдалённого будущего и предположения.",
     table: `<table><thead><tr><th></th><th>ir a + infinitivo</th><th>Futuro Simple</th></tr></thead><tbody>
       <tr><th>Смысл</th><td>намерение, план, ближайшее будущее</td><td>отдалённое будущее, предположение</td></tr>
       <tr><th>Пример</th><td>Voy a estudiar mañana.</td><td>Estudiaré el año que viene.</td></tr>
       <tr><th>Вероятность</th><td>высокая, почти уверенность</td><td>средняя, оттенок гипотезы</td></tr>
       <tr><th>Прогноз / догадка</th><td>не используется</td><td>Serán las ocho. — Сейчас, наверное, восемь.</td></tr>
+    </tbody></table>`
+  },
+  {
+    group: "Глагольные шпаргалки",
+    subgroup: "Времена и согласование",
+    title: "Subjuntivo: principales desencadenantes",
+    description: "Базовые триггеры subjuntivo: желание, эмоция, сомнение, отрицание, цель, время до наступления, безличные конструкции.",
+    table: `<table><thead><tr><th>Триггер</th><th>Конструкция</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>желание / воля</th><td>querer / esperar / desear que + subjuntivo</td><td>Quiero que vengas. Espero que todo vaya bien.</td></tr>
+      <tr><th>совет / просьба</th><td>recomendar / pedir / aconsejar que + subjuntivo</td><td>Te recomiendo que estudies más.</td></tr>
+      <tr><th>эмоция</th><td>alegrarse / gustar / molestar que + subjuntivo</td><td>Me alegra que estés aquí. Me molesta que llegues tarde.</td></tr>
+      <tr><th>сомнение / неуверенность</th><td>dudar / no creer / no estar seguro que + subjuntivo</td><td>Dudo que venga. No creo que llueva.</td></tr>
+      <tr><th>отрицание утверждения</th><td>no es verdad / no es cierto / no parece que + subjuntivo</td><td>No es verdad que lo haya hecho.</td></tr>
+      <tr><th>цель</th><td>para que + subjuntivo</td><td>Te lo digo para que lo sepas.</td></tr>
+      <tr><th>время до наступления</th><td>cuando / hasta que / antes de que + subjuntivo</td><td>Cuando llegue, te llamo. Antes de que te vayas…</td></tr>
+      <tr><th>безличные обороты</th><td>es importante / es necesario / es posible que + subjuntivo</td><td>Es importante que estudies. Es posible que llueva.</td></tr>
+      <tr><th>оценка / суждение</th><td>está bien / está mal / es mejor que + subjuntivo</td><td>Está bien que ayudes. Es mejor que descanses.</td></tr>
+      <tr><th>ojalá</th><td>ojalá (que) + subjuntivo</td><td>¡Ojalá gane la lotería! Ojalá que sí.</td></tr>
     </tbody></table>`
   },
   {
@@ -2980,6 +3012,62 @@ const USEFUL_TABLES = [
       <tr><th>tener miedo (de)</th><td>бояться</td><td>Tengo miedo de las arañas.</td></tr>
       <tr><th>tener vergüenza</th><td>стесняться / быть стыдно</td><td>Me da vergüenza hablar.</td></tr>
       <tr><th>tener ganas (de)</th><td>хотеть / быть в настроении</td><td>Tengo ganas de viajar.</td></tr>
+    </tbody></table>`
+  },
+  {
+    group: "Глагольные шпаргалки",
+    subgroup: "Глагольные конструкции и управление",
+    title: "Ponerse / Volverse / Hacerse / Llegar a ser: «становиться»",
+    description: "Четыре глагола для разных оттенков изменения: внезапно, постепенно, по выбору, с течением времени.",
+    table: `<table><thead><tr><th>Глагол</th><th>Оттенок</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>ponerse + adj</th><td>внезапное временное изменение (эмоция, состояние)</td><td>Me puse nervioso. Se puso rojo. Ponte cómodo.</td></tr>
+      <tr><th>volverse + adj</th><td>изменение личности / характера</td><td>Se volvió loco. Se ha vuelto muy religioso.</td></tr>
+      <tr><th>hacerse + adj / sust</th><td>изменение по воле / со временем (профессия, идеология)</td><td>Se hizo médico. Me hice vegetariano. Se hizo mayor.</td></tr>
+      <tr><th>llegar a ser + sust / adj</th><td>достижение после усилий, итог развития</td><td>Llegó a ser presidente. Llegó a ser famoso.</td></tr>
+      <tr><th>⚠️</th><td>ponerse — реакция; volverse — перемена личности; hacerse — осознанный выбор; llegar a ser — вершина пути</td><td>Se puso triste. Se volvió agresivo. Se hizo budista. Llegó a ser escritor.</td></tr>
+    </tbody></table>`
+  },
+  {
+    group: "Глагольные шпаргалки",
+    subgroup: "Глагольные конструкции и управление",
+    title: "Perífrasis verbales: сводная таблица",
+    description: "Сводка всех глагольных оборотов: ir a, acabar de, volver a, dejar de, estar + gerundio, llevar + gerundio, seguir + gerundio, hay que, tener que, deber, ponerse a, soler.",
+    table: `<table><thead><tr><th>Перифраза</th><th>Смысл</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>ir a + infinitivo</th><td>собираться сделать</td><td>Voy a estudiar mañana.</td></tr>
+      <tr><th>acabar de + infinitivo</th><td>только что сделать</td><td>Acabo de llegar.</td></tr>
+      <tr><th>volver a + infinitivo</th><td>сделать снова</td><td>Vuelvo a llamar.</td></tr>
+      <tr><th>dejar de + infinitivo</th><td>перестать делать</td><td>Deja de fumar.</td></tr>
+      <tr><th>estar + gerundio</th><td>делать прямо сейчас</td><td>Estoy leyendo.</td></tr>
+      <tr><th>llevar + gerundio</th><td>уже сколько-то делаю</td><td>Llevo dos horas esperando.</td></tr>
+      <tr><th>seguir + gerundio</th><td>всё ещё делать</td><td>Sigue lloviendo.</td></tr>
+      <tr><th>ponerse a + infinitivo</th><td>начать делать (внезапно)</td><td>Se puso a llorar.</td></tr>
+      <tr><th>soler + infinitivo</th><td>обычно делать</td><td>Suelo desayunar café.</td></tr>
+      <tr><th>hay que + infinitivo</th><td>нужно (безлично)</td><td>Hay que pagar.</td></tr>
+      <tr><th>tener que + infinitivo</th><td>должен (личная необходимость)</td><td>Tengo que irme.</td></tr>
+      <tr><th>deber + infinitivo</th><td>следует (долг, совет)</td><td>Debes estudiar más.</td></tr>
+      <tr><th>terminar de + infinitivo</th><td>закончить делать</td><td>Termino de leer y te llamo.</td></tr>
+      <tr><th>empezar a + infinitivo</th><td>начать делать</td><td>Empiezo a entender.</td></tr>
+    </tbody></table>`
+  },
+  {
+    group: "Глагольные шпаргалки",
+    subgroup: "Глагольные конструкции и управление",
+    title: "Dar + sustantivo: dar un paseo, dar miedo, dar igual...",
+    description: "Глагол dar образует множество устойчивых выражений с существительными и местоимениями.",
+    table: `<table><thead><tr><th>Выражение</th><th>Смысл</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>dar un paseo</th><td>прогуляться</td><td>Voy a dar un paseo por el parque.</td></tr>
+      <tr><th>dar una vuelta</th><td>пройтись / прокатиться</td><td>¿Damos una vuelta?</td></tr>
+      <tr><th>dar las gracias</th><td>поблагодарить</td><td>Te doy las gracias por tu ayuda.</td></tr>
+      <tr><th>dar miedo</th><td>пугать</td><td>Esta película me da miedo.</td></tr>
+      <tr><th>dar vergüenza</th><td>быть стыдно / неловко</td><td>Me da vergüenza hablar en público.</td></tr>
+      <tr><th>dar pena</th><td>вызывать жалость / грусть</td><td>Me da pena verlo así.</td></tr>
+      <tr><th>dar igual / dar lo mismo</th><td>быть всё равно</td><td>Me da igual lo que pienses.</td></tr>
+      <tr><th>dar la mano</th><td>пожать руку</td><td>Se dieron la mano al saludarse.</td></tr>
+      <tr><th>dar un abrazo</th><td>обнять</td><td>Dale un abrazo de mi parte.</td></tr>
+      <tr><th>dar la hora</th><td>бить / показывать время</td><td>El reloj da las doce. ¿Me das la hora?</td></tr>
+      <tr><th>dar a entender</th><td>дать понять</td><td>Me dio a entender que no le gustaba.</td></tr>
+      <tr><th>darse cuenta de</th><td>осознать / заметить</td><td>Me di cuenta de mi error.</td></tr>
+      <tr><th>dar por + participio</th><td>считать / признать</td><td>Doy por terminada la reunión.</td></tr>
     </tbody></table>`
   },
   {
@@ -3084,6 +3172,30 @@ const USEFUL_TABLES = [
       <tr><th>hace</th><td>назад</td><td>Llegué hace dos días.</td></tr>
       <tr><th>desde hace</th><td>уже сколько-то времени</td><td>Estudio español desde hace un año.</td></tr>
       <tr><th>durante</th><td>в течение периода</td><td>Trabajé durante tres horas.</td></tr>
+    </tbody></table>`
+  },
+  {
+    group: "Предлоги и время",
+    subgroup: "Выражение времени",
+    title: "La hora y la fecha: время, дни, месяцы",
+    description: "Как называть время, дни недели и месяцы в испанском. Предлоги для дат: en, del, de.",
+    table: `<table><thead><tr><th>Время / Дата</th><th>Испанский</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>Который час?</th><td>¿Qué hora es?</td><td></td></tr>
+      <tr><th>1:00</th><td>Es la una en punto.</td><td>La clase es a la una.</td></tr>
+      <tr><th>2:00</th><td>Son las dos en punto.</td><td>Son las dos de la tarde.</td></tr>
+      <tr><th>2:15</th><td>Son las dos y cuarto.</td><td></td></tr>
+      <tr><th>2:30</th><td>Son las dos y media.</td><td></td></tr>
+      <tr><th>2:45</th><td>Son las tres menos cuarto.</td><td>Faltan cuarto para las tres.</td></tr>
+      <tr><th>2:05</th><td>Son las dos y cinco.</td><td></td></tr>
+      <tr><th>2:40</th><td>Son las tres menos veinte.</td><td></td></tr>
+      <tr><th>утра / дня / ночи</th><td>de la mañana / de la tarde / de la noche</td><td>Son las ocho de la mañana.</td></tr>
+      <tr><th>Дни недели</th><td>lunes, martes, miércoles, jueves, viernes, sábado, domingo</td><td>Hoy es lunes. <span class="muted">(все мужского рода)</span></td></tr>
+      <tr><th>Месяцы</th><td>enero, febrero, marzo, abril, mayo, junio, julio, agosto, septiembre, octubre, noviembre, diciembre</td><td></td></tr>
+      <tr><th>Дата</th><td>[el] [число] de [месяц] de [год]</td><td>Hoy es el 15 de mayo de 2026.</td></tr>
+      <tr><th>Год</th><td>2000 → dos mil</td><td>1998 → mil novecientos noventa y ocho</td></tr>
+      <tr><th>Предлоги с днями</th><td>el / los + день</td><td>el lunes (в понедельник), los lunes (по понедельникам)</td></tr>
+      <tr><th>Предлоги с месяцами</th><td>en + месяц</td><td>en enero, en verano</td></tr>
+      <tr><th>«Сейчас / в этом»</th><td>ahora / este</td><td>Ahora son las tres. Este mes, esta semana, este año.</td></tr>
     </tbody></table>`
   },
   {
@@ -4885,7 +4997,7 @@ function tableSummary(item) {
     "Gustar и похожие глаголы": "то, что нравится, обычно становится подлежащим: me gusta el café, me gustan los libros.",
     "Algo/nada/alguien/nadie: кто-то или никто": "algo/alguien утверждают наличие, nada/nadie/ninguno отрицают.",
     "Porque/aunque/si/cuando: частые союзы": "porque дает причину, si условие, cuando/mientras/antes de que часто ведут к subjuntivo для будущего действия.",
-    "Futuro: ir a vs Futuro Simple — разница": "ir a выражает намерение/план, Futuro Simple — отдалённое будущее или предположение.",
+    "Futuro: ir a vs Futuro Simple — «собираюсь» vs будущее время": "ir a выражает намерение/план, Futuro Simple — отдалённое будущее или предположение.",
     "Estar + gerundio / Llevar + gerundio": "estar + gerundio — действие прямо сейчас; llevar + gerundio — уже сколько-то времени делаю.",
     "Acabar de / Volver a / Dejar de — глагольные конструкции": "acabar de — только что сделать, volver a — сделать снова, dejar de — перестать.",
     "Deber / Tener que / Hay que — долженствование": "tener que — сильная необходимость, deber — долг/совет, hay que — безличная необходимость.",
@@ -4893,12 +5005,18 @@ function tableSummary(item) {
     "Gerundio: образование и употребление": "gerundio образуется через -ando/-iendo; употребляется для длительного действия и способа действия.",
     "Сравнительная степень: más, menos, tan": "más/menos + adj + que для сравнения, tan + adj + como для равенства, mejor/peor — неправильные.",
     "Ya, todavía, aún: время и степень": "ya — уже/больше не, todavía — всё ещё/ещё не, aún — ещё/даже.",
-    "Числительные: 1–100": "количественные числительные от 1 до 100; uno → un, cien → cien перед существительными.",
+    "Números: количественные и порядковые": "количественные (uno, dos, tres) и порядковые (primero, segundo, tercero); primero/tercero → primer/tercer перед сущ.",
     "Mi/mío, tu/tuyo: притяжательные местоимения": "краткая форма (mi/tu/su) перед существительным; длинная (mío/tuyo/suyo) после или без существительного.",
     "Qué, quién, cuál, cómo...": "вопросительные слова всегда с ударением; qué для предмета, quién для человека, cuál для выбора.",
     "Conectores: además, sin embargo, por eso...": "además — добавление, sin embargo — противопоставление, por eso — следствие, entonces — тогда.",
     "Siempre, nunca, a veces: частота": "от siempre (всегда) до nunca/jamás (никогда); a veces — иногда, a menudo — часто.",
-    "Tener + sustantivo: tener hambre, tener sed...": "tener + sustantivo для состояний: tener hambre, sed, sueño, calor, frío, prisa, razón, suerte, miedo, ganas."
+    "Tener + sustantivo: tener hambre, tener sed...": "tener + sustantivo для состояний: tener hambre, sed, sueño, calor, frío, prisa, razón, suerte, miedo, ganas.",
+    "Subjuntivo: principales desencadenantes": "триггеры subjuntivo: желание (querer/esperar que), эмоция (alegrarse que), сомнение (dudar que), ojalá, para que, cuando + futuro, es importante que.",
+    "Ponerse / Volverse / Hacerse / Llegar a ser: «становиться»": "ponerse — внезапная эмоция; volverse — перемена личности; hacerse — осознанно/со временем; llegar a ser — достижение.",
+    "Perífrasis verbales: сводная таблица": "сводка всех оборотов: ir a, acabar de, volver a, dejar de, estar+gerundio, llevar+gerundio, hay que, tener que, deber, ponerse a, soler.",
+    "Dar + sustantivo: dar un paseo, dar miedo, dar igual...": "dar образует устойчивые выражения: dar un paseo, dar miedo, dar vergüenza, dar igual, darse cuenta.",
+    "Preposiciones de lugar: entre, sobre, bajo...": "entre — между, sobre/encima de — над, debajo de — под, delante/detrás de, cerca/lejos de, al lado de.",
+    "La hora y la fecha: время, дни, месяцы": "es la una / son las dos; días: lunes–domingo; meses: enero–diciembre; дата: el [día] de [mes] de [año]."
   };
   return map[item.title] || item.description;
 }
@@ -4921,19 +5039,25 @@ function tableMistake(item) {
     "Gustar и похожие глаголы": "Me gusto el café неверно: Me gusta el café.",
     "Algo/nada/alguien/nadie: кто-то или никто": "No hay nadie часто уже содержит отрицание; не надо добавлять alguien.",
     "Porque/aunque/si/cuando: частые союзы": "Si tendré tiempo неверно: Si tengo tiempo. Для будущего после когда: cuando llegue.",
-    "Futuro: ir a vs Futuro Simple — разница": "Mañana voy a ir после вчерашнего плана звучит странно: для отдалённого лучше iré.",
+    "Futuro: ir a vs Futuro Simple — «собираюсь» vs будущее время": "Mañana voy a ir после вчерашнего плана звучит странно: для отдалённого лучше iré.",
     "Estar + gerundio / Llevar + gerundio": "Estoy trabajando desde las ocho неверно: нужно Llevo trabajando desde las ocho.",
     "Deber / Tener que / Hay que — долженствование": "Hay que estudiar безличное, но Debo estudiar — личное; не путай.",
     "Глаголы с предлогами: pensar en, soñar con...": "Pienso de ti неверно: нужно Pienso en ti.",
     "Gerundio: образование и употребление": "He leyendo неверно: используется he leído (participio), не gerundio.",
     "Сравнительная степень: más, menos, tan": "Más grande que не всегда 'больше чем': для возраста — mayor.",
     "Ya, todavía, aún: время и степень": "Ya no vivo vs Todavía vivo: ya no = больше не, todavía = всё ещё.",
-    "Числительные: 1–100": "Veintiún libros, не veintiuno libros — uno теряет -o перед сущ. м.р.",
-    "Mi/mío, tu/tuyo: притяжательные местоимения": "Su puede быть неоднозначным: уточняйте de él / de ella / de ellos при необходимости.",
+    "Números: количественные и порядковые": "Veintiún libros, не veintiuno libros — uno теряет -o; primer día, не primero día.",
+    "Mi/mío, tu/tuyo: притяжательные местоимения": "Su может быть неоднозначным: уточняйте de él / de ella / de ellos при необходимости.",
     "Qué, quién, cuál, cómo...": "Qué vs Cuál: qué libro (какой), cuál prefieres (который из).",
     "Conectores: además, sin embargo, por eso...": "Sino (а наоборот) не путать с si no (если не): No es rojo sino azul vs Si no vienes, me voy.",
     "Siempre, nunca, a veces: частота": "Nunca уже содержит отрицание: Nunca voy — не надо дополнительного no.",
-    "Tener + sustantivo: tener hambre, tener sed...": "Tengo hambre, не estoy hambre; tengo razón, не soy razón."
+    "Tener + sustantivo: tener hambre, tener sed...": "Tengo hambre, не estoy hambre; tengo razón, не soy razón.",
+    "Subjuntivo: principales desencadenantes": "Después de que может быть с indicativo если факт: después de que llegó vs para que всегда subjuntivo.",
+    "Ponerse / Volverse / Hacerse / Llegar a ser: «становиться»": "Se puso triste (реакция) vs Se volvió triste (стал грустным человеком) — разные оттенки.",
+    "Perífrasis verbales: сводная таблица": "Estoy desde las ocho trabajando неверно: нужно Llevo desde las ocho trabajando для длительности.",
+    "Dar + sustantivo: dar un paseo, dar miedo, dar igual...": "Me da igual — мне всё равно; не путать me da igual с es igual.",
+    "Preposiciones de lugar: entre, sobre, bajo...": "Delante de / detrás de — всегда с de; cerca de / lejos de — аналогично.",
+    "La hora y la fecha: время, дни, месяцы": "Son las dos de la tarde — предлог de, не por/en; el lunes (в понедельник), не en lunes."
   };
   return map[item.title] || "";
 }

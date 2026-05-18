@@ -403,6 +403,23 @@ input[type="search"] {
   margin-bottom: 0;
 }
 
+.content > section.subgroup-heading {
+  margin-top: 2px;
+  padding: 10px 4px 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.content > section.subgroup-heading h3 {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
 .table-summary,
 .table-mistake {
   border: 1px solid var(--line);
@@ -1395,7 +1412,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.12 · обновлено: 18.05.2026 19:54</footer>
+      <footer class="app-footer">Версия MVP 0.12 · обновлено: 18.05.2026 23:51</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -2537,6 +2554,7 @@ const TENSE_EXAMPLES = {
 const USEFUL_TABLES = [
   {
     group: "Местоимения и объекты",
+    subgroup: "Прямые и косвенные объекты",
     title: "Lo/la/los/las: кого? что?",
     description: "Отвечают на вопрос кого? что? и заменяют прямой объект.",
     table: `<table><thead><tr><th>Лицо</th><th>Форма</th><th>Пример</th></tr></thead><tbody>
@@ -2548,6 +2566,7 @@ const USEFUL_TABLES = [
   },
   {
     group: "Местоимения и объекты",
+    subgroup: "Прямые и косвенные объекты",
     title: "Le/les: кому?",
     description: "Отвечают на вопрос кому? для кого? и часто идут с глаголами dar, decir, escribir, gustar.",
     table: `<table><thead><tr><th>Лицо</th><th>Форма</th><th>Пример</th></tr></thead><tbody>
@@ -2558,6 +2577,7 @@ const USEFUL_TABLES = [
   },
   {
     group: "Местоимения и объекты",
+    subgroup: "Порядок местоимений",
     title: "Порядок местоимений: se lo, te lo",
     description: "Когда прямое и косвенное местоимения стоят рядом, косвенное идет первым; le/les превращается в se.",
     table: `<table><thead><tr><th>Схема</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
@@ -2568,6 +2588,7 @@ const USEFUL_TABLES = [
   },
   {
     group: "Существительные и указатели",
+    subgroup: "Артикли",
     title: "Артикли: el/la/los/las и un/una",
     description: "Определенные и неопределенные артикли согласуются с родом и числом существительного.",
     table: `<table><thead><tr><th></th><th>ед. число</th><th>мн. число</th><th>пример</th></tr></thead><tbody>
@@ -2578,7 +2599,37 @@ const USEFUL_TABLES = [
     </tbody></table>`
   },
   {
+    group: "Существительные и указатели",
+    subgroup: "Числительные",
+    title: "Числительные: 1–100",
+    description: "Количественные числительные от 1 до 100 с правилами написания.",
+    table: `<table><thead><tr><th>Число</th><th>Испанский</th><th>Число</th><th>Испанский</th></tr></thead><tbody>
+      <tr><th>1</th><td>uno</td><th>2</th><td>dos</td></tr>
+      <tr><th>3</th><td>tres</td><th>4</th><td>cuatro</td></tr>
+      <tr><th>5</th><td>cinco</td><th>6</th><td>seis</td></tr>
+      <tr><th>7</th><td>siete</td><th>8</th><td>ocho</td></tr>
+      <tr><th>9</th><td>nueve</td><th>10</th><td>diez</td></tr>
+      <tr><th>11</th><td>once</td><th>12</th><td>doce</td></tr>
+      <tr><th>13</th><td>trece</td><th>14</th><td>catorce</td></tr>
+      <tr><th>15</th><td>quince</th><th>16</th><td>dieciséis</td></tr>
+      <tr><th>17</th><td>diecisiete</th><th>18</th><td>dieciocho</td></tr>
+      <tr><th>19</th><td>diecinueve</th><th>20</th><td>veinte</td></tr>
+      <tr><th>21</th><td>veintiuno</th><th>22</th><td>veintidós</td></tr>
+      <tr><th>23</th><td>veintitrés</th><th>24</th><td>veinticuatro</td></tr>
+      <tr><th>25</th><td>veinticinco</th><th>26</th><td>veintiséis</td></tr>
+      <tr><th>27</th><td>veintisiete</th><th>28</th><td>veintiocho</td></tr>
+      <tr><th>29</th><td>veintinueve</th><th>30</th><td>treinta</td></tr>
+      <tr><th>31</th><td>treinta y uno</th><th>40</th><td>cuarenta</td></tr>
+      <tr><th>50</th><td>cincuenta</th><th>60</th><td>sesenta</td></tr>
+      <tr><th>70</th><td>setenta</th><th>80</th><td>ochenta</td></tr>
+      <tr><th>90</th><td>noventa</th><th>100</th><td>cien</td></tr>
+      <tr><th colspan="2">uno → un перед сущ. м.р.</th><td colspan="2">un libro</td></tr>
+      <tr><th colspan="2">cien → cien перед сущ.</th><td colspan="2">cien páginas</td></tr>
+    </tbody></table>`
+  },
+  {
     group: "Предлоги и время",
+    subgroup: "Основные предлоги",
     title: "Por/para: причина или цель",
     description: "Короткая таблица для самой частой пары предлогов.",
     table: `<table><thead><tr><th>Предлог</th><th>Главная идея</th><th>Пример</th></tr></thead><tbody>
@@ -2589,7 +2640,19 @@ const USEFUL_TABLES = [
     </tbody></table>`
   },
   {
+    group: "Предлоги и время",
+    subgroup: "Основные предлоги",
+    title: "A/en/de: направление, место, принадлежность",
+    description: "Три очень частых предлога: куда, где, откуда/чей.",
+    table: `<table><thead><tr><th>Предлог</th><th>Главная идея</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>a</th><td>направление, адресат, время</td><td>Voy a Madrid. Escribo a Ana. A las ocho.</td></tr>
+      <tr><th>en</th><td>место, транспорт, период</td><td>Vivo en Valencia. Voy en tren. En verano.</td></tr>
+      <tr><th>de</th><td>происхождение, принадлежность, материал</td><td>Soy de Sevilla. El libro de Marta. Una mesa de madera.</td></tr>
+    </tbody></table>`
+  },
+  {
     group: "Глагольные шпаргалки",
+    subgroup: "Самые частые пары",
     title: "Ser/estar: сущность или состояние",
     description: "Два варианта 'быть': характеристика/идентичность против состояния/местоположения.",
     table: `<table><thead><tr><th>Глагол</th><th>Когда использовать</th><th>Пример</th></tr></thead><tbody>
@@ -2600,19 +2663,53 @@ const USEFUL_TABLES = [
   },
   {
     group: "Глагольные шпаргалки",
-    title: "Косвенная речь: какие времена менять",
-    description: "Как обычно меняется время, если вводящий глагол стоит в прошлом: dijo que, explicó que, pensaba que.",
-    table: `<table><thead><tr><th>Прямая речь</th><th>Косвенная речь после pasado</th><th>Пример</th></tr></thead><tbody>
-      <tr><th>Presente</th><td>Pretérito Imperfecto</td><td>Dice: “Vivo aquí” -> Dijo que vivía allí.</td></tr>
-      <tr><th>Pretérito Perfecto Compuesto</th><td>Pretérito Pluscuamperfecto</td><td>Dice: “He terminado” -> Dijo que había terminado.</td></tr>
-      <tr><th>Pretérito Indefinido / Perfecto Simple</th><td>Pretérito Pluscuamperfecto</td><td>Dice: “Llegué tarde” -> Dijo que había llegado tarde.</td></tr>
-      <tr><th>Futuro Simple</th><td>Condicional Simple</td><td>Dice: “Iré mañana” -> Dijo que iría al día siguiente.</td></tr>
-      <tr><th>Imperativo</th><td>que + Subjuntivo / infinitivo</td><td>Dice: “Ven” -> Me dijo que viniera.</td></tr>
-      <tr><th>Presente de Subjuntivo</th><td>Imperfecto de Subjuntivo</td><td>Quiere que venga -> Quería que viniera.</td></tr>
+    subgroup: "Самые частые пары",
+    title: "Saber/conocer: знать факт или быть знакомым",
+    description: "Saber про информацию и умение; conocer про знакомство с человеком, местом или объектом.",
+    table: `<table><thead><tr><th>Глагол</th><th>Когда использовать</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>saber</th><td>знать факт, информацию</td><td>Sé la respuesta. - Я знаю ответ.</td></tr>
+      <tr><th>saber + infinitivo</th><td>уметь делать</td><td>Sé nadar. - Я умею плавать.</td></tr>
+      <tr><th>conocer</th><td>быть знакомым с человеком/местом</td><td>Conozco a Ana. Conozco Madrid.</td></tr>
     </tbody></table>`
   },
   {
     group: "Глагольные шпаргалки",
+    subgroup: "Самые частые пары",
+    title: "Gustar и похожие глаголы",
+    description: "Эти глаголы строятся через косвенное местоимение: мне нравится, тебе важно, ему болит.",
+    table: `<table><thead><tr><th>Глагол</th><th>Схема</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>gustar</th><td>me/te/le + gusta/gustan</td><td>Me gusta el café. Me gustan los libros.</td></tr>
+      <tr><th>encantar</th><td>me/te/le + encanta/encantan</td><td>Nos encanta viajar.</td></tr>
+      <tr><th>importar</th><td>me/te/le + importa/importan</td><td>Le importa la familia.</td></tr>
+      <tr><th>doler</th><td>me/te/le + duele/duelen</td><td>Me duele la cabeza.</td></tr>
+    </tbody></table>`
+  },
+  {
+    group: "Глагольные шпаргалки",
+    subgroup: "Самые частые пары",
+    title: "Ir/venir/llevar/traer: идти, приходить, нести",
+    description: "Пары движения зависят от точки зрения говорящего и направления.",
+    table: `<table><thead><tr><th>Глагол</th><th>Идея</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>ir</th><td>двигаться туда, от говорящего</td><td>Voy a tu casa. - Я иду к тебе.</td></tr>
+      <tr><th>venir</th><td>двигаться сюда, к говорящему/собеседнику</td><td>Ven aquí. - Иди сюда.</td></tr>
+      <tr><th>llevar</th><td>нести/везти туда</td><td>Llevo el libro a clase. - Я несу книгу на урок.</td></tr>
+      <tr><th>traer</th><td>нести/везти сюда</td><td>Trae el libro aquí. - Принеси книгу сюда.</td></tr>
+    </tbody></table>`
+  },
+  {
+    group: "Глагольные шпаргалки",
+    subgroup: "Самые частые пары",
+    title: "Pedir/preguntar: просить или спрашивать",
+    description: "Pedir значит просить что-то; preguntar значит задавать вопрос.",
+    table: `<table><thead><tr><th>Глагол</th><th>Идея</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>pedir algo</th><td>просить предмет/услугу</td><td>Pido un café. - Я прошу кофе.</td></tr>
+      <tr><th>pedir que + subjuntivo</th><td>просить, чтобы кто-то сделал</td><td>Te pido que me ayudes.</td></tr>
+      <tr><th>preguntar</th><td>спрашивать, задавать вопрос</td><td>Pregunto la dirección. - Я спрашиваю адрес.</td></tr>
+    </tbody></table>`
+  },
+  {
+    group: "Глагольные шпаргалки",
+    subgroup: "Времена и согласование",
     title: "Imperfecto vs Indefinido: фон или событие",
     description: "Как отличать описание/фон в прошлом от завершенного события.",
     table: `<table><thead><tr><th>Если нужно сказать...</th><th>Выбирай</th><th>Пример</th></tr></thead><tbody>
@@ -2626,6 +2723,21 @@ const USEFUL_TABLES = [
   },
   {
     group: "Глагольные шпаргалки",
+    subgroup: "Времена и согласование",
+    title: "Косвенная речь: какие времена менять",
+    description: "Как обычно меняется время, если вводящий глагол стоит в прошлом: dijo que, explicó que, pensaba que.",
+    table: `<table><thead><tr><th>Прямая речь</th><th>Косвенная речь после pasado</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>Presente</th><td>Pretérito Imperfecto</td><td>Dice: “Vivo aquí” -> Dijo que vivía allí.</td></tr>
+      <tr><th>Pretérito Perfecto Compuesto</th><td>Pretérito Pluscuamperfecto</td><td>Dice: “He terminado” -> Dijo que había terminado.</td></tr>
+      <tr><th>Pretérito Indefinido / Perfecto Simple</th><td>Pretérito Pluscuamperfecto</td><td>Dice: “Llegué tarde” -> Dijo que había llegado tarde.</td></tr>
+      <tr><th>Futuro Simple</th><td>Condicional Simple</td><td>Dice: “Iré mañana” -> Dijo que iría al día siguiente.</td></tr>
+      <tr><th>Imperativo</th><td>que + Subjuntivo / infinitivo</td><td>Dice: “Ven” -> Me dijo que viniera.</td></tr>
+      <tr><th>Presente de Subjuntivo</th><td>Imperfecto de Subjuntivo</td><td>Quiere que venga -> Quería que viniera.</td></tr>
+    </tbody></table>`
+  },
+  {
+    group: "Глагольные шпаргалки",
+    subgroup: "Условные конструкции",
     title: "Условные предложения",
     description: "Основные схемы с si: реальные условия, возможные будущие ситуации и нереальные сценарии.",
     table: `<div class="condition-grid">
@@ -2638,59 +2750,91 @@ const USEFUL_TABLES = [
     </div>`
   },
   {
-    group: "Предлоги и время",
-    title: "A/en/de: направление, место, принадлежность",
-    description: "Три очень частых предлога: куда, где, откуда/чей.",
-    table: `<table><thead><tr><th>Предлог</th><th>Главная идея</th><th>Пример</th></tr></thead><tbody>
-      <tr><th>a</th><td>направление, адресат, время</td><td>Voy a Madrid. Escribo a Ana. A las ocho.</td></tr>
-      <tr><th>en</th><td>место, транспорт, период</td><td>Vivo en Valencia. Voy en tren. En verano.</td></tr>
-      <tr><th>de</th><td>происхождение, принадлежность, материал</td><td>Soy de Sevilla. El libro de Marta. Una mesa de madera.</td></tr>
+    group: "Глагольные шпаргалки",
+    subgroup: "Времена и согласование",
+    title: "Futuro: ir a vs Futuro Simple — разница",
+    description: "Ближайшее намерение или план против отдалённого будущего и предположения.",
+    table: `<table><thead><tr><th></th><th>ir a + infinitivo</th><th>Futuro Simple</th></tr></thead><tbody>
+      <tr><th>Смысл</th><td>намерение, план, ближайшее будущее</td><td>отдалённое будущее, предположение</td></tr>
+      <tr><th>Пример</th><td>Voy a estudiar mañana.</td><td>Estudiaré el año que viene.</td></tr>
+      <tr><th>Вероятность</th><td>высокая, почти уверенность</td><td>средняя, оттенок гипотезы</td></tr>
+      <tr><th>Прогноз / догадка</th><td>не используется</td><td>Serán las ocho. — Сейчас, наверное, восемь.</td></tr>
     </tbody></table>`
   },
   {
     group: "Глагольные шпаргалки",
-    title: "Ir/venir/llevar/traer: идти, приходить, нести",
-    description: "Пары движения зависят от точки зрения говорящего и направления.",
-    table: `<table><thead><tr><th>Глагол</th><th>Идея</th><th>Пример</th></tr></thead><tbody>
-      <tr><th>ir</th><td>двигаться туда, от говорящего</td><td>Voy a tu casa. - Я иду к тебе.</td></tr>
-      <tr><th>venir</th><td>двигаться сюда, к говорящему/собеседнику</td><td>Ven aquí. - Иди сюда.</td></tr>
-      <tr><th>llevar</th><td>нести/везти туда</td><td>Llevo el libro a clase. - Я несу книгу на урок.</td></tr>
-      <tr><th>traer</th><td>нести/везти сюда</td><td>Trae el libro aquí. - Принеси книгу сюда.</td></tr>
+    subgroup: "Глагольные конструкции и управление",
+    title: "Estar + gerundio / Llevar + gerundio",
+    description: "Действие прямо сейчас или которое уже длится какое-то время.",
+    table: `<table><thead><tr><th>Конструкция</th><th>Смысл</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>estar + gerundio</th><td>действие прямо сейчас</td><td>Estoy leyendo un libro.</td></tr>
+      <tr><th>estar + gerundio</th><td>действие в этот период</td><td>Estamos aprendiendo español.</td></tr>
+      <tr><th>llevar + gerundio</th><td>уже сколько-то времени делаю</td><td>Llevo dos horas esperando.</td></tr>
+      <tr><th>llevar + gerundio</th><td>продолжается до сих пор</td><td>Llevo estudiando español desde enero.</td></tr>
+      <tr><th>seguir + gerundio</th><td>всё ещё продолжаю</td><td>Sigo viviendo en Madrid.</td></tr>
     </tbody></table>`
   },
   {
     group: "Глагольные шпаргалки",
-    title: "Saber/conocer: знать факт или быть знакомым",
-    description: "Saber про информацию и умение; conocer про знакомство с человеком, местом или объектом.",
-    table: `<table><thead><tr><th>Глагол</th><th>Когда использовать</th><th>Пример</th></tr></thead><tbody>
-      <tr><th>saber</th><td>знать факт, информацию</td><td>Sé la respuesta. - Я знаю ответ.</td></tr>
-      <tr><th>saber + infinitivo</th><td>уметь делать</td><td>Sé nadar. - Я умею плавать.</td></tr>
-      <tr><th>conocer</th><td>быть знакомым с человеком/местом</td><td>Conozco a Ana. Conozco Madrid.</td></tr>
+    subgroup: "Глагольные конструкции и управление",
+    title: "Acabar de / Volver a / Dejar de — глагольные конструкции",
+    description: "Три ключевые конструкции: только что сделать, сделать снова, перестать делать.",
+    table: `<table><thead><tr><th>Конструкция</th><th>Смысл</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>acabar de + infinitivo</th><td>только что сделал</td><td>Acabo de llegar. — Я только что пришёл.</td></tr>
+      <tr><th>volver a + infinitivo</th><td>сделать снова</td><td>Vuelvo a llamar. — Я звоню снова.</td></tr>
+      <tr><th>dejar de + infinitivo</th><td>перестать делать</td><td>Deja de fumar. — Бросай курить.</td></tr>
+      <tr><th>terminar de + infinitivo</th><td>закончить делать</td><td>Termino de leer y te llamo.</td></tr>
+      <tr><th>empezar a + infinitivo</th><td>начать делать</td><td>Empiezo a entender. — Я начинаю понимать.</td></tr>
     </tbody></table>`
   },
   {
     group: "Глагольные шпаргалки",
-    title: "Pedir/preguntar: просить или спрашивать",
-    description: "Pedir значит просить что-то; preguntar значит задавать вопрос.",
-    table: `<table><thead><tr><th>Глагол</th><th>Идея</th><th>Пример</th></tr></thead><tbody>
-      <tr><th>pedir algo</th><td>просить предмет/услугу</td><td>Pido un café. - Я прошу кофе.</td></tr>
-      <tr><th>pedir que + subjuntivo</th><td>просить, чтобы кто-то сделал</td><td>Te pido que me ayudes.</td></tr>
-      <tr><th>preguntar</th><td>спрашивать, задавать вопрос</td><td>Pregunto la dirección. - Я спрашиваю адрес.</td></tr>
+    subgroup: "Глагольные конструкции и управление",
+    title: "Deber / Tener que / Hay que — долженствование",
+    description: "Слабая, сильная и безличная необходимость.",
+    table: `<table><thead><tr><th>Глагол</th><th>Сила</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>deber + infinitivo</th><td>слабое: моральный долг, совет</td><td>Debes estudiar más. — Тебе стоит больше учиться.</td></tr>
+      <tr><th>deber de + infinitivo</th><td>предположение: должно быть</td><td>Deben de ser las ocho. — Должно быть, уже восемь.</td></tr>
+      <tr><th>tener que + infinitivo</th><td>сильная необходимость</td><td>Tengo que irme. — Мне нужно идти.</td></tr>
+      <tr><th>hay que + infinitivo</th><td>безличная необходимость</td><td>Hay que pagar antes. — Нужно заплатить заранее.</td></tr>
     </tbody></table>`
   },
   {
     group: "Глагольные шпаргалки",
-    title: "Gustar и похожие глаголы",
-    description: "Эти глаголы строятся через косвенное местоимение: мне нравится, тебе важно, ему болит.",
-    table: `<table><thead><tr><th>Глагол</th><th>Схема</th><th>Пример</th></tr></thead><tbody>
-      <tr><th>gustar</th><td>me/te/le + gusta/gustan</td><td>Me gusta el café. Me gustan los libros.</td></tr>
-      <tr><th>encantar</th><td>me/te/le + encanta/encantan</td><td>Nos encanta viajar.</td></tr>
-      <tr><th>importar</th><td>me/te/le + importa/importan</td><td>Le importa la familia.</td></tr>
-      <tr><th>doler</th><td>me/te/le + duele/duelen</td><td>Me duele la cabeza.</td></tr>
+    subgroup: "Глагольные конструкции и управление",
+    title: "Глаголы с предлогами: pensar en, soñar con...",
+    description: "Многие испанские глаголы требуют определённого предлога, который не совпадает с русским.",
+    table: `<table><thead><tr><th>Глагол + предлог</th><th>Перевод</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>pensar en</th><td>думать о</td><td>Pienso en ti.</td></tr>
+      <tr><th>soñar con</th><td>мечтать о / видеть во сне</td><td>Sueño con viajar.</td></tr>
+      <tr><th>acordarse de</th><td>помнить о / вспоминать</td><td>Me acuerdo de aquel día.</td></tr>
+      <tr><th>olvidarse de</th><td>забывать о</td><td>Me olvidé de las llaves.</td></tr>
+      <tr><th>consistir en</th><td>состоять в</td><td>Consiste en leer mucho.</td></tr>
+      <tr><th>insistir en</th><td>настаивать на</td><td>Insiste en venir.</td></tr>
+      <tr><th>depender de</th><td>зависеть от</td><td>Depende del tiempo.</td></tr>
+      <tr><th>tratar de</th><td>пытаться / речь о</td><td>Trato de entender. Se trata de un problema.</td></tr>
+      <tr><th>contar con</th><td>рассчитывать на</td><td>Cuento con tu ayuda.</td></tr>
+    </tbody></table>`
+  },
+  {
+    group: "Глагольные шпаргалки",
+    subgroup: "Глагольные конструкции и управление",
+    title: "Gerundio: образование и употребление",
+    description: "Как образуется и когда используется gerundio.",
+    table: `<table><thead><tr><th>Тип</th><th>Образование</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>-ar</th><td>основа + ando</td><td>hablar → hablando</td></tr>
+      <tr><th>-er / -ir</th><td>основа + iendo</td><td>comer → comiendo, vivir → viviendo</td></tr>
+      <tr><th>e → i (-ir)</th><td>корень меняется</td><td>pedir → pidiendo, decir → diciendo</td></tr>
+      <tr><th>o → u (-ir)</th><td>корень меняется</td><td>dormir → durmiendo, morir → muriendo</td></tr>
+      <tr><th>ie → yendo</th><td>-er/-ir с гласной</td><td>leer → leyendo, ir → yendo, oír → oyendo</td></tr>
+      <tr><th>estar + gerundio</th><td>делаю прямо сейчас</td><td>Estoy leyendo.</td></tr>
+      <tr><th>llevar + gerundio</th><td>уже сколько-то делаю</td><td>Llevo una hora esperando.</td></tr>
+      <tr><th>seguir + gerundio</th><td>всё ещё делаю</td><td>Sigue lloviendo.</td></tr>
     </tbody></table>`
   },
   {
     group: "Служебные слова и степень",
+    subgroup: "Неопределенность и отрицание",
     title: "Algo/nada/alguien/nadie: кто-то или никто",
     description: "Неопределенные и отрицательные слова: кто-то, никто, что-то, ничего.",
     table: `<table><thead><tr><th>Слово</th><th>Смысл</th><th>Пример</th></tr></thead><tbody>
@@ -2703,6 +2847,7 @@ const USEFUL_TABLES = [
   },
   {
     group: "Служебные слова и степень",
+    subgroup: "Степень и количество",
     title: "Muy/mucho: степень или количество",
     description: "Muy усиливает признаки, mucho говорит о количестве или степени действия.",
     table: `<table><thead><tr><th>Форма</th><th>С чем идет</th><th>Пример</th></tr></thead><tbody>
@@ -2713,6 +2858,7 @@ const USEFUL_TABLES = [
   },
   {
     group: "Служебные слова и степень",
+    subgroup: "Присоединение и связь",
     title: "También/tampoco: тоже / тоже не",
     description: "Короткие ответы и присоединение к утверждению или отрицанию.",
     table: `<table><thead><tr><th>Слово</th><th>Смысл</th><th>Пример</th></tr></thead><tbody>
@@ -2723,6 +2869,7 @@ const USEFUL_TABLES = [
   },
   {
     group: "Существительные и указатели",
+    subgroup: "Указатели",
     title: "Este/ese/aquel: здесь, там, далеко",
     description: "Показывают близость к говорящему, собеседнику или удаленность.",
     table: `<table><thead><tr><th>Близость</th><th>Муж.</th><th>Жен.</th><th>Пример</th></tr></thead><tbody>
@@ -2733,6 +2880,7 @@ const USEFUL_TABLES = [
   },
   {
     group: "Местоимения и объекты",
+    subgroup: "Возвратные местоимения",
     title: "Me/te/se: возвратные местоимения",
     description: "Используются с возвратными глаголами и ставятся перед спрягаемым глаголом.",
     table: `<table><thead><tr><th>Лицо</th><th>Местоимение</th><th>Пример</th></tr></thead><tbody>
@@ -2746,6 +2894,7 @@ const USEFUL_TABLES = [
   },
   {
     group: "Предлоги и время",
+    subgroup: "Выражение времени",
     title: "Desde/hace/durante: время и длительность",
     description: "Шпаргалка для длительности и точки начала.",
     table: `<table><thead><tr><th>Выражение</th><th>Смысл</th><th>Пример</th></tr></thead><tbody>
@@ -2757,6 +2906,7 @@ const USEFUL_TABLES = [
   },
   {
     group: "Служебные слова и степень",
+    subgroup: "Присоединение и связь",
     title: "Porque/aunque/si/cuando: частые союзы",
     description: "Союзы связывают части фразы; некоторые из них часто ведут к subjuntivo.",
     table: `<table><thead><tr><th>Союз</th><th>Смысл и режим</th><th>Пример</th></tr></thead><tbody>
@@ -2767,6 +2917,36 @@ const USEFUL_TABLES = [
       <tr><th>mientras</th><td>пока/в то время как; факт с indicativo, будущее с subjuntivo</td><td>Mientras estudias, preparo café. Mientras estudies, no te molesto.</td></tr>
       <tr><th>para que</th><td>цель; требует subjuntivo</td><td>Te escribo para que lo sepas.</td></tr>
       <tr><th>sin que</th><td>без того чтобы; требует subjuntivo</td><td>Se fue sin que nadie lo viera.</td></tr>
+    </tbody></table>`
+  },
+  {
+    group: "Служебные слова и степень",
+    subgroup: "Степень и количество",
+    title: "Сравнительная степень: más, menos, tan",
+    description: "Как сравнивать признаки и количества в испанском.",
+    table: `<table><thead><tr><th>Тип</th><th>Схема</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>больше / меньше</th><td>más/menos + adj + que</td><td>Ella es más alta que yo.</td></tr>
+      <tr><th>так же</th><td>tan + adj + como</td><td>Él es tan alto como ella.</td></tr>
+      <tr><th>больше + сущ.</th><td>más/menos + sust + que</td><td>Tengo más libros que tú.</td></tr>
+      <tr><th>столько же + сущ.</th><td>tanto/a/os/as + sust + como</td><td>Tengo tantos libros como tú.</td></tr>
+      <tr><th>больше + глагол</th><td>verbo + más/menos que</td><td>Trabajo más que tú.</td></tr>
+      <tr><th>столько же + глагол</th><td>verbo + tanto como</td><td>Trabajo tanto como tú.</td></tr>
+      <tr><th>лучше / хуже</th><td>mejor / peor (irregular)</td><td>Este libro es mejor que aquel.</td></tr>
+      <tr><th>больше по возрасту</th><td>mayor / menor (irregular)</td><td>Mi hermano es mayor que yo.</td></tr>
+      <tr><th>превосходная</th><td>el/la más + adj + de</td><td>Es el más alto de la clase.</td></tr>
+    </tbody></table>`
+  },
+  {
+    group: "Служебные слова и степень",
+    subgroup: "Степень и количество",
+    title: "Ya, todavía, aún: время и степень",
+    description: "Три частицы для выражения завершённости, продолжения и степени.",
+    table: `<table><thead><tr><th>Частица</th><th>Смысл</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>ya</th><td>уже</td><td>Ya terminé. — Я уже закончил.</td></tr>
+      <tr><th>ya no</th><td>больше не</td><td>Ya no vivo allí. — Я больше там не живу.</td></tr>
+      <tr><th>todavía / aún</th><td>ещё (не)</td><td>Todavía no he comido. — Я ещё не поел.</td></tr>
+      <tr><th>todavía / aún</th><td>всё ещё</td><td>Todavía vive en Madrid. — Он всё ещё живёт в Мадриде.</td></tr>
+      <tr><th>aún (sin ещё)</th><td>даже</td><td>Aún más importante. — Ещё более важно.</td></tr>
     </tbody></table>`
   }
 ];
@@ -3124,6 +3304,13 @@ function groupHeading(title, description) {
   return infoSection({
     className: "info-card group-heading",
     html: `<h2>${title}</h2><p class="muted">${description}</p>`
+  });
+}
+
+function subgroupHeading(title) {
+  return infoSection({
+    className: "info-card subgroup-heading",
+    html: `<h3>${title}</h3>`
   });
 }
 
@@ -4356,8 +4543,20 @@ function renderTables() {
     if (groupTables.length === 0) return;
     content.appendChild(groupHeading(group.title, group.description));
 
+    const subgroupMap = {};
     groupTables.forEach((item) => {
-      content.appendChild(renderUsefulTableCard(item));
+      const sg = item.subgroup || "—";
+      if (!subgroupMap[sg]) subgroupMap[sg] = [];
+      subgroupMap[sg].push(item);
+    });
+
+    Object.entries(subgroupMap).forEach(([subgroup, items]) => {
+      if (subgroup !== "—") {
+        content.appendChild(subgroupHeading(subgroup));
+      }
+      items.forEach((item) => {
+        content.appendChild(renderUsefulTableCard(item));
+      });
     });
   });
 }
@@ -4422,7 +4621,16 @@ function tableSummary(item) {
     "Pedir/preguntar: просить или спрашивать": "pedir - просить что-то, preguntar - задавать вопрос.",
     "Gustar и похожие глаголы": "то, что нравится, обычно становится подлежащим: me gusta el café, me gustan los libros.",
     "Algo/nada/alguien/nadie: кто-то или никто": "algo/alguien утверждают наличие, nada/nadie/ninguno отрицают.",
-    "Porque/aunque/si/cuando: частые союзы": "porque дает причину, si условие, cuando/mientras/antes de que часто ведут к subjuntivo для будущего действия."
+    "Porque/aunque/si/cuando: частые союзы": "porque дает причину, si условие, cuando/mientras/antes de que часто ведут к subjuntivo для будущего действия.",
+    "Futuro: ir a vs Futuro Simple — разница": "ir a выражает намерение/план, Futuro Simple — отдалённое будущее или предположение.",
+    "Estar + gerundio / Llevar + gerundio": "estar + gerundio — действие прямо сейчас; llevar + gerundio — уже сколько-то времени делаю.",
+    "Acabar de / Volver a / Dejar de — глагольные конструкции": "acabar de — только что сделать, volver a — сделать снова, dejar de — перестать.",
+    "Deber / Tener que / Hay que — долженствование": "tener que — сильная необходимость, deber — долг/совет, hay que — безличная необходимость.",
+    "Глаголы с предлогами: pensar en, soñar con...": "после многих испанских глаголов нужен определённый предлог, часто не совпадающий с русским.",
+    "Gerundio: образование и употребление": "gerundio образуется через -ando/-iendo; употребляется для длительного действия и способа действия.",
+    "Сравнительная степень: más, menos, tan": "más/menos + adj + que для сравнения, tan + adj + como для равенства, mejor/peor — неправильные.",
+    "Ya, todavía, aún: время и степень": "ya — уже/больше не, todavía — всё ещё/ещё не, aún — ещё/даже.",
+    "Числительные: 1–100": "количественные числительные от 1 до 100; uno → un, cien → cien перед существительными."
   };
   return map[item.title] || item.description;
 }
@@ -4444,7 +4652,15 @@ function tableMistake(item) {
     "Pedir/preguntar: просить или спрашивать": "Pregunto un café неверно: Pido un café.",
     "Gustar и похожие глаголы": "Me gusto el café неверно: Me gusta el café.",
     "Algo/nada/alguien/nadie: кто-то или никто": "No hay nadie часто уже содержит отрицание; не надо добавлять alguien.",
-    "Porque/aunque/si/cuando: частые союзы": "Si tendré tiempo неверно: Si tengo tiempo. Для будущего после cuando: cuando llegue."
+    "Porque/aunque/si/cuando: частые союзы": "Si tendré tiempo неверно: Si tengo tiempo. Для будущего после когда: cuando llegue.",
+    "Futuro: ir a vs Futuro Simple — разница": "Mañana voy a ir после вчерашнего плана звучит странно: для отдалённого лучше iré.",
+    "Estar + gerundio / Llevar + gerundio": "Estoy trabajando desde las ocho неверно: нужно Llevo trabajando desde las ocho.",
+    "Deber / Tener que / Hay que — долженствование": "Hay que estudiar безличное, но Debo estudiar — личное; не путай.",
+    "Глаголы с предлогами: pensar en, soñar con...": "Pienso de ti неверно: нужно Pienso en ti.",
+    "Gerundio: образование и употребление": "He leyendo неверно: используется he leído (participio), не gerundio.",
+    "Сравнительная степень: más, menos, tan": "Más grande que не всегда 'больше чем': для возраста — mayor.",
+    "Ya, todavía, aún: время и степень": "Ya no vivo vs Todavía vivo: ya no = больше не, todavía = всё ещё.",
+    "Числительные: 1–100": "Veintiún libros, не veintiuno libros — uno теряет -o перед сущ. м.р."
   };
   return map[item.title] || "";
 }

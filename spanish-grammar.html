@@ -1489,7 +1489,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.12 · обновлено: 19.05.2026 04:10</footer>
+      <footer class="app-footer">Версия MVP 0.12 · обновлено: 19.05.2026 04:20</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -5269,14 +5269,20 @@ function renderTables() {
   if (searchInput) {
     let timer;
     searchInput.addEventListener("input", () => {
+      state.tableQuery = searchInput.value;
       clearTimeout(timer);
       timer = setTimeout(() => {
-        state.tableQuery = searchInput.value;
+        const pos = searchInput.selectionStart;
         renderTables();
+        const newInput = document.querySelector("[data-table-search]");
+        if (newInput && document.activeElement !== newInput) {
+          newInput.focus();
+          newInput.setSelectionRange(pos, pos);
+        }
       }, 120);
     });
     searchInput.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") { searchInput.value = ""; state.tableQuery = ""; renderTables(); }
+      if (e.key === "Escape") { state.tableQuery = ""; renderTables(); }
     });
   }
   TABLE_GROUPS.forEach((group) => {

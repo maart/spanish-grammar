@@ -1395,7 +1395,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.11 · обновлено: 18.05.2026 19:29</footer>
+      <footer class="app-footer">Версия MVP 0.12 · обновлено: 18.05.2026 19:54</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -2889,13 +2889,20 @@ const MOODS = [
     description: "Императив используется для команд, просьб, инструкций и запретов. Отрицательный императив строится через формы субхунтива.",
     tags: ["команда", "просьба", "запрет"],
     when: "Используется, когда говорящий прямо побуждает адресата что-то сделать или не делать.",
-    signals: "Контекст команды, инструкции, рецепта, просьбы: abre, escucha, dime, no vayas.",
-    remember: "Отрицательный imperativo строится через subjuntivo: no hables, no comáis, no digan.",
+    signals: "Контекст команды, инструкции, рецепта, просьбы или запрета: abre, escucha, dime, no vayas.",
+    remember: "Если команда с no, почти всегда думай о subjuntivo: habla -> no hables, ven -> no vengas, di -> no digas.",
     tenses: "Imperativo afirmativo и imperativo negativo.",
     tenseIds: ["imperativo_afirmativo", "imperativo_negativo"],
-    triggers: ["команда: abre, ven, dime", "запрет: no + subjuntivo", "инструкция: toma, mezcla, espera", "просьба: por favor + imperativo"],
+    triggerGroups: [
+      ["tú afirmativo", "часто как 3-е лицо presente: habla, come, vive"],
+      ["usted / ustedes", "через presente de subjuntivo: hable, hablen"],
+      ["vosotros", "infinitivo без -r + d: hablad, comed, vivid"],
+      ["отрицание", "no + subjuntivo: no hables, no comáis, no digan"],
+      ["местоимения", "утвердительно приклеиваются, отрицательно стоят перед глаголом: dímelo / no me lo digas"]
+    ],
     confusions: [
       ["Habla más despacio.", "No hables tan rápido.", "утвердительная команда / запрет через subjuntivo"],
+      ["Dime la verdad.", "No me digas eso.", "местоимение после утвердительной формы / перед отрицательной"],
       ["Ven aquí.", "No vengas tarde.", "особая форма imperativo / отрицание через subjuntivo"]
     ],
     table: `<table><thead><tr><th>Тип</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
@@ -2944,6 +2951,9 @@ const state = {
   showMoodConfusion: false,
   showSubjuntivoMoreTriggers: false,
   showSubjuntivoMoreExamples: false,
+  showImperativoIrregulars: false,
+  showImperativoPronouns: false,
+  showImperativoMoreExamples: false,
   moodQuizIndex: 0,
   moodQuizRevealed: false,
   tableFilter: "all",
@@ -3020,6 +3030,39 @@ const SUBJUNTIVO_EXAMPLES = [
   ["цель", "Lo explico a fin de que no haya dudas.", "Я объясняю это, чтобы не было сомнений."],
   ["время", "Espera hasta que termine.", "Подожди, пока я закончу."],
   ["человек", "Necesito a alguien que me ayude.", "Мне нужен кто-то, кто мне поможет."]
+];
+
+const IMPERATIVO_IRREGULAR_TU = [
+  ["decir", "говорить", "di", "Di la verdad.", "Скажи правду."],
+  ["hacer", "делать", "haz", "Hazlo ahora.", "Сделай это сейчас."],
+  ["ir", "идти, ехать", "ve", "Ve a casa.", "Иди домой."],
+  ["poner", "ставить, класть", "pon", "Pon la mesa.", "Накрой на стол."],
+  ["salir", "выходить", "sal", "Sal de aquí.", "Выйди отсюда."],
+  ["ser", "быть", "sé", "Sé amable.", "Будь добрым."],
+  ["tener", "иметь", "ten", "Ten cuidado.", "Будь осторожен."],
+  ["venir", "приходить", "ven", "Ven aquí.", "Иди сюда."]
+];
+
+const IMPERATIVO_PRONOUN_EXAMPLES = [
+  ["Dime.", "Скажи мне.", "me приклеивается к утвердительной форме"],
+  ["Dímelo.", "Скажи мне это.", "me + lo приклеиваются, появляется ударение"],
+  ["No me digas.", "Не говори мне.", "в отрицании местоимение стоит перед глаголом"],
+  ["No me lo digas.", "Не говори мне это.", "оба местоимения перед отрицательной формой"],
+  ["Hazlo.", "Сделай это.", "lo приклеивается к haz"],
+  ["No lo hagas.", "Не делай этого.", "no + местоимение + subjuntivo"]
+];
+
+const IMPERATIVO_EXAMPLES = [
+  ["команда", "Habla más despacio.", "Говори медленнее."],
+  ["запрет", "No hables tan rápido.", "Не говори так быстро."],
+  ["просьба", "Dime la verdad, por favor.", "Скажи мне правду, пожалуйста."],
+  ["инструкция", "Gire a la derecha.", "Поверните направо."],
+  ["мягкая команда", "Descansa un poco.", "Отдохни немного."],
+  ["местоимение", "No lo toques.", "Не трогай это."],
+  ["нерегулярный tú", "Ven aquí.", "Иди сюда."],
+  ["vosotros", "No os preocupéis.", "Не беспокойтесь."],
+  ["usted", "Pase, por favor.", "Проходите, пожалуйста."],
+  ["ustedes", "Escuchen atentamente.", "Слушайте внимательно."]
 ];
 
 const DISPLAY_INFINITIVES = {
@@ -3532,8 +3575,7 @@ function filteredVerbs() {
     .map((verb, index) => ({ verb, index, score: searchScore(verb, query) }))
     .filter((item) => item.score < 100)
     .sort((a, b) => a.score - b.score || a.index - b.index)
-    .map((item) => item.verb)
-    .slice(0, 60);
+    .map((item) => item.verb);
 }
 
 function searchScore(verb, query) {
@@ -3542,19 +3584,28 @@ function searchScore(verb, query) {
   const display = normalize(info.displayInfinitive);
   const ru = normalize(info.ru);
   const forms = Object.values(info.forms).flat().map(normalize);
+  const isShortQuery = query.length < 3;
   if (infinitive === query || display === query) return 0;
   if (infinitive.startsWith(query) || display.startsWith(query)) return 1;
   if (forms.some((form) => form === query)) return 2;
   if (forms.some((form) => form.startsWith(query))) return 3;
-  if (ru.includes(query)) return 4;
-  if (infinitive.includes(query) || display.includes(query)) return 5;
-  if (forms.some((form) => form.includes(query))) return 6;
-  if (normalize([info.infinitive, info.displayInfinitive, info.ru, info.participle, info.gerund].join(" ")).includes(query)) return 7;
+  if (wordStartsWith(ru, query)) return 4;
+  if (!isShortQuery && ru.includes(query)) return 5;
+  if (!isShortQuery && (infinitive.includes(query) || display.includes(query))) return 6;
+  if (!isShortQuery && forms.some((form) => form.includes(query))) return 7;
+  if (!isShortQuery && normalize([info.infinitive, info.displayInfinitive, info.ru, info.participle, info.gerund].join(" ")).includes(query)) return 8;
   return 100;
 }
 
 function normalize(value) {
   return value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+function wordStartsWith(value, query) {
+  return normalize(value)
+    .split(/[\s,;/()]+/)
+    .filter(Boolean)
+    .some((word) => word.startsWith(query));
 }
 
 function saveCards() {
@@ -4451,6 +4502,9 @@ function renderMoods() {
       state.showMoodConfusion = false;
       state.showSubjuntivoMoreTriggers = false;
       state.showSubjuntivoMoreExamples = false;
+      state.showImperativoIrregulars = false;
+      state.showImperativoPronouns = false;
+      state.showImperativoMoreExamples = false;
       renderMoods();
     });
   });
@@ -4487,6 +4541,7 @@ function renderMoods() {
     <h3>Формулы-триггеры</h3>
     ${moodTriggerMarkup(selected)}
     ${selected.id === "subjuntivo" ? subjuntivoMoreTriggersMarkup() : ""}
+    ${selected.id === "imperativo" ? imperativoDetailsMarkup() : ""}
     ${selected.confusions?.length ? `
       <div class="tense-actions">
         <button class="small-button ${state.showMoodConfusion ? "danger" : "success"}" type="button" data-toggle-mood-confusion>
@@ -4512,6 +4567,18 @@ function renderMoods() {
   });
   section.querySelector("[data-toggle-subjuntivo-examples]")?.addEventListener("click", () => {
     state.showSubjuntivoMoreExamples = !state.showSubjuntivoMoreExamples;
+    renderMoods();
+  });
+  section.querySelector("[data-toggle-imperativo-irregulars]")?.addEventListener("click", () => {
+    state.showImperativoIrregulars = !state.showImperativoIrregulars;
+    renderMoods();
+  });
+  section.querySelector("[data-toggle-imperativo-pronouns]")?.addEventListener("click", () => {
+    state.showImperativoPronouns = !state.showImperativoPronouns;
+    renderMoods();
+  });
+  section.querySelector("[data-toggle-imperativo-examples]")?.addEventListener("click", () => {
+    state.showImperativoMoreExamples = !state.showImperativoMoreExamples;
     renderMoods();
   });
 }
@@ -4590,7 +4657,49 @@ function subjuntivoMoreTriggersMarkup() {
   `;
 }
 
+function imperativoDetailsMarkup() {
+  return `
+    <div class="tense-actions">
+      <button class="small-button ${state.showImperativoIrregulars ? "danger" : "success"}" type="button" data-toggle-imperativo-irregulars>
+        ${state.showImperativoIrregulars ? "Скрыть неправильные tú" : "Показать неправильные tú"}
+      </button>
+      <button class="small-button ${state.showImperativoPronouns ? "danger" : "success"}" type="button" data-toggle-imperativo-pronouns>
+        ${state.showImperativoPronouns ? "Скрыть местоимения" : "Показать местоимения"}
+      </button>
+    </div>
+    ${state.showImperativoIrregulars ? imperativoIrregularsMarkup() : ""}
+    ${state.showImperativoPronouns ? imperativoPronounsMarkup() : ""}
+  `;
+}
+
+function imperativoIrregularsMarkup() {
+  return `
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Infinitivo</th><th>Перевод</th><th>tú afirmativo</th><th>Пример</th><th>Перевод примера</th></tr></thead>
+        <tbody>
+          ${IMPERATIVO_IRREGULAR_TU.map(([verb, ru, form, example, exampleRu]) => `<tr><td>${verb}</td><td>${ru}</td><td>${form}</td><td>${example}</td><td>${exampleRu}</td></tr>`).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function imperativoPronounsMarkup() {
+  return `
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Пример</th><th>Перевод</th><th>Правило</th></tr></thead>
+        <tbody>
+          ${IMPERATIVO_PRONOUN_EXAMPLES.map(([example, ru, rule]) => `<tr><td>${example}</td><td>${ru}</td><td>${rule}</td></tr>`).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
 function moodTableMarkup(mood) {
+  if (mood.id === "imperativo") return imperativoTableMarkup();
   if (mood.id !== "subjuntivo") return `<div class="table-wrap">${mood.table}</div>`;
   const visibleExamples = state.showSubjuntivoMoreExamples ? SUBJUNTIVO_EXAMPLES : SUBJUNTIVO_EXAMPLES.slice(0, 8);
   return `
@@ -4605,6 +4714,25 @@ function moodTableMarkup(mood) {
     <div class="tense-actions">
       <button class="small-button ${state.showSubjuntivoMoreExamples ? "danger" : "success"}" type="button" data-toggle-subjuntivo-examples>
         ${state.showSubjuntivoMoreExamples ? "Скрыть остальные примеры" : "Показать остальные примеры"}
+      </button>
+    </div>
+  `;
+}
+
+function imperativoTableMarkup() {
+  const visibleExamples = state.showImperativoMoreExamples ? IMPERATIVO_EXAMPLES : IMPERATIVO_EXAMPLES.slice(0, 6);
+  return `
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Сценарий</th><th>Пример</th><th>Перевод</th></tr></thead>
+        <tbody>
+          ${visibleExamples.map(([type, example, ru]) => `<tr><td>${type}</td><td>${example}</td><td>${ru}</td></tr>`).join("")}
+        </tbody>
+      </table>
+    </div>
+    <div class="tense-actions">
+      <button class="small-button ${state.showImperativoMoreExamples ? "danger" : "success"}" type="button" data-toggle-imperativo-examples>
+        ${state.showImperativoMoreExamples ? "Скрыть остальные примеры" : "Показать остальные примеры"}
       </button>
     </div>
   `;

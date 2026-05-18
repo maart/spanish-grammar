@@ -504,7 +504,7 @@ input[type="search"] {
 
 @media (min-width: 640px) {
   .table-filter-tabs {
-    grid-template-columns: repeat(7, minmax(0, 1fr));
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
@@ -1450,7 +1450,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.12 · обновлено: 19.05.2026 07:30</footer>
+      <footer class="app-footer">Версия MVP 0.12 · обновлено: 19.05.2026 07:45</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -5162,7 +5162,9 @@ function renderTables() {
     <h2>Шпаргалки</h2>
     <p class="muted">Выбери раздел: ниже останутся только нужные шпаргалки, сгруппированные по смыслу.</p>
     <div class="filter-tabs table-filter-tabs" aria-label="Фильтр шпаргалок">
-      ${TABLE_FILTERS.map((filter) => `
+      ${TABLE_FILTERS.slice(0, 1).concat(
+        TABLE_FILTERS.slice(1).sort((a, b) => countFilteredTables(b.id) - countFilteredTables(a.id))
+      ).map((filter) => `
         <button class="small-button ${state.tableFilter === filter.id ? "is-active" : ""}" type="button" data-table-filter="${filter.id}">
           ${filter.label} <span class="filter-count">${countFilteredTables(filter.id)}</span>
         </button>

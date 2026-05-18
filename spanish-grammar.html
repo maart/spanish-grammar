@@ -1412,7 +1412,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.12 · обновлено: 18.05.2026 23:51</footer>
+      <footer class="app-footer">Версия MVP 0.12 · обновлено: 18.05.2026 23:56</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -3143,6 +3143,7 @@ const state = {
   openSignalsTense: null,
   openFormationTense: null,
   cardFeedback: null,
+  searchCursor: -1,
   cards: JSON.parse(localStorage.getItem("msg:cards") || localStorage.getItem("msg:favorites") || "[]"),
   cardQuiz: [],
   cardQuizIndex: 0,
@@ -3765,6 +3766,29 @@ function filteredVerbs() {
     .map((item) => item.verb);
 }
 
+function fuzzyMatch(query, target) {
+  let qi = 0;
+  for (let ti = 0; ti < target.length && qi < query.length; ti++) {
+    if (query[qi] === target[ti]) qi++;
+  }
+  return qi === query.length;
+}
+
+function levenshtein(a, b) {
+  const m = a.length, n = b.length;
+  if (Math.abs(m - n) > 2) return 99;
+  let prev = [];
+  for (let j = 0; j <= n; j++) prev[j] = j;
+  for (let i = 1; i <= m; i++) {
+    const curr = [i];
+    for (let j = 1; j <= n; j++) {
+      curr[j] = a[i - 1] === b[j - 1] ? prev[j - 1] : 1 + Math.min(prev[j - 1], prev[j], curr[j - 1]);
+    }
+    prev = curr;
+  }
+  return prev[n];
+}
+
 function searchScore(verb, query) {
   const info = verbInfo(verb);
   const infinitive = normalize(info.infinitive);
@@ -3781,6 +3805,11 @@ function searchScore(verb, query) {
   if (!isShortQuery && (infinitive.includes(query) || display.includes(query))) return 6;
   if (!isShortQuery && forms.some((form) => form.includes(query))) return 7;
   if (!isShortQuery && normalize([info.infinitive, info.displayInfinitive, info.ru, info.participle, info.gerund].join(" ")).includes(query)) return 8;
+  if (!isShortQuery && (fuzzyMatch(query, infinitive) || fuzzyMatch(query, display))) return 9;
+  if (!isShortQuery && fuzzyMatch(query, ru)) return 9;
+  if (!isShortQuery && forms.some((form) => fuzzyMatch(query, form))) return 9;
+  if (query.length >= 4 && levenshtein(query, infinitive) <= 2) return 10;
+  if (query.length >= 4 && levenshtein(query, display) <= 2) return 10;
   return 100;
 }
 
@@ -4074,6 +4103,7 @@ function renderVerbs() {
   searchPanel.querySelector("#searchInput").addEventListener("input", (event) => {
     state.query = event.target.value;
     state.verbCardMode = "basic";
+    state.searchCursor = -1;
     if (!normalize(state.query)) state.selectedVerb = null;
     renderVerbResults(content, results, selectedPanel);
   });
@@ -4242,13 +4272,18 @@ function searchMatchReason(info) {
   if (normalize(info.displayInfinitive).includes(query) || normalize(info.infinitive).includes(query)) return "Найдено по инфинитиву";
   if (normalize(info.participle).includes(query)) return "Найдено по participio";
   if (normalize(info.gerund).includes(query)) return "Найдено по gerundio";
+  if (fuzzyMatch(query, normalize(info.displayInfinitive)) || fuzzyMatch(query, normalize(info.infinitive))) return "Найдено по инфинитиву (нечёткий)";
+  if (fuzzyMatch(query, normalize(info.ru))) return "Найдено по переводу (нечёткий)";
   return "";
 }
 
 function findFormMatch(info, query) {
   for (const tense of TENSES) {
     const forms = info.forms[tense.id] || [];
-    const index = forms.findIndex((form) => normalize(form) === query || normalize(form).startsWith(query));
+    const index = forms.findIndex((form) => {
+      const n = normalize(form);
+      return n === query || n.startsWith(query) || fuzzyMatch(query, n);
+    });
     if (index >= 0) {
       return { form: forms[index], person: PEOPLE[index] || "forma", tense: tense.name };
     }
@@ -5396,6 +5431,69 @@ floatingTopButton.addEventListener("click", () => {
 });
 
 window.addEventListener("scroll", updateFloatingTopButton, { passive: true });
+
+document.addEventListener("keydown", (e) => {
+  const isInput = e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.isContentEditable;
+
+  if ((e.ctrlKey || e.metaKey) && e.key === "f") {
+    e.preventDefault();
+    const input = document.getElementById("searchInput");
+    if (input) { input.focus(); input.select(); }
+    return;
+  }
+
+  if (!isInput && /^[1-5]$/.test(e.key)) {
+    const views = ["verbs", "tenses", "moods", "tables", "cards"];
+    setView(views[parseInt(e.key) - 1]);
+    e.preventDefault();
+    return;
+  }
+
+  if (e.key === "Escape") {
+    if (state.view !== "verbs") {
+      setView("verbs");
+      e.preventDefault();
+      return;
+    }
+    if (state.selectedVerb) {
+      state.selectedVerb = null;
+      state.searchCursor = -1;
+      render();
+      e.preventDefault();
+    } else if (state.query) {
+      state.query = "";
+      state.searchCursor = -1;
+      render();
+      e.preventDefault();
+    } else if (isInput) {
+      e.target.blur();
+      e.preventDefault();
+    }
+    return;
+  }
+
+  if ((e.key === "ArrowDown" || e.key === "ArrowUp") && state.view === "verbs") {
+    const picks = document.querySelectorAll(".verb-pick");
+    if (picks.length === 0) return;
+    const active = document.activeElement;
+    let idx = Array.from(picks).indexOf(active);
+    e.preventDefault();
+    if (e.key === "ArrowDown") {
+      if (idx < picks.length - 1) {
+        picks[idx + 1].focus();
+        picks[idx + 1].scrollIntoView({ block: "nearest" });
+      }
+    } else {
+      if (idx > 0) {
+        picks[idx - 1].focus();
+        picks[idx - 1].scrollIntoView({ block: "nearest" });
+      } else if (idx <= 0) {
+        const input = document.getElementById("searchInput");
+        if (input) input.focus();
+      }
+    }
+  }
+});
 
 render();
 updateFloatingTopButton();

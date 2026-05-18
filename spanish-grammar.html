@@ -1412,7 +1412,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.12 · обновлено: 19.05.2026 00:15</footer>
+      <footer class="app-footer">Версия MVP 0.12 · обновлено: 19.05.2026 00:21</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -3422,14 +3422,23 @@ function tenseById(id) {
   return TENSES.find((tense) => tense.id === id);
 }
 
+function isReflexive(verb) {
+  return verb.endsWith("se") && verb.length > 4;
+}
+
+function baseVerb(verb) {
+  return isReflexive(verb) ? verb.slice(0, -2) : verb;
+}
+
 function verbType(verb) {
-  if (verb.endsWith("ar")) return "ar";
-  if (verb.endsWith("er")) return "er";
+  const b = baseVerb(verb);
+  if (b.endsWith("ar")) return "ar";
+  if (b.endsWith("er")) return "er";
   return "ir";
 }
 
 function stem(verb) {
-  return verb.slice(0, -2);
+  return baseVerb(verb).slice(0, -2);
 }
 
 function regularPresent(verb) {
@@ -3799,16 +3808,18 @@ function formsFor(verb) {
 
 function verbInfo(verb) {
   const irregular = IRREGULARS[verb];
+  const typeLabel = isReflexive(verb) ? `-${verbType(verb)} -se` : `-${verbType(verb)}`;
   return {
     infinitive: verb,
     displayInfinitive: displayInfinitive(verb),
     ru: translationFor(verb),
-    type: `-${verbType(verb)}`,
+    type: typeLabel,
     tags: irregular?.tags || generatedTags(verb),
     participle: participle(verb),
     gerund: gerund(verb),
     forms: formsFor(verb),
-    irregular: Boolean(irregular)
+    irregular: Boolean(irregular),
+    reflexive: isReflexive(verb)
   };
 }
 
@@ -3834,6 +3845,7 @@ function translationFor(verb) {
 
 function generatedTags(verb) {
   const tags = ["правильный", `-${verbType(verb)}`, ...verbExceptionLabels(verb)];
+  if (isReflexive(verb)) tags.push("-se");
   return Array.from(new Set(tags));
 }
 

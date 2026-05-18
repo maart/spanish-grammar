@@ -1412,7 +1412,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.12 · обновлено: 19.05.2026 05:30</footer>
+      <footer class="app-footer">Версия MVP 0.12 · обновлено: 19.05.2026 06:30</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -2926,6 +2926,39 @@ const USEFUL_TABLES = [
   },
   {
     group: "Глагольные шпаргалки",
+    subgroup: "Времена и согласование",
+    title: "Voz pasiva: ser + participio vs se impersonal",
+    description: "Пассивный залог: когда действие важнее того, кто его выполняет. Два способа образования в испанском.",
+    table: `<table><thead><tr><th>Тип</th><th>Схема</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>ser + participio</th><td>ser (в нужном времени) + participio (+ por + деятель)</td><td>La casa fue construida por mi abuelo. El problema será resuelto.</td></tr>
+      <tr><th>participio</th><td>согласуется с подлежащим в роде и числе</td><td>Las cartas fueron escritas. El proyecto ha sido aprobado.</td></tr>
+      <tr><th>se impersonal</th><td>se + 3-е лицо (ед. или мн.)</td><td>Se habla español. Se venden casas. Se dice que…</td></tr>
+      <tr><th>se + 3s</th><td>неопределённое лицо (ед.)</td><td>Se trabaja mucho aquí. Se vive bien.</td></tr>
+      <tr><th>se + 3p</th><td>пассив с мн.числом</td><td>Se alquilan pisos. Se buscan actores.</td></tr>
+      <tr><th>⚠️ se pasivo vs se impersonal</th><td>пассив согласуется с объектом; impersonal всегда в ед.ч.</td><td>Se venden casas (casas — подлежащее). Se vive bien (без подлежащего).</td></tr>
+      <tr><th>⚠️ естественный пассив</th><td>испанцы часто избегают ser + participio, используя se</td><td>Se habla español (лучше чем «español es hablado»).</td></tr>
+    </tbody></table>`
+  },
+  {
+    group: "Глагольные шпаргалки",
+    subgroup: "Времена и согласование",
+    title: "Estilo indirecto: preguntas y órdenes",
+    description: "Как передавать вопросы и просьбы/приказы в косвенной речи. Прямой вопрос становится придаточным.",
+    table: `<table><thead><tr><th>Тип</th><th>Прямая речь</th><th>Косвенная речь</th></tr></thead><tbody>
+      <tr><th>si-вопрос</th><td>¿Tienes tiempo?</td><td>Preguntó si tenía tiempo.</td></tr>
+      <tr><th>вопрос с вопросительным словом</th><td>¿Dónde vives?</td><td>Preguntó dónde vivía.</td></tr>
+      <tr><th>вопрос с qué</th><td>¿Qué haces?</td><td>Preguntó qué hacía.</td></tr>
+      <tr><th>вопрос с quién</th><td>¿Quién es?</td><td>Preguntó quién era.</td></tr>
+      <tr><th>вопрос с cuándo / cómo</th><td>¿Cuándo llegas? / ¿Cómo estás?</td><td>Preguntó cuándo llegaba. Preguntó cómo estaba.</td></tr>
+      <tr><th>просьба / приказ (afirmativo)</th><td>«Ven aquí.»</td><td>Me dijo que viniera allí. (que + subjuntivo)</td></tr>
+      <tr><th>просьба / приказ (negativo)</th><td>«No hables.»</td><td>Me dijo que no hablara. (que + subjuntivo)</td></tr>
+      <tr><th>просьба (no orden)</th><td>«Por favor, ayuda.»</td><td>Me pidió que le ayudara. (pedir que + subjuntivo)</td></tr>
+      <tr><th>запрет</th><td>«No entréis.»</td><td>Dijo que no entráramos.</td></tr>
+      <tr><th>⚠️ cambio de tiempo</th><td>те же сдвиги, что в declarativa: presente → imperfecto, etc.</td><td>Preguntó dónde vivía (vivía, не vive).</td></tr>
+    </tbody></table>`
+  },
+  {
+    group: "Глагольные шпаргалки",
     subgroup: "Глагольные конструкции и управление",
     title: "Estar + gerundio / Llevar + gerundio",
     description: "Действие прямо сейчас или которое уже длится какое-то время.",
@@ -3316,6 +3349,24 @@ const USEFUL_TABLES = [
   },
   {
     group: "Служебные слова и степень",
+    subgroup: "Присоединение и связь",
+    title: "Oraciones de relativo: que, quien, el cual, cuyo",
+    description: "Относительные местоимения: связывают придаточное предложение с главным, замещая существительное.",
+    table: `<table><thead><tr><th>Местоимение</th><th>Для кого / чего</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>que</th><td>люди, предметы (универсальное)</td><td>El libro que leo es interesante. La chica que conocí ayer.</td></tr>
+      <tr><th>quien / quienes</th><td>только люди (после предлогов, паузы)</td><td>La persona de quien te hablé. Mis amigos, quienes llegaron tarde.</td></tr>
+      <tr><th>el cual / la cual / los cuales / las cuales</th><td>люди и предметы (формальное, после предлогов)</td><td>El motivo por el cual no vine. Los alumnos, los cuales aprobaron.</td></tr>
+      <tr><th>lo cual</th><td>вся предыдущая ситуация (средний род)</td><td>Llegó tarde, lo cual me molestó.</td></tr>
+      <tr><th>cuyo / a / os / as</th><td>притяжательное: чей / которого</td><td>El autor cuyo libro leí. La chica cuyo padre es médico.</td></tr>
+      <tr><th>donde</th><td>где / куда (relativo de lugar)</td><td>La ciudad donde nací. La casa donde vivo.</td></tr>
+      <tr><th>cuando</th><td>когда (relativo de tiempo)</td><td>El día cuando nos conocimos.</td></tr>
+      <tr><th>como</th><td>как (relativo de modo)</td><td>No me gusta la forma como hablas.</td></tr>
+      <tr><th>⚠️ que vs quien</th><td>que универсально; quien только для людей, обычно с предлогом</td><td>La mujer que vi (ok). La mujer a quien vi (formal). El libro quien (❌).</td></tr>
+      <tr><th>⚠️ cuyo</th><td>согласуется с обладаемым, не с обладателем</td><td>El hombre cuyo coche (машина → м.р.)... La mujer cuya casa (дом → ж.р.)...</td></tr>
+    </tbody></table>`
+  },
+  {
+    group: "Служебные слова и степень",
     subgroup: "Степень и количество",
     title: "Сравнительная степень: más, menos, tan",
     description: "Как сравнивать признаки и количества в испанском.",
@@ -3402,6 +3453,58 @@ const USEFUL_TABLES = [
       <tr><th>ante-</th><td>перед / до</td><td>anteayer (позавчера), antebrazo (предплечье), antemano (заранее)</td></tr>
       <tr><th>contra-</th><td>против</td><td>contraatacar (контратаковать), contradecir (противоречить)</td></tr>
       <tr><th>entre-</th><td>взаимно / между</td><td>entrecruzar (перекрещивать), entreabrir (приоткрыть)</td></tr>
+    </tbody></table>`
+  },
+  {
+    group: "Служебные слова и степень",
+    subgroup: "Словообразование",
+    title: "Aumentativos y diminutivos: -ito, -ón, -azo...",
+    description: "Суффиксы для уменьшения (ласкательности) и увеличения (усиления, грубости).",
+    table: `<table><thead><tr><th>Суффикс</th><th>Значение</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>-ito / -ita</th><td>уменьшительно-ласкательное (самый частый)</td><td>casita (домик), perrito (собачка), ahorita (прямо сейчас)</td></tr>
+      <tr><th>-illo / -illa</th><td>уменьшительное (часто в Испании)</td><td>mesilla (столик), chiquillo (мальчуган), ventanilla (окошечко)</td></tr>
+      <tr><th>-ín / -ina</th><td>уменьшительное (север Испании)</td><td>pequeñín (крошка), chiquitín (малюсенький)</td></tr>
+      <tr><th>-ón / -ona</th><td>увеличительное (большой, грубый)</td><td>cabezón (головастый), solterón (старый холостяк), narizón (носатый)</td></tr>
+      <tr><th>-ote / -ota</th><td>увеличительное (большой, нелепый)</td><td>librote (книжища), amigote (дружище), grandote (здоровенный)</td></tr>
+      <tr><th>-azo / -aza</th><td>увеличительное (удар / усиление)</td><td>golpazo (сильный удар), portazo (хлопанье дверью), buenazo (добряк)</td></tr>
+      <tr><th>-ucho / -ucha</th><td>уничижительное (плохой, жалкий)</td><td>casucha (лачуга), medicucho (плохой врач), pueblucho (городишко)</td></tr>
+      <tr><th>⚠️ род сохраняется</th><td>суффикс меняет окончание, но род остаётся</td><td>la casa → la casita (ж.р.), el perro → el perrito (м.р.)</td></tr>
+      <tr><th>⚠️ -ito может менять корень</th><td>c → qu, z → c, g → gu</td><td>poco → poquito, lápiz → lapicito, amigo → amiguito</td></tr>
+    </tbody></table>`
+  },
+  {
+    group: "Служебные слова и степень",
+    subgroup: "Словообразование",
+    title: "Sufijos comunes: -ción, -miento, -dor, -ista...",
+    description: "Продуктивные суффиксы для образования существительных и прилагательных от глаголов и других основ.",
+    table: `<table><thead><tr><th>Sufijo</th><th>Образует</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>-ción / -sión</th><td>сущ. от глагола (-ar → -ación, -er/-ir → -ición)</td><td>informar → información, decidir → decisión, construir → construcción</td></tr>
+      <tr><th>-miento</th><td>сущ. от глагола (процесс/результат)</td><td>conocer → conocimiento, pensar → pensamiento, sentir → sentimiento</td></tr>
+      <tr><th>-dor / -dora</th><td>деятель / инструмент от глагола</td><td>trabajar → trabajador, leer → lector, lavar → lavadora, secador</td></tr>
+      <tr><th>-ero / -era</th><td>профессия / вместилище</td><td>pan → panadero, librería (книжный), fruta → frutero (фруктовщик / фруктовница)</td></tr>
+      <tr><th>-ista</th><td>приверженец / профессия (муж./жен.)</td><td>arte → artista, periodismo → periodista, fútbol → futbolista</td></tr>
+      <tr><th>-dad</th><td>отвлечённое существительное от прилагательного</td><td>feliz → felicidad, libre → libertad, bello → belleza, posible → posibilidad</td></tr>
+      <tr><th>-eza</th><td>качество от прилагательного</td><td>triste → tristeza, grande → grandeza, rico → riqueza</td></tr>
+      <tr><th>-ario / -aria</th><td>место / профессия / отношение</td><td>biblioteca → bibliotecario, seguro → aseguradora, dieta → dietario</td></tr>
+      <tr><th>-ismo</th><td>учение / течение / образ действия</td><td>capitalismo, turismo, optimismo, españolismo</td></tr>
+      <tr><th>-ivo / -iva</th><td>прилагательное от глагола</td><td>actuar → activo, educar → educativo, decidir → decisivo</td></tr>
+    </tbody></table>`
+  },
+  {
+    group: "Служебные слова и степень",
+    subgroup: "Словообразование",
+    title: "Gentilicios: -ano, -eño, -és, -ino, -ense",
+    description: "Суффиксы для образования названий жителей стран, регионов и городов.",
+    table: `<table><thead><tr><th>Sufijo</th><th>Страны / регионы</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>-ano / -ana</th><td>очень частый, многие страны</td><td>Italia → italiano, México → mexicano, Alemania → alemán (c -án)</td></tr>
+      <tr><th>-eño / -eña</th><td>испанские регионы и Латинская Америка</td><td>Madrid → madrileño, Extremadura → extremeño, Chile → chileno, Brasil → brasileño</td></tr>
+      <tr><th>-és / -esa</th><td>страны (часто Европа)</td><td>España → español, Francia → francés, Inglaterra → inglés, Portugal → portugués</td></tr>
+      <tr><th>-ino / -ina</th><td>страны и города</td><td>Argentina → argentino, Cuba → cubano, Elche → ilicitano, Granada → granadino</td></tr>
+      <tr><th>-ense</th><td>города (универсальный)</td><td>Estados Unidos → estadounidense, Canadá → canadiense, París → parisiense</td></tr>
+      <tr><th>-í</th><td>арабские страны / регионы</td><td>Marruecos → marroquí, Israel → israelí, Kuwait → kuwaití, Ceuta → ceutí</td></tr>
+      <tr><th>-eco / -eca</th><td>Центральная Америка</td><td>Guatemala → guatemalteco, Perú → peruano, Nicaragua → nicaragüense</td></tr>
+      <tr><th>⚠️ исключения</th><td>не подчиняются общему правилу</td><td>Japón → japonés (не japónés), China → chino, Suecia → sueco, Noruega → noruego</td></tr>
+      <tr><th>⚠️ род</th><td>большинство меняют -o на -a для женщин</td><td>español → española, argentino → argentina, francés → francesa</td></tr>
     </tbody></table>`
   }
 ];
@@ -5149,7 +5252,13 @@ function tableSummary(item) {
     "Expresiones con «hacer»: hacer la cama, hacer caso, hacer daño...": "hacer + sustantivo: la cama, caso, daño, cola, falta, las paces; hacerse el tonto — притворяться.",
     "Conectores avanzados: a pesar de, no obstante, al contrario...": "a pesar de — несмотря на, al contrario — напротив, por consiguiente — следовательно, de todas formas — в любом случае.",
     "Falsos amigos: испанский ≠ русский": "embarazada ≠ смущённая (беременная), constipado ≠ запор (простуда), éxito ≠ выход (успех), asistir ≠ помогать (посещать).",
-    "Prefijos comunes: re-, des-, in-/im-, pre-, sub-": "re- снова/усиление, des- отрицание, in-/im- не-, pre- до/заранее, sub- под/ниже, super- сверх, ante- перед."
+    "Prefijos comunes: re-, des-, in-/im-, pre-, sub-": "re- снова/усиление, des- отрицание, in-/im- не-, pre- до/заранее, sub- под/ниже, super- сверх, ante- перед.",
+    "Oraciones de relativo: que, quien, el cual, cuyo": "que — универсально, quien — только люди (с предлогом), el cual — формальное, cuyo — притяжательное (чей).",
+    "Voz pasiva: ser + participio vs se impersonal": "ser + participio — классический пассив; se + 3-е лицо — естественный пассив (se habla español).",
+    "Estilo indirecto: preguntas y órdenes": "вопросы: si для sí/no, вопросительное слово для остальных; приказы: que + subjuntivo.",
+    "Aumentativos y diminutivos: -ito, -ón, -azo...": "-ito/-illo уменьшение, -ón/-ote/-azo увеличение, -ucho уничижение; род сохраняется.",
+    "Sufijos comunes: -ción, -miento, -dor, -ista...": "-ción/-sión сущ. от глагола, -miento процесс, -dor деятель, -dad/-eza качество, -ista профессия.",
+    "Gentilicios: -ano, -eño, -és, -ino, -ense": "-ano и -eño самые частые, -és для Европы, -ino для Аргентины/Кубы, -ense универсальный для городов."
   };
   return map[item.title] || item.description;
 }
@@ -5196,7 +5305,13 @@ function tableMistake(item) {
     "Expresiones con «hacer»: hacer la cama, hacer caso, hacer daño...": "Hacer la cama — заправить кровать, не «сделать кровать». Hacer caso — слушаться, не «делать случай».",
     "Conectores avanzados: a pesar de, no obstante, al contrario...": "A pesar de que всегда с indicativo или subjuntivo; no confundir pesar (вес) с a pesar de (несмотря на).",
     "Falsos amigos: испанский ≠ русский": "Estoy constipado ≠ я страдаю запором (я простужен). Éxito ≠ выход (успех). Largo ≠ логово (длинный).",
-    "Prefijos comunes: re-, des-, in-/im-, pre-, sub-": "In- меняется на im- перед p/b (imposible, imbatible), на i- перед l/r (ilegal, irregular)."
+    "Prefijos comunes: re-, des-, in-/im-, pre-, sub-": "In- меняется на im- перед p/b (imposible, imbatible), на i- перед l/r (ilegal, irregular).",
+    "Oraciones de relativo: que, quien, el cual, cuyo": "Cuyo согласуется с обладаемым (не обладателем): el hombre cuyo coche, la mujer cuya casa.",
+    "Voz pasiva: ser + participio vs se impersonal": "Ser + participio согласуется с подлежащим (las cartas fueron escritas); se impersonal всегда ед.ч.",
+    "Estilo indirecto: preguntas y órdenes": "В вопросах порядок слов прямой (preguntó qué hacía, не qué hacía preguntó). В приказах — subjuntivo.",
+    "Aumentativos y diminutivos: -ito, -ón, -azo...": "El problemón (большая проблема), но не la problemón — род сохраняется: casa → casota (ж.р.).",
+    "Sufijos comunes: -ción, -miento, -dor, -ista...": "-ción часто женского рода (la información); -miento мужского (el conocimiento).",
+    "Gentilicios: -ano, -eño, -és, -ino, -ense": "Inglaterra → inglés (Inglaterrés неверно). Japón → japonés (не japónés)."
   };
   return map[item.title] || "";
 }

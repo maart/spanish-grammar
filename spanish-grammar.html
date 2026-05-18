@@ -86,7 +86,7 @@ input {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 20px 18px 18px 24px;
+  padding: 16px 18px 16px 24px;
   border-radius: 8px;
 }
 
@@ -103,14 +103,6 @@ input {
   gap: 10px;
 }
 
-.eyebrow {
-  margin: 0 0 4px;
-  color: var(--accent-2);
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
 .brand-kicker {
   margin-bottom: 0;
   color: var(--muted);
@@ -118,18 +110,18 @@ input {
   font-weight: 800;
 }
 
-.brand-tags {
+.brand-stats {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
 }
 
-.brand-tags span {
-  border: 1px solid var(--line);
+.brand-stats span {
+  border: 1px solid color-mix(in srgb, var(--accent-2) 42%, var(--line));
   border-radius: 999px;
   padding: 4px 9px;
-  background: var(--surface-2);
-  color: var(--muted);
+  background: color-mix(in srgb, var(--success-soft) 52%, var(--surface));
+  color: var(--accent-2);
   font-size: 12px;
   font-weight: 900;
 }
@@ -143,8 +135,8 @@ p {
 
 h1 {
   margin-bottom: 0;
-  font-size: clamp(28px, 8vw, 46px);
-  line-height: 0.95;
+  font-size: clamp(28px, 6vw, 40px);
+  line-height: 1;
 }
 
 #homeTitle {
@@ -175,7 +167,6 @@ h3 {
 }
 
 .search-panel {
-  margin-top: 14px;
   padding: 14px;
   border-radius: 8px;
 }
@@ -214,8 +205,8 @@ input[type="search"] {
   display: grid;
   grid-template-columns: repeat(5, minmax(72px, 1fr));
   gap: 6px;
-  margin: 14px 0 0;
-  padding: 8px 0;
+  margin: 12px 0 0;
+  padding: 8px 0 6px;
   overflow-x: auto;
   background: color-mix(in srgb, var(--bg) 88%, transparent);
   backdrop-filter: blur(12px);
@@ -241,7 +232,7 @@ input[type="search"] {
 .content {
   display: grid;
   gap: 12px;
-  margin-top: 8px;
+  margin-top: 6px;
 }
 
 .content > *,
@@ -1268,6 +1259,15 @@ select {
     grid-template-columns: repeat(5, max-content);
   }
 
+  .topbar {
+    align-items: start;
+    padding: 14px 14px 13px 20px;
+  }
+
+  .brand-block {
+    gap: 8px;
+  }
+
   .tab {
     padding: 0 12px;
   }
@@ -1374,14 +1374,13 @@ select {
       <header class="topbar">
         <div class="brand-block">
           <div>
-            <p class="eyebrow">Глаголы, времена, исключения</p>
             <h1 id="homeTitle" title="К списку глаголов">Испанский справочник</h1>
           </div>
-          <p class="brand-kicker">Короткие шпаргалки и быстрый поиск по формам</p>
-          <div class="brand-tags" aria-label="Темы справочника">
-            <span>Indicativo</span>
-            <span>Subjuntivo</span>
-            <span>Imperativo</span>
+          <p class="brand-kicker">Глаголы, времена, наклонения и шпаргалки в одном HTML-файле</p>
+          <div class="brand-stats" aria-label="Кратко о справочнике">
+            <span>1000 глаголов</span>
+            <span>19 времен</span>
+            <span>офлайн</span>
           </div>
         </div>
         <button class="icon-button" id="themeToggle" type="button" aria-label="Переключить тему" title="Тема">◐</button>
@@ -1396,7 +1395,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.10 · обновлено: 18.05.2026 17:00</footer>
+      <footer class="app-footer">Версия MVP 0.11 · обновлено: 18.05.2026 19:25</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 

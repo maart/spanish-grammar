@@ -499,7 +499,24 @@ input[type="search"] {
 }
 
 .table-filter-tabs {
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (min-width: 640px) {
+  .table-filter-tabs {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+}
+
+.toc-toggle {
+  width: 100%;
+  margin-top: 10px;
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+.toc-toggle:hover {
+  opacity: 1;
 }
 
 .filter-count {
@@ -1433,7 +1450,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.12 · обновлено: 19.05.2026 07:00</footer>
+      <footer class="app-footer">Версия MVP 0.12 · обновлено: 19.05.2026 07:30</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -3726,6 +3743,7 @@ const state = {
   moodQuizIndex: 0,
   moodQuizRevealed: false,
   tableFilter: "all",
+  showToc: false,
   openTables: {},
   tenseFilter: "basic",
   openExceptionTense: null,
@@ -5150,14 +5168,17 @@ function renderTables() {
         </button>
       `).join("")}
     </div>
+    <button class="small-button toc-toggle" type="button" data-toggle-toc>
+      ${state.showToc ? "▲ Скрыть оглавление" : "▼ Показать оглавление"}
+    </button>
+    ${state.showToc ? `
     <div class="table-toc" aria-label="Оглавление шпаргалок">
-      <h3>Оглавление</h3>
       ${TABLE_GROUPS.map((group) => {
         const items = visibleTables.filter((item) => item.group === group.title);
         if (items.length === 0) return "";
         return `
           <div class="table-toc-group">
-            <div class="table-toc-title">${group.title}</div>
+            <div class="table-toc-title">${group.title} <span class="filter-count">${items.length}</span></div>
             <div class="table-toc-links">
               ${items.map((item) => `<button class="small-button" type="button" data-table-jump="table-${item.index}">${item.title}</button>`).join("")}
             </div>
@@ -5165,14 +5186,20 @@ function renderTables() {
         `;
       }).join("")}
     </div>
+    ` : ""}
   `});
   content.appendChild(nav);
   bindClickAll(nav, "[data-table-filter]", (event) => {
-    state.tableFilter = event.currentTarget.dataset.tableFilter;
+    const id = event.currentTarget.dataset.tableFilter;
+    state.tableFilter = state.tableFilter === id ? "all" : id;
     renderTables();
   });
   bindClickAll(nav, "[data-table-jump]", (event) => {
     scrollToCard(event.currentTarget.dataset.tableJump);
+  });
+  bindClickAll(nav, "[data-toggle-toc]", () => {
+    state.showToc = !state.showToc;
+    renderTables();
   });
   TABLE_GROUPS.forEach((group) => {
     const groupTables = visibleTables.filter((item) => item.group === group.title);

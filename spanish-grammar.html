@@ -1692,7 +1692,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.17 · обновлено: 19.05.2026 15:10</footer>
+      <footer class="app-footer">Версия MVP 0.17 · обновлено: 19.05.2026 15:25</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -7049,6 +7049,10 @@ function renderCardQuiz(content) {
     answerHTML = `<input class="quiz-input" id="quizAnswerInput" type="text" autocomplete="off" placeholder="${placeholder}" value="${escapeHTML(state.cardQuizInput)}">`;
   }
 
+  const hotkeyHint = !state.cardQuizAnswered
+    ? `<span class="muted" style="font-size:12px">Enter — проверить · Esc — закончить</span>`
+    : `<span class="muted" style="font-size:12px">→ или Enter — дальше · Esc — закончить</span>`;
+
   card.innerHTML = `
     <div class="study-card-top">
       <div class="quiz-stats">
@@ -7069,6 +7073,7 @@ function renderCardQuiz(content) {
         : `<button class="small-button primary" type="button" id="nextQuestion">Дальше →</button>`
       }
     </div>
+    <div style="text-align:center">${hotkeyHint}</div>
   `;
   content.appendChild(card);
 
@@ -7095,8 +7100,7 @@ function renderCardQuiz(content) {
     renderCards();
   };
 
-  card.querySelector("#checkAnswer")?.addEventListener("click", handleCheckAnswer);
-  card.querySelector("#nextQuestion")?.addEventListener("click", () => {
+  const handleNext = () => {
     state.cardQuizIndex += 1;
     state.cardQuizInput = "";
     state.cardQuizAnswered = false;
@@ -7105,8 +7109,35 @@ function renderCardQuiz(content) {
       return;
     }
     renderCards();
-  });
+  };
+
+  card.querySelector("#checkAnswer")?.addEventListener("click", handleCheckAnswer);
+  card.querySelector("#nextQuestion")?.addEventListener("click", handleNext);
   card.querySelector("[data-stop]")?.addEventListener("click", stopCardQuiz);
+
+  const handleGlobalKeydown = (e) => {
+    if (state.cardQuiz.length === 0) return;
+    if (e.key === "Escape") {
+      e.preventDefault();
+      stopCardQuiz();
+      return;
+    }
+    if (state.cardQuizAnswered && (e.key === "ArrowRight" || e.key === "Enter")) {
+      e.preventDefault();
+      handleNext();
+      return;
+    }
+    if (!state.cardQuizAnswered && e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      handleCheckAnswer();
+      return;
+    }
+  };
+
+  document.addEventListener("keydown", handleGlobalKeydown);
+  const cleanup = () => document.removeEventListener("keydown", handleGlobalKeydown);
+  card.addEventListener("remove", cleanup, { once: true });
+  card._cleanupHotkeys = cleanup;
 }
 
 function renderCardQuizResults(content) {
@@ -7129,14 +7160,35 @@ function renderCardQuizResults(content) {
       <button class="small-button primary" type="button" id="restartQuiz">Ещё раз</button>
       <button class="small-button" type="button" id="backToCards">К списку</button>
     </div>
+    <div style="text-align:center"><span class="muted" style="font-size:12px">Esc — закрыть · Enter — ещё раз</span></div>
   `;
   content.appendChild(card);
   card.querySelector("#restartQuiz")?.addEventListener("click", startCardQuiz);
   card.querySelector("#backToCards")?.addEventListener("click", stopCardQuiz);
   card.querySelector("[data-stop]")?.addEventListener("click", stopCardQuiz);
+
+  const handleResultsKeydown = (e) => {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      stopCardQuiz();
+      return;
+    }
+    if (e.key === "Enter") {
+      e.preventDefault();
+      startCardQuiz();
+      return;
+    }
+  };
+  document.addEventListener("keydown", handleResultsKeydown);
+  const cleanupResults = () => document.removeEventListener("keydown", handleResultsKeydown);
+  card.addEventListener("remove", cleanupResults, { once: true });
+  card._cleanupHotkeys = cleanupResults;
 }
 
 function stopCardQuiz() {
+  document.querySelectorAll(".study-card").forEach((card) => {
+    if (card._cleanupHotkeys) card._cleanupHotkeys();
+  });
   state.cardQuiz = [];
   state.cardQuizIndex = 0;
   state.cardQuizRevealed = false;

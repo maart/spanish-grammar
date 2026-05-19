@@ -1594,7 +1594,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.14 · обновлено: 19.05.2026 10:49</footer>
+      <footer class="app-footer">Версия MVP 0.15 · обновлено: 19.05.2026 10:59</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -2963,6 +2963,7 @@ const USEFUL_TABLES = [
       <tr><th>Ético</th><td>se + IO + глагол (эмоция)</td><td>Se comió toda la pizza. Se bebió dos vasos.</td><td>Он съел всю пиццу (подчёркивает полноту).</td></tr>
       <tr><th>⚠️ pasiva vs impersonal</th><td>pasiva: подлеж. есть; impersonal: всегда ед.ч.</td><td>Se alquilan coches (pasiva). Se trabaja mucho (impersonal).</td><td></td></tr>
       <tr><th>⚠️ accidental: глагол</th><td>согласуется с объектом, не с IO</td><td>Se me olvidó la llave (ед.) / Se me olvidaron las llaves (мн.)</td><td></td></tr>
+      <tr><th>⚠️ imperativo afirm.</th><td>местоимения присоединяются в конце</td><td>¡Cállate! ¡Vámonos! ¡Dígamelo!</td><td></td></tr>
     </tbody></table>`
   },
 
@@ -2976,6 +2977,12 @@ const USEFUL_TABLES = [
       <tr><th>женский, определенный</th><td>la</td><td>las</td><td>la casa, las casas</td></tr>
       <tr><th>мужской, неопределенный</th><td>un</td><td>unos</td><td>un día, unos días</td></tr>
       <tr><th>женский, неопределенный</th><td>una</td><td>unas</td><td>una mesa, unas mesas</td></tr>
+      <tr><th colspan="4"><strong>Когда артикль НЕ ставится:</strong></th></tr>
+      <tr><th>перед профессией</th><td>Soy médico. Es ingeniera.</td><td>Но: Es <em>un</em> buen médico (с характеристикой)</td></tr>
+      <tr><th>после en</th><td>en casa, en clase, en la playa</td><td>Но: en <em>la</em> oficina (конкретное место)</td></tr>
+      <tr><th>абстрактные сущ.</th><td>Me gusta la música. (общее — с артиклем!)</td><td>Но: Tengo hambre. (состояние — без артикля)</td></tr>
+      <tr><th>языки (после hablar)</th><td>Hablo español. (без артикля)</td><td>Но: <em>El</em> español es difícil. (как предмет)</td></tr>
+      <tr><th>языки (после en)</th><td>en español, en inglés</td><td>Без артикля</td></tr>
     </tbody></table>`
   },
 
@@ -3003,6 +3010,12 @@ const USEFUL_TABLES = [
       <tr><th>четверть</th><td>cuarto</td><th>десяток</th><td>decena</td><th>дюжина</th><td>docena</td></tr>
       <tr><th>сотня</th><td>centena</td><th>тысяча (сущ.)</th><td>millar</td><th>пара</th><td>par</td></tr>
       <tr><th>⚠️ medio vs mitad</th><td colspan="5">medio + сущ. (medio litro); mitad (сущ.: la mitad del litro)</td></tr>
+      <tr><th colspan="3"><strong>Проценты</strong></th><th colspan="3"><strong>Дроби</strong></th></tr>
+      <tr><th>10%</th><td>el diez por ciento</td><th>½</th><td>la mitad / un medio</td></tr>
+      <tr><th>25%</th><td>el veinticinco por ciento</td><th>⅓</th><td>un tercio</td></tr>
+      <tr><th>50%</th><td>el cincuenta por ciento</td><th>¼</th><td>un cuarto</td></tr>
+      <tr><th>75%</th><td>el setenta y cinco por ciento</td><th>¾</th><td>tres cuartos</td></tr>
+      <tr><th>100%</th><td>el cien por cien</td><th>⅕</th><td>un quinto</td></tr>
     </tbody></table>`
   },
 
@@ -3046,6 +3059,10 @@ const USEFUL_TABLES = [
       <tr><th>столько же + сущ.</th><td>tanto/a/os/as + sust + como</td><td>Tengo tantos libros como tú.</td></tr>
       <tr><th>лучше / хуже</th><td>mejor / peor (irregular)</td><td>Este libro es mejor que aquel.</td></tr>
       <tr><th>превосходная</th><td>el/la más + adj + de</td><td>Es el más alto de la clase.</td></tr>
+      <tr><th colspan="3" style="text-align:center"><strong>Прилагательные ТОЛЬКО перед сущ.</strong></th></tr>
+      <tr><th>mero</th><td>mere, просто</td><td>Es un mero trámite. (не: un trámite mero)</td></tr>
+      <tr><th>supuesto / presunto</th><td>предполагаемый</td><td>El supuesto ladrón. La presunta culpable.</td></tr>
+      <tr><th>cierto</th><td>некоторый, определённый</td><td>Un cierto interés. (cierto = определённый; después = истинный)</td></tr>
     </tbody></table>`
   },
 
@@ -3063,6 +3080,7 @@ const USEFUL_TABLES = [
       <tr><th>-í</th><td>арабские страны / регионы</td><td>Marruecos → marroquí, Israel → israelí</td></tr>
       <tr><th>🏙️ города Испании</th><td>частые gentilicios</td><td>Madrid → madrileño, Barcelona → barcelonés, Sevilla → sevillano, Valencia → valenciano, Bilbao → bilbaíno, Zaragoza → zaragozano, Málaga → malagueño, Toledo → toledano, Salamanca → salmantino, San Sebastián → donostiarra, Valladolid → vallisoletano, Cádiz → gaditano, Córdoba → cordobés, Murcia → murciano</td></tr>
       <tr><th>⚠️ род</th><td>большинство меняют -o на -a для женщин</td><td>español → española, argentino → argentina, francés → francesa</td></tr>
+      <tr><th>🌍 другие страны</th><td>частые gentilicios</td><td>Rusia → ruso, China → chino, Japón → japonés, Corea → coreano, Turquía → turco, Grecia → griego, Egipto → egipcio, Polonia → polaco, Suecia → sueco, Noruega → noruego, Finlandia → finlandés, Irlanda → irlandés, Portugal → portugués, Países Bajos → neerlandés</td></tr>
     </tbody></table>`
   },
 
@@ -3278,6 +3296,11 @@ const USEFUL_TABLES = [
       <tr><th>luchar por</th><td>бороться за</td><td>Luchamos por la justicia.</td></tr>
       <tr><th>preocuparse por</th><td>беспокоиться о</td><td>Me preocupo por ti.</td></tr>
       <tr><th>interesarse por</th><td>интересоваться</td><td>Se interesa por la historia.</td></tr>
+      <tr><th>negarse a</th><td>отказываться</td><td>Se negó a firmar.</td></tr>
+      <tr><th>atreverse a</th><td>осмелиться</td><td>No me atrevo a decírselo.</td></tr>
+      <tr><th>dedicarse a</th><td>заниматься (профессия)</td><td>Se dedica a la enseñanza.</td></tr>
+      <tr><th>aspirar a</th><td>стремиться к</td><td>Aspira a ser director.</td></tr>
+      <tr><th>acostumbrarse a</th><td>привыкнуть к</td><td>Me acostumbré a madrugar.</td></tr>
     </tbody></table>`
   },
 
@@ -3319,6 +3342,13 @@ const USEFUL_TABLES = [
       <tr><th>просьба (отр.)</th><td>"No hables."</td><td>Me dijo que no hablara. (que + subj.)</td></tr>
       <tr><th>просьба (pedir)</th><td>"Por favor, ayuda."</td><td>Me pidió que le ayudara. (pedir que + subj.)</td></tr>
       <tr><th>запрет</th><td>"No entréis."</td><td>Dijo que no entráramos.</td></tr>
+      <tr><th colspan="3" style="text-align:center"><strong>Смена маркеров времени</strong></th></tr>
+      <tr><th>hoy</th><td>→ ese día / aquel día</td><td>"Hoy llueve" → Dijo que ese día llovía.</td></tr>
+      <tr><th>mañana</th><td>→ al día siguiente</td><td>"Voy mañana" → Dijo que iba al día siguiente.</td></tr>
+      <tr><th>ayer</th><td>→ el día anterior</td><td>"Ayer fui" → Dijo que el día anterior fue.</td></tr>
+      <tr><th>la semana pasada</th><td>→ la semana anterior</td><td>"La semana pasada…" → Dijo que la semana anterior…</td></tr>
+      <tr><th>ahora</th><td>→ entonces</td><td>"Ahora estoy bien" → Dijo que entonces estaba bien.</td></tr>
+      <tr><th>este/aquí</th><td>→ ese/allí</td><td>"Este libro" → Dijo que ese libro.</td></tr>
     </tbody></table>`
   },
 
@@ -3535,6 +3565,8 @@ const USEFUL_TABLES = [
       <tr><th>para</th><td>цель, адресат, срок, назначение</td><td>Este regalo es para ti.</td></tr>
       <tr><th>para</th><td>направление и мнение</td><td>Salgo para Madrid. Para mí, es importante.</td></tr>
       <tr><th>por vs para</th><td>причина / цель</td><td>Lo hago por ti. (ради тебя) vs Lo hago para ti. (для тебя)</td></tr>
+      <tr><th>por + infinitivo</th><td>причина: «из-за того что»</td><td>Me multaron por llegar tarde. Gracias por venir.</td></tr>
+      <tr><th>para + infinitivo</th><td>цель: «чтобы»</td><td>Estudio para aprobar. Vine para ayudarte.</td></tr>
     </tbody></table>`
   },
 
@@ -3644,6 +3676,10 @@ const USEFUL_TABLES = [
       <tr><th>incluso / ni siquiera</th><td>даже / даже не</td><td>Incluso los niños lo saben. Ni siquiera me llamó.</td></tr>
       <tr><th>al fin y al cabo</th><td>в конце концов / в итоге</td><td>Al fin y al cabo, es tu decisión.</td></tr>
       <tr><th>en definitiva / en resumen</th><td>в итоге / вкратце</td><td>En definitiva, no vale la pena.</td></tr>
+      <tr><th>por un lado… por otro</th><td>с одной стороны… с другой</td><td>Por un lado es caro, por otro es bueno.</td></tr>
+      <tr><th>en primer lugar</th><td>во-первых</td><td>En primer lugar, hay que estudiar.</td></tr>
+      <tr><th>por último</th><td>наконец / в-последних</td><td>Por último, quiero agradecer…</td></tr>
+      <tr><th>dicho esto</th><td>сказав это / тем не менее</td><td>Dicho esto, no estoy de acuerdo.</td></tr>
     </tbody></table>`
   },
 
@@ -3805,6 +3841,11 @@ const USEFUL_TABLES = [
       <tr><th>total que</th><td>в итоге / короче говоря</td><td>Total que no fuimos. Perdimos el tren.</td></tr>
       <tr><th>a ver</th><td>ну-ка / давай посмотрим</td><td>A ver, ¿qué pasa aquí? A ver si vienes pronto.</td></tr>
       <tr><th>⚠️ pues</th><td>в начале фразы — заполнитель паузы</td><td>Pues… no sé. (англ. well)</td></tr>
+      <tr><th>¿sabes?</th><td>понимаешь? / знаешь?</td><td>Es muy difícil, ¿sabes?</td></tr>
+      <tr><th>¿me entiendes?</th><td>ты меня понимаешь?</td><td>Hay que hacerlo así, ¿me entiendes?</td></tr>
+      <tr><th>¿eh?</th><td>да? / не так ли? (подтверждение)</td><td>Hace calor, ¿eh? Es bueno, ¿eh?</td></tr>
+      <tr><th>en plan</th><td>типа / в стиле (молодёж.)</td><td>Estaba en plan «no me importa».</td></tr>
+      <tr><th>o sea que</th><td>значит / получается</td><td>O sea que no vienes. ¿O sea que es verdad?</td></tr>
     </tbody></table>`
   },
 
@@ -3850,7 +3891,251 @@ const USEFUL_TABLES = [
       <tr><th>Год</th><td>2000 → dos mil</td><td>1998 → mil novecientos noventa y ocho</td></tr>
       <tr><th>Предлоги с днями</th><td>el / los + день</td><td>el lunes, los lunes</td></tr>
       <tr><th>Предлоги с месяцами</th><td>en + месяц</td><td>en enero, en verano</td></tr>
-      <tr><th>«Сейчас / в этом»</th><td>ahora / este</td><td>Ahora son las tres. Este mes, esta semana.</td></tr>
+       <tr><th>«Сейчас / в этом»</th><td>ahora / este</td><td>Ahora son las tres. Este mes, esta semana.</td></tr>
+      <tr><th>Периоды дня</th><td>por la mañana / tarde / noche</td><td>Trabajo por la mañana. Salgo por la tarde.</td></tr>
+      <tr><th>«назад»</th><td>hace + время</td><td>Hace una semana. Hace dos años.</td></tr>
+      <tr><th>Времена года</th><td>la primavera, el verano, el otoño, el invierno</td><td>En primavera llueve. En el verano hace calor.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Местоимения и объекты",
+    subgroup: "Формы вежливости",
+    title: "Tú vs Usted vs Vosotros: когда использовать",
+    description: "Испания: tú для друзей/семьи, usted для формальных ситуаций, vosotros для группы знакомых. В LatAm vosotros не используется.",
+    table: `<table><thead><tr><th>Форма</th><th>Когда</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>tú</th><td>друзья, семья, коллеги одного уровня, дети</td><td>¿Cómo estás? ¿Quieres café?</td></tr>
+      <tr><th>usted (Ud.)</th><td>незнакомые люди, старшие, начальство, официальные ситуации</td><td>¿Cómo está usted? ¿Quiere café?</td></tr>
+      <tr><th>vosotros</th><td>группа знакомых (только Испания!)</td><td>¿Cómo estáis? ¿Queréis café?</td></tr>
+      <tr><th>ustedes (Uds.)</th><td>группа формально (Испания) / любая группа (LatAm)</td><td>¿Cómo están ustedes?</td></tr>
+      <tr><th>⚠️ Испания</th><td colspan="2">tú (ед.) + vosotros (мн.) —informal; usted (ед.) + ustedes (мн.) — formal</td></tr>
+      <tr><th>⚠️ LatAm</th><td colspan="2">tú/usted (ед.) + ustedes (мн.) — vosotros НЕ используется</td></tr>
+      <tr><th>⚠️ переход на tú</th><td colspan="2">«¿Podemos tutearnos?» — предложение перейти на «ты»</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Местоимения и объекты",
+    subgroup: "Местоимения с неличными формами",
+    title: "Местоимения при инфинитиве, герундии и императиве",
+    description: "Местоимения присоединяются к концу инфинитива, герундия и утвердительного императива. Перед отрицательным императивом — перед глаголом.",
+    table: `<table><thead><tr><th>Форма</th><th>Позиция</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>Инфинитив</th><td>присоединяются в конце</td><td>Quiero hacerlo. Voy a decírtelo.</td></tr>
+      <tr><th>Герундий</th><td>присоединяются в конце</td><td>Estoy haciéndolo. Diciéndomelo.</td></tr>
+      <tr><th>Императив (утв.)</th><td>присоединяются в конце</td><td>¡Hazlo! ¡Dímelo! ¡Vámonos!</td></tr>
+      <tr><th>Императив (отр.)</th><td>перед глаголом</td><td>¡No lo hagas! ¡No me lo digas!</td></tr>
+      <tr><th>⚠️ ударение</th><td>при присоединении 2+ местоимений — ставится ударение</td><td>há-ce-lo → hazlo (ok); dí-ga-me-lo → dígámelo</td></tr>
+      <tr><th>⚠️ герундий</th><td>можно поставить перед estar или присоединить</td><td>Lo estoy haciendo = Estoy haciéndolo.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Определители и существительные",
+    subgroup: "Род",
+    title: "Род существительных: правила и исключения",
+    description: "Как определить род существительного по окончанию. Частые исключения, которые нарушают правила.",
+    table: `<table><thead><tr><th>Окончание</th><th>Род</th><th>Примеры</th><th>Исключения</th></tr></thead><tbody>
+      <tr><th>-o</th><td>м.р.</td><td>el libro, el perro, el gato</td><td>la mano, la foto (← fotografía), la moto (← motocicleta)</td></tr>
+      <tr><th>-a</th><td>ж.р.</td><td>la casa, la mesa, la puerta</td><td>el día, el mapa, el planeta, el sofá, el clima, el tema, el sistema</td></tr>
+      <tr><th>-ción / -sión</th><td>ж.р.</td><td>la canción, la decisión, la televisión</td><td>—</td></tr>
+      <tr><th>-dad / -tad</th><td>ж.р.</td><td>la ciudad, la libertad, la verdad</td><td>—</td></tr>
+      <tr><th>-ma / -pa / -ta</th><td>м.р. (греч.)</td><td>el problema, el mapa, el planeta</td><td>la cama, la lama</td></tr>
+      <tr><th>-or</th><td>м.р.</td><td>el color, el amor, el humor</td><td>la flor, la labor</td></tr>
+      <tr><th>-umbre</th><td>ж.р.</td><td>la costumbre, la muchedumbre</td><td>—</td></tr>
+      <tr><th>-aje</th><td>м.р.</td><td>el viaje, el garaje, el paisaje</td><td>—</td></tr>
+      <tr><th>⚠️ el agua</th><td>ж.р., но el перед ед.ч. (звучание)</td><td>el agua fría (ж.р.!); las aguas frías</td><td>el hambre, el alma, el área, el arma</td></tr>
+      <tr><th>⚠️ род по смыслу</th><td>el/la artista, el/la testigo</td><td>Зависит от человека: el artista (м.) / la artista (ж.)</td><td></td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Определители и существительные",
+    subgroup: "Артикли",
+    title: "Контракции al / del",
+    description: "Предлоги a и de сливаются с определённым артиклем el. С la/los/las — не сливаются.",
+    table: `<table><thead><tr><th>Слияние</th><th>Пример</th><th>Примечание</th></tr></thead><tbody>
+      <tr><th>a + el → al</th><td>Voy al cine. (не a el cine)</td><td>Единственная обязательная контракция</td></tr>
+      <tr><th>de + el → del</th><td>El libro del profesor. (не de el)</td><td>Вторая обязательная контракция</td></tr>
+      <tr><th>a + la → a la</th><td>Voy a la playa.</td><td>Не сливается</td></tr>
+      <tr><th>de + la → de la</th><td>La puerta de la casa.</td><td>Не сливается</td></tr>
+      <tr><th>a + los → a los</th><td>Voy a los jardines.</td><td>Не сливается</td></tr>
+      <tr><th>de + los → de los</th><td>El coche de los vecinos.</td><td>Не сливается</td></tr>
+      <tr><th>⚠️ исключения</th><td>названия: Voy a El Prado. (не al Prado)</td><td>Если El — часть названия, можно не сливать</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Глаголы: пары и устойчивые",
+    subgroup: "Частые пары",
+    title: "Parecer vs Parecerse: казаться или быть похожим",
+    description: "Parecer — мнение/оценка (казаться); parecerse a — внешнее сходство (быть похожим).",
+    table: `<table><thead><tr><th>Глагол</th><th>Смысл</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>parecer</th><td>казаться, мнение</td><td>Me parece bien. ¿Qué te parece?</td></tr>
+      <tr><th>parecer + adj</th><td>казаться каким-то</td><td>Pareces cansado. Me parece interesante.</td></tr>
+      <tr><th>parecerse a</th><td>быть похожим (внешне)</td><td>Te pareces a tu madre. Se parecen mucho.</td></tr>
+      <tr><th>⚠️ parecer vs parecerse</th><td>Me parece guapo (мнение) vs Se parece a Brad Pitt (внешность)</td><td></td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Глаголы: пары и устойчивые",
+    subgroup: "Частые пары",
+    title: "Hay / Está / Se encuentra: как сказать «есть / находится»",
+    description: "Три способа указать наличие или местоположение: hay (наличие), está (конкретное место), se encuentra (формальнее).",
+    table: `<table><thead><tr><th>Глагол</th><th>Когда</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>hay</th><td>наличие чего-то (неопределённое)</td><td>Hay un libro en la mesa. ¿Hay farmacia cerca?</td></tr>
+      <tr><th>está</th><td>конкретное место известного объекта</td><td>El libro está en la mesa. ¿Dónde está la farmacia?</td></tr>
+      <tr><th>se encuentra</th><td>формальнее, локация здания/места</td><td>El museo se encuentra en el centro.</td></tr>
+      <tr><th>⚠️ hay vs está</th><td>¿Hay banco cerca? (есть ли вообще?) vs ¿Dónde está el banco? (где конкретный?)</td><td></td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Глаголы: пары и устойчивые",
+    subgroup: "Частые пары",
+    title: "Quedar / Quedarse: 6+ значений",
+    description: "Quedar — один из самых многозначных глаголов: оставаться, находиться, подходить, договариваться.",
+    table: `<table><thead><tr><th>Конструкция</th><th>Смысл</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>quedar + loc</th><td>находиться (место)</td><td>¿Dónde queda el museo? Queda lejos.</td></tr>
+      <tr><th>quedar + adj</th><td>остаться в состоянии</td><td>Quedó sorprendido. Quedamos contentos.</td></tr>
+      <tr><th>quedar bien/mal</th><td>подходить / не подходить</td><td>Te queda bien la camisa. Eso queda mal.</td></tr>
+      <tr><th>quedar con</th><td>договориться встретиться</td><td>Quedamos con Ana a las ocho.</td></tr>
+      <tr><th>quedarse</th><td>остаться (где-то)</td><td>Me quedo en casa. Se quedó en Madrid.</td></tr>
+      <tr><th>quedar + por + inf</th><td>остаться сделать</td><td>Queda por terminar el proyecto.</td></tr>
+      <tr><th>⚠️ quedar vs quedarse</th><td>quedar = находиться/подходить; quedarse = остаться (физически)</td><td></td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Глаголы: пары и устойчивые",
+    subgroup: "Частые пары",
+    title: "Llevar: 5 конструкций",
+    description: "Llevar — многозначный: нести, носить, вести, сколько-то времени делать, хорошо/плохо переносить.",
+    table: `<table><thead><tr><th>Конструкция</th><th>Смысл</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>llevar + сущ.</th><td>нести, везти, носить (одежду)</td><td>Llevo el libro. Llevo una camisa azul.</td></tr>
+      <tr><th>llevar + gerundio</th><td>уже сколько-то делаю</td><td>Llevo dos horas esperando.</td></tr>
+      <tr><th>llevar + время</th><td>сколько-то времени (состояние)</td><td>Llevo tres años en España.</td></tr>
+      <tr><th>llevar a + inf</th><td>привести к (результат)</td><td>Esto nos llevó a decidir.</td></tr>
+      <tr><th>llevar bien/mal</th><td>хорошо/плохо переносить</td><td>Llevo mal el calor. Lo lleva bien.</td></tr>
+      <tr><th>⚠️ llevar vs traer</th><td>llevar = туда (от говорящего); traer = сюда (к говорящему)</td><td></td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Времена и синтаксис",
+    subgroup: "Прошедшее",
+    title: "Pretérito Perfecto: Испания vs Латинская Америка",
+    description: "В Испании Perfecto используется для недавнего прошлого (hoy, esta semana). В LatAm предпочитают Indefinido.",
+    table: `<table><thead><tr><th>Контекст</th><th>Испания</th><th>Латинская Америка</th></tr></thead><tbody>
+      <tr><th>сегодня</th><td>Hoy he comido tarde.</td><td>Hoy comí tarde.</td></tr>
+      <tr><th>на этой неделе</th><td>Esta semana he ido al gym.</td><td>Esta semana fui al gym.</td></tr>
+      <tr><th>только что</th><td>Acabo de llegar. (универсально)</td><td>Acabo de llegar. (универсально)</td></tr>
+      <tr><th>вчера</th><td>Ayer fui al cine. (Indefinido)</td><td>Ayer fui al cine. (Indefinido)</td></tr>
+      <tr><th>⚠️ правило</th><td>Perfecto = сегодня/эта неделя; Indefinido = вчера/раньше</td><td>Indefinido для всего прошедшего</td></tr>
+      <tr><th>⚠️ в Испании</th><td colspan="2">Perfecto — маркеры: hoy, esta mañana, esta semana, este mes, este año</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Времена и синтаксис",
+    subgroup: "Subjuntivo",
+    title: "Subjuntivo: триггеры по категориям",
+    description: "Полная таблица триггеров subjuntivo: воля, эмоция, сомнение, отрицание, цель, время.",
+    table: `<table><thead><tr><th>Категория</th><th>Триггеры</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>Воля / желание</th><td>querer que, pedir que, necesitar que, preferir que, exigir que</td><td>Quiero que vengas. Te pido que me ayudes.</td></tr>
+      <tr><th>Эмоция</th><td>alegrarse de que, gustar que, molestar que, sentir que, temer que</td><td>Me alegra que estés aquí. Siento que no puedas venir.</td></tr>
+      <tr><th>Сомнение</th><td>dudar que, no creer que, no pensar que, es posible que, quizá(s)</td><td>Dudo que sea verdad. Es posible que llueva.</td></tr>
+      <tr><th>Отрицание</th><td>no es verdad que, no es cierto que, no es seguro que</td><td>No es verdad que sea fácil.</td></tr>
+      <tr><th>Цель</th><td>para que, a fin de que, con el fin de que</td><td>Te lo digo para que lo sepas.</td></tr>
+      <tr><th>Время (будущее)</th><td>cuando, en cuanto, tan pronto como, hasta que, antes de que</td><td>Te llamo cuando llegue. Antes de que salgas.</td></tr>
+      <tr><th>Условие</th><td>a menos que, a no ser que, con tal de que, sin que</td><td>Iré a menos que llueva. Sin que nadie lo sepa.</td></tr>
+      <tr><th>⚠️ indicativo</th><td colspan="2">creer que, pensar que, es verdad que, es cierto que, es seguro que → indicativo</td></tr>
+      <tr><th>⚠️ ojalá</th><td colspan="2">ojalá + subj. Presente (реально) / subj. Imperfecto (нереально): Ojalá venga. Ojalá viniera.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Наречия, предлоги и связки",
+    subgroup: "Отрицание",
+    title: "Двойное отрицание: no…nada, no…nunca, no…nadie",
+    description: "В испанском двойное отрицание обязательно. Если nada/nunca/nadie стоят после глагола — перед глаголом нужно no.",
+    table: `<table><thead><tr><th>Схема</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>no + verb + nada</th><td>No quiero nada.</td><td>Я ничего не хочу.</td></tr>
+      <tr><th>nada + verb</th><td>Nada quiero.</td><td>Ничего не хочу. (без no!)</td></tr>
+      <tr><th>no + verb + nunca</th><td>No voy nunca.</td><td>Я никогда не хожу.</td></tr>
+      <tr><th>nunca + verb</th><td>Nunca voy.</td><td>Никогда не хожу. (без no!)</td></tr>
+      <tr><th>no + verb + nadie</th><td>No hay nadie.</td><td>Никого нет.</td></tr>
+      <tr><th>nadie + verb</th><td>Nadie sabe.</td><td>Никто не знает. (без no!)</td></tr>
+      <tr><th>no + verb + tampoco</th><td>No voy tampoco.</td><td>Я тоже не иду.</td></tr>
+      <tr><th>ni… ni</th><td>No quiero ni café ni té.</td><td>Не хочу ни кофе, ни чая.</td></tr>
+      <tr><th>⚠️ правило</th><td colspan="2">Если отриц. слово ПЕРЕД глаголом — no НЕ ставится. Если ПОСЛЕ — no ОБЯЗАТЕЛЬНО перед глаголом.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Наречия, предлоги и связки",
+    subgroup: "Наречия",
+    title: "Otra vez / De nuevo / Una vez más: снова",
+    description: "Три способа сказать «снова» — с разными оттенками.",
+    table: `<table><thead><tr><th>Выражение</th><th>Оттенок</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>otra vez</th><td>самое частое, разговорное</td><td>¿Otra vez? ¡Otra vez lluvia!</td></tr>
+      <tr><th>de nuevo</th><td>чуть формальнее, «заново»</td><td>Inténtalo de nuevo. Empezamos de nuevo.</td></tr>
+      <tr><th>una vez más</th><td>«ещё один раз», эмоциональное</td><td>Una vez más, gracias a todos.</td></tr>
+      <tr><th>⚠️ volver a + inf</th><td>глагольная конструкция = otra vez</td><td>Vuelvo a llamar. Volvió a llover.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Живой испанский",
+    subgroup: "В баре / ресторане",
+    title: "En un bar: фразы для бара и ресторара в Испании",
+    description: "Типичные фразы для заказа в баре, тапас-баре и ресторане. Castellano de España.",
+    table: `<table><thead><tr><th>Фраза</th><th>Смысл</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>¿Me pone…?</th><td>Мне… (вежливый заказ)</td><td>¿Me pone una caña, por favor?</td></tr>
+      <tr><th>Para mí…</th><td>Мне… (в компании)</td><td>Para mí, unas bravas.</td></tr>
+      <tr><th>Una caña</th><td>маленькое пиво (разливное)</td><td>Dos cañas, por favor.</td></tr>
+      <tr><th>Un vino tinto/blanco</th><td>красное / белое вино</td><td>Una copa de vino tinto.</td></tr>
+      <tr><th>Una ración</th><td>порция (тапас)</td><td>Una ración de croquetas.</td></tr>
+      <tr><th>De primero / De segundo</th><td>первое / второе блюдо</td><td>De primero, gazpacho. De segundo, merluza.</td></tr>
+      <tr><th>La cuenta, por favor</th><td>Счёт, пожалуйста</td><td>¿Nos trae la cuenta?</td></tr>
+      <tr><th>¿Aceptan tarjeta?</th><td>Принимаете карту?</td><td>¿Se puede pagar con tarjeta?</td></tr>
+      <tr><th>¿Tiene menú del día?</th><td>Есть меню дня?</td><td>¿A qué hora sirven el menú?</td></tr>
+      <tr><th>⚠️ propina</th><td>чаевые в Испании: 5–10%, не обязательно</td><td>Округляют счёт или оставляют мелочь</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Словообразование и лексика",
+    subgroup: "Лексика",
+    title: "Falsos amigos: дополнение — rojo, copa, red…",
+    description: "Дополнительные ложные друзья переводчика, которые часто путают.",
+    table: `<table><thead><tr><th>Испанское слово</th><th>Настоящее значение</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>rojo</th><td>красный (не «рыжий»)</td><td>El pelo rojo. Pelirrojo = рыжий.</td></tr>
+      <tr><th>copa</th><td>бокал, кубок (не «копа»)</td><td>Una copa de vino. La Copa del Mundo.</td></tr>
+      <tr><th>red</th><td>сеть (не «редкий»)</td><td>La red de metro. Red social.</td></tr>
+      <tr><th>éxito</th><td>успех (уже есть, но важно)</td><td>¡Mucho éxito! — Удачи!</td></tr>
+      <tr><th>ropa</th><td>одежда (не «ропа»)</td><td>La ropa está limpia.</td></tr>
+      <tr><th>pie</th><td>нога/ступня (не «пирог»)</td><td>Me duele el pie.</td></tr>
+      <tr><th>aceite</th><td>масло (растительное, не «уксус»)</td><td>Aceite de oliva. Vinagre = уксус.</td></tr>
+      <tr><th>burro</th><td>осёл (не «бурый»)</td><td>Un burro carga la leña.</td></tr>
+      <tr><th>cola</th><td>хвост / очередь</td><td>Hacer cola (стоять в очереди).</td></tr>
+      <tr><th>fino</th><td>тонкий, изящный (не «фиолетовый»)</td><td>Un vino fino. Papel fino.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Словообразование и лексика",
+    subgroup: "Уменьшительные и увеличительные",
+    title: "Diminutivos: региональные суффиксы Испании",
+    description: "Кроме -ito/-illo, в разных регионах Испании используют свои суффиксы.",
+    table: `<table><thead><tr><th>Суффикс</th><th>Регион</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>-ico / -ica</th><td>Арагон, Мурсия</td><td>poco → poquico, casa → casica</td></tr>
+      <tr><th>-iño / -iña</th><td>Галисия</td><td>pequeño → pequeñiño, casa → casiña</td></tr>
+      <tr><th>-ete / -eta</th><td>Каталония, Левант</td><td>pueblo → pueblete, casa → caseta</td></tr>
+      <tr><th>-uco / -uca</th><td>Кантабрия</td><td>poco → poquuco, casa → casuca</td></tr>
+      <tr><th>-ín / -ina</th><td>Астурия</td><td>pequeño → pequeñín, casa → casina</td></tr>
+      <tr><th>⚠️ -illo</th><td>Андалусия (очень частый)</td><td>casa → casilla, perro → perrillo</td></tr>
+      <tr><th>⚠️ -ito</th><td>Кастилия / Мадрид (стандарт)</td><td>casa → casita, perro → perrito</td></tr>
     </tbody></table>`
   }
 ];

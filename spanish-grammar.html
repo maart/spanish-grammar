@@ -1840,7 +1840,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.17 · обновлено: 19.05.2026 17:15</footer>
+      <footer class="app-footer">Версия MVP 0.17 · обновлено: 19.05.2026 17:30</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -4309,31 +4309,6 @@ const USEFUL_TABLES = [
   },
 
   {
-    group: "Времена и синтаксис",
-    subgroup: "Subjuntivo",
-    title: "Subjuntivo: 10 типов придаточных предложений",
-    description: "Полная классификация придаточных с subjuntivo: время, относительные, цель, условие, уступка, способ, следствие, причина, подлежащное и дополняющее.",
-    table: `<table><thead><tr><th>Тип</th><th>Триггеры</th><th>Условие</th><th>Пример</th></tr></thead><tbody>
-      <tr><th>1. Tiempo</th><td>cuando, mientras, hasta que, antes de que, después de que, en cuanto, tan pronto como, siempre que, cada vez que</td><td>Будущее действие или поиск момента в будущем (главное предложение выражает будущее, просьбу или приказ)</td><td>Llamaré a mi madre cuando llegue a casa. No te vayas hasta que termines el informe.</td></tr>
-      <tr><th>2. Relativas</th><td>que, quien, quienes, el/la que, los/las que, donde, como, cuanto</td><td>Антецедент неопределён, отрицается или неизвестно, существует ли он</td><td>Busco un profesor que hable japonés. No hay nadie que pueda ayudarme. Dame lo que sea más barato.</td></tr>
-      <tr><th>3. Finales</th><td>para que, a fin de que, con el fin de que, con objeto de que, de modo que (в финальном значении)</td><td>Всегда subjuntivo — цель всегда относится к будущему / желаемому</td><td>Te lo explico para que entiendas la lección. Ahorro dinero a fin de que podamos viajar.</td></tr>
-      <tr><th>4. Condicionales</th><td>si (нереальное), a condición de que, con tal de que, en caso de que</td><td>Нереальное или маловероятное условие: si + Impf. de Subj. → Condicional simple; si + Pluscuamp. de Subj. → Condicional compuesto</td><td>Si tuviera dinero, viajaría a Japón. Si hubiera estudiado, habría aprobado.</td></tr>
-      <tr><th>5. Concesión</th><td>aunque, por más que, por mucho que, a pesar de que, aun cuando, así (уступительное)</td><td>Препятствие предполагаемое, гипотетическое или будущее. Если факт — индикатив</td><td>Aunque llueva, saldré a correr. Por más que lo intentes, no lo conseguirás.</td></tr>
-      <tr><th>6. Modo</th><td>como, según, tal como, igual que, como si</td><td>Только после <strong>como si</strong> (всегда Impf. или Pluscuamp. de Subj. — нереальное сравнение). Остальные — индикатив</td><td>Hazlo como quieras. Me trata como si fuera su hijo.</td></tr>
-      <tr><th>7. Consecuencia</th><td>tan… que, tanto… que, de modo que, de manera que, así que, luego, conque</td><td>Почти всегда индикатив (реальное следствие). Subjuntivo после <strong>de ahí que</strong></td><td>Estudió tanto que aprobó. (Индикатив) No habla de ahí que no entienda la urgencia. (Subj.)</td></tr>
-      <tr><th>8. Causa</th><td>porque, ya que, puesto que, como, a causa de que, debido a que</td><td>Только в отрицательной причине: <strong>no porque</strong> + Subj. (отвергаемая ложная причина)</td><td>Llegué tarde porque había tráfico. (Индикатив) No lo hizo no porque tuviera miedo, sino por pereza. (Subj.)</td></tr>
-      <tr><th>9. Sujeto (безличные)</th><td>es bueno/malo que, es importante que, es necesario que, es posible/imposible que, es probable/improbable que, parece mentira que, da rabia que, molesta que, sorprende que, conviene que, interesa que</td><td>Главное предложение выражает оценку, эмоцию, сомнение, необходимость, важность, вероятность</td><td>Es importante que estudies todos los días. (оценка) Me sorprende que no haya llamado todavía. (эмоция) Es posible que llegue tarde. (вероятность) El que llegues tarde no es un problema grave. (важность) Lo que quieras está bien para mí. (неопределённость — Subj.) Lo que dices es verdad. (факт — Индикатив)</td></tr>
-      <tr><th>10. Complemento (личные)</th><td colspan="3">Когда главное предложение (личное) выражает оценку, эмоцию, сомнение, необходимость, важность, вероятность:</td></tr>
-      <tr><th>→ Оценка</th><td>considero bueno/malo que, juzga necesario que, ves importante que, apreciamos útil que, califican de extraño que</td><td>Личное мнение</td><td>Considero bueno que estudies todos los días.</td></tr>
-      <tr><th>→ Эмоция</th><td>me alegro de que, te sorprendes de que, se enfada de que, teme que, lamentamos que, odian que, agradece que</td><td>Эмоциональная реакция</td><td>Me sorprende que no haya llamado todavía.</td></tr>
-      <tr><th>→ Сомнение</th><td>dudo que, no crees que, niega que, desconfiamos de que, ponen en duda que</td><td>Сомнение или отрицание</td><td>Dudo que venga a la fiesta.</td></tr>
-      <tr><th>→ Необходимость</th><td>necesito que, requieres que, exige que</td><td>Личная необходимость / требование</td><td>Necesito que me ayudes.</td></tr>
-      <tr><th>⚠️ ojalá</th><td colspan="3">ojalá + subj. Presente (реально) / subj. Imperfecto (нереально): Ojalá venga. Ojalá viniera.</td></tr>
-      <tr><th>️ indicativo</th><td colspan="3">creer que, pensar que, es verdad que, es cierto que, es seguro que → indicativo (факт, уверенность)</td></tr>
-    </tbody></table>`
-  },
-
-  {
     group: "Наречия, предлоги и связки",
     subgroup: "Отрицание",
     title: "Двойное отрицание: no…nada, no…nunca, no…nadie",
@@ -4777,6 +4752,21 @@ const MOODS = [
         <div><dt>Sé que viene.</dt><dd>Я знаю, что он придет. Знание и уверенность ведут к indicativo.</dd></div>
         <div><dt>Es verdad que viene.</dt><dd>Правда, что он придет. После утверждения факта нужен indicativo.</dd></div>
       </div>
+      <h3>10 типов придаточных с Subjuntivo</h3>
+      <table><thead><tr><th>Тип</th><th>Триггеры</th><th>Условие</th><th>Пример</th></tr></thead><tbody>
+        <tr><th>1. Tiempo</th><td>cuando, mientras, hasta que, antes de que, después de que, en cuanto, tan pronto como, siempre que, cada vez que</td><td>Будущее действие или поиск момента в будущем</td><td>Llamaré a mi madre cuando llegue a casa. No te vayas hasta que termines el informe.</td></tr>
+        <tr><th>2. Relativas</th><td>que, quien, quienes, el/la que, los/las que, donde, como, cuanto</td><td>Антецедент неопределён, отрицается или неизвестно</td><td>Busco un profesor que hable japonés. No hay nadie que pueda ayudarme.</td></tr>
+        <tr><th>3. Finales</th><td>para que, a fin de que, con el fin de que, con objeto de que</td><td>Всегда subjuntivo — цель относится к будущему</td><td>Te lo explico para que entiendas la lección.</td></tr>
+        <tr><th>4. Condicionales</th><td>si (нереальное), a condición de que, con tal de que, en caso de que</td><td>Нереальное условие: si + Impf. Subj. → Condicional</td><td>Si tuviera dinero, viajaría a Japón.</td></tr>
+        <tr><th>5. Concesión</th><td>aunque, por más que, por mucho que, a pesar de que, aun cuando</td><td>Препятствие гипотетическое или будущее. Факт — индикатив</td><td>Aunque llueva, saldré a correr.</td></tr>
+        <tr><th>6. Modo</th><td>como si</td><td>Только <strong>como si</strong> — нереальное сравнение</td><td>Me trata como si fuera su hijo.</td></tr>
+        <tr><th>7. Consecuencia</th><td>de ahí que</td><td>Остальные (así que, luego) — индикатив</td><td>No habla de ahí que no entienda la urgencia.</td></tr>
+        <tr><th>8. Causa</th><td>no porque</td><td>Только отрицательная причина — отвергаемая</td><td>No lo hizo no porque tuviera miedo, sino por pereza.</td></tr>
+        <tr><th>9. Sujeto (безличные)</th><td>es importante que, es necesario que, es posible que, me sorprende que, conviene que</td><td>Оценка, эмоция, сомнение, необходимость, вероятность</td><td>Es importante que estudies. Me sorprende que no haya llamado.</td></tr>
+        <tr><th>10. Complemento (личные)</th><td>dudo que, me alegro de que, necesito que, exige que, teme que</td><td>Личное: сомнение, эмоция, необходимость</td><td>Dudo que venga. Me alegro de que estés aquí.</td></tr>
+        <tr><th>⚠️ ojalá</th><td colspan="3">ojalá + subj. Presente (реально) / subj. Imperfecto (нереально): Ojalá venga. Ojalá viniera.</td></tr>
+        <tr><th>⚠️ indicativo</th><td colspan="3">creer que, pensar que, es verdad que, es cierto que, es seguro que → indicativo (факт)</td></tr>
+      </tbody></table>
     `,
     table: `<table><thead><tr><th>Триггер</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
       <tr><td>желание: quiero que</td><td>Quiero que vengas.</td><td>Я хочу, чтобы ты пришел.</td></tr>

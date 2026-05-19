@@ -1035,6 +1035,122 @@ td.irregular {
   background: var(--surface);
 }
 
+.verb-row-meta span.badge-regular {
+  background: color-mix(in srgb, var(--success) 15%, transparent);
+  color: var(--success);
+}
+
+.verb-row-meta span.badge-irregular {
+  background: color-mix(in srgb, var(--accent-2) 18%, transparent);
+  color: var(--accent-2);
+}
+
+.verb-row-meta span.badge-special {
+  background: color-mix(in srgb, var(--danger) 15%, transparent);
+  color: var(--danger);
+}
+
+.verb-row-meta span.badge-stem {
+  background: color-mix(in srgb, #e6a817 15%, transparent);
+  color: #b8860b;
+}
+
+.verb-row-meta span.badge-yo {
+  background: color-mix(in srgb, #8b5cf6 15%, transparent);
+  color: #7c3aed;
+}
+
+.verb-row-meta span.badge-part {
+  background: color-mix(in srgb, #06b6d4 15%, transparent);
+  color: #0891b2;
+}
+
+.verb-row-meta span.badge-reflexive {
+  background: var(--surface);
+  color: var(--muted);
+  font-style: italic;
+}
+
+.verb-row-meta span[title] {
+  cursor: help;
+  position: relative;
+}
+
+.verb-row-meta span[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--text);
+  color: var(--surface);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.verb-passport span.badge-regular {
+  background: color-mix(in srgb, var(--success) 15%, transparent);
+  color: var(--success);
+}
+
+.verb-passport span.badge-irregular {
+  background: color-mix(in srgb, var(--accent-2) 18%, transparent);
+  color: var(--accent-2);
+}
+
+.verb-passport span.badge-special {
+  background: color-mix(in srgb, var(--danger) 15%, transparent);
+  color: var(--danger);
+}
+
+.verb-passport span.badge-stem {
+  background: color-mix(in srgb, #e6a817 15%, transparent);
+  color: #b8860b;
+}
+
+.verb-passport span.badge-yo {
+  background: color-mix(in srgb, #8b5cf6 15%, transparent);
+  color: #7c3aed;
+}
+
+.verb-passport span.badge-part {
+  background: color-mix(in srgb, #06b6d4 15%, transparent);
+  color: #0891b2;
+}
+
+.verb-passport span.badge-reflexive {
+  background: var(--surface-2);
+  color: var(--muted);
+  font-style: italic;
+}
+
+.verb-passport span[title] {
+  cursor: help;
+  position: relative;
+}
+
+.verb-passport span[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--text);
+  color: var(--surface);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  z-index: 10;
+  pointer-events: none;
+}
+
 .verb-match-note {
   grid-column: 1 / -1;
   margin-top: -4px;
@@ -1724,7 +1840,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.17 · обновлено: 19.05.2026 16:00</footer>
+      <footer class="app-footer">Версия MVP 0.17 · обновлено: 19.05.2026 16:30</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -5553,18 +5669,40 @@ function renderVerbCard(verb) {
 }
 
 function verbPassport(info) {
+  const verb = info.infinitive;
+  const reflexive = isReflexive(verb);
+  const baseType = verbType(verb);
   const rawTags = info.tags || [];
+  const badges = [];
+
+  badges.push(`<span>- ${baseType}</span>`);
+
+  if (reflexive) {
+    badges.push(`<span class="badge-reflexive" title="Возвратный глагол">-se</span>`);
+  }
+
   const status = rawTags.includes("полностью неправильный")
     ? "полностью неправильный"
     : hasIrregularBehavior(info)
       ? "неправильный"
       : "правильный";
-  const labels = Array.from(new Set([
-    info.type,
-    status,
-    rawTags.includes("вспомогательный") ? "вспомогательный" : null
-  ].filter(Boolean)));
-  return `<div class="verb-passport">${labels.map((label) => `<span>${label}</span>`).join("")}</div>`;
+
+  const exceptions = verbExceptionLabels(verb);
+  const tooltip = exceptions.length > 0 ? exceptions.join(" · ") : status;
+
+  if (status === "правильный") {
+    badges.push(`<span class="badge-regular" title="Правильный глагол">правильный</span>`);
+  } else if (status === "полностью неправильный") {
+    badges.push(`<span class="badge-special" title="${escapeHTML(tooltip)}">полностью неправильный</span>`);
+  } else {
+    badges.push(`<span class="badge-irregular" title="${escapeHTML(tooltip)}">неправильный</span>`);
+  }
+
+  if (rawTags.includes("вспомогательный")) {
+    badges.push(`<span title="Вспомогательный глагол">вспомогательный</span>`);
+  }
+
+  return `<div class="verb-passport">${badges.join("")}</div>`;
 }
 
 function hasYoIrregular(verb) {
@@ -5831,7 +5969,7 @@ function renderBestMatchCard(verb) {
         <small>${highlightSearchMatch(info.ru)}</small>
       </span>
       <span class="verb-row-meta">
-        ${verbListBadges(info).map((label) => `<span>${label}</span>`).join("")}
+        ${verbListBadges(info).join("")}
       </span>
     </button>
   `;
@@ -5860,7 +5998,7 @@ function renderVerbListItem(verb, { showBadges = true } = {}) {
         <small>${translationLabel}</small>
       </span>
       <span class="verb-row-meta">
-        ${showBadges ? verbListBadges(info).map((label) => `<span>${label}</span>`).join("") : ""}
+        ${showBadges ? verbListBadges(info).join("") : ""}
       </span>
     </button>
     <button class="favorite-button verb-row-favorite" type="button" aria-label="${state.cards.includes(verb) ? "Убрать из избранного" : "Добавить в избранное"}" title="Избранное">
@@ -5886,20 +6024,51 @@ function renderVerbListItem(verb, { showBadges = true } = {}) {
 }
 
 function verbListBadges(info) {
-  const labels = [info.type];
-  if (!hasIrregularBehavior(info)) return [...labels, "прав."];
-  if (hasCompletelyIrregularProfile(info.infinitive)) labels.push("особый");
-  else if (
-    hasStemChange(info.infinitive, "e", "ie") ||
-    hasStemChange(info.infinitive, "o", "ue") ||
-    hasStemChange(info.infinitive, "e", "i") ||
-    hasStemChange(info.infinitive, "u", "ue")
-  ) labels.push("смена корня");
-  else if (hasIndefinidoSpecialStem(info.infinitive) || irregularFutureStem(info.infinitive)) labels.push("особая основа");
-  else if (hasYoIrregular(info.infinitive)) labels.push("yo особ.");
-  else if (hasIrregularParticiple(info.infinitive)) labels.push("part.");
-  else labels.push("неправ.");
-  return labels.slice(0, 2);
+  const verb = info.infinitive;
+  const reflexive = isReflexive(verb);
+  const baseType = verbType(verb);
+  const badges = [];
+
+  const typeLabel = reflexive ? `- ${baseType}` : `-${baseType}`;
+  badges.push(`<span>${typeLabel}</span>`);
+
+  if (reflexive) {
+    badges.push(`<span class="badge-reflexive" title="Возвратный глагол">-se</span>`);
+  }
+
+  if (!hasIrregularBehavior(info)) {
+    badges.push(`<span class="badge-regular" title="Правильный глагол">прав.</span>`);
+    return badges;
+  }
+
+  const exceptions = verbExceptionLabels(verb);
+  const tooltip = exceptions.length > 0 ? exceptions.join(" · ") : "Неправильный";
+
+  if (hasCompletelyIrregularProfile(verb)) {
+    badges.push(`<span class="badge-special" title="${escapeHTML(tooltip)}">особый</span>`);
+  } else if (
+    hasStemChange(verb, "e", "ie") ||
+    hasStemChange(verb, "o", "ue") ||
+    hasStemChange(verb, "e", "i") ||
+    hasStemChange(verb, "u", "ue")
+  ) {
+    const changes = [];
+    if (hasStemChange(verb, "e", "ie")) changes.push("e→ie");
+    if (hasStemChange(verb, "o", "ue")) changes.push("o→ue");
+    if (hasStemChange(verb, "e", "i")) changes.push("e→i");
+    if (hasStemChange(verb, "u", "ue")) changes.push("u→ue");
+    badges.push(`<span class="badge-stem" title="${escapeHTML(tooltip)}">смена ${changes.join(", ")}</span>`);
+  } else if (hasIndefinidoSpecialStem(verb) || irregularFutureStem(verb)) {
+    badges.push(`<span class="badge-irregular" title="${escapeHTML(tooltip)}">особая основа</span>`);
+  } else if (hasYoIrregular(verb)) {
+    badges.push(`<span class="badge-yo" title="${escapeHTML(tooltip)}">yo особ.</span>`);
+  } else if (hasIrregularParticiple(verb)) {
+    badges.push(`<span class="badge-part" title="${escapeHTML(tooltip)}">part.</span>`);
+  } else {
+    badges.push(`<span class="badge-irregular" title="${escapeHTML(tooltip)}">неправ.</span>`);
+  }
+
+  return badges;
 }
 
 function searchMatchReason(info) {

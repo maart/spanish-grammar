@@ -1468,6 +1468,17 @@ td.irregular {
   font-size: 14px;
 }
 
+.quiz-wrong-row.is-wrong {
+  background: color-mix(in srgb, var(--danger) 8%, var(--surface));
+  border-left: 3px solid var(--danger);
+}
+
+.quiz-wrong-badge {
+  color: var(--danger);
+  font-weight: 900;
+  margin-left: 4px;
+}
+
 .quiz-wrong-row .small-button {
   font-size: 12px;
   padding: 4px 8px;
@@ -1840,7 +1851,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.17 · обновлено: 19.05.2026 18:30</footer>
+      <footer class="app-footer">Версия MVP 0.17 · обновлено: 19.05.2026 19:00</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -4836,6 +4847,8 @@ const state = {
   cardQuizCorrect: 0,
   cardQuizTotal: 0,
   cardQuizWrong: [],
+  cardQuizSnapshot: [],
+  cardQuizAllVerbs: [],
   dark: localStorage.getItem("msg:theme") === "dark"
 };
 
@@ -7114,16 +7127,20 @@ function renderCards() {
   content.appendChild(listCard);
 }
 
-function startCardQuiz() {
+function startCardQuiz(useSnapshot) {
   const cfg = state.quizConfig;
   let questions;
-  if (cfg.type === "conjugation") {
+  if (useSnapshot && state.cardQuizSnapshot.length > 0) {
+    questions = state.cardQuizSnapshot.map((q) => ({ ...q }));
+  } else if (cfg.type === "conjugation") {
     questions = generateConjugationQuestions(state.cards, cfg.tenses, cfg.persons, cfg.count);
   } else {
     questions = generateInfinitiveQuestions(state.cards, cfg.count);
   }
   if (questions.length === 0) return;
   state.cardQuiz = questions;
+  state.cardQuizSnapshot = questions.map((q) => ({ ...q }));
+  state.cardQuizAllVerbs = [...new Set(questions.map((q) => q.verb))];
   state.cardQuizIndex = 0;
   state.cardQuizRevealed = false;
   state.cardQuizInput = "";
@@ -7251,20 +7268,18 @@ function renderCardQuizResults(content) {
   const total = state.cardQuizTotal;
   const correct = state.cardQuizCorrect;
   const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
-  const wrong = [...new Set(state.cardQuizWrong)];
+  const allVerbs = state.cardQuizAllVerbs;
   const card = document.createElement("section");
   card.className = "info-card study-card";
-  let wrongHTML = "";
-  if (wrong.length > 0) {
-    const rows = wrong.map((verb) => {
-      const info = verbInfo(verb);
-      return `<div class="quiz-wrong-row">
-        <span><strong>${displayInfinitive(verb)}</strong> — ${info.ru}</span>
-        <button class="small-button danger" type="button" data-remove="${verb}">Убрать из избранного</button>
-      </div>`;
-    }).join("");
-    wrongHTML = `<div class="quiz-wrong-list"><h3>Неправильные ответы (${wrong.length})</h3>${rows}</div>`;
-  }
+  const rows = allVerbs.map((verb) => {
+    const info = verbInfo(verb);
+    const wasWrong = state.cardQuizWrong.includes(verb);
+    return `<div class="quiz-wrong-row ${wasWrong ? "is-wrong" : ""}">
+      <span><strong>${displayInfinitive(verb)}</strong> — ${info.ru}${wasWrong ? " <span class=\"quiz-wrong-badge\">✗</span>" : ""}</span>
+      <button class="small-button danger" type="button" data-remove="${verb}">Убрать</button>
+    </div>`;
+  }).join("");
+  const allHTML = `<div class="quiz-wrong-list"><h3>Глаголы из квиза (${allVerbs.length})</h3>${rows}</div>`;
   card.innerHTML = `
     <div class="study-card-top">
       <span>Результат</span>
@@ -7275,9 +7290,9 @@ function renderCardQuizResults(content) {
       <h2>${correct} из ${total}</h2>
       <p class="muted">${pct}% правильных ответов</p>
     </div>
-    ${wrongHTML}
+    ${allHTML}
     <div class="study-actions">
-      <button class="small-button primary" type="button" id="restartQuiz">Ещё раз</button>
+      <button class="small-button primary" type="button" id="restartQuiz">Ещё раз (те же глаголы)</button>
       <button class="small-button" type="button" id="backToCards">К списку</button>
     </div>
     <div style="text-align:center"><span class="muted" style="font-size:12px">Esc — закрыть · Enter — ещё раз</span></div>
@@ -7296,7 +7311,7 @@ function renderCardQuizResults(content) {
       }
     });
   });
-  card.querySelector("#restartQuiz")?.addEventListener("click", startCardQuiz);
+  card.querySelector("#restartQuiz")?.addEventListener("click", () => startCardQuiz(true));
   card.querySelector("#backToCards")?.addEventListener("click", stopCardQuiz);
   card.querySelector("[data-stop]")?.addEventListener("click", stopCardQuiz);
 
@@ -7308,7 +7323,7 @@ function renderCardQuizResults(content) {
     }
     if (e.key === "Enter") {
       e.preventDefault();
-      startCardQuiz();
+      startCardQuiz(true);
       return;
     }
   };
@@ -7330,6 +7345,8 @@ function stopCardQuiz() {
   state.cardQuizCorrect = 0;
   state.cardQuizTotal = 0;
   state.cardQuizWrong = [];
+  state.cardQuizSnapshot = [];
+  state.cardQuizAllVerbs = [];
   renderCards();
 }
 

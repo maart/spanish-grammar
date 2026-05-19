@@ -1228,6 +1228,104 @@ td.irregular {
   gap: 8px;
 }
 
+.quiz-config {
+  display: grid;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+
+.quiz-config-section {
+  display: grid;
+  gap: 8px;
+}
+
+.quiz-config-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.quiz-config-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.quiz-config-options .small-button {
+  font-size: 13px;
+  padding: 6px 10px;
+}
+
+.quiz-config-options .small-button.is-active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+}
+
+.quiz-input {
+  width: 100%;
+  height: 48px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 14px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.quiz-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+.quiz-input.is-correct {
+  border-color: var(--success);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--success) 20%, transparent);
+}
+
+.quiz-input.is-wrong {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 20%, transparent);
+}
+
+.quiz-feedback {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+.quiz-feedback.is-correct {
+  color: var(--success);
+  background: color-mix(in srgb, var(--success) 10%, transparent);
+}
+
+.quiz-feedback.is-wrong {
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+}
+
+.quiz-stats {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.quiz-stats strong {
+  color: var(--text);
+}
+
 .table-toc {
   display: grid;
   gap: 10px;
@@ -1594,7 +1692,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.16 · обновлено: 19.05.2026 11:11</footer>
+      <footer class="app-footer">Версия MVP 0.17 · обновлено: 19.05.2026 14:30</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -4633,9 +4731,19 @@ const state = {
   cardFeedback: null,
   searchCursor: -1,
   cards: JSON.parse(localStorage.getItem("msg:cards") || localStorage.getItem("msg:favorites") || "[]"),
+  quizConfig: JSON.parse(localStorage.getItem("msg:quizConfig") || JSON.stringify({
+    type: "infinitive",
+    tenses: ["presente"],
+    persons: [0, 1, 2, 3, 4, 5],
+    count: 5
+  })),
   cardQuiz: [],
   cardQuizIndex: 0,
   cardQuizRevealed: false,
+  cardQuizInput: "",
+  cardQuizAnswered: false,
+  cardQuizCorrect: 0,
+  cardQuizTotal: 0,
   dark: localStorage.getItem("msg:theme") === "dark"
 };
 
@@ -6691,6 +6799,89 @@ function moodConfusionMarkup(mood) {
   `;
 }
 
+const QUIZ_TENSES = [
+  { id: "presente", name: "Presente" },
+  { id: "perfecto", name: "Perfecto" },
+  { id: "indefinido", name: "Indefinido" },
+  { id: "imperfecto", name: "Imperfecto" },
+  { id: "futuro", name: "Futuro" },
+  { id: "condicional", name: "Condicional" },
+  { id: "subjuntivo_presente", name: "Subj. Presente" },
+  { id: "subjuntivo_imperfecto", name: "Subj. Imperfecto" },
+  { id: "imperativo_afirmativo", name: "Imperativo" }
+];
+
+const QUIZ_COUNTS = [3, 5, 10, 20, 0];
+
+function saveQuizConfig() {
+  localStorage.setItem("msg:quizConfig", JSON.stringify(state.quizConfig));
+}
+
+function getAllTenseIds() {
+  return QUIZ_TENSES.map((t) => t.id);
+}
+
+function getTenseName(id) {
+  return QUIZ_TENSES.find((t) => t.id === id)?.name || id;
+}
+
+function generateInfinitiveQuestions(cards, count) {
+  const shuffled = shuffle([...cards]);
+  const selected = count > 0 ? shuffled.slice(0, count) : shuffled;
+  return selected.map((verb) => ({
+    type: "infinitive",
+    verb,
+    question: translationFor(verb),
+    answer: displayInfinitive(verb)
+  }));
+}
+
+function generateConjugationQuestions(cards, tenses, persons, count) {
+  const questions = [];
+  const tenseList = tenses.length > 0 ? tenses : getAllTenseIds();
+
+  for (const verb of cards) {
+    const forms = formsFor(verb);
+    for (const tense of tenseList) {
+      const tenseForms = forms[tense];
+      if (!tenseForms) continue;
+
+      for (const personIdx of persons) {
+        if (personIdx >= tenseForms.length) continue;
+        const form = tenseForms[personIdx];
+        if (form === "-") continue;
+
+        questions.push({
+          type: "conjugation",
+          verb,
+          tense,
+          person: personIdx,
+          question: `${displayInfinitive(verb)} — ${getTenseName(tense)} — ${PEOPLE[personIdx]}`,
+          answer: form
+        });
+      }
+    }
+  }
+
+  const shuffled = shuffle(questions);
+  return count > 0 ? shuffled.slice(0, count) : shuffled;
+}
+
+function checkAnswer(userInput, question) {
+  const normalized = userInput.trim().toLowerCase().normalize("NFC");
+  const correct = question.answer.toLowerCase().normalize("NFC");
+  if (normalized === correct) return true;
+
+  if (question.type === "conjugation" && question.verb.endsWith("se")) {
+    const base = question.verb.slice(0, -2);
+    const baseForms = formsFor(base);
+    const baseForm = baseForms[question.tense]?.[question.person];
+    if (baseForm && normalized === baseForm.toLowerCase().normalize("NFC")) return true;
+  }
+
+  return false;
+}
+
 function renderCards() {
   const content = clearContent();
   if (state.cardQuiz.length > 0) {
@@ -6705,11 +6896,9 @@ function renderCards() {
         <h2>Избранное</h2>
         <p class="muted">Глаголов в изучении: ${state.cards.length}</p>
       </div>
-      <button class="small-button primary" type="button" id="startCardQuiz" ${state.cards.length === 0 ? "disabled" : ""}>Проверить 5 случайных глаголов</button>
     </div>
   `;
   content.appendChild(header);
-  header.querySelector("#startCardQuiz").addEventListener("click", startCardQuiz);
 
   if (state.cards.length === 0) {
     const emptyCard = document.createElement("section");
@@ -6719,7 +6908,7 @@ function renderCards() {
       .slice(0, 5);
     emptyCard.innerHTML = `
       <h2>Избранное пока пусто</h2>
-      <p class="muted">Нажми ☆ во вкладке “Глаголы”, чтобы добавить глагол в изучение. Для старта можно выбрать один из частых глаголов ниже.</p>
+      <p class="muted">Нажми ☆ во вкладке "Глаголы", чтобы добавить глагол в изучение. Для старта можно выбрать один из частых глаголов ниже.</p>
       <div class="verb-list is-suggestions"></div>
     `;
     const list = emptyCard.querySelector(".verb-list");
@@ -6727,11 +6916,88 @@ function renderCards() {
     content.appendChild(emptyCard);
     return;
   }
+
+  const configCard = document.createElement("section");
+  configCard.className = "info-card";
+  const cfg = state.quizConfig;
+  const tenseButtons = QUIZ_TENSES.map((t) => {
+    const active = cfg.tenses.includes(t.id) ? "is-active" : "";
+    return `<button class="small-button ${active}" type="button" data-tense="${t.id}">${t.name}</button>`;
+  }).join("");
+  const countButtons = QUIZ_COUNTS.map((c) => {
+    const active = cfg.count === c ? "is-active" : "";
+    const label = c === 0 ? "Все" : String(c);
+    return `<button class="small-button ${active}" type="button" data-count="${c}">${label}</button>`;
+  }).join("");
+  configCard.innerHTML = `
+    <h2>Настройки квиза</h2>
+    <div class="quiz-config">
+      <div class="quiz-config-section">
+        <span class="quiz-config-label">Тип</span>
+        <div class="quiz-config-options">
+          <button class="small-button ${cfg.type === "infinitive" ? "is-active" : ""}" type="button" data-quiz-type="infinitive">Инфинитивы</button>
+          <button class="small-button ${cfg.type === "conjugation" ? "is-active" : ""}" type="button" data-quiz-type="conjugation">Спряжение</button>
+        </div>
+      </div>
+      <div class="quiz-config-section" id="tenseSelector" style="display: ${cfg.type === "conjugation" ? "block" : "none"}">
+        <span class="quiz-config-label">Времена</span>
+        <div class="quiz-config-options" id="tenseOptions">
+          ${tenseButtons}
+        </div>
+      </div>
+      <div class="quiz-config-section">
+        <span class="quiz-config-label">Количество</span>
+        <div class="quiz-config-options">
+          ${countButtons}
+        </div>
+      </div>
+      <button class="small-button primary" type="button" id="startCardQuiz" ${state.cards.length === 0 ? "disabled" : ""}>Начать</button>
+    </div>
+  `;
+  content.appendChild(configCard);
+
+  configCard.querySelectorAll("[data-quiz-type]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      state.quizConfig.type = btn.dataset.quizType;
+      if (state.quizConfig.type === "infinitive") {
+        state.quizConfig.tenses = [];
+      } else if (state.quizConfig.tenses.length === 0) {
+        state.quizConfig.tenses = ["presente"];
+      }
+      saveQuizConfig();
+      renderCards();
+    });
+  });
+
+  configCard.querySelectorAll("[data-tense]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.tense;
+      const idx = state.quizConfig.tenses.indexOf(id);
+      if (idx >= 0) {
+        state.quizConfig.tenses.splice(idx, 1);
+      } else {
+        state.quizConfig.tenses.push(id);
+      }
+      saveQuizConfig();
+      renderCards();
+    });
+  });
+
+  configCard.querySelectorAll("[data-count]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      state.quizConfig.count = parseInt(btn.dataset.count, 10);
+      saveQuizConfig();
+      renderCards();
+    });
+  });
+
+  configCard.querySelector("#startCardQuiz").addEventListener("click", startCardQuiz);
+
   const listCard = document.createElement("section");
   listCard.className = "info-card verb-list-card";
   listCard.innerHTML = `
     <h2>Глаголы к изучению</h2>
-    <p class="muted">Клик по глаголу откроет его карточку во вкладке “Глаголы”.</p>
+    <p class="muted">Клик по глаголу откроет его карточку во вкладке "Глаголы".</p>
     <div class="verb-list is-suggestions"></div>
   `;
   const list = listCard.querySelector(".verb-list");
@@ -6740,73 +7006,149 @@ function renderCards() {
 }
 
 function startCardQuiz() {
-  state.cardQuiz = shuffle([...state.cards]).slice(0, 5);
+  const cfg = state.quizConfig;
+  let questions;
+  if (cfg.type === "conjugation") {
+    questions = generateConjugationQuestions(state.cards, cfg.tenses, cfg.persons, cfg.count);
+  } else {
+    questions = generateInfinitiveQuestions(state.cards, cfg.count);
+  }
+  if (questions.length === 0) return;
+  state.cardQuiz = questions;
   state.cardQuizIndex = 0;
   state.cardQuizRevealed = false;
+  state.cardQuizInput = "";
+  state.cardQuizAnswered = false;
+  state.cardQuizCorrect = 0;
+  state.cardQuizTotal = 0;
   renderCards();
 }
 
 function renderCardQuiz(content) {
-  const verb = state.cardQuiz[state.cardQuizIndex];
-  if (!verb) {
-    state.cardQuiz = [];
-    state.cardQuizIndex = 0;
-    state.cardQuizRevealed = false;
-    renderCards();
+  const question = state.cardQuiz[state.cardQuizIndex];
+  if (!question) {
+    renderCardQuizResults(content);
     return;
   }
-  const info = verbInfo(verb);
+  const info = verbInfo(question.verb);
   const card = document.createElement("section");
   card.className = "info-card study-card";
   const progress = Math.round(((state.cardQuizIndex + 1) / state.cardQuiz.length) * 100);
+  const isConjugation = question.type === "conjugation";
+  const eyebrow = isConjugation ? "Проспрягай" : "Переведи на испанский";
+  const placeholder = isConjugation ? "Введи форму..." : "Введи инфинитив...";
+
+  let answerHTML;
+  if (state.cardQuizAnswered) {
+    const isCorrect = checkAnswer(state.cardQuizInput, question);
+    answerHTML = `
+      <input class="quiz-input ${isCorrect ? "is-correct" : "is-wrong"}" type="text" value="${escapeHTML(state.cardQuizInput)}" readonly>
+      ${!isCorrect ? `<div class="quiz-feedback is-wrong">Правильно: <strong>${escapeHTML(question.answer)}</strong></div>` : `<div class="quiz-feedback is-correct">Верно!</div>`}
+    `;
+  } else {
+    answerHTML = `<input class="quiz-input" id="quizAnswerInput" type="text" autocomplete="off" placeholder="${placeholder}" value="${escapeHTML(state.cardQuizInput)}">`;
+  }
+
   card.innerHTML = `
     <div class="study-card-top">
-      <span>Карточка ${state.cardQuizIndex + 1} из ${state.cardQuiz.length}</span>
+      <div class="quiz-stats">
+        <span>✓ <strong>${state.cardQuizCorrect}</strong></span>
+        <span>✗ <strong>${state.cardQuizTotal - state.cardQuizCorrect}</strong></span>
+      </div>
       <button class="small-button" type="button" data-stop>Закончить</button>
     </div>
     <div class="study-progress" aria-hidden="true"><span style="width: ${progress}%"></span></div>
     <div class="study-face">
-      <p class="eyebrow">Переведи на испанский</p>
-      <h2>${info.ru}</h2>
-      ${state.cardQuizRevealed ? `<div class="study-answer"><span>Ответ</span><strong>${info.displayInfinitive}</strong></div>` : `<div class="study-placeholder">?</div>`}
+      <p class="eyebrow">${eyebrow}</p>
+      <h2>${isConjugation ? question.question : info.ru}</h2>
+      ${answerHTML}
     </div>
     <div class="study-actions">
-      ${state.cardQuizRevealed
-        ? `<button class="small-button success" type="button" data-know>Знаю, убрать из избранного</button>
-           <button class="small-button danger" type="button" data-dont-know>Не знаю, оставить</button>`
-        : `<button class="small-button primary" type="button" data-reveal>Показать перевод</button>`}
+      ${!state.cardQuizAnswered
+        ? `<button class="small-button primary" type="button" id="checkAnswer">Проверить</button>`
+        : `<button class="small-button primary" type="button" id="nextQuestion">Дальше →</button>`
+      }
     </div>
   `;
   content.appendChild(card);
-  card.querySelector("[data-reveal]")?.addEventListener("click", () => {
-    state.cardQuizRevealed = true;
+
+  const input = card.querySelector("#quizAnswerInput");
+  if (input) {
+    input.focus();
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleCheckAnswer();
+      }
+    });
+  }
+
+  const handleCheckAnswer = () => {
+    const val = input?.value || "";
+    if (!val.trim()) return;
+    state.cardQuizInput = val;
+    state.cardQuizAnswered = true;
+    state.cardQuizTotal += 1;
+    if (checkAnswer(val, question)) {
+      state.cardQuizCorrect += 1;
+    }
+    renderCards();
+  };
+
+  card.querySelector("#checkAnswer")?.addEventListener("click", handleCheckAnswer);
+  card.querySelector("#nextQuestion")?.addEventListener("click", () => {
+    state.cardQuizIndex += 1;
+    state.cardQuizInput = "";
+    state.cardQuizAnswered = false;
+    if (state.cardQuizIndex >= state.cardQuiz.length) {
+      renderCards();
+      return;
+    }
     renderCards();
   });
   card.querySelector("[data-stop]")?.addEventListener("click", stopCardQuiz);
-  card.querySelector("[data-know]")?.addEventListener("click", () => answerCard(true));
-  card.querySelector("[data-dont-know]")?.addEventListener("click", () => answerCard(false));
 }
 
-function answerCard(known) {
-  const verb = state.cardQuiz[state.cardQuizIndex];
-  if (known) {
-    state.cards = state.cards.filter((item) => item !== verb);
-    saveCards();
-  }
-  state.cardQuizIndex += 1;
-  state.cardQuizRevealed = false;
-  if (state.cardQuizIndex >= state.cardQuiz.length) {
-    stopCardQuiz();
-    return;
-  }
-  renderCards();
+function renderCardQuizResults(content) {
+  const total = state.cardQuizTotal;
+  const correct = state.cardQuizCorrect;
+  const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
+  const card = document.createElement("section");
+  card.className = "info-card study-card";
+  card.innerHTML = `
+    <div class="study-card-top">
+      <span>Результат</span>
+      <button class="small-button" type="button" data-stop>Закрыть</button>
+    </div>
+    <div class="study-face">
+      <p class="eyebrow">Квиз завершён</p>
+      <h2>${correct} из ${total}</h2>
+      <p class="muted">${pct}% правильных ответов</p>
+    </div>
+    <div class="study-actions">
+      <button class="small-button primary" type="button" id="restartQuiz">Ещё раз</button>
+      <button class="small-button" type="button" id="backToCards">К списку</button>
+    </div>
+  `;
+  content.appendChild(card);
+  card.querySelector("#restartQuiz")?.addEventListener("click", startCardQuiz);
+  card.querySelector("#backToCards")?.addEventListener("click", stopCardQuiz);
+  card.querySelector("[data-stop]")?.addEventListener("click", stopCardQuiz);
 }
 
 function stopCardQuiz() {
   state.cardQuiz = [];
   state.cardQuizIndex = 0;
   state.cardQuizRevealed = false;
+  state.cardQuizInput = "";
+  state.cardQuizAnswered = false;
+  state.cardQuizCorrect = 0;
+  state.cardQuizTotal = 0;
   renderCards();
+}
+
+function escapeHTML(str) {
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
 function shuffle(items) {

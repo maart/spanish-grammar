@@ -1851,7 +1851,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.17 · обновлено: 19.05.2026 19:00</footer>
+      <footer class="app-footer">Версия MVP 0.18 · обновлено: 19.05.2026 20:00</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -2065,10 +2065,18 @@ const IRREGULARS = {
   },
   saber: {
     ru: "знать",
-    tags: ["indefinido irregular", "subjuntivo irregular"],
+    tags: ["yo irregular", "indefinido irregular", "subjuntivo irregular"],
+    presente: ["sé", "sabes", "sabe", "sabemos", "sabéis", "saben"],
     participle: "sabido",
     indefinido: ["supe", "supiste", "supo", "supimos", "supisteis", "supieron"],
-    subjuntivo_presente: ["sepa", "sepas", "sepa", "sepamos", "sepáis", "sepan"]
+    subjuntivo_presente: ["sepa", "sepas", "sepa", "sepamos", "sepáis", "sepan"],
+    imperativo_afirmativo: ["-", "sé", "sepa", "sepamos", "sabed", "sepan"]
+  },
+  salir: {
+    ru: "выходить",
+    tags: ["yo irregular"],
+    presente: ["salgo", "sales", "sale", "salimos", "salís", "salen"],
+    imperativo_afirmativo: ["-", "sal", "salga", "salgamos", "salid", "salgan"]
   },
   traer: {
     ru: "приносить",
@@ -7512,7 +7520,7 @@ function specialExceptionVerbsFor(key) {
     futuro: ["decir", "hacer"],
     condicional: ["decir", "hacer"],
     subjuntivo_presente: ["ser", "estar", "ir", "haber", "dar", "saber", "ver", "oir"],
-    imperativo_afirmativo: ["ser", "ir", "tener", "hacer", "decir", "venir", "poner", "salir"],
+    imperativo_afirmativo: ["ser", "ir", "tener", "hacer", "decir", "venir", "poner", "salir", "saber"],
     participio: ["abrir", "cubrir", "decir", "escribir", "hacer", "morir", "poner", "romper", "ver"]
   };
   return (map[key] || []).filter((verb) => BASE_VERBS.includes(verb) && isExceptionFor(verb, key));

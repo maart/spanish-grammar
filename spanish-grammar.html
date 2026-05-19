@@ -1692,7 +1692,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.17 · обновлено: 19.05.2026 14:30</footer>
+      <footer class="app-footer">Версия MVP 0.17 · обновлено: 19.05.2026 14:45</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -7043,7 +7043,7 @@ function renderCardQuiz(content) {
     const isCorrect = checkAnswer(state.cardQuizInput, question);
     answerHTML = `
       <input class="quiz-input ${isCorrect ? "is-correct" : "is-wrong"}" type="text" value="${escapeHTML(state.cardQuizInput)}" readonly>
-      ${!isCorrect ? `<div class="quiz-feedback is-wrong">Правильно: <strong>${escapeHTML(question.answer)}</strong></div>` : `<div class="quiz-feedback is-correct">Верно!</div>`}
+      ${!isCorrect ? `<div class="quiz-feedback is-wrong">Неправильно: <strong>${escapeHTML(question.answer)}</strong></div>` : `<div class="quiz-feedback is-correct">Верно!</div>`}
     `;
   } else {
     answerHTML = `<input class="quiz-input" id="quizAnswerInput" type="text" autocomplete="off" placeholder="${placeholder}" value="${escapeHTML(state.cardQuizInput)}">`;

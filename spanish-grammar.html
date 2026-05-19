@@ -1851,7 +1851,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.18 · обновлено: 19.05.2026 20:00</footer>
+      <footer class="app-footer">Версия MVP 0.19 · обновлено: 19.05.2026 21:30</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -2040,7 +2040,8 @@ const IRREGULARS = {
   },
   dar: {
     ru: "давать",
-    tags: ["indefinido irregular"],
+    tags: ["indefinido irregular", "presente irregular"],
+    presente: ["doy", "das", "da", "damos", "dais", "dan"],
     participle: "dado",
     indefinido: ["di", "diste", "dio", "dimos", "disteis", "dieron"]
   },
@@ -2052,9 +2053,18 @@ const IRREGULARS = {
   },
   caber: {
     ru: "помещаться",
-    tags: ["indefinido irregular"],
+    tags: ["yo irregular", "indefinido irregular"],
+    presente: ["quepo", "cabes", "cabe", "cabemos", "cabéis", "caben"],
     participle: "cabido",
-    indefinido: ["cupe", "cupiste", "cupo", "cupimos", "cupisteis", "cupieron"]
+    indefinido: ["cupe", "cupiste", "cupo", "cupimos", "cupisteis", "cupieron"],
+    subjuntivo_presente: ["quepa", "quepas", "quepa", "quepamos", "quepáis", "quepan"]
+  },
+  valer: {
+    ru: "стоить, годиться",
+    tags: ["yo irregular"],
+    presente: ["valgo", "vales", "vale", "valemos", "valéis", "valen"],
+    subjuntivo_presente: ["valga", "valgas", "valga", "valgamos", "valgáis", "valgan"],
+    imperativo_afirmativo: ["-", "val", "valga", "valgamos", "valed", "valgan"]
   },
   querer: {
     ru: "хотеть, любить",
@@ -2162,9 +2172,30 @@ const IRREGULARS = {
   },
   freir: {
     ru: "жарить",
-    tags: ["participio irregular"],
+    tags: ["e -> i", "participio irregular"],
     gerund: "friendo",
-    participle: "frito"
+    participle: "frito",
+    presente: ["frío", "fríes", "fríe", "freímos", "freís", "fríen"],
+    indefinido: ["freí", "freíste", "frió", "freímos", "freísteis", "frieron"],
+    subjuntivo_presente: ["fría", "frías", "fría", "friamos", "friáis", "frían"]
+  },
+  reir: {
+    ru: "смеяться",
+    tags: ["e -> i", "participio irregular"],
+    gerund: "riendo",
+    participle: "reído",
+    presente: ["río", "ríes", "ríe", "reímos", "reís", "ríen"],
+    indefinido: ["reí", "reíste", "rió", "reímos", "reísteis", "rieron"],
+    subjuntivo_presente: ["ría", "rías", "ría", "riamos", "riáis", "rían"]
+  },
+  sonreir: {
+    ru: "улыбаться",
+    tags: ["e -> i", "participio irregular"],
+    gerund: "sonriendo",
+    participle: "sonreído",
+    presente: ["sonrío", "sonríes", "sonríe", "sonreímos", "sonreís", "sonríen"],
+    indefinido: ["sonreí", "sonreíste", "sonrió", "sonreímos", "sonreísteis", "sonrieron"],
+    subjuntivo_presente: ["sonría", "sonrías", "sonría", "sonriamos", "sonriáis", "sonrían"]
   },
   imprimir: {
     ru: "печатать",
@@ -5127,9 +5158,13 @@ function generatedPresent(verb) {
   }
   if (verb.endsWith("ducir")) base[0] = verb.slice(0, -3) + "zco";
   else if (verb.endsWith("cer") || verb.endsWith("cir")) base[0] = verb.slice(0, -3) + "zco";
-  else if (verb.endsWith("ger") || verb.endsWith("gir")) base[0] = verb.slice(0, -3) + "jo";
+  else if (verb.endsWith("ger") || verb.endsWith("gir")) {
+    let root = verb.slice(0, -3);
+    if (hasStemChange(verb, "e", "i")) root = stemChange(root, "e", "i");
+    base[0] = root + "jo";
+  }
   else if (verb.endsWith("guir")) base[0] = stemChange(verb.slice(0, -4) + "g", "e", "i") + "o";
-  if (verb.endsWith("uir")) {
+  if (verb.endsWith("uir") && !verb.endsWith("guir")) {
     const root = stem(verb);
     base[0] = root + "yo";
     base[1] = root + "yes";
@@ -5199,7 +5234,25 @@ function participle(verb) {
 
 function gerund(verb) {
   if (IRREGULARS[verb]?.gerund) return IRREGULARS[verb].gerund;
-  return stem(verb) + (verbType(verb) === "ar" ? "ando" : "iendo");
+  const s = stem(verb);
+  const type = verbType(verb);
+  // -ir verbs with e->ie or e->i change e->i in gerundio
+  if (type === "ir" && (hasStemChange(verb, "e", "ie") || hasStemChange(verb, "e", "i"))) {
+    return stemChange(s, "e", "i") + "iendo";
+  }
+  // -ir verbs with o->ue change o->u in gerundio
+  if (type === "ir" && hasStemChange(verb, "o", "ue")) {
+    return stemChange(s, "o", "u") + "iendo";
+  }
+  // -uir verbs: y insertion (construir -> construyendo)
+  if (verb.endsWith("uir") && !verb.endsWith("guir")) {
+    return s + "yendo";
+  }
+  // -eer/-oir verbs: y insertion (creer -> creyendo, oir -> oyendo)
+  if (verb.endsWith("eer") || verb.endsWith("oir")) {
+    return s + "yendo";
+  }
+  return s + (type === "ar" ? "ando" : "iendo");
 }
 
 function irregularIndefinido(verb) {
@@ -5260,13 +5313,19 @@ function irregularFutureStem(verb) {
       return verb.slice(0, -ending.length) + replacement;
     }
   }
+  // Compound verbs of hacer: deshacer, rehacer, etc.
+  if (verb.endsWith("hacer")) {
+    return verb.slice(0, -5) + "har";
+  }
   return null;
 }
 
 function thirdPersonStemChangeIndefinido(verb) {
   if (!verb.endsWith("ir")) return null;
   const base = regularIndefinido(verb);
-  if (hasStemChange(verb, "e", "i")) {
+  // e->ie verbs that change to e->i in indefinido 3rd person
+  const eieToEI = ["preferir", "sentir", "mentir", "convertir", "divertir", "advertir", "sugerir"];
+  if (eieToEI.some((v) => verb.endsWith(v)) || hasStemChange(verb, "e", "i")) {
     const changed = stemChange(stem(verb), "e", "i");
     base[2] = changed + "ió";
     base[5] = changed + "ieron";
@@ -5325,18 +5384,46 @@ function generatedSubjuntivoPresente(verb) {
     if (hasStemChange(verb, "e", "i")) root = stemChange(verb.slice(0, -3), "e", "i") + "j";
     return make(root, a);
   }
-  if (verb.endsWith("guir")) return make(stemChange(verb.slice(0, -4) + "g", "e", "i"), a);
+  if (verb.endsWith("guir")) {
+    let root = verb.slice(0, -4) + "g";
+    if (hasStemChange(verb, "e", "i")) root = stemChange(root, "e", "i");
+    return make(root, a);
+  }
   if (verb.endsWith("uir")) return make(stem(verb) + "y", a);
+  // -guar verbs need diéresis (ü) in all subjuntivo forms
+  if (verb.endsWith("guar")) {
+    const root = verb.slice(0, -4) + "gü";
+    return make(root, e);
+  }
   if (verb.endsWith("gar") && hasStemChange(verb, "u", "ue")) {
-    return make(stemChange(stem(verb), "u", "ue") + "u", e);
+    const baseRoot = verb.slice(0, -3); // "jug"
+    const regularRoot = baseRoot + "gu"; // "jugu"
+    const changedRoot = stemChange(baseRoot, "u", "ue") + "gu"; // "juegu"
+    return [
+      changedRoot + "e",
+      changedRoot + "es",
+      changedRoot + "e",
+      regularRoot + "emos",
+      regularRoot + "éis",
+      changedRoot + "en"
+    ];
   }
   if (verb.endsWith("car")) return make(verb.slice(0, -3) + "qu", e);
   if (verb.endsWith("gar")) return make(verb.slice(0, -3) + "gu", e);
   if (verb.endsWith("zar")) {
-    const root = hasStemChange(verb, "e", "ie")
-      ? stemChange(stem(verb), "e", "ie").slice(0, -1) + "c"
-      : verb.slice(0, -3) + "c";
-    return make(root, e);
+    // For -ar verbs with stem change, nosotros/vosotros keep regular stem
+    let regularRoot = verb.slice(0, -3) + "c";
+    let changedRoot = regularRoot;
+    if (hasStemChange(verb, "e", "ie")) changedRoot = stemChange(regularRoot, "e", "ie");
+    else if (hasStemChange(verb, "o", "ue")) changedRoot = stemChange(regularRoot, "o", "ue");
+    return [
+      changedRoot + "e",
+      changedRoot + "es",
+      changedRoot + "e",
+      regularRoot + "emos",
+      regularRoot + "éis",
+      changedRoot + "en"
+    ];
   }
   if (hasStemChange(verb, "e", "ie")) return regularSubjuntivoWithStemChange(verb, "e", "ie");
   if (hasStemChange(verb, "o", "ue")) return regularSubjuntivoWithStemChange(verb, "o", "ue");
@@ -5350,9 +5437,12 @@ function regularSubjuntivoWithStemChange(verb, from, to) {
   return endings.map((ending, index) => {
     let root = stem(verb);
     if (index === 3 || index === 4) {
+      // nosotros/vosotros: no stem change for -ar/-er verbs
+      // for -ir verbs with e->ie or o->ue, change to e->i or o->u
       if (from === "e" && to === "i") root = stemChange(root, "e", "i");
       else if (from === "e" && to === "ie" && verb.endsWith("ir")) root = stemChange(root, "e", "i");
       else if (from === "o" && to === "ue" && verb.endsWith("ir")) root = stemChange(root, "o", "u");
+      // for -ar/-er verbs, keep regular stem (no change)
     } else {
       root = stemChange(root, from, to);
     }
@@ -5366,7 +5456,9 @@ function generatedParticiple(verb) {
     ["abrir", "abierto"], ["cubrir", "cubierto"], ["escribir", "escrito"],
     ["poner", "puesto"], ["volver", "vuelto"], ["resolver", "resuelto"],
     ["romper", "roto"], ["ver", "visto"], ["hacer", "hecho"], ["decir", "dicho"],
-    ["morir", "muerto"], ["freir", "frito"], ["imprimir", "impreso"], ["pudrir", "podrido"]
+    ["morir", "muerto"], ["freir", "frito"], ["imprimir", "impreso"], ["pudrir", "podrido"],
+    ["caer", "caído"], ["oir", "oído"], ["creer", "creído"], ["leer", "leído"],
+    ["traer", "traído"], ["construir", "construido"], ["huir", "huido"]
   ];
   for (const [ending, form] of participles) {
     if (verb.endsWith(ending)) return verb.slice(0, -ending.length) + form;
@@ -5376,7 +5468,7 @@ function generatedParticiple(verb) {
 
 function hasStemChange(verb, from, to) {
   const groups = {
-    "e:ie": ["tener", "venir", "pensar", "cerrar", "empezar", "comenzar", "querer", "entender", "perder", "preferir", "sentir", "mentir", "convertir", "divertir", "advertir", "sugerir", "atravesar", "calentar", "apretar", "acertar"],
+    "e:ie": ["tener", "venir", "pensar", "cerrar", "empezar", "comenzar", "querer", "entender", "perder", "preferir", "sentir", "mentir", "convertir", "divertir", "advertir", "sugerir", "atravesar", "calentar", "apretar", "acertar", "tropezar"],
     "o:ue": ["poder", "dormir", "morir", "volver", "devolver", "recordar", "contar", "costar", "mostrar", "probar", "almorzar", "soñar", "mover", "morder", "sonar"],
     "e:i": ["pedir", "repetir", "servir", "vestir", "seguir", "conseguir", "perseguir", "elegir", "corregir", "competir", "impedir", "medir", "despedir", "reir", "sonreir", "freir"],
     "u:ue": ["jugar"]

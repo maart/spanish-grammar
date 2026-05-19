@@ -1840,7 +1840,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.17 · обновлено: 19.05.2026 16:30</footer>
+      <footer class="app-footer">Версия MVP 0.17 · обновлено: 19.05.2026 16:45</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -5934,7 +5934,7 @@ function renderVerbResults(content, results, selectedPanel) {
     list.classList.add("is-suggestions");
     COMMON_VERB_SUGGESTIONS
       .filter((verb) => BASE_VERBS.includes(verb))
-      .forEach((verb) => list.appendChild(renderVerbListItem(verb, { showBadges: false })));
+      .forEach((verb) => list.appendChild(renderVerbListItem(verb, { showBadges: true })));
   } else {
     verbs.forEach((verb) => list.appendChild(renderVerbListItem(verb)));
   }
@@ -7114,7 +7114,7 @@ function renderCards() {
       <div class="verb-list is-suggestions"></div>
     `;
     const list = emptyCard.querySelector(".verb-list");
-    suggestedCards.forEach((verb) => list.appendChild(renderVerbListItem(verb, { showBadges: false })));
+    suggestedCards.forEach((verb) => list.appendChild(renderVerbListItem(verb, { showBadges: true })));
     content.appendChild(emptyCard);
     return;
   }

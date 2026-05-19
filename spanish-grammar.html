@@ -1459,6 +1459,99 @@ select {
   .verb-row-meta {
     gap: 6px;
   }
+
+  .table-related-links {
+    grid-template-columns: 1fr;
+  }
+}
+
+.table-related {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.table-related-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.table-related-links .small-button {
+  min-height: 28px;
+  padding-inline: 8px;
+  font-size: 12px;
+}
+
+@media print {
+  body {
+    background: white;
+    color: black;
+    font-size: 11pt;
+  }
+
+  .app-shell {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .topbar,
+  .tabs,
+  .search-panel,
+  .floating-top-button,
+  .icon-button,
+  .small-button,
+  .verb-card-tabs,
+  .filter-tabs,
+  .toc-toggle,
+  .table-card-actions,
+  .table-related,
+  .brand-stats,
+  .app-footer {
+    display: none !important;
+  }
+
+  .content > *,
+  .list-grid > article,
+  .list-grid > section,
+  .topbar,
+  .search-panel,
+  .content > section,
+  .verb-card,
+  .info-card,
+  .table-card {
+    background: white;
+    border: none;
+    box-shadow: none;
+    break-inside: avoid;
+  }
+
+  .info-card table,
+  .table-wrap table {
+    page-break-inside: avoid;
+  }
+
+  .table-card.is-open .table-wrap,
+  .table-card .table-wrap {
+    display: block !important;
+  }
+
+  h1 { font-size: 22pt; }
+  h2 { font-size: 16pt; }
+  h3 { font-size: 13pt; }
+
+  a, button { color: black; }
+
+  td.irregular {
+    color: black;
+    font-weight: 900;
+    text-decoration: underline;
+  }
 }
 
     </style>
@@ -1489,7 +1582,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.12 · обновлено: 19.05.2026 04:20</footer>
+      <footer class="app-footer">Версия MVP 0.12 · обновлено: 19.05.2026 09:54</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -3088,15 +3181,6 @@ const USEFUL_TABLES = [
       <tr><th>depender de</th><td>зависеть от</td><td>Depende del tiempo.</td></tr>
       <tr><th>tratar de</th><td>пытаться / речь о</td><td>Trato de entender. Se trata de un problema.</td></tr>
       <tr><th>contar con</th><td>рассчитывать на</td><td>Cuento con tu ayuda.</td></tr>
-    </tbody></table>`
-  },
-
-  {
-    group: "Глагольные конструкции",
-    subgroup: "Глаголы с предлогами",
-    title: "Verbos con preposición fija: дополнительный список",
-    description: "Ещё глаголы, которые требуют определённого предлога, часто не совпадающего с русским.",
-    table: `<table><thead><tr><th>Глагол + предлог</th><th>Перевод</th><th>Пример</th></tr></thead><tbody>
       <tr><th>quedar en</th><td>договориться о</td><td>Quedamos en vernos mañana.</td></tr>
       <tr><th>quedarse con</th><td>оставить себе / запомнить</td><td>Me quedo con este. Quédate con esa idea.</td></tr>
       <tr><th>meterse en</th><td>влезать во / заниматься</td><td>No te metas en mis asuntos.</td></tr>
@@ -3117,6 +3201,21 @@ const USEFUL_TABLES = [
       <tr><th>luchar por</th><td>бороться за</td><td>Luchamos por la justicia.</td></tr>
       <tr><th>preocuparse por</th><td>беспокоиться о</td><td>Me preocupo por ti.</td></tr>
       <tr><th>interesarse por</th><td>интересоваться</td><td>Se interesa por la historia.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Глагольные конструкции",
+    subgroup: "Функции se",
+    title: "Se: 4 функции — pasiva, impersonal, recíproco, pronominal",
+    description: "Частица se выполняет четыре разные роли. Контекст и структура фразы подсказывают, какая именно.",
+    table: `<table><thead><tr><th>Функция</th><th>Схема</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>Pasiva refleja</th><td>se + 3-е лицо (согласуется с подлежащим)</td><td>Se venden pisos. Se habla español.</td><td>Продаются квартиры. Говорят по-испански.</td></tr>
+      <tr><th>Impersonal</th><td>se + 3-е лицо ед.ч. (без подлежащего)</td><td>Se vive bien aquí. Se dice que…</td><td>Здесь хорошо живётся. Говорят, что…</td></tr>
+      <tr><th>Recíproco</th><td>se + глагол во мн.ч. (взаимное действие)</td><td>Se abrazaron. Se escriben cada semana.</td><td>Они обнялись. Они пишут друг другу каждую неделю.</td></tr>
+      <tr><th>Pronominal</th><td>возвратный глагол: me/te/se/nos/os/se</td><td>Me levanto. Se duerme. Nos vamos.</td><td>Я встаю. Он засыпает. Мы уходим.</td></tr>
+      <tr><th>⚠️ pasiva vs impersonal</th><td>pasiva: подлежащее есть (мн./ед.); impersonal: всегда ед.ч.</td><td>Se alquilan coches (pasiva, coches — подлеж.). Se trabaja mucho (impersonal, нет подлеж.).</td><td></td></tr>
+      <tr><th>⚠️ recíproco vs pronominal</th><td>recíproco: только мн.ч., действие взаимное; pronominal: любое лицо</td><td>Se miraron (друг на друга) vs Se miró al espejo (он посмотрел на себя).</td><td></td></tr>
     </tbody></table>`
   },
 
@@ -3434,12 +3533,29 @@ const USEFUL_TABLES = [
       <tr><th>realizar</th><td>выполнять / осуществлять (не «осознавать»)</td><td>Realizamos un estudio detallado.</td></tr>
       <tr><th>lectura</th><td>чтение (не «лекция»)</td><td>La lectura es mi afición favorita.</td></tr>
       <tr><th>carpeta</th><td>папка (не «ковёр»)</td><td>Guarda los papeles en la carpeta.</td></tr>
-      <tr><th>fábrica</th><td>фабрика / завод (не «фабрика» в том же смысле — совпадает)</td><td>Trabaja en una fábrica de coches.</td></tr>
       <tr><th>oficina</th><td>офис (не «официантка»)</td><td>Trabajo en una oficina.</td></tr>
       <tr><th>largo</th><td>длинный (не «логово»)</td><td>El camino es muy largo.</td></tr>
       <tr><th>extrañar</th><td>скучать / удивлять (не «странный»)</td><td>Te extraño. Me extraña que no haya llamado.</td></tr>
       <tr><th>pretender</th><td>пытаться / стремиться (не «притворяться»)</td><td>Pretende terminar el proyecto hoy.</td></tr>
       <tr><th>billón</th><td>триллион (не «миллиард»)</td><td>Un billón = 1.000.000.000.000</td></tr>
+      <tr><th>actual</th><td>текущий, нынешний (не «актуальный» в значении «важный»)</td><td>La situación actual es difícil.</td></tr>
+      <tr><th>bizarro</th><td>смелый, храбрый (не «бizarre / странный»)</td><td>Un caballero bizarro.</td></tr>
+      <tr><th>comprometido</th><td>помолвленный / взятый обязательство (не «компрометирующий»)</td><td>Están comprometidos. Un tema comprometido.</td></tr>
+      <tr><th>intoxicado</th><td>отравившийся (не «под воздействием наркотиков»)</td><td>Está intoxicado por comida en mal estado.</td></tr>
+      <tr><th>molestar</th><td>беспокоить, раздражать (не «molest / приставать»)</td><td>El ruido me molesta.</td></tr>
+      <tr><th>parada</th><td>остановка / остановившаяся (не «парад»)</td><td>La parada del autobús. Estoy parada.</td></tr>
+      <tr><th>salsa</th><td>соус (не всегда «сальса» как танец)</td><td>Una salsa de tomate. Bailar salsa.</td></tr>
+      <tr><th>taller</th><td>мастерская / семинар (не «талья»)</td><td>Un taller mecánico. Un taller de escritura.</td></tr>
+      <tr><th>delito</th><td>преступление (не «деликатный»)</td><td>Cometió un delito grave.</td></tr>
+      <tr><th>exquisito</th><td>изысканный, вкусный (не «эксклюзивный»)</td><td>Un plato exquisito.</td></tr>
+      <tr><th>fabricar</th><td>производить, изготавливать (не «фабриковать» в значении «подделывать»)</td><td>Fabrican muebles de madera.</td></tr>
+      <tr><th>grosero</th><td>грубый, невежливый (не «гросс / большой»)</td><td>No seas grosero.</td></tr>
+      <tr><th>lama</th><td>ил, слизь / шерсть ламы (не «лама» как монах)</td><td>Hay lama en el fondo del río.</td></tr>
+      <tr><th>miserable</th><td>жалкий, скупердяй (не всегда «ужасный»)</td><td>Es un miserable, no paga nada.</td></tr>
+      <tr><th>política</th><td>политика / политика компании (не только «государственная»)</td><td>La política de la empresa.</td></tr>
+      <tr><th>preservativo</th><td>презерватив (не «консервант»)</td><td>Usa preservativo. Conservante — консервант.</td></tr>
+      <tr><th>ración</th><td>порция (не «рацион» как система питания)</td><td>Una ración de patatas bravas.</td></tr>
+      <tr><th>vaso</th><td>стакан (не «ваза»)</td><td>Un vaso de agua. Jarrón — ваза.</td></tr>
     </tbody></table>`
   },
 
@@ -3503,14 +3619,15 @@ const USEFUL_TABLES = [
     subgroup: "Словообразование",
     title: "Gentilicios: -ano, -eño, -és, -ino, -ense",
     description: "Суффиксы для образования названий жителей стран, регионов и городов.",
-    table: `<table><thead><tr><th>Sufijo</th><th>Страны / регионы</th><th>Пример</th></tr></thead><tbody>
+    table: `<table><thead><tr><th>Sufijo</th><th>Страны / регионы / города</th><th>Пример</th></tr></thead><tbody>
       <tr><th>-ano / -ana</th><td>очень частый, многие страны</td><td>Italia → italiano, México → mexicano, Alemania → alemán (c -án)</td></tr>
       <tr><th>-eño / -eña</th><td>испанские регионы и Латинская Америка</td><td>Madrid → madrileño, Extremadura → extremeño, Chile → chileno, Brasil → brasileño</td></tr>
-      <tr><th>-és / -esa</th><td>страны (часто Европа)</td><td>España → español, Francia → francés, Inglaterra → inglés, Portugal → portugués</td></tr>
-      <tr><th>-ino / -ina</th><td>страны и города</td><td>Argentina → argentino, Cuba → cubano, Elche → ilicitano, Granada → granadino</td></tr>
-      <tr><th>-ense</th><td>города (универсальный)</td><td>Estados Unidos → estadounidense, Canadá → canadiense, París → parisiense</td></tr>
+      <tr><th>-és / -esa</th><td>страны (часто Европа) и города Испании</td><td>España → español, Francia → francés, Inglaterra → inglés, Portugal → portugués, Barcelona → barcelonés</td></tr>
+      <tr><th>-ino / -ina</th><td>страны и города</td><td>Argentina → argentino, Cuba → cubano, Elche → ilicitano, Granada → granadino, Sevilla → sevillano</td></tr>
+      <tr><th>-ense</th><td>города (универсальный)</td><td>Estados Unidos → estadounidense, Canadá → canadiense, París → parisiense, Valencia → valenciano, Bilbao → bilbaíno</td></tr>
       <tr><th>-í</th><td>арабские страны / регионы</td><td>Marruecos → marroquí, Israel → israelí, Kuwait → kuwaití, Ceuta → ceutí</td></tr>
       <tr><th>-eco / -eca</th><td>Центральная Америка</td><td>Guatemala → guatemalteco, Perú → peruano, Nicaragua → nicaragüense</td></tr>
+      <tr><th>🏙️ города Испании</th><td>частые gentilicios для городов</td><td>Madrid → madrileño, Barcelona → barcelonés, Sevilla → sevillano, Valencia → valenciano, Bilbao → bilbaíno, Zaragoza → zaragozano, Málaga → malagueño, Toledo → toledano, Salamanca → salmantino, San Sebastián → donostiarra, Valladolid → vallisoletano, Cádiz → gaditano, Córdoba → cordobés, Murcia → murciano</td></tr>
       <tr><th>⚠️ исключения</th><td>не подчиняются общему правилу</td><td>Japón → japonés (не japónés), China → chino, Suecia → sueco, Noruega → noruego</td></tr>
       <tr><th>⚠️ род</th><td>большинство меняют -o на -a для женщин</td><td>español → española, argentino → argentina, francés → francesa</td></tr>
     </tbody></table>`
@@ -3600,32 +3717,129 @@ const USEFUL_TABLES = [
       <tr><th>Предлоги с месяцами</th><td>en + месяц</td><td>en enero, en verano</td></tr>
       <tr><th>«Сейчас / в этом»</th><td>ahora / este</td><td>Ahora son las tres. Este mes, esta semana, este año.</td></tr>
     </tbody></table>`
+  },
+
+  {
+    group: "Прилагательные и наречия",
+    subgroup: "Прилагательные",
+    title: "Adjetivos: согласование, позиция, изменение смысла",
+    description: "Прилагательные согласуются с существительным в роде и числе. Позиция (перед или после) может менять смысл.",
+    table: `<table><thead><tr><th>Правило</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>Согласование: род</th><td>alto → alta, bonito → bonita, trabajador → trabajadora</td><td>chico alto, chica alta</td></tr>
+      <tr><th>Согласование: число</th><td>alto → altos, feliz → felices, azul → azules</td><td>libros altos, chicas felices</td></tr>
+      <tr><th>После существительного (по умолчанию)</th><td>un hombre alto, una casa grande</td><td>высокий мужчина, большой дом (объективное описание)</td></tr>
+      <tr><th>Перед существительным (субъективная оценка)</th><td>un gran hombre, una buena idea</td><td>великий мужчина, хорошая идея (оценка, не размер)</td></tr>
+      <tr><th>⚠️ cambio de significado</th><td>un pobre hombre (жалкий) vs un hombre pobre (без денег)</td><td>позиция меняет смысл</td></tr>
+      <tr><th>⚠️ cambio de significado</th><td>la cierta noticia (конкретная) vs la noticia cierta (правдивая)</td><td>перед = конкретный, после = истинный</td></tr>
+      <tr><th>⚠️ apócope перед сущ. м.р.</th><td>bueno → buen, malo → mal, grande → gran, primero → primer, tercero → tercer</td><td>un buen día, el primer piso, una gran mujer</td></tr>
+      <tr><th>Неизменяемые (цвет, форма)</th><td>rosa, naranja, azul, marrón (некоторые)</td><td>camisas rosa, ojos marrón</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Местоимения и объекты",
+    subgroup: "Указатели",
+    title: "Esto/eso/aquello: нейтральные указательные местоимения",
+    description: "Нейтральные формы указывают на идеи, ситуации или неизвестные объекты. Не изменяются по роду и числу.",
+    table: `<table><thead><tr><th>Близость</th><th>С родом (изменяются)</th><th>Нейтральные (не изменяются)</th><th>Когда использовать</th></tr></thead><tbody>
+      <tr><th>здесь</th><td>este / esta / estos / estas</td><td><strong>esto</strong></td><td>Esto es interesante. (указываю на ситуацию/предмет)</td></tr>
+      <tr><th>там</th><td>ese / esa / esos / esas</td><td><strong>eso</strong></td><td>Eso no es verdad. (ссылаюсь на сказанное ранее)</td></tr>
+      <tr><th>далеко</th><td>aquel / aquella / aquellos / aquellas</td><td><strong>aquello</strong></td><td>Aquello fue increíble. (воспоминание о ситуации)</td></tr>
+      <tr><th>⚠️</th><td>este libro, esa casa (с существительным)</td><td>esto, eso, aquello (без существительного)</td><td>Esto me gusta. Не: esto libro. Este libro me gusta.</td></tr>
+      <tr><th>⚠️</th><td colspan="3">Нейтральные — только для идей, абстракций, неизвестных предметов. Для конкретных объектов используй род. ¿Qué es esto? — Es una llave.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Местоимения и объекты",
+    subgroup: "Вопросительные и относительные",
+    title: "Relativos vs interrogativos: que vs qué, cual vs cuál",
+    description: "Вопросительные всегда с ударением, относительные — без. Они выполняют разные функции в предложении.",
+    table: `<table><thead><tr><th>Тип</th><th>Форма</th><th>Функция</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>Interrogativo</th><td><strong>qué</strong> (с ударением)</td><td>что? / какой? (вопрос)</td><td>¿Qué quieres? ¿Qué libro lees?</td></tr>
+      <tr><th>Relativo</th><td><strong>que</strong> (без ударения)</td><td>который / что (связывает)</td><td>El libro que leo es bueno.</td></tr>
+      <tr><th>Interrogativo</th><td><strong>cuál / cuáles</strong></td><td>который? (выбор)</td><td>¿Cuál prefieres?</td></tr>
+      <tr><th>Relativo</th><td><strong>el cual / la cual</strong></td><td>который (формальное)</td><td>El motivo por el cual vine.</td></tr>
+      <tr><th>Interrogativo</th><td><strong>quién / quiénes</strong></td><td>кто? (вопрос о человеке)</td><td>¿Quién llama?</td></tr>
+      <tr><th>Relativo</th><td><strong>quien / quienes</strong></td><td>кто (о человеке, с предлогом)</td><td>La persona de quien hablo.</td></tr>
+      <tr><th>Interrogativo</th><td><strong>cómo</strong></td><td>как? (вопрос)</td><td>¿Cómo estás?</td></tr>
+      <tr><th>Relativo</th><td><strong>como</strong></td><td>как / тем способом</td><td>Hazlo como quieras.</td></tr>
+      <tr><th>⚠️ lo que</th><td colspan="3">нейтральное относительное: «то, что». Lo que dices es importante. (не interrogativo!)</td></tr>
+      <tr><th>⚠️ el que / la que</th><td colspan="3">«тот, который». El que llegó tarde se perdió la clase. (с артиклем = относительное)</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Существительные и указатели",
+    subgroup: "Числительные",
+    title: "Numerales: collectivos и fracciones",
+    description: "Собирательные числительные (группы) и дроби — часто встречаются в быту и магазинах.",
+    table: `<table><thead><tr><th>Тип</th><th>Испанский</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>половина</th><td>mitad / medio(a)</td><td>la mitad de la clase, medio kilo</td></tr>
+      <tr><th>треть</th><td>tercio / tercera parte</td><td>un tercio del presupuesto</td></tr>
+      <tr><th>четверть</th><td>cuarto / cuarta parte</td><td>un cuarto de hora (15 минут)</td></tr>
+      <tr><th>двойной</th><td>doble</td><td>el doble de trabajo, doble habitación</td></tr>
+      <tr><th>тройной</th><td>triple</td><td>el triple de precio</td></tr>
+      <tr><th>десяток</th><td>decena</td><td>una decena de personas (около 10)</td></tr>
+      <tr><th>дюжина</th><td>docena</td><td>una docena de huevos (12)</td></tr>
+      <tr><th>сотня</th><td>centena</td><td>una centena de invitados (около 100)</td></tr>
+      <tr><th>тысяча (сущ.)</th><td>millar</td><td>un millar de libros (около 1000)</td></tr>
+      <tr><th>пара</th><td>par</td><td>un par de zapatos</td></tr>
+      <tr><th>⚠️ medio vs mitad</th><td>medio + сущ. (половина чего-то); mitad (сущ. «половина»)</td><td>medio litro (0.5 л) vs la mitad del litro (половина литра)</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Прилагательные и наречия",
+    subgroup: "Наречия",
+    title: "Adverbios на -mente: образование и порядок",
+    description: "Наречия образа действия образуются от прилагательных женского рода + -mente. При нескольких наречиях только последнее сохраняет -mente.",
+    table: `<table><thead><tr><th>Правило</th><th>Пример</th><th>Примечание</th></tr></thead><tbody>
+      <tr><th>adj. ж.р. + -mente</th><td>rápida → rápidamente, feliz → felizmente</td><td>Самый частый способ образования наречий</td></tr>
+      <tr><th>Если adj. не имеет ж.р.</th><td>fácil → fácilmente, difícil → difícilmente</td><td>Берётся форма мужского рода + -mente</td></tr>
+      <tr><th>Ударение сохраняется</th><td>cortés → cortésmente, ágil → ágilmente</td><td>Акцент прилагательного остаётся</td></tr>
+      <tr><th>Несколько наречий подряд</th><td>Habló clara y concisamente.</td><td>Только последнее получает -mente</td></tr>
+      <tr><th>Ещё примеры</th><td>lenta pero seguramente, seria y responsablemente</td><td>Все adj. в ж.р., -mente только в конце</td></tr>
+      <tr><th>⚠️ не все adj. → -mente</th><td>не от числительных, не от некоторых цветов</td><td>Нет: *unamente, *rosamente</td></tr>
+      <tr><th>⚠️ порядок в фразе</th><td>наречие обычно после глагола</td><td>Habla bien. No: bien habla. (кроме поэзии/стиля)</td></tr>
+    </tbody></table>`
   }
 ];
 
 const TABLE_GROUPS = [
   {
     title: "Местоимения и объекты",
+    emoji: "🔤",
     description: "То, что заменяет существительные и помогает быстро строить фразы с объектами."
   },
   {
     title: "Существительные и указатели",
+    emoji: "📦",
     description: "Артикли и слова, которые уточняют род, число и расстояние."
   },
   {
+    title: "Прилагательные и наречия",
+    emoji: "✨",
+    description: "Согласование, позиция, образование наречий и степени сравнения."
+  },
+  {
     title: "Глагольные пары и времена",
+    emoji: "🔄",
     description: "Выбор между похожими глаголами и согласование времён."
   },
   {
     title: "Глагольные конструкции",
-    description: "Устойчивые глагольные обороты и управление."
+    emoji: "🔧",
+    description: "Устойчивые глагольные обороты, управление и функции se."
   },
   {
     title: "Служебные слова и степень",
+    emoji: "🔗",
     description: "Короткие слова, которые часто меняют смысл ответа или оценки."
   },
   {
     title: "Предлоги и время",
+    emoji: "⏰",
     description: "Мини-правила для направления, причины, длительности и точки отсчета."
   }
 ];
@@ -3634,6 +3848,7 @@ const TABLE_FILTERS = [
   { id: "all", label: "Все" },
   { id: "pronouns", label: "Местоимения" },
   { id: "nouns", label: "Существительные" },
+  { id: "adj_adv", label: "Прилаг./нареч." },
   { id: "verbs", label: "Глаголы" },
   { id: "service", label: "Служебные" },
   { id: "prepositions", label: "Предлоги" },
@@ -3643,6 +3858,7 @@ const TABLE_FILTERS = [
 const TABLE_FILTER_GROUPS = {
   pronouns: ["Местоимения и объекты"],
   nouns: ["Существительные и указатели"],
+  adj_adv: ["Прилагательные и наречия"],
   verbs: ["Глагольные пары и времена", "Глагольные конструкции"],
   service: ["Служебные слова и степень"],
   prepositions: ["Предлоги и время"],
@@ -3802,7 +4018,7 @@ const state = {
   showImperativoMoreExamples: false,
   moodQuizIndex: 0,
   moodQuizRevealed: false,
-  tableFilter: "all",
+  tableFilter: localStorage.getItem("msg:tableFilter") || "all",
   tableQuery: "",
   showToc: false,
   openTables: {},
@@ -5256,6 +5472,7 @@ function renderTables() {
   bindClickAll(nav, "[data-table-filter]", (event) => {
     const id = event.currentTarget.dataset.tableFilter;
     state.tableFilter = state.tableFilter === id ? "all" : id;
+    localStorage.setItem("msg:tableFilter", state.tableFilter);
     renderTables();
   });
   bindClickAll(nav, "[data-table-jump]", (event) => {
@@ -5288,7 +5505,8 @@ function renderTables() {
   TABLE_GROUPS.forEach((group) => {
     const groupTables = visibleTables.filter((item) => item.group === group.title);
     if (groupTables.length === 0) return;
-    content.appendChild(groupHeading(group.title, group.description));
+    const emoji = group.emoji ? `${group.emoji} ` : "";
+    content.appendChild(groupHeading(`${emoji}${group.title}`, group.description));
 
     const subgroupMap = {};
     groupTables.forEach((item) => {
@@ -5311,21 +5529,25 @@ function renderTables() {
 function renderUsefulTableCard(item) {
   const index = item.index;
   const isOpen = state.openTables[index] === true;
+  const summary = item.summary || tableSummary(item);
+  const mistake = item.mistake || tableMistake(item);
+  const related = item.related ? relatedTablesMarkup(item.related) : "";
   const section = infoSection({
     id: `table-${index}`,
     className: `info-card table-card${isOpen ? " is-open" : ""}`,
     html: `
       <h2>${item.title}</h2>
       <p class="muted">${item.description}</p>
-      <div class="table-summary"><strong>Главное:</strong> ${tableSummary(item)}</div>
-      ${tableMistake(item) ? `<div class="table-mistake"><strong>Типичная ошибка:</strong> ${tableMistake(item)}</div>` : ""}
+      <div class="table-summary"><strong>Главное:</strong> ${summary}</div>
+      ${mistake ? `<div class="table-mistake"><strong>Типичная ошибка:</strong> ${mistake}</div>` : ""}
       <div class="table-card-actions">
         ${disclosureButton({ open: isOpen, target: index, label: "Показать шпаргалку", hideLabel: "Скрыть шпаргалку", action: "toggle-table" })}
       </div>
       <div class="table-wrap">${LINKED_TABLE_HTML[index]}</div>
+      ${related}
     `
   });
-  section.querySelector("[data-toggle-table]").addEventListener("click", () => {
+  section.querySelector("[data-toggle-table]")?.addEventListener("click", () => {
     const btn = section.querySelector("[data-toggle-table]");
     const isNowOpen = section.classList.toggle("is-open");
     state.openTables[index] = isNowOpen;
@@ -5337,14 +5559,30 @@ function renderUsefulTableCard(item) {
   bindClickAll(section, "[data-open-tense]", (event) => {
     openTenseFromVerb(event.currentTarget.dataset.openTense);
   });
+  bindClickAll(section, "[data-table-jump-related]", (event) => {
+    scrollToCard(event.currentTarget.dataset.tableJumpRelated);
+  });
   return section;
+}
+
+function relatedTablesMarkup(indices) {
+  const items = indices.map((i) => INDEXED_TABLES[i]).filter(Boolean);
+  if (items.length === 0) return "";
+  return `
+    <div class="table-related">
+      <strong>Связанные шпаргалки:</strong>
+      <div class="table-related-links">
+        ${items.map((item) => `<button class="small-button" type="button" data-table-jump-related="table-${item.index}">${item.title}</button>`).join("")}
+      </div>
+    </div>
+  `;
 }
 
 function tableMatchesFilter(item) {
   const filter = state.tableFilter;
   let ok = false;
   if (filter === "all") ok = true;
-  else if (filter === "time") ok = item.group === "Предлоги и время" || /время|услов|косвен|imperfecto|indefinido|desde|hace|futuro|estilo/i.test(item.title + " " + item.description);
+  else if (filter === "time") ok = item.group === "Предлоги и время" || /время|услов|imperfecto|indefinido|desde|hace(?!r)|futuro|estilo indirecto|косвенная речь/i.test(item.title + " " + item.description);
   else {
     const groups = TABLE_FILTER_GROUPS[filter];
     ok = !groups || groups.some((g) => item.group === g);
@@ -5352,14 +5590,16 @@ function tableMatchesFilter(item) {
   if (!ok) return false;
   const q = state.tableQuery && normalize(state.tableQuery);
   if (!q) return true;
-  const searchText = normalize(item.title + " " + item.description + " " + tableSummary(item));
+  const tableText = item.table ? normalize(item.table.replace(/<[^>]*>/g, " ")) : "";
+  const summaryText = item.summary ? normalize(item.summary) : normalize(tableSummary(item));
+  const searchText = normalize(item.title + " " + item.description + " " + summaryText + " " + tableText);
   return searchText.includes(q);
 }
 
 function countFilteredTables(filterId) {
   return USEFUL_TABLES.filter((item) => {
     if (filterId === "all") return true;
-    if (filterId === "time") return item.group === "Предлоги и время" || /время|услов|косвен|imperfecto|indefinido|desde|hace|futuro|estilo/i.test(item.title + " " + item.description);
+    if (filterId === "time") return item.group === "Предлоги и время" || /время|услов|imperfecto|indefinido|desde|hace(?!r)|futuro|estilo indirecto|косвенная речь/i.test(item.title + " " + item.description);
     const groups = TABLE_FILTER_GROUPS[filterId];
     if (!groups) return true;
     return groups.some((g) => item.group === g);
@@ -5480,20 +5720,31 @@ function tableMistake(item) {
 
 function linkTableTenses(html) {
   const map = [
+    ["Presente de Indicativo", "presente"],
     ["Pretérito Perfecto Compuesto", "perfecto"],
     ["Pretérito Pluscuamperfecto", "pluscuamperfecto"],
+    ["Pretérito Anterior", "preterito_anterior"],
     ["Pretérito Indefinido / Perfecto Simple", "indefinido"],
     ["Pretérito Imperfecto", "imperfecto"],
     ["Futuro Simple", "futuro"],
+    ["Futuro Perfecto", "futuro_perfecto"],
     ["Condicional Simple", "condicional"],
     ["Condicional Compuesto", "condicional_compuesto"],
     ["Presente de Subjuntivo", "subjuntivo_presente"],
+    ["Pretérito Perfecto de Subjuntivo", "subjuntivo_perfecto"],
     ["Imperfecto de Subjuntivo", "subjuntivo_imperfecto"],
     ["Pluscuamperfecto de Subjuntivo", "subjuntivo_pluscuamperfecto"],
+    ["Futuro de Subjuntivo", "subjuntivo_futuro"],
+    ["Imperativo Afirmativo", "imperativo_afirmativo"],
+    ["Imperativo Negativo", "imperativo_negativo"],
     ["condicional simple", "condicional"],
     ["condicional compuesto", "condicional_compuesto"],
     ["imperfecto de subjuntivo", "subjuntivo_imperfecto"],
-    ["pluscuamperfecto de subjuntivo", "subjuntivo_pluscuamperfecto"]
+    ["pluscuamperfecto de subjuntivo", "subjuntivo_pluscuamperfecto"],
+    ["pretérito anterior", "preterito_anterior"],
+    ["futuro perfecto", "futuro_perfecto"],
+    ["presente de subjuntivo", "subjuntivo_presente"],
+    ["pretérito perfecto de subjuntivo", "subjuntivo_perfecto"]
   ];
   return map.reduce((result, [label, id]) => {
     return result.replaceAll(label, `<button class="verb-link-button" type="button" data-open-tense="${id}">${label}</button>`);

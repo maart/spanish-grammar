@@ -1035,32 +1035,38 @@ td.irregular {
   background: var(--surface);
 }
 
-.verb-row-meta span.badge-regular {
+.verb-row-meta span.badge-regular,
+.verb-passport span.badge-regular {
   background: color-mix(in srgb, var(--success) 15%, transparent);
   color: var(--success);
 }
 
-.verb-row-meta span.badge-irregular {
+.verb-row-meta span.badge-irregular,
+.verb-passport span.badge-irregular {
   background: color-mix(in srgb, var(--accent-2) 18%, transparent);
   color: var(--accent-2);
 }
 
-.verb-row-meta span.badge-special {
+.verb-row-meta span.badge-special,
+.verb-passport span.badge-special {
   background: color-mix(in srgb, var(--danger) 15%, transparent);
   color: var(--danger);
 }
 
-.verb-row-meta span.badge-stem {
+.verb-row-meta span.badge-stem,
+.verb-passport span.badge-stem {
   background: color-mix(in srgb, #e6a817 15%, transparent);
   color: #b8860b;
 }
 
-.verb-row-meta span.badge-yo {
+.verb-row-meta span.badge-yo,
+.verb-passport span.badge-yo {
   background: color-mix(in srgb, #8b5cf6 15%, transparent);
   color: #7c3aed;
 }
 
-.verb-row-meta span.badge-part {
+.verb-row-meta span.badge-part,
+.verb-passport span.badge-part {
   background: color-mix(in srgb, #06b6d4 15%, transparent);
   color: #0891b2;
 }
@@ -1071,69 +1077,19 @@ td.irregular {
   font-style: italic;
 }
 
-.verb-row-meta span[title] {
-  cursor: help;
-  position: relative;
-}
-
-.verb-row-meta span[title]:hover::after {
-  content: attr(title);
-  position: absolute;
-  bottom: calc(100% + 6px);
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 6px 10px;
-  border-radius: 6px;
-  background: var(--text);
-  color: var(--surface);
-  font-size: 11px;
-  font-weight: 700;
-  white-space: nowrap;
-  z-index: 10;
-  pointer-events: none;
-}
-
-.verb-passport span.badge-regular {
-  background: color-mix(in srgb, var(--success) 15%, transparent);
-  color: var(--success);
-}
-
-.verb-passport span.badge-irregular {
-  background: color-mix(in srgb, var(--accent-2) 18%, transparent);
-  color: var(--accent-2);
-}
-
-.verb-passport span.badge-special {
-  background: color-mix(in srgb, var(--danger) 15%, transparent);
-  color: var(--danger);
-}
-
-.verb-passport span.badge-stem {
-  background: color-mix(in srgb, #e6a817 15%, transparent);
-  color: #b8860b;
-}
-
-.verb-passport span.badge-yo {
-  background: color-mix(in srgb, #8b5cf6 15%, transparent);
-  color: #7c3aed;
-}
-
-.verb-passport span.badge-part {
-  background: color-mix(in srgb, #06b6d4 15%, transparent);
-  color: #0891b2;
-}
-
 .verb-passport span.badge-reflexive {
   background: var(--surface-2);
   color: var(--muted);
   font-style: italic;
 }
 
+.verb-row-meta span[title],
 .verb-passport span[title] {
   cursor: help;
   position: relative;
 }
 
+.verb-row-meta span[title]:hover::after,
 .verb-passport span[title]:hover::after {
   content: attr(title);
   position: absolute;
@@ -1851,7 +1807,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.19 · обновлено: 19.05.2026 21:30</footer>
+      <footer class="app-footer">Версия MVP 0.20 · обновлено: 19.05.2026 22:00</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -2205,274 +2161,11 @@ const IRREGULARS = {
 };
 
 const TRANSLATIONS = {
-  ser: "быть", estar: "быть, находиться", haber: "иметь; вспомогательный глагол", tener: "иметь",
-  hacer: "делать", decir: "говорить, сказать", ir: "идти, ехать", ver: "видеть", dar: "давать",
-  hablar: "говорить", comer: "есть", vivir: "жить", amar: "любить", trabajar: "работать",
-  estudiar: "учиться", comprar: "покупать", vender: "продавать", escribir: "писать", leer: "читать",
-  abrir: "открывать", cerrar: "закрывать", pensar: "думать", querer: "хотеть, любить", dormir: "спать",
-  pedir: "просить", seguir: "следовать", conocer: "знать, знакомиться", traducir: "переводить", buscar: "искать",
-  llegar: "прибывать", empezar: "начинать", volver: "возвращаться", salir: "выходить", dar: "давать",
-  saber: "знать", traer: "приносить", oir: "слышать", caer: "падать", conducir: "водить",
-  cubrir: "накрывать, покрывать", descubrir: "обнаруживать, открывать", morir: "умирать",
-  resolver: "решать", romper: "ломать, разбивать", andar: "ходить", caber: "помещаться",
-  repetir: "повторять", servir: "служить, подавать", vestir: "одевать", producir: "производить",
-  reducir: "уменьшать, сокращать", introducir: "вводить, вставлять", pudrir: "гнить, портить",
-  freir: "жарить", imprimir: "печатать",
-  valer: "стоить, иметь значение", creer: "верить, считать", mirar: "смотреть", escuchar: "слушать",
-  tomar: "брать, принимать", necesitar: "нуждаться", usar: "использовать", encontrar: "находить",
-  llamar: "звать, звонить", pasar: "проходить, происходить", dejar: "оставлять, позволять",
-  llevar: "нести, носить", esperar: "ждать, надеяться", quedar: "оставаться, договариваться",
-  conseguir: "достигать, получать", devolver: "возвращать", recordar: "помнить, напоминать",
-  contar: "считать, рассказывать", costar: "стоить", mostrar: "показывать", probar: "пробовать",
-  jugar: "играть", comenzar: "начинать", almorzar: "обедать", tocar: "трогать, играть на инструменте",
-  explicar: "объяснять", pagar: "платить", apagar: "выключать", entregar: "передавать, сдавать",
-  negar: "отрицать", navegar: "плавать, перемещаться", practicar: "практиковать", sacar: "вынимать, доставать",
-  colocar: "размещать", cruzar: "пересекать", utilizar: "использовать", organizar: "организовывать",
-  realizar: "осуществлять", analizar: "анализировать", cambiar: "менять", crear: "создавать",
-  aceptar: "принимать", ayudar: "помогать", preguntar: "спрашивать", responder: "отвечать",
-  aprender: "учить, узнавать", comprender: "понимать", entender: "понимать", perder: "терять",
-  beber: "пить", correr: "бегать", meter: "класть внутрь", prometer: "обещать", permitir: "позволять",
-  recibir: "получать", subir: "подниматься", sufrir: "страдать", decidir: "решать", existir: "существовать",
-  insistir: "настаивать", compartir: "делиться", partir: "делить, отправляться", repartir: "распределять",
-  cumplir: "выполнять, исполняться", construir: "строить", destruir: "разрушать", incluir: "включать",
-  excluir: "исключать", huir: "убегать", sustituir: "заменять", contribuir: "способствовать",
-  reconocer: "узнавать, признавать", aparecer: "появляться", desaparecer: "исчезать", nacer: "рождаться",
-  crecer: "расти", ofrecer: "предлагать", parecer: "казаться", merecer: "заслуживать",
-  elegir: "выбирать", corregir: "исправлять", proteger: "защищать", dirigir: "направлять, руководить",
-  exigir: "требовать", coger: "брать", escoger: "выбирать", recoger: "собирать, забирать",
-  fingir: "притворяться", surgir: "возникать", distinguir: "различать", perseguir: "преследовать",
-  preferir: "предпочитать", sentir: "чувствовать", mentir: "лгать", convertir: "превращать",
-  divertir: "развлекать", advertir: "предупреждать", sugerir: "предлагать", hervir: "кипеть",
-  competir: "соревноваться", impedir: "мешать", medir: "измерять", despedir: "прощаться, увольнять",
-  reir: "смеяться", sonreir: "улыбаться", enviar: "отправлять", confiar: "доверять", variar: "меняться",
-  actuar: "действовать", continuar: "продолжать", graduar: "регулировать, оканчивать учебу",
-  evaluar: "оценивать", averiguar: "выяснять", adecuar: "приспосабливать", limpiar: "чистить",
-  ensuciar: "пачкать", copiar: "копировать", copiarse: "списывать", anunciar: "объявлять",
-  denunciar: "заявлять, доносить", negociar: "вести переговоры", apreciar: "ценить", despreciar: "презирать",
-  iniciar: "начинать", financiar: "финансировать", odiar: "ненавидеть", pasear: "гулять",
-  desear: "желать", emplear: "использовать, нанимать", planear: "планировать", bloquear: "блокировать",
-  desbloquear: "разблокировать", aparcar: "парковать", arrancar: "запускать, вырывать", marcar: "отмечать, набирать номер",
-  pescar: "ловить рыбу", secar: "сушить", chocar: "сталкиваться", fabricar: "производить",
-  criticar: "критиковать", publicar: "публиковать", duplicar: "удваивать", aplicar: "применять",
-  multiplicar: "умножать", verificar: "проверять", identificar: "идентифицировать", justificar: "оправдывать",
-  significar: "значить", clasificar: "классифицировать", comunicar: "сообщать", indicar: "указывать",
-  dedicar: "посвящать", educar: "воспитывать, обучать", provocar: "вызывать, провоцировать",
-  equivocar: "ошибаться", convocar: "созывать", enfocar: "фокусировать", atacar: "атаковать",
-  destacar: "выделять", cargar: "грузить, заряжать", descargar: "разгружать, скачивать", encargar: "поручать, заказывать",
-  alargar: "удлинять", colgar: "вешать", obligar: "обязывать", investigar: "исследовать",
-  castigar: "наказывать", rogar: "умолять", juzgar: "судить", gozar: "наслаждаться",
-  lanzar: "бросать, запускать", alcanzar: "достигать", avanzar: "продвигаться", rechazar: "отвергать",
-  tropezar: "спотыкаться", cazar: "охотиться", abrazar: "обнимать", actualizar: "обновлять",
-  autorizar: "разрешать", canalizar: "направлять", finalizar: "завершать", garantizar: "гарантировать",
-  memorizar: "запоминать", visualizar: "визуализировать", ahorrar: "экономить", alquilar: "арендовать",
-  arreglar: "чинить, приводить в порядок", bañar: "купать", besar: "целовать", cocinar: "готовить",
-  cenar: "ужинать", desayunar: "завтракать", dibujar: "рисовать", descansar: "отдыхать",
-  ducharse: "принимать душ", entrenar: "тренироваться", fumar: "курить", ganar: "выигрывать, зарабатывать",
-  gastar: "тратить", gritar: "кричать", guardar: "хранить", invitar: "приглашать",
-  lavar: "мыть", llorar: "плакать", nadar: "плавать", olvidar: "забывать",
-  peinarse: "причесываться", preparar: "готовить, подготавливать", quemar: "жечь", regalar: "дарить",
-  reparar: "ремонтировать", reservar: "бронировать", robar: "красть", saltar: "прыгать",
-  terminar: "заканчивать", viajar: "путешествовать", visitar: "посещать", votar: "голосовать",
-  bailar: "танцевать", cantar: "петь", celebrar: "праздновать", cortar: "резать",
-  cuidar: "заботиться", doblar: "сгибать, поворачивать", durar: "длиться", entrar: "входить",
-  firmar: "подписывать", formar: "формировать", gustar: "нравиться", importar: "быть важным, импортировать",
-  intentar: "пытаться", levantar: "поднимать", llenar: "наполнять", mandar: "посылать, приказывать",
-  matar: "убивать", montar: "садиться, собирать", notar: "замечать", ocupar: "занимать",
-  ordenar: "упорядочивать, приказывать", parar: "останавливать", prestar: "одалживать", quitar: "убирать, снимать",
-  sentar: "сажать", tirar: "бросать, тянуть", tratar: "пытаться, обращаться", asustar: "пугать",
-  aumentar: "увеличивать", bajar: "спускаться, снижать", borrar: "стирать", callar: "молчать",
-  caminar: "идти пешком", cancelar: "отменять", casar: "женить, выдавать замуж", charlar: "болтать",
-  cobrar: "взимать, получать оплату", comparar: "сравнивать", conservar: "сохранять", contestar: "отвечать",
-  controlar: "контролировать", declarar: "объявлять", dudar: "сомневаться", echar: "бросать, выгонять",
-  escapar: "убегать", estacionar: "парковать", funcionar: "работать, функционировать", grabar: "записывать",
-  imaginar: "представлять", informar: "информировать", juntar: "соединять", observar: "наблюдать",
-  pintar: "красить, рисовать", presentar: "представлять", regresar: "возвращаться", respirar: "дышать",
-  saludar: "приветствовать", separar: "разделять", soñar: "мечтать, видеть сон", abandonar: "оставлять, покидать",
-  absorber: "впитывать", acceder: "получать доступ, соглашаться", agradecer: "благодарить", admitir: "признавать, допускать",
-  adquirir: "приобретать", afectar: "влиять", afirmar: "утверждать", agotar: "исчерпывать",
-  añadir: "добавлять", apoyar: "поддерживать", aprobar: "одобрять, сдавать экзамен", asistir: "присутствовать, помогать",
-  atraer: "привлекать", atravesar: "пересекать", avisar: "предупреждать", bastar: "быть достаточным",
-  batir: "взбивать, бить", beneficiar: "приносить пользу", brindar: "предлагать тост", calcular: "вычислять",
-  calentar: "нагревать", citar: "цитировать, назначать встречу", colaborar: "сотрудничать",
-  coleccionar: "коллекционировать", comentar: "комментировать", cometer: "совершать", comportarse: "вести себя",
-  comprobar: "проверять", conceder: "предоставлять", concluir: "заключать, завершать", conectar: "соединять",
-  confirmar: "подтверждать", confundir: "путать", consistir: "состоять", constar: "состоять, значиться",
-  consultar: "консультироваться", consumir: "потреблять", contener: "содержать, сдерживать", contratar: "нанимать",
-  convencer: "убеждать", corresponder: "соответствовать", depender: "зависеть", describir: "описывать",
-  detener: "останавливать, задерживать", diferenciar: "различать", discutir: "обсуждать, спорить",
-  disponer: "располагать", dividir: "делить", doler: "болеть", eliminar: "устранять",
-  emocionar: "волновать", encantar: "очень нравиться", encender: "включать, зажигать", enfadar: "сердить",
-  enseñar: "учить, показывать", esconder: "прятать", establecer: "устанавливать", estimar: "оценивать",
-  evitar: "избегать", expresar: "выражать", faltar: "не хватать", fijar: "фиксировать",
-  inscribir: "записывать, регистрировать", interesar: "интересовать", interrumpir: "прерывать",
-  invertir: "инвестировать, переворачивать", jurar: "клясться", lograr: "добиваться", mantener: "поддерживать",
-  mejorar: "улучшать", mencionar: "упоминать", molestar: "беспокоить", obedecer: "подчиняться",
-  obtener: "получать", ocurrir: "происходить", oponerse: "противиться", participar: "участвовать",
-  pertenecer: "принадлежать", pesar: "весить", plantear: "ставить вопрос", poseer: "обладать",
-  preocupar: "беспокоить", proponer: "предлагать", recorrer: "обходить, проезжать", recuperar: "восстанавливать",
-  referir: "сообщать, ссылаться", relacionar: "связывать", representar: "представлять", resultar: "оказываться",
-  reunir: "собирать", revisar: "проверять", salvar: "спасать", solicitar: "запрашивать",
-  soltar: "отпускать", soportar: "терпеть", suceder: "случаться", suponer: "предполагать",
-  temer: "бояться", unir: "соединять", aclarar: "прояснять, уточнять", acelerar: "ускорять",
-  activar: "активировать", acudir: "являться, прибегать", ajustar: "настраивать", aliviar: "облегчать",
-  alterar: "изменять", animar: "ободрять", apostar: "делать ставку", aportar: "вносить вклад",
-  apretar: "сжимать, нажимать", archivar: "архивировать", arrastrar: "тащить", asumir: "принимать на себя",
-  atender: "обслуживать, уделять внимание", aterrizar: "приземляться", atribuir: "приписывать",
-  bordar: "вышивать", brillar: "сиять", causar: "вызывать", coincidir: "совпадать",
-  complicar: "усложнять", concebir: "задумывать", consentir: "разрешать, баловать", cultivar: "выращивать",
-  debatir: "обсуждать", detectar: "обнаруживать", difundir: "распространять", disparar: "стрелять",
-  distribuir: "распределять", donar: "жертвовать", emitir: "издавать, транслировать", entrevistar: "брать интервью",
-  equilibrar: "уравновешивать", esforzar: "прилагать усилие", estallar: "взрываться", exceder: "превышать",
-  exponer: "выставлять, излагать", extraer: "извлекать", facilitar: "облегчать", favorecer: "благоприятствовать",
-  filtrar: "фильтровать", fomentar: "поощрять", gestionar: "управлять", girar: "поворачивать",
-  guiar: "вести, направлять", hallar: "находить", heredar: "наследовать", imponer: "навязывать",
-  incorporar: "включать, присоединять", interpretar: "толковать, исполнять", intervenir: "вмешиваться",
-  inventar: "изобретать", limitar: "ограничивать", madrugar: "рано вставать", marear: "укачивать",
-  moderar: "умерять, модерировать", morder: "кусать", mover: "двигать", narrar: "рассказывать",
-  preservar: "сохранять", prevenir: "предотвращать", proceder: "происходить, приступать", programar: "программировать",
-  protestar: "протестовать", reclamar: "требовать, жаловаться", recomendar: "рекомендовать",
-  reproducir: "воспроизводить", respetar: "уважать", sanar: "лечить", satisfacer: "удовлетворять",
-  silbar: "свистеть", sobrar: "быть лишним", solucionar: "решать", sonar: "звучать",
-  tolerar: "терпеть", transferir: "переводить, передавать", transmitir: "передавать", transportar: "перевозить",
-  triunfar: "побеждать, преуспевать", vaciar: "опустошать", vencer: "побеждать", vigilar: "следить",
-  vincular: "связывать", violar: "нарушать", volar: "летать", ablandar: "смягчать"
+  hablar: "говорить", comer: "есть", vivir: "жить", amar: "любить", trabajar: "работать", estudiar: "учиться", comprar: "покупать", vender: "продавать", leer: "читать", cerrar: "закрывать", pensar: "думать", seguir: "следовать", conocer: "знать, знакомиться", buscar: "искать", llegar: "прибывать", empezar: "начинать", oir: "слышать", caer: "падать", creer: "верить, считать", mirar: "смотреть", escuchar: "слушать", tomar: "брать, принимать", necesitar: "нуждаться", usar: "использовать", encontrar: "находить", llamar: "звать, звонить", pasar: "проходить, происходить", dejar: "оставлять, позволять", llevar: "нести, носить", esperar: "ждать, надеяться", quedar: "оставаться, договариваться", conseguir: "достигать, получать", devolver: "возвращать", recordar: "помнить, напоминать", contar: "считать, рассказывать", costar: "стоить", mostrar: "показывать", probar: "пробовать", jugar: "играть", comenzar: "начинать", almorzar: "обедать", tocar: "трогать, играть на инструменте", explicar: "объяснять", pagar: "платить", apagar: "выключать", entregar: "передавать, сдавать", negar: "отрицать", navegar: "плавать, перемещаться", practicar: "практиковать", sacar: "вынимать, доставать", colocar: "размещать", cruzar: "пересекать", utilizar: "использовать", organizar: "организовывать", realizar: "осуществлять", analizar: "анализировать", cambiar: "менять", crear: "создавать", aceptar: "принимать", ayudar: "помогать", preguntar: "спрашивать", responder: "отвечать", aprender: "учить, узнавать", comprender: "понимать", entender: "понимать", perder: "терять", beber: "пить", correr: "бегать", meter: "класть внутрь", prometer: "обещать", permitir: "позволять", recibir: "получать", subir: "подниматься", sufrir: "страдать", decidir: "решать", existir: "существовать", insistir: "настаивать", compartir: "делиться", partir: "делить, отправляться", repartir: "распределять", cumplir: "выполнять, исполняться", construir: "строить", destruir: "разрушать", incluir: "включать", excluir: "исключать", huir: "убегать", sustituir: "заменять", contribuir: "способствовать", reconocer: "узнавать, признавать", aparecer: "появляться", desaparecer: "исчезать", nacer: "рождаться", crecer: "расти", ofrecer: "предлагать", parecer: "казаться", merecer: "заслуживать", elegir: "выбирать", corregir: "исправлять", proteger: "защищать", dirigir: "направлять, руководить", exigir: "требовать", coger: "брать", escoger: "выбирать", recoger: "собирать, забирать", fingir: "притворяться", surgir: "возникать", distinguir: "различать", perseguir: "преследовать", preferir: "предпочитать", sentir: "чувствовать", mentir: "лгать", convertir: "превращать", divertir: "развлекать", advertir: "предупреждать", sugerir: "предлагать", hervir: "кипеть", competir: "соревноваться", impedir: "мешать", medir: "измерять", despedir: "прощаться, увольнять", enviar: "отправлять", confiar: "доверять", variar: "меняться", actuar: "действовать", continuar: "продолжать", graduar: "регулировать, оканчивать учебу", evaluar: "оценивать", averiguar: "выяснять", adecuar: "приспосабливать", limpiar: "чистить", ensuciar: "пачкать", copiar: "копировать", copiarse: "списывать", anunciar: "объявлять", denunciar: "заявлять, доносить", negociar: "вести переговоры", apreciar: "ценить", despreciar: "презирать", iniciar: "начинать", financiar: "финансировать", odiar: "ненавидеть", pasear: "гулять", desear: "желать", emplear: "использовать, нанимать", planear: "планировать", bloquear: "блокировать", desbloquear: "разблокировать", aparcar: "парковать", arrancar: "запускать, вырывать", marcar: "отмечать, набирать номер", pescar: "ловить рыбу", secar: "сушить", chocar: "сталкиваться", fabricar: "производить", criticar: "критиковать", publicar: "публиковать", duplicar: "удваивать", aplicar: "применять", multiplicar: "умножать", verificar: "проверять", identificar: "идентифицировать", justificar: "оправдывать", significar: "значить", clasificar: "классифицировать", comunicar: "сообщать", indicar: "указывать", dedicar: "посвящать", educar: "воспитывать, обучать", provocar: "вызывать, провоцировать", equivocar: "ошибаться", convocar: "созывать", enfocar: "фокусировать", atacar: "атаковать", destacar: "выделять", cargar: "грузить, заряжать", descargar: "разгружать, скачивать", encargar: "поручать, заказывать", alargar: "удлинять", colgar: "вешать", obligar: "обязывать", investigar: "исследовать", castigar: "наказывать", rogar: "умолять", juzgar: "судить", gozar: "наслаждаться", lanzar: "бросать, запускать", alcanzar: "достигать", avanzar: "продвигаться", rechazar: "отвергать", tropezar: "спотыкаться", cazar: "охотиться", abrazar: "обнимать", actualizar: "обновлять", autorizar: "разрешать", canalizar: "направлять", finalizar: "завершать", garantizar: "гарантировать", memorizar: "запоминать", visualizar: "визуализировать", ahorrar: "экономить", alquilar: "арендовать", arreglar: "чинить, приводить в порядок", bañar: "купать", besar: "целовать", cocinar: "готовить", cenar: "ужинать", desayunar: "завтракать", dibujar: "рисовать", descansar: "отдыхать", ducharse: "принимать душ", entrenar: "тренироваться", fumar: "курить", ganar: "выигрывать, зарабатывать", gastar: "тратить", gritar: "кричать", guardar: "хранить", invitar: "приглашать", lavar: "мыть", llorar: "плакать", nadar: "плавать", olvidar: "забывать", peinarse: "причесываться", preparar: "готовить, подготавливать", quemar: "жечь", regalar: "дарить", reparar: "ремонтировать", reservar: "бронировать", robar: "красть", saltar: "прыгать", terminar: "заканчивать", viajar: "путешествовать", visitar: "посещать", votar: "голосовать", bailar: "танцевать", cantar: "петь", celebrar: "праздновать", cortar: "резать", cuidar: "заботиться", doblar: "сгибать, поворачивать", durar: "длиться", entrar: "входить", firmar: "подписывать", formar: "формировать", gustar: "нравиться", importar: "быть важным, импортировать", intentar: "пытаться", levantar: "поднимать", llenar: "наполнять", mandar: "посылать, приказывать", matar: "убивать", montar: "садиться, собирать", notar: "замечать", ocupar: "занимать", ordenar: "упорядочивать, приказывать", parar: "останавливать", prestar: "одалживать", quitar: "убирать, снимать", sentar: "сажать", tirar: "бросать, тянуть", tratar: "пытаться, обращаться", asustar: "пугать", aumentar: "увеличивать", bajar: "спускаться, снижать", borrar: "стирать", callar: "молчать", caminar: "идти пешком", cancelar: "отменять", casar: "женить, выдавать замуж", charlar: "болтать", cobrar: "взимать, получать оплату", comparar: "сравнивать", conservar: "сохранять", contestar: "отвечать", controlar: "контролировать", declarar: "объявлять", dudar: "сомневаться", echar: "бросать, выгонять", escapar: "убегать", estacionar: "парковать", funcionar: "работать, функционировать", grabar: "записывать", imaginar: "представлять", informar: "информировать", juntar: "соединять", observar: "наблюдать", pintar: "красить, рисовать", presentar: "представлять", regresar: "возвращаться", respirar: "дышать", saludar: "приветствовать", separar: "разделять", soñar: "мечтать, видеть сон", abandonar: "оставлять, покидать", absorber: "впитывать", acceder: "получать доступ, соглашаться", agradecer: "благодарить", admitir: "признавать, допускать", adquirir: "приобретать", afectar: "влиять", afirmar: "утверждать", agotar: "исчерпывать", añadir: "добавлять", apoyar: "поддерживать", aprobar: "одобрять, сдавать экзамен", asistir: "присутствовать, помогать", atraer: "привлекать", atravesar: "пересекать", avisar: "предупреждать", bastar: "быть достаточным", batir: "взбивать, бить", beneficiar: "приносить пользу", brindar: "предлагать тост", calcular: "вычислять", calentar: "нагревать", citar: "цитировать, назначать встречу", colaborar: "сотрудничать", coleccionar: "коллекционировать", comentar: "комментировать", cometer: "совершать", comportarse: "вести себя", comprobar: "проверять", conceder: "предоставлять", concluir: "заключать, завершать", conectar: "соединять", confirmar: "подтверждать", confundir: "путать", consistir: "состоять", constar: "состоять, значиться", consultar: "консультироваться", consumir: "потреблять", contener: "содержать, сдерживать", contratar: "нанимать", convencer: "убеждать", corresponder: "соответствовать", depender: "зависеть", describir: "описывать", detener: "останавливать, задерживать", diferenciar: "различать", discutir: "обсуждать, спорить", disponer: "располагать", dividir: "делить", doler: "болеть", eliminar: "устранять", emocionar: "волновать", encantar: "очень нравиться", encender: "включать, зажигать", enfadar: "сердить", enseñar: "учить, показывать", esconder: "прятать", establecer: "устанавливать", estimar: "оценивать", evitar: "избегать", expresar: "выражать", faltar: "не хватать", fijar: "фиксировать", inscribir: "записывать, регистрировать", interesar: "интересовать", interrumpir: "прерывать", invertir: "инвестировать, переворачивать", jurar: "клясться", lograr: "добиваться", mantener: "поддерживать", mejorar: "улучшать", mencionar: "упоминать", molestar: "беспокоить", obedecer: "подчиняться", obtener: "получать", ocurrir: "происходить", oponerse: "противиться", participar: "участвовать", pertenecer: "принадлежать", pesar: "весить", plantear: "ставить вопрос", poseer: "обладать", preocupar: "беспокоить", proponer: "предлагать", recorrer: "обходить, проезжать", recuperar: "восстанавливать", referir: "сообщать, ссылаться", relacionar: "связывать", representar: "представлять", resultar: "оказываться", reunir: "собирать", revisar: "проверять", salvar: "спасать", solicitar: "запрашивать", soltar: "отпускать", soportar: "терпеть", suceder: "случаться", suponer: "предполагать", temer: "бояться", unir: "соединять", aclarar: "прояснять, уточнять", acelerar: "ускорять", activar: "активировать", acudir: "являться, прибегать", ajustar: "настраивать", aliviar: "облегчать", alterar: "изменять", animar: "ободрять", apostar: "делать ставку", aportar: "вносить вклад", apretar: "сжимать, нажимать", archivar: "архивировать", arrastrar: "тащить", asumir: "принимать на себя", atender: "обслуживать, уделять внимание", aterrizar: "приземляться", atribuir: "приписывать", bordar: "вышивать", brillar: "сиять", causar: "вызывать", coincidir: "совпадать", complicar: "усложнять", concebir: "задумывать", consentir: "разрешать, баловать", cultivar: "выращивать", debatir: "обсуждать", detectar: "обнаруживать", difundir: "распространять", disparar: "стрелять", distribuir: "распределять", donar: "жертвовать", emitir: "издавать, транслировать", entrevistar: "брать интервью", equilibrar: "уравновешивать", esforzar: "прилагать усилие", estallar: "взрываться", exceder: "превышать", exponer: "выставлять, излагать", extraer: "извлекать", facilitar: "облегчать", favorecer: "благоприятствовать", filtrar: "фильтровать", fomentar: "поощрять", gestionar: "управлять", girar: "поворачивать", guiar: "вести, направлять", hallar: "находить", heredar: "наследовать", imponer: "навязывать", incorporar: "включать, присоединять", interpretar: "толковать, исполнять", intervenir: "вмешиваться", inventar: "изобретать", limitar: "ограничивать", madrugar: "рано вставать", marear: "укачивать", moderar: "умерять, модерировать", morder: "кусать", mover: "двигать", narrar: "рассказывать", preservar: "сохранять", prevenir: "предотвращать", proceder: "происходить, приступать", programar: "программировать", protestar: "протестовать", reclamar: "требовать, жаловаться", recomendar: "рекомендовать", reproducir: "воспроизводить", respetar: "уважать", sanar: "лечить", satisfacer: "удовлетворять", silbar: "свистеть", sobrar: "быть лишним", solucionar: "решать", sonar: "звучать", tolerar: "терпеть", transferir: "переводить, передавать", transmitir: "передавать", transportar: "перевозить", triunfar: "побеждать, преуспевать", vaciar: "опустошать", vencer: "побеждать", vigilar: "следить", vincular: "связывать", violar: "нарушать", volar: "летать", ablandar: "смягчать"
 };
 
 Object.assign(TRANSLATIONS, {
-  poder: "мочь", poner: "класть, ставить", venir: "приходить",
-  acompanar: "сопровождать", aconsejar: "советовать", acostumbrar: "привыкать, иметь привычку",
-  administrar: "управлять, администрировать", admirar: "восхищаться", adoptar: "усыновлять, принимать",
-  alegrar: "радовать", alimentar: "кормить", alojar: "размещать, селить", amenazar: "угрожать",
-  ampliar: "расширять", anular: "аннулировать", apartar: "отодвигать, отделять", aprovechar: "использовать с пользой",
-  argumentar: "аргументировать", asegurar: "уверять, обеспечивать", asociar: "связывать, ассоциировать",
-  aspirar: "стремиться, вдыхать", barrer: "подметать", bendecir: "благословлять", bostezar: "зевать",
-  bromear: "шутить", bucear: "нырять", calmar: "успокаивать", cansar: "утомлять",
-  capacitar: "обучать, давать возможность", capturar: "захватывать", caracterizar: "характеризовать",
-  carecer: "не иметь, испытывать недостаток", cepillar: "чистить щеткой", circular: "двигаться, циркулировать",
-  combatir: "бороться", combinar: "сочетать", componer: "составлять, сочинять", comprometer: "обязывать, вовлекать",
-  concentrar: "концентрировать", concretar: "конкретизировать", confesar: "признаваться", conquistar: "завоевывать",
-  considerar: "считать, рассматривать", contemplar: "созерцать, предусматривать", coordinar: "координировать",
-  criar: "растить, воспитывать", culminar: "завершаться, достигать вершины", curar: "лечить",
-  debilitar: "ослаблять", decorar: "украшать", defender: "защищать", definir: "определять",
-  demostrar: "доказывать, демонстрировать", depositar: "класть, вносить", derribar: "сносить, сбивать",
-  desarrollar: "развивать", desempeñar: "выполнять, исполнять роль", despertar: "будить, просыпаться",
-  diferir: "отличаться, откладывать", disenar: "проектировать, разрабатывать дизайн", diseñar: "проектировать, разрабатывать дизайн",
-  disfrutar: "наслаждаться", disminuir: "уменьшать", distraer: "отвлекать", dominar: "доминировать, владеть",
-  duchar: "принимать душ, мыть душем", editar: "редактировать, издавать", efectuar: "осуществлять",
-  elaborar: "разрабатывать, изготавливать", elevar: "поднимать", empujar: "толкать", enamorar: "влюблять",
-  encerrar: "запирать, заключать", encuestar: "проводить опрос", enfermar: "заболевать", enfriar: "охлаждать",
-  engañar: "обманывать", enriquecer: "обогащать", ensayar: "репетировать, пробовать", entretener: "развлекать",
-  envolver: "заворачивать, окружать", escalar: "взбираться", especializar: "специализировать", estirar: "растягивать",
-  estrenar: "впервые использовать, выпускать", examinar: "экзаменовать, осматривать", excusar: "извинять",
-  experimentar: "испытывать, экспериментировать", explorar: "исследовать", exportar: "экспортировать",
-  fallar: "терпеть неудачу, давать сбой", felicitar: "поздравлять", festejar: "праздновать", flotar: "плавать на поверхности",
-  formular: "формулировать", fortalecer: "укреплять", fracasar: "терпеть неудачу", frenar: "тормозить",
-  fundar: "основывать", golpear: "ударять", gobernar: "управлять", habitar: "обитать",
-  herir: "ранить", iluminar: "освещать", implementar: "внедрять", inaugurar: "открывать, inaugurировать",
-  inclinar: "наклонять", ingresar: "поступать, входить, вносить", insertar: "вставлять", instalar: "устанавливать",
-  integrar: "интегрировать", interrogar: "допрашивать, расспрашивать", jubilar: "выходить на пенсию, отправлять на пенсию",
-  lamentar: "сожалеть", localizar: "находить, локализовать", luchar: "бороться", madurar: "созревать",
-  manifestar: "проявлять, заявлять", manejar: "управлять, обращаться", mezclar: "смешивать", nombrar: "называть, назначать",
-  ocultar: "скрывать", oler: "пахнуть, нюхать", operar: "оперировать, работать", opinar: "выражать мнение",
-  orientar: "ориентировать", patrullar: "патрулировать", peinar: "причесывать", perdonar: "прощать",
-  permanecer: "оставаться", planchar: "гладить", precisar: "уточнять, нуждаться", progresar: "прогрессировать",
-  prohibir: "запрещать", pronunciar: "произносить", pulir: "полировать", reaccionar: "реагировать",
-  reciclar: "перерабатывать", redactar: "составлять текст", registrar: "регистрировать", regular: "регулировать",
-  renovar: "обновлять", resistir: "сопротивляться", restaurar: "восстанавливать", resumir: "резюмировать",
-  retirar: "убирать, отводить", revelar: "раскрывать, проявлять", rezar: "молиться", rodear: "окружать",
-  sancionar: "наказывать, утверждать", sembrar: "сеять", senalar: "указывать, отмечать", señalar: "указывать, отмечать",
-  simplificar: "упрощать", situar: "располагать", sorprender: "удивлять", sospechar: "подозревать",
-  superar: "преодолевать", temblar: "дрожать", tender: "стремиться, расстилать", transformar: "преобразовывать",
-  trasladar: "перемещать, переводить", valorar: "оценивать", abastecer: "снабжать", abreviar: "сокращать",
-  absolver: "оправдывать, отпускать грехи", aburrir: "скучать, надоедать", abusar: "злоупотреблять",
-  acomodar: "размещать, приспосабливать", acontecer: "случаться", acordar: "договариваться, вспоминать",
-  adivinar: "угадывать", adjuntar: "прикреплять", amanecer: "светать", amargar: "огорчать, горчить",
-  ambientar: "создавать атмосферу", anhelar: "сильно желать", anticipar: "предвосхищать", arrepentir: "раскаиваться",
-  arriesgar: "рисковать", arrojar: "бросать, выбрасывать", ascender: "подниматься, повышать", asesinar: "убивать",
-  asesorar: "консультировать", asignar: "назначать, присваивать", atar: "связывать", atrasar: "задерживать, отставать",
-  atreverse: "осмеливаться", avergonzar: "стыдить", batallar: "сражаться", botar: "выбрасывать, подпрыгивать",
-  ceder: "уступать", censurar: "цензурировать, порицать", centrar: "центрировать", chatear: "чатиться",
-  compadecer: "сочувствовать", compensar: "компенсировать", comportar: "влечь за собой", contactar: "связываться",
-  convivir: "сосуществовать, жить вместе", cooperar: "сотрудничать", cosechar: "собирать урожай",
-  cuestionar: "ставить под вопрос", culpar: "обвинять", deber: "быть должным", derramar: "проливать",
-  derrotar: "побеждать, наносить поражение", desesperar: "отчаиваться", devorar: "пожирать", elogiar: "хвалить",
-  emigrar: "эмигрировать", estorbar: "мешать", exclamar: "восклицать", expandir: "расширять",
-  expedir: "выдавать, отправлять", fascinar: "очаровывать", fiar: "доверять, давать в долг",
-  figurar: "фигурировать, числиться", forzar: "заставлять", generar: "порождать, генерировать",
-  habilitar: "разрешать, оборудовать", ilustrar: "иллюстрировать", innovar: "вводить новшества",
-  intimidar: "запугивать", irritar: "раздражать", ladrar: "лаять", lastimar: "ранить, обижать",
-  liberar: "освобождать", liderar: "возглавлять", maltratar: "плохо обращаться", maquillar: "красить, маскировать",
-  marchar: "уходить, маршировать", mudar: "менять, переезжать", originar: "вызывать, порождать",
-  razonar: "рассуждать", reconstruir: "восстанавливать", reflejar: "отражать", reformar: "реформировать",
-  reinar: "царствовать", relajar: "расслаблять", relatar: "рассказывать", rellenar: "заполнять",
-  remitir: "отправлять, ослабевать", renunciar: "отказываться", someter: "подчинять", sumar: "складывать, добавлять",
-  abaratar: "удешевлять", abdicar: "отрекаться", abogar: "выступать в защиту", aborrecer: "ненавидеть",
-  abrasar: "сжигать", abrigar: "укрывать, согревать", abstener: "воздерживаться", acampar: "разбивать лагерь",
-  acarrear: "влечь за собой, перевозить", acariciar: "ласкать", acatar: "подчиняться", acechar: "подстерегать",
-  acentuar: "подчеркивать, ставить ударение", acertar: "попадать, угадывать", aclamar: "приветствовать овацией",
-  acoger: "принимать, приютить", acortar: "укорачивать", acreditar: "аккредитовать, подтверждать",
-  acumular: "накапливать", acusar: "обвинять", adaptar: "адаптировать", adherir: "приклеивать, присоединять",
-  adorar: "обожать", adornar: "украшать", afeitar: "брить", afinar: "настраивать, уточнять",
-  aflojar: "ослаблять", afrontar: "сталкиваться, противостоять", agachar: "наклонять", agarrar: "хватать",
-  agitar: "трясти, волновать", agradar: "нравиться", agrandar: "увеличивать", agravar: "усугублять",
-  agrupar: "группировать", ahogar: "топить, задыхаться", aislar: "изолировать",
-  alarmar: "тревожить", albergar: "размещать, приютить", alertar: "предупреждать", alinear: "выравнивать",
-  alisar: "разглаживать", alistar: "готовить, зачислять", alternar: "чередовать", alzar: "поднимать",
-  amortiguar: "смягчать", amplificar: "усиливать", anotar: "записывать, отмечать", ansiar: "сильно желать",
-  apelar: "апеллировать, обращаться", aplazar: "откладывать", apoderar: "уполномочивать, овладевать",
-  apresurar: "ускорять, торопить", arder: "гореть", arrebatar: "выхватывать, увлекать", arropar: "укрывать",
-  arruinar: "разорять, портить", atenuar: "смягчать, ослаблять", atinar: "попадать, угадывать",
-  atormentar: "мучить", atrapar: "ловить, захватывать", ausentar: "отсутствовать", avalar: "гарантировать",
-  bautizar: "крестить, называть", boxear: "боксировать", broncear: "загорать, бронзировать", brotar: "прорастать",
-  burlar: "обманывать, высмеивать", caducar: "истекать, терять силу", calificar: "оценивать, квалифицировать",
-  camuflar: "маскировать", catar: "пробовать на вкус", cegar: "ослеплять", certificar: "сертифицировать, подтверждать",
-  cesar: "прекращаться, увольнять", chillar: "визжать, кричать", chirriar: "скрипеть", chismear: "сплетничать",
-  chupar: "сосать", cicatrizar: "заживать, рубцеваться", colisionar: "сталкиваться", colonizar: "колонизировать",
-  colorear: "раскрашивать", compactar: "уплотнять", compilar: "собирать, компилировать",
-  complementar: "дополнять", comprimir: "сжимать", condensar: "сгущать, конденсировать",
-  conmemorar: "чествовать, отмечать", conmutar: "переключать, заменять", consolidar: "укреплять",
-  conspirar: "заговаривать", contaminar: "загрязнять", contextualizar: "помещать в контекст",
-  contrastar: "сравнивать, контрастировать", coronar: "короновать, завершать", cotizar: "котироваться, оценивать",
-  crujir: "хрустеть, скрипеть", deambular: "бродить", decepcionar: "разочаровывать", declinar: "отклонять, склонять",
-  decomisar: "конфисковывать", decretar: "издавать указ", deducir: "выводить, вычитать", defraudar: "обманывать, разочаровывать",
-  delimitar: "очерчивать, ограничивать", deprimir: "угнетать, подавлять", derrapar: "скользить, заносить",
-  derrumbar: "обрушивать", desactivar: "отключать", desalojar: "выселять, эвакуировать",
-  desarmar: "разоружать, разбирать", desatar: "развязывать, вызывать", descartar: "отбрасывать, исключать",
-  desconectar: "отключать", desconfiar: "не доверять", descontar: "вычитать, делать скидку",
-  descuidar: "пренебрегать", desequilibrar: "выводить из равновесия", deshacer: "разрушать, распускать",
-  desinfectar: "дезинфицировать", desmontar: "разбирать", desobedecer: "не подчиняться",
-  despegar: "отклеивать, взлетать", desplazar: "перемещать", destinar: "предназначать, направлять",
-  destrozar: "разрушать", diagnosticar: "диагностировать", dialogar: "вести диалог", diluir: "разбавлять",
-  discrepar: "расходиться во мнениях", documentar: "документировать", dosificar: "дозировать",
-  dramatizar: "драматизировать", economizar: "экономить", edificar: "строить", empacar: "упаковывать",
-  empeorar: "ухудшать, ухудшаться", encajar: "вставлять, подходить", encoger: "сжимать, пожимать",
-  endeudar: "влезать в долги", enfurecer: "приводить в ярость", enojar: "сердить", enrollar: "сворачивать, наматывать",
-  ensanchar: "расширять", enumerar: "перечислять", equivaler: "быть равным, соответствовать",
-  escasear: "быть в недостатке", escolarizar: "зачислять в школу", especular: "размышлять, спекулировать",
-  estafar: "мошенничать", eternizar: "затягивать, увековечивать", evocar: "вызывать в памяти",
-  exagerar: "преувеличивать", excavar: "копать, выкапывать", exhortar: "призывать, увещевать",
-  exiliar: "изгонять, ссылать", factorizar: "разлагать на множители", facturar: "выставлять счет, регистрировать багаж",
-  falsear: "искажать, подделывать", flexibilizar: "делать гибче", florecer: "цвести, процветать",
-  fusionar: "сливать, объединять", hospedar: "размещать, принимать гостей", humillar: "унижать",
-  ignorar: "игнорировать, не знать", igualar: "уравнивать", incendiar: "поджигать",
-  incumplir: "не выполнять", inducir: "побуждать, индуцировать", influir: "влиять", infringir: "нарушать",
-  inspeccionar: "инспектировать", instruir: "инструктировать, обучать", intensificar: "усиливать",
-  lubricar: "смазывать", maximizar: "максимизировать", minimizar: "минимизировать", monitorear: "отслеживать",
-  neutralizar: "нейтрализовать", notificar: "уведомлять", optimizar: "оптимизировать", paralizar: "парализовать",
-  patinar: "кататься на коньках, скользить", percibir: "воспринимать, получать", perfeccionar: "совершенствовать",
-  perforar: "прокалывать, сверлить", perjudicar: "вредить", prosperar: "процветать", purificar: "очищать",
-  ratificar: "ратифицировать, подтверждать", reanudar: "возобновлять", rebotar: "отскакивать",
-  recaudar: "собирать деньги", rechinar: "скрипеть", reclutar: "набирать, вербовать",
-  recopilar: "собирать, компилировать", reembolsar: "возмещать", reforzar: "усиливать, подкреплять",
-  refrescar: "освежать", rehusar: "отказываться", reincidir: "повторно совершать, рецидивировать",
-  remar: "грести", remodelar: "перестраивать", rentar: "арендовать, приносить доход",
-  rescatar: "спасать, выкупать", restringir: "ограничивать", retener: "удерживать",
-  rivalizar: "соперничать", sabotear: "саботировать", saquear: "грабить", seleccionar: "выбирать, отбирать",
-  simular: "симулировать", sincronizar: "синхронизировать", sintetizar: "синтезировать, обобщать",
-  solidificar: "затвердевать, укреплять", subrayar: "подчеркивать", suspirar: "вздыхать",
-  tapar: "накрывать, закрывать", teclear: "печатать на клавиатуре", telefonear: "звонить по телефону",
-  titubear: "колебаться", tramitar: "оформлять, проводить процедуру", triturar: "измельчать",
-  ubicar: "располагать", unificar: "объединять", validar: "подтверждать, валидировать"
+  acompanar: "сопровождать", aconsejar: "советовать", acostumbrar: "привыкать, иметь привычку", administrar: "управлять, администрировать", admirar: "восхищаться", adoptar: "усыновлять, принимать", alegrar: "радовать", alimentar: "кормить", alojar: "размещать, селить", amenazar: "угрожать", ampliar: "расширять", anular: "аннулировать", apartar: "отодвигать, отделять", aprovechar: "использовать с пользой", argumentar: "аргументировать", asegurar: "уверять, обеспечивать", asociar: "связывать, ассоциировать", aspirar: "стремиться, вдыхать", barrer: "подметать", bendecir: "благословлять", bostezar: "зевать", bromear: "шутить", bucear: "нырять", calmar: "успокаивать", cansar: "утомлять", capacitar: "обучать, давать возможность", capturar: "захватывать", caracterizar: "характеризовать", carecer: "не иметь, испытывать недостаток", cepillar: "чистить щеткой", circular: "двигаться, циркулировать", combatir: "бороться", combinar: "сочетать", componer: "составлять, сочинять", comprometer: "обязывать, вовлекать", concentrar: "концентрировать", concretar: "конкретизировать", confesar: "признаваться", conquistar: "завоевывать", considerar: "считать, рассматривать", contemplar: "созерцать, предусматривать", coordinar: "координировать", criar: "растить, воспитывать", culminar: "завершаться, достигать вершины", curar: "лечить", debilitar: "ослаблять", decorar: "украшать", defender: "защищать", definir: "определять", demostrar: "доказывать, демонстрировать", depositar: "класть, вносить", derribar: "сносить, сбивать", desarrollar: "развивать", desempeñar: "выполнять, исполнять роль", despertar: "будить, просыпаться", diferir: "отличаться, откладывать", disenar: "проектировать, разрабатывать дизайн", diseñar: "проектировать, разрабатывать дизайн", disfrutar: "наслаждаться", disminuir: "уменьшать", distraer: "отвлекать", dominar: "доминировать, владеть", duchar: "принимать душ, мыть душем", editar: "редактировать, издавать", efectuar: "осуществлять", elaborar: "разрабатывать, изготавливать", elevar: "поднимать", empujar: "толкать", enamorar: "влюблять", encerrar: "запирать, заключать", encuestar: "проводить опрос", enfermar: "заболевать", enfriar: "охлаждать", engañar: "обманывать", enriquecer: "обогащать", ensayar: "репетировать, пробовать", entretener: "развлекать", envolver: "заворачивать, окружать", escalar: "взбираться", especializar: "специализировать", estirar: "растягивать", estrenar: "впервые использовать, выпускать", examinar: "экзаменовать, осматривать", excusar: "извинять", experimentar: "испытывать, экспериментировать", explorar: "исследовать", exportar: "экспортировать", fallar: "терпеть неудачу, давать сбой", felicitar: "поздравлять", festejar: "праздновать", flotar: "плавать на поверхности", formular: "формулировать", fortalecer: "укреплять", fracasar: "терпеть неудачу", frenar: "тормозить", fundar: "основывать", golpear: "ударять", gobernar: "управлять", habitar: "обитать", herir: "ранить", iluminar: "освещать", implementar: "внедрять", inaugurar: "открывать, inaugurировать", inclinar: "наклонять", ingresar: "поступать, входить, вносить", insertar: "вставлять", instalar: "устанавливать", integrar: "интегрировать", interrogar: "допрашивать, расспрашивать", jubilar: "выходить на пенсию, отправлять на пенсию", lamentar: "сожалеть", localizar: "находить, локализовать", luchar: "бороться", madurar: "созревать", manifestar: "проявлять, заявлять", manejar: "управлять, обращаться", mezclar: "смешивать", nombrar: "называть, назначать", ocultar: "скрывать", oler: "пахнуть, нюхать", operar: "оперировать, работать", opinar: "выражать мнение", orientar: "ориентировать", patrullar: "патрулировать", peinar: "причесывать", perdonar: "прощать", permanecer: "оставаться", planchar: "гладить", precisar: "уточнять, нуждаться", progresar: "прогрессировать", prohibir: "запрещать", pronunciar: "произносить", pulir: "полировать", reaccionar: "реагировать", reciclar: "перерабатывать", redactar: "составлять текст", registrar: "регистрировать", regular: "регулировать", renovar: "обновлять", resistir: "сопротивляться", restaurar: "восстанавливать", resumir: "резюмировать", retirar: "убирать, отводить", revelar: "раскрывать, проявлять", rezar: "молиться", rodear: "окружать", sancionar: "наказывать, утверждать", sembrar: "сеять", senalar: "указывать, отмечать", señalar: "указывать, отмечать", simplificar: "упрощать", situar: "располагать", sorprender: "удивлять", sospechar: "подозревать", superar: "преодолевать", temblar: "дрожать", tender: "стремиться, расстилать", transformar: "преобразовывать", trasladar: "перемещать, переводить", valorar: "оценивать", abastecer: "снабжать", abreviar: "сокращать", absolver: "оправдывать, отпускать грехи", aburrir: "скучать, надоедать", abusar: "злоупотреблять", acomodar: "размещать, приспосабливать", acontecer: "случаться", acordar: "договариваться, вспоминать", adivinar: "угадывать", adjuntar: "прикреплять", amanecer: "светать", amargar: "огорчать, горчить", ambientar: "создавать атмосферу", anhelar: "сильно желать", anticipar: "предвосхищать", arrepentir: "раскаиваться", arriesgar: "рисковать", arrojar: "бросать, выбрасывать", ascender: "подниматься, повышать", asesinar: "убивать", asesorar: "консультировать", asignar: "назначать, присваивать", atar: "связывать", atrasar: "задерживать, отставать", atreverse: "осмеливаться", avergonzar: "стыдить", batallar: "сражаться", botar: "выбрасывать, подпрыгивать", ceder: "уступать", censurar: "цензурировать, порицать", centrar: "центрировать", chatear: "чатиться", compadecer: "сочувствовать", compensar: "компенсировать", comportar: "влечь за собой", contactar: "связываться", convivir: "сосуществовать, жить вместе", cooperar: "сотрудничать", cosechar: "собирать урожай", cuestionar: "ставить под вопрос", culpar: "обвинять", deber: "быть должным", derramar: "проливать", derrotar: "побеждать, наносить поражение", desesperar: "отчаиваться", devorar: "пожирать", elogiar: "хвалить", emigrar: "эмигрировать", estorbar: "мешать", exclamar: "восклицать", expandir: "расширять", expedir: "выдавать, отправлять", fascinar: "очаровывать", fiar: "доверять, давать в долг", figurar: "фигурировать, числиться", forzar: "заставлять", generar: "порождать, генерировать", habilitar: "разрешать, оборудовать", ilustrar: "иллюстрировать", innovar: "вводить новшества", intimidar: "запугивать", irritar: "раздражать", ladrar: "лаять", lastimar: "ранить, обижать", liberar: "освобождать", liderar: "возглавлять", maltratar: "плохо обращаться", maquillar: "красить, маскировать", marchar: "уходить, маршировать", mudar: "менять, переезжать", originar: "вызывать, порождать", razonar: "рассуждать", reconstruir: "восстанавливать", reflejar: "отражать", reformar: "реформировать", reinar: "царствовать", relajar: "расслаблять", relatar: "рассказывать", rellenar: "заполнять", remitir: "отправлять, ослабевать", renunciar: "отказываться", someter: "подчинять", sumar: "складывать, добавлять", abaratar: "удешевлять", abdicar: "отрекаться", abogar: "выступать в защиту", aborrecer: "ненавидеть", abrasar: "сжигать", abrigar: "укрывать, согревать", abstener: "воздерживаться", acampar: "разбивать лагерь", acarrear: "влечь за собой, перевозить", acariciar: "ласкать", acatar: "подчиняться", acechar: "подстерегать", acentuar: "подчеркивать, ставить ударение", acertar: "попадать, угадывать", aclamar: "приветствовать овацией", acoger: "принимать, приютить", acortar: "укорачивать", acreditar: "аккредитовать, подтверждать", acumular: "накапливать", acusar: "обвинять", adaptar: "адаптировать", adherir: "приклеивать, присоединять", adorar: "обожать", adornar: "украшать", afeitar: "брить", afinar: "настраивать, уточнять", aflojar: "ослаблять", afrontar: "сталкиваться, противостоять", agachar: "наклонять", agarrar: "хватать", agitar: "трясти, волновать", agradar: "нравиться", agrandar: "увеличивать", agravar: "усугублять", agrupar: "группировать", ahogar: "топить, задыхаться", aislar: "изолировать", alarmar: "тревожить", albergar: "размещать, приютить", alertar: "предупреждать", alinear: "выравнивать", alisar: "разглаживать", alistar: "готовить, зачислять", alternar: "чередовать", alzar: "поднимать", amortiguar: "смягчать", amplificar: "усиливать", anotar: "записывать, отмечать", ansiar: "сильно желать", apelar: "апеллировать, обращаться", aplazar: "откладывать", apoderar: "уполномочивать, овладевать", apresurar: "ускорять, торопить", arder: "гореть", arrebatar: "выхватывать, увлекать", arropar: "укрывать", arruinar: "разорять, портить", atenuar: "смягчать, ослаблять", atinar: "попадать, угадывать", atormentar: "мучить", atrapar: "ловить, захватывать", ausentar: "отсутствовать", avalar: "гарантировать", bautizar: "крестить, называть", boxear: "боксировать", broncear: "загорать, бронзировать", brotar: "прорастать", burlar: "обманывать, высмеивать", caducar: "истекать, терять силу", calificar: "оценивать, квалифицировать", camuflar: "маскировать", catar: "пробовать на вкус", cegar: "ослеплять", certificar: "сертифицировать, подтверждать", cesar: "прекращаться, увольнять", chillar: "визжать, кричать", chirriar: "скрипеть", chismear: "сплетничать", chupar: "сосать", cicatrizar: "заживать, рубцеваться", colisionar: "сталкиваться", colonizar: "колонизировать", colorear: "раскрашивать", compactar: "уплотнять", compilar: "собирать, компилировать", complementar: "дополнять", comprimir: "сжимать", condensar: "сгущать, конденсировать", conmemorar: "чествовать, отмечать", conmutar: "переключать, заменять", consolidar: "укреплять", conspirar: "заговаривать", contaminar: "загрязнять", contextualizar: "помещать в контекст", contrastar: "сравнивать, контрастировать", coronar: "короновать, завершать", cotizar: "котироваться, оценивать", crujir: "хрустеть, скрипеть", deambular: "бродить", decepcionar: "разочаровывать", declinar: "отклонять, склонять", decomisar: "конфисковывать", decretar: "издавать указ", deducir: "выводить, вычитать", defraudar: "обманывать, разочаровывать", delimitar: "очерчивать, ограничивать", deprimir: "угнетать, подавлять", derrapar: "скользить, заносить", derrumbar: "обрушивать", desactivar: "отключать", desalojar: "выселять, эвакуировать", desarmar: "разоружать, разбирать", desatar: "развязывать, вызывать", descartar: "отбрасывать, исключать", desconectar: "отключать", desconfiar: "не доверять", descontar: "вычитать, делать скидку", descuidar: "пренебрегать", desequilibrar: "выводить из равновесия", deshacer: "разрушать, распускать", desinfectar: "дезинфицировать", desmontar: "разбирать", desobedecer: "не подчиняться", despegar: "отклеивать, взлетать", desplazar: "перемещать", destinar: "предназначать, направлять", destrozar: "разрушать", diagnosticar: "диагностировать", dialogar: "вести диалог", diluir: "разбавлять", discrepar: "расходиться во мнениях", documentar: "документировать", dosificar: "дозировать", dramatizar: "драматизировать", economizar: "экономить", edificar: "строить", empacar: "упаковывать", empeorar: "ухудшать, ухудшаться", encajar: "вставлять, подходить", encoger: "сжимать, пожимать", endeudar: "влезать в долги", enfurecer: "приводить в ярость", enojar: "сердить", enrollar: "сворачивать, наматывать", ensanchar: "расширять", enumerar: "перечислять", equivaler: "быть равным, соответствовать", escasear: "быть в недостатке", escolarizar: "зачислять в школу", especular: "размышлять, спекулировать", estafar: "мошенничать", eternizar: "затягивать, увековечивать", evocar: "вызывать в памяти", exagerar: "преувеличивать", excavar: "копать, выкапывать", exhortar: "призывать, увещевать", exiliar: "изгонять, ссылать", factorizar: "разлагать на множители", facturar: "выставлять счет, регистрировать багаж", falsear: "искажать, подделывать", flexibilizar: "делать гибче", florecer: "цвести, процветать", fusionar: "сливать, объединять", hospedar: "размещать, принимать гостей", humillar: "унижать", ignorar: "игнорировать, не знать", igualar: "уравнивать", incendiar: "поджигать", incumplir: "не выполнять", inducir: "побуждать, индуцировать", influir: "влиять", infringir: "нарушать", inspeccionar: "инспектировать", instruir: "инструктировать, обучать", intensificar: "усиливать", lubricar: "смазывать", maximizar: "максимизировать", minimizar: "минимизировать", monitorear: "отслеживать", neutralizar: "нейтрализовать", notificar: "уведомлять", optimizar: "оптимизировать", paralizar: "парализовать", patinar: "кататься на коньках, скользить", percibir: "воспринимать, получать", perfeccionar: "совершенствовать", perforar: "прокалывать, сверлить", perjudicar: "вредить", prosperar: "процветать", purificar: "очищать", ratificar: "ратифицировать, подтверждать", reanudar: "возобновлять", rebotar: "отскакивать", recaudar: "собирать деньги", rechinar: "скрипеть", reclutar: "набирать, вербовать", recopilar: "собирать, компилировать", reembolsar: "возмещать", reforzar: "усиливать, подкреплять", refrescar: "освежать", rehusar: "отказываться", reincidir: "повторно совершать, рецидивировать", remar: "грести", remodelar: "перестраивать", rentar: "арендовать, приносить доход", rescatar: "спасать, выкупать", restringir: "ограничивать", retener: "удерживать", rivalizar: "соперничать", sabotear: "саботировать", saquear: "грабить", seleccionar: "выбирать, отбирать", simular: "симулировать", sincronizar: "синхронизировать", sintetizar: "синтезировать, обобщать", solidificar: "затвердевать, укреплять", subrayar: "подчеркивать", suspirar: "вздыхать", tapar: "накрывать, закрывать", teclear: "печатать на клавиатуре", telefonear: "звонить по телефону", titubear: "колебаться", tramitar: "оформлять, проводить процедуру", triturar: "измельчать", ubicar: "располагать", unificar: "объединять", validar: "подтверждать, валидировать"
 });
 
 const RAW_VERBS = `
@@ -5348,7 +5041,6 @@ function thirdPersonStemChangeIndefinido(verb) {
 
 function orthographicIndefinido(verb) {
   if (!verb.endsWith("ar")) return null;
-  const forms = null;
   if (verb.endsWith("car")) {
     const root = verb.slice(0, -3) + "qu";
     return [root + "é", stem(verb) + "aste", stem(verb) + "ó", stem(verb) + "amos", stem(verb) + "asteis", stem(verb) + "aron"];
@@ -5361,7 +5053,7 @@ function orthographicIndefinido(verb) {
     const root = verb.slice(0, -3) + "c";
     return [root + "é", stem(verb) + "aste", stem(verb) + "ó", stem(verb) + "amos", stem(verb) + "asteis", stem(verb) + "aron"];
   }
-  return forms;
+  return null;
 }
 
 function generatedSubjuntivoPresente(verb) {
@@ -5466,14 +5158,15 @@ function generatedParticiple(verb) {
   return null;
 }
 
+const STEM_CHANGE_GROUPS = {
+  "e:ie": ["tener", "venir", "pensar", "cerrar", "empezar", "comenzar", "querer", "entender", "perder", "preferir", "sentir", "mentir", "convertir", "divertir", "advertir", "sugerir", "atravesar", "calentar", "apretar", "acertar", "tropezar"],
+  "o:ue": ["poder", "dormir", "morir", "volver", "devolver", "recordar", "contar", "costar", "mostrar", "probar", "almorzar", "soñar", "mover", "morder", "sonar"],
+  "e:i": ["pedir", "repetir", "servir", "vestir", "seguir", "conseguir", "perseguir", "elegir", "corregir", "competir", "impedir", "medir", "despedir", "reir", "sonreir", "freir"],
+  "u:ue": ["jugar"]
+};
+
 function hasStemChange(verb, from, to) {
-  const groups = {
-    "e:ie": ["tener", "venir", "pensar", "cerrar", "empezar", "comenzar", "querer", "entender", "perder", "preferir", "sentir", "mentir", "convertir", "divertir", "advertir", "sugerir", "atravesar", "calentar", "apretar", "acertar", "tropezar"],
-    "o:ue": ["poder", "dormir", "morir", "volver", "devolver", "recordar", "contar", "costar", "mostrar", "probar", "almorzar", "soñar", "mover", "morder", "sonar"],
-    "e:i": ["pedir", "repetir", "servir", "vestir", "seguir", "conseguir", "perseguir", "elegir", "corregir", "competir", "impedir", "medir", "despedir", "reir", "sonreir", "freir"],
-    "u:ue": ["jugar"]
-  };
-  return groups[`${from}:${to}`]?.some((ending) => verb.endsWith(ending));
+  return STEM_CHANGE_GROUPS[`${from}:${to}`]?.some((ending) => verb.endsWith(ending));
 }
 
 function stemChange(value, from, to) {
@@ -6143,26 +5836,19 @@ function findFormMatch(info, query) {
 function highlightSearchMatch(value) {
   const source = String(value);
   const query = normalize(state.query);
-  if (!query) return escapeHtml(source);
+  if (!query) return escapeHTML(source);
   const normalizedSource = normalize(source);
   const start = normalizedSource.indexOf(query);
-  if (start === -1) return escapeHtml(source);
+  if (start === -1) return escapeHTML(source);
   const end = start + query.length;
   return [
-    escapeHtml(source.slice(0, start)),
-    `<mark class="search-mark">${escapeHtml(source.slice(start, end))}</mark>`,
-    escapeHtml(source.slice(end))
+    escapeHTML(source.slice(0, start)),
+    `<mark class="search-mark">${escapeHTML(source.slice(start, end))}</mark>`,
+    escapeHTML(source.slice(end))
   ].join("");
 }
 
-function escapeHtml(value) {
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
+
 
 function hasIrregularBehavior(info) {
   return Boolean(
@@ -7451,14 +7137,21 @@ function stopCardQuiz() {
 }
 
 function escapeHTML(str) {
-  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 function shuffle(items) {
-  return items
-    .map((item) => ({ item, sort: Math.random() }))
-    .sort((a, b) => a.sort - b.sort)
-    .map(({ item }) => item);
+  const arr = [...items];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
 }
 
 function infoCard(title, text) {

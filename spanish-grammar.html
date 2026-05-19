@@ -1692,7 +1692,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.17 · обновлено: 19.05.2026 15:25</footer>
+      <footer class="app-footer">Версия MVP 0.17 · обновлено: 19.05.2026 15:40</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -7051,7 +7051,7 @@ function renderCardQuiz(content) {
 
   const hotkeyHint = !state.cardQuizAnswered
     ? `<span class="muted" style="font-size:12px">Enter — проверить · Esc — закончить</span>`
-    : `<span class="muted" style="font-size:12px">→ или Enter — дальше · Esc — закончить</span>`;
+    : `<span class="muted" style="font-size:12px">→ — дальше · Esc — закончить</span>`;
 
   card.innerHTML = `
     <div class="study-card-top">
@@ -7122,12 +7122,12 @@ function renderCardQuiz(content) {
       stopCardQuiz();
       return;
     }
-    if (state.cardQuizAnswered && (e.key === "ArrowRight" || e.key === "Enter")) {
+    if (state.cardQuizAnswered && e.key === "ArrowRight") {
       e.preventDefault();
       handleNext();
       return;
     }
-    if (!state.cardQuizAnswered && e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+    if (!state.cardQuizAnswered && e.key === "Enter") {
       e.preventDefault();
       handleCheckAnswer();
       return;

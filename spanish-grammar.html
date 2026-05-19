@@ -502,6 +502,18 @@ input[type="search"] {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
+.table-subgroup-tabs {
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  margin-top: 0;
+  margin-bottom: 4px;
+}
+
+.table-subgroup-tabs .small-button {
+  font-size: 12px;
+  min-height: 32px;
+  padding: 0 8px;
+}
+
 .table-search {
   width: 100%;
   padding: 8px 12px;
@@ -1582,7 +1594,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.12 · обновлено: 19.05.2026 10:06</footer>
+      <footer class="app-footer">Версия MVP 0.12 · обновлено: 19.05.2026 10:11</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -4020,6 +4032,7 @@ const state = {
   moodQuizIndex: 0,
   moodQuizRevealed: false,
   tableFilter: localStorage.getItem("msg:tableFilter") || "all",
+  tableSubgroup: localStorage.getItem("msg:tableSubgroup") || "",
   tableQuery: "",
   showToc: false,
   openTables: {},
@@ -5449,6 +5462,7 @@ function renderTables() {
         </button>
       `).join("")}
     </div>
+    ${renderSubgroupFilters(visibleTables)}
     <button class="small-button toc-toggle" type="button" data-toggle-toc>
       ${state.showToc ? "▲ Скрыть оглавление" : "▼ Показать оглавление"}
     </button>
@@ -5472,8 +5486,21 @@ function renderTables() {
   content.appendChild(nav);
   bindClickAll(nav, "[data-table-filter]", (event) => {
     const id = event.currentTarget.dataset.tableFilter;
-    state.tableFilter = state.tableFilter === id ? "all" : id;
+    if (state.tableFilter === id) {
+      state.tableFilter = "all";
+      state.tableSubgroup = "";
+    } else {
+      state.tableFilter = id;
+      state.tableSubgroup = "";
+    }
     localStorage.setItem("msg:tableFilter", state.tableFilter);
+    localStorage.setItem("msg:tableSubgroup", state.tableSubgroup);
+    renderTables();
+  });
+  bindClickAll(nav, "[data-table-subgroup]", (event) => {
+    const sub = event.currentTarget.dataset.tableSubgroup;
+    state.tableSubgroup = state.tableSubgroup === sub ? "" : sub;
+    localStorage.setItem("msg:tableSubgroup", state.tableSubgroup);
     renderTables();
   });
   bindClickAll(nav, "[data-table-jump]", (event) => {
@@ -5588,12 +5615,53 @@ function tableMatchesFilter(item) {
     ok = !groups || groups.some((g) => item.group === g);
   }
   if (!ok) return false;
+  if (state.tableSubgroup && item.subgroup !== state.tableSubgroup) return false;
   const q = state.tableQuery && normalize(state.tableQuery);
   if (!q) return true;
   const tableText = item.table ? normalize(item.table.replace(/<[^>]*>/g, " ")) : "";
   const summaryText = item.summary ? normalize(item.summary) : normalize(tableSummary(item));
   const searchText = normalize(item.title + " " + item.description + " " + summaryText + " " + tableText);
   return searchText.includes(q);
+}
+
+function getSubgroupsForFilter(filterId) {
+  if (filterId === "all") return [];
+  const groups = TABLE_FILTER_GROUPS[filterId];
+  if (!groups) return [];
+  const subgroups = new Set();
+  INDEXED_TABLES.forEach((item) => {
+    if (groups.some((g) => item.group === g)) {
+      subgroups.add(item.subgroup);
+    }
+  });
+  return Array.from(subgroups);
+}
+
+function countSubgroupTables(filterId, subgroup) {
+  return INDEXED_TABLES.filter((item) => {
+    if (filterId === "all") return item.subgroup === subgroup;
+    const groups = TABLE_FILTER_GROUPS[filterId];
+    if (!groups) return item.subgroup === subgroup;
+    return groups.some((g) => item.group === g) && item.subgroup === subgroup;
+  }).length;
+}
+
+function renderSubgroupFilters(visibleTables) {
+  if (state.tableFilter === "all") return "";
+  const subgroups = getSubgroupsForFilter(state.tableFilter);
+  if (subgroups.length <= 1) return "";
+  return `
+    <div class="filter-tabs table-subgroup-tabs" aria-label="Подкатегории">
+      <button class="small-button ${state.tableSubgroup === "" ? "is-active" : ""}" type="button" data-table-subgroup="">
+        Все <span class="filter-count">${visibleTables.length}</span>
+      </button>
+      ${subgroups.map((sub) => `
+        <button class="small-button ${state.tableSubgroup === sub ? "is-active" : ""}" type="button" data-table-subgroup="${sub}">
+          ${sub} <span class="filter-count">${countSubgroupTables(state.tableFilter, sub)}</span>
+        </button>
+      `).join("")}
+    </div>
+  `;
 }
 
 function countFilteredTables(filterId) {

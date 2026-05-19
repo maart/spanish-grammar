@@ -1326,6 +1326,38 @@ td.irregular {
   color: var(--text);
 }
 
+.quiz-wrong-list {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+
+.quiz-wrong-list h3 {
+  margin: 0;
+  font-size: 14px;
+  color: var(--danger);
+}
+
+.quiz-wrong-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: var(--surface);
+  font-size: 14px;
+}
+
+.quiz-wrong-row .small-button {
+  font-size: 12px;
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+
 .table-toc {
   display: grid;
   gap: 10px;
@@ -1692,7 +1724,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.17 · обновлено: 19.05.2026 15:40</footer>
+      <footer class="app-footer">Версия MVP 0.17 · обновлено: 19.05.2026 16:00</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -4744,6 +4776,7 @@ const state = {
   cardQuizAnswered: false,
   cardQuizCorrect: 0,
   cardQuizTotal: 0,
+  cardQuizWrong: [],
   dark: localStorage.getItem("msg:theme") === "dark"
 };
 
@@ -7021,6 +7054,7 @@ function startCardQuiz() {
   state.cardQuizAnswered = false;
   state.cardQuizCorrect = 0;
   state.cardQuizTotal = 0;
+  state.cardQuizWrong = [];
   renderCards();
 }
 
@@ -7096,6 +7130,8 @@ function renderCardQuiz(content) {
     state.cardQuizTotal += 1;
     if (checkAnswer(val, question)) {
       state.cardQuizCorrect += 1;
+    } else {
+      state.cardQuizWrong.push(question.verb);
     }
     renderCards();
   };
@@ -7144,8 +7180,20 @@ function renderCardQuizResults(content) {
   const total = state.cardQuizTotal;
   const correct = state.cardQuizCorrect;
   const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
+  const wrong = [...new Set(state.cardQuizWrong)];
   const card = document.createElement("section");
   card.className = "info-card study-card";
+  let wrongHTML = "";
+  if (wrong.length > 0) {
+    const rows = wrong.map((verb) => {
+      const info = verbInfo(verb);
+      return `<div class="quiz-wrong-row">
+        <span><strong>${displayInfinitive(verb)}</strong> — ${info.ru}</span>
+        <button class="small-button danger" type="button" data-remove="${verb}">Убрать из избранного</button>
+      </div>`;
+    }).join("");
+    wrongHTML = `<div class="quiz-wrong-list"><h3>Неправильные ответы (${wrong.length})</h3>${rows}</div>`;
+  }
   card.innerHTML = `
     <div class="study-card-top">
       <span>Результат</span>
@@ -7156,6 +7204,7 @@ function renderCardQuizResults(content) {
       <h2>${correct} из ${total}</h2>
       <p class="muted">${pct}% правильных ответов</p>
     </div>
+    ${wrongHTML}
     <div class="study-actions">
       <button class="small-button primary" type="button" id="restartQuiz">Ещё раз</button>
       <button class="small-button" type="button" id="backToCards">К списку</button>
@@ -7163,6 +7212,19 @@ function renderCardQuizResults(content) {
     <div style="text-align:center"><span class="muted" style="font-size:12px">Esc — закрыть · Enter — ещё раз</span></div>
   `;
   content.appendChild(card);
+  card.querySelectorAll("[data-remove]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const verb = btn.dataset.remove;
+      state.cards = state.cards.filter((item) => item !== verb);
+      saveCards();
+      btn.closest(".quiz-wrong-row").remove();
+      const remaining = card.querySelectorAll("[data-remove]").length;
+      if (remaining === 0) {
+        const list = card.querySelector(".quiz-wrong-list");
+        if (list) list.remove();
+      }
+    });
+  });
   card.querySelector("#restartQuiz")?.addEventListener("click", startCardQuiz);
   card.querySelector("#backToCards")?.addEventListener("click", stopCardQuiz);
   card.querySelector("[data-stop]")?.addEventListener("click", stopCardQuiz);
@@ -7196,6 +7258,7 @@ function stopCardQuiz() {
   state.cardQuizAnswered = false;
   state.cardQuizCorrect = 0;
   state.cardQuizTotal = 0;
+  state.cardQuizWrong = [];
   renderCards();
 }
 

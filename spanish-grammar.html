@@ -1840,7 +1840,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.17 · обновлено: 19.05.2026 17:30</footer>
+      <footer class="app-footer">Версия MVP 0.17 · обновлено: 19.05.2026 18:00</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -4767,60 +4767,7 @@ const MOODS = [
         <tr><th>⚠️ ojalá</th><td colspan="3">ojalá + subj. Presente (реально) / subj. Imperfecto (нереально): Ojalá venga. Ojalá viniera.</td></tr>
         <tr><th>⚠️ indicativo</th><td colspan="3">creer que, pensar que, es verdad que, es cierto que, es seguro que → indicativo (факт)</td></tr>
       </tbody></table>
-    `,
-    table: `<table><thead><tr><th>Триггер</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
-      <tr><td>желание: quiero que</td><td>Quiero que vengas.</td><td>Я хочу, чтобы ты пришел.</td></tr>
-      <tr><td>желание: espero que</td><td>Espero que todo salga bien.</td><td>Надеюсь, все пройдет хорошо.</td></tr>
-      <tr><td>просьба: te pido que</td><td>Te pido que me escuches.</td><td>Прошу тебя, чтобы ты меня выслушал.</td></tr>
-      <tr><td>сомнение: no creo que</td><td>No creo que sea verdad.</td><td>Не думаю, что это правда.</td></tr>
-      <tr><td>сомнение: dudo que</td><td>Dudo que tengan tiempo.</td><td>Сомневаюсь, что у них есть время.</td></tr>
-      <tr><td>вероятность: es posible que</td><td>Es posible que llueva.</td><td>Возможно, пойдет дождь.</td></tr>
-      <tr><td>эмоция: me alegra que</td><td>Me alegra que hayas venido.</td><td>Я рад, что ты пришел.</td></tr>
-      <tr><td>эмоция: siento que</td><td>Siento que no puedas venir.</td><td>Жаль, что ты не можешь прийти.</td></tr>
-      <tr><td>оценка: es importante que</td><td>Es importante que estudies.</td><td>Важно, чтобы ты учился.</td></tr>
-      <tr><td>оценка: es mejor que</td><td>Es mejor que descanses.</td><td>Лучше, чтобы ты отдохнул.</td></tr>
-      <tr><td>необходимость: hace falta que</td><td>Hace falta que rellenes este formulario.</td><td>Нужно, чтобы ты заполнил эту форму.</td></tr>
-      <tr><td>цель: para que</td><td>Te llamo para que lo sepas.</td><td>Я звоню тебе, чтобы ты это знал.</td></tr>
-      <tr><td>цель: a fin de que</td><td>Lo explico a fin de que no haya dudas.</td><td>Я объясняю это, чтобы не было сомнений.</td></tr>
-      <tr><td>время: antes de que</td><td>Salimos antes de que llueva.</td><td>Мы выйдем до того, как пойдет дождь.</td></tr>
-      <tr><td>время: cuando + будущее</td><td>Llámame cuando llegues.</td><td>Позвони мне, когда приедешь.</td></tr>
-      <tr><td>время: hasta que</td><td>Espera hasta que termine.</td><td>Подожди, пока я закончу.</td></tr>
-      <tr><td>неопределенный объект</td><td>Busco un trabajo que sea flexible.</td><td>Ищу работу, которая была бы гибкой.</td></tr>
-      <tr><td>неопределенный человек</td><td>Necesito a alguien que me ayude.</td><td>Мне нужен кто-то, кто мне поможет.</td></tr>
-      <tr><td>ojalá</td><td>Ojalá puedas venir.</td><td>Надеюсь, ты сможешь прийти.</td></tr>
-    </tbody></table>`
-  },
-  {
-    id: "imperativo",
-    title: "Imperativo",
-    ru: "повелительное наклонение",
-    description: "Императив используется для команд, просьб, инструкций и запретов. Отрицательный императив строится через формы субхунтива.",
-    tags: ["команда", "просьба", "запрет"],
-    when: "Используется, когда говорящий прямо побуждает адресата что-то сделать или не делать.",
-    signals: "Контекст команды, инструкции, рецепта, просьбы или запрета: abre, escucha, dime, no vayas.",
-    remember: "Если команда с no, почти всегда думай о subjuntivo: habla -> no hables, ven -> no vengas, di -> no digas.",
-    tenses: "Imperativo afirmativo и imperativo negativo.",
-    tenseIds: ["imperativo_afirmativo", "imperativo_negativo"],
-    triggerGroups: [
-      ["tú afirmativo", "часто как 3-е лицо presente: habla, come, vive"],
-      ["usted / ustedes", "через presente de subjuntivo: hable, hablen"],
-      ["vosotros", "infinitivo без -r + d: hablad, comed, vivid"],
-      ["отрицание", "no + subjuntivo: no hables, no comáis, no digan"],
-      ["местоимения", "утвердительно приклеиваются, отрицательно стоят перед глаголом: dímelo / no me lo digas"]
-    ],
-    confusions: [
-      ["Habla más despacio.", "No hables tan rápido.", "утвердительная команда / запрет через subjuntivo"],
-      ["Dime la verdad.", "No me digas eso.", "местоимение после утвердительной формы / перед отрицательной"],
-      ["Ven aquí.", "No vengas tarde.", "особая форма imperativo / отрицание через subjuntivo"]
-    ],
-    table: `<table><thead><tr><th>Тип</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
-      <tr><td>утвердительный</td><td>Habla más despacio.</td><td>Говори медленнее.</td></tr>
-      <tr><td>отрицательный</td><td>No hables tan rápido.</td><td>Не говори так быстро.</td></tr>
-      <tr><td>нерегулярный</td><td>Ven aquí.</td><td>Иди сюда.</td></tr>
-      <tr><td>просьба</td><td>Dime la verdad, por favor.</td><td>Скажи мне правду, пожалуйста.</td></tr>
-      <tr><td>инструкция</td><td>Mezcla los ingredientes.</td><td>Смешай ингредиенты.</td></tr>
-      <tr><td>запрет</td><td>No os preocupéis.</td><td>Не беспокойтесь.</td></tr>
-    </tbody></table>`
+    `
   },
   {
     id: "condicional",
@@ -4858,7 +4805,6 @@ const state = {
   showMoodChooser: false,
   showMoodConfusion: false,
   showSubjuntivoMoreTriggers: false,
-  showSubjuntivoMoreExamples: false,
   showImperativoIrregulars: false,
   showImperativoPronouns: false,
   showImperativoMoreExamples: false,
@@ -4936,23 +4882,6 @@ const SUBJUNTIVO_MORE_TRIGGERS = [
   ["Пока не...", "hasta que + subjuntivo: Espera hasta que termine."],
   ["Как только...", "en cuanto / tan pronto como + subjuntivo: En cuanto llegues, llámame."],
   ["Ищу что-то, что...", "busco algo que + subjuntivo: Busco un piso que tenga balcón."]
-];
-
-const SUBJUNTIVO_EXAMPLES = [
-  ["желание", "Quiero que vengas.", "Я хочу, чтобы ты пришел."],
-  ["сомнение", "No creo que sea verdad.", "Не думаю, что это правда."],
-  ["оценка", "Es importante que estudies.", "Важно, чтобы ты учился."],
-  ["эмоция", "Me alegra que estés aquí.", "Я рад, что ты здесь."],
-  ["цель", "Te llamo para que lo sepas.", "Я звоню тебе, чтобы ты это знал."],
-  ["будущее", "Llámame cuando llegues.", "Позвони мне, когда приедешь."],
-  ["объект", "Busco un piso que tenga balcón.", "Ищу квартиру, в которой был бы балкон."],
-  ["ojalá", "Ojalá puedas venir.", "Надеюсь, ты сможешь прийти."],
-  ["просьба", "Te pido que me escuches.", "Прошу тебя, чтобы ты меня выслушал."],
-  ["вероятность", "Es posible que llueva.", "Возможно, пойдет дождь."],
-  ["необходимость", "Hace falta que rellenes este formulario.", "Нужно, чтобы ты заполнил эту форму."],
-  ["цель", "Lo explico a fin de que no haya dudas.", "Я объясняю это, чтобы не было сомнений."],
-  ["время", "Espera hasta que termine.", "Подожди, пока я закончу."],
-  ["человек", "Necesito a alguien que me ayude.", "Мне нужен кто-то, кто мне поможет."]
 ];
 
 const IMPERATIVO_IRREGULAR_TU = [
@@ -6809,10 +6738,6 @@ function renderMoods() {
     state.showSubjuntivoMoreTriggers = !state.showSubjuntivoMoreTriggers;
     renderMoods();
   });
-  section.querySelector("[data-toggle-subjuntivo-examples]")?.addEventListener("click", () => {
-    state.showSubjuntivoMoreExamples = !state.showSubjuntivoMoreExamples;
-    renderMoods();
-  });
   section.querySelector("[data-toggle-imperativo-irregulars]")?.addEventListener("click", () => {
     state.showImperativoIrregulars = !state.showImperativoIrregulars;
     renderMoods();
@@ -6944,23 +6869,8 @@ function imperativoPronounsMarkup() {
 
 function moodTableMarkup(mood) {
   if (mood.id === "imperativo") return imperativoTableMarkup();
-  if (mood.id !== "subjuntivo") return `<div class="table-wrap">${mood.table}</div>`;
-  const visibleExamples = state.showSubjuntivoMoreExamples ? SUBJUNTIVO_EXAMPLES : SUBJUNTIVO_EXAMPLES.slice(0, 8);
-  return `
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Сценарий</th><th>Пример</th><th>Перевод</th></tr></thead>
-        <tbody>
-          ${visibleExamples.map(([type, example, ru]) => `<tr><td>${type}</td><td>${example}</td><td>${ru}</td></tr>`).join("")}
-        </tbody>
-      </table>
-    </div>
-    <div class="tense-actions">
-      <button class="small-button ${state.showSubjuntivoMoreExamples ? "danger" : "success"}" type="button" data-toggle-subjuntivo-examples>
-        ${state.showSubjuntivoMoreExamples ? "Скрыть остальные примеры" : "Показать остальные примеры"}
-      </button>
-    </div>
-  `;
+  if (mood.id === "subjuntivo") return "";
+  return `<div class="table-wrap">${mood.table}</div>`;
 }
 
 function imperativoTableMarkup() {

@@ -1594,7 +1594,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.15 · обновлено: 19.05.2026 10:59</footer>
+      <footer class="app-footer">Версия MVP 0.16 · обновлено: 19.05.2026 11:11</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -2964,6 +2964,8 @@ const USEFUL_TABLES = [
       <tr><th>⚠️ pasiva vs impersonal</th><td>pasiva: подлеж. есть; impersonal: всегда ед.ч.</td><td>Se alquilan coches (pasiva). Se trabaja mucho (impersonal).</td><td></td></tr>
       <tr><th>⚠️ accidental: глагол</th><td>согласуется с объектом, не с IO</td><td>Se me olvidó la llave (ед.) / Se me olvidaron las llaves (мн.)</td><td></td></tr>
       <tr><th>⚠️ imperativo afirm.</th><td>местоимения присоединяются в конце</td><td>¡Cállate! ¡Vámonos! ¡Dígamelo!</td><td></td></tr>
+      <tr><th>se pasiva + a (люди)</th><td>se busca/n + a + люди</td><td>Se busca a los testigos. Se detuvo a los sospechosos.</td><td></td></tr>
+      <tr><th>se + непереходный</th><td>se + глагол без объекта</td><td>Se murió. Se cayó. Se fue.</td><td></td></tr>
     </tbody></table>`
   },
 
@@ -3098,6 +3100,8 @@ const USEFUL_TABLES = [
       <tr><th>⚠️</th><td>es listo (умный) vs está listo (готов)</td><td>El niño es listo. La cena está lista.</td></tr>
       <tr><th>⚠️</th><td>es aburrido (скучный) vs está aburrido (ему скучно)</td><td>Él es aburrido. Ahora está aburrido.</td></tr>
       <tr><th>⚠️</th><td>es rico (богатый) vs está rico (вкусно)</td><td>Es una persona rica. La sopa está rica.</td></tr>
+      <tr><th>ser para</th><td>предназначение</td><td>Esto es para ti. La llave es para la puerta.</td></tr>
+      <tr><th>estar por</th><td>не сделан / за</td><td>La cama está por hacer. Estoy por salir.</td></tr>
     </tbody></table>`
   },
 
@@ -3113,6 +3117,7 @@ const USEFUL_TABLES = [
       <tr><th>Сравнение</th><td>El libro fue escrito en 1990 (написан) vs El libro está escrito (уже написан)</td><td>Исторический факт vs текущий статус</td></tr>
       <tr><th>⚠️ согласование</th><td>participio согласуется с подлежащим в роде и числе</td><td>Las cartas fueron escritas. La casa está pintada.</td></tr>
       <tr><th>⚠️ ser pasiva vs se pasiva</th><td>ser + participio — книжный; se + 3-е лицо — разговорный</td><td>Se venden pisos (естественнее, чем Los pisos son vendidos).</td></tr>
+      <tr><th>quedarse + participio</th><td>остаться в состоянии (результат)</td><td>La puerta se quedó abierta. Se quedó dormido.</td></tr>
     </tbody></table>`
   },
 
@@ -3201,6 +3206,9 @@ const USEFUL_TABLES = [
       <tr><th>tener miedo (de)</th><td>бояться</td><td>Tengo miedo de las arañas.</td></tr>
       <tr><th>tener vergüenza</th><td>стесняться / быть стыдно</td><td>Me da vergüenza hablar.</td></tr>
       <tr><th>tener ganas (de)</th><td>хотеть / быть в настроении</td><td>Tengo ganas de viajar.</td></tr>
+      <tr><th>tener que ver</th><td>иметь отношение</td><td>¿Qué tiene que ver eso?</td></tr>
+      <tr><th>tener lugar</th><td>происходить</td><td>El concierto tiene lugar en el parque.</td></tr>
+      <tr><th>tener en cuenta</th><td>учитывать</td><td>Ten en cuenta que es tarde.</td></tr>
     </tbody></table>`
   },
 
@@ -3221,6 +3229,9 @@ const USEFUL_TABLES = [
       <tr><th>dar un abrazo</th><td>обнять</td><td>Dale un abrazo de mi parte.</td></tr>
       <tr><th>darse cuenta de</th><td>осознать / заметить</td><td>Me di cuenta de mi error.</td></tr>
       <tr><th>dar por + participio</th><td>считать / признать</td><td>Doy por terminada la reunión.</td></tr>
+      <tr><th>dar a</th><td>выходить на (окно, вид)</td><td>La ventana da al mar.</td></tr>
+      <tr><th>dar con</th><td>найти / наткнуться</td><td>Di con las llaves. Dio con la solución.</td></tr>
+      <tr><th>dar por sentado</th><td>считать само собой разумеющимся</td><td>No lo des por sentado.</td></tr>
     </tbody></table>`
   },
 
@@ -3417,6 +3428,9 @@ const USEFUL_TABLES = [
       <tr><th>завершенное событие</th><td>Pretérito Indefinido / Perfecto Simple</td><td>Ayer compré un libro.</td></tr>
       <tr><th>цепочку событий</th><td>Pretérito Indefinido / Perfecto Simple</td><td>Llegué, cené y me acosté.</td></tr>
       <tr><th>событие на фоне</th><td>Imperfecto + Indefinido</td><td>Dormía cuando llamó Ana.</td></tr>
+      <tr><th colspan="3" style="text-align:center"><strong>Сигнальные слова</strong></th></tr>
+      <tr><th>Imperfecto</th><td>siempre, antes, antes de, mientras, cada día, todos los días, de niño, en aquella época, generalmente</td><td>De niño jugaba en el parque.</td></tr>
+      <tr><th>Indefinido</th><td>ayer, anteayer, la semana pasada, el año pasado, hace + tiempo, de repente, de pronto, en ese momento, una vez, al final, finalmente</td><td>De repente sonó el teléfono.</td></tr>
     </tbody></table>`
   },
 
@@ -3444,7 +3458,9 @@ const USEFUL_TABLES = [
       <div class="condition-card"><strong>Нереальное настоящее</strong><code>si + imperfecto de subjuntivo, condicional simple</code><span>Si tuviera más tiempo, viajaría más. - Если бы у меня было больше времени, я бы больше путешествовал.</span></div>
       <div class="condition-card"><strong>Нереальное прошлое</strong><code>si + pluscuamperfecto de subjuntivo, condicional compuesto</code><span>Si hubiera estudiado, habría aprobado. - Если бы я учился, я бы сдал.</span></div>
       <div class="condition-card"><strong>Смешанное условие</strong><code>si + pluscuamperfecto de subjuntivo, condicional simple</code><span>Si hubiera dormido, ahora estaría mejor. - Если бы я поспал, сейчас мне было бы лучше.</span></div>
+      <div class="condition-card"><strong>Реальное + императив</strong><code>si + presente, imperativo</code><span>Si tienes tiempo, ven. - Если у тебя есть время, приходи.</span></div>
       <div class="condition-card"><strong>Важно</strong><code>после si не ставим futuro simple</code><span>Si tengo tiempo, iré. Не: si tendré tiempo.</span></div>
+      <div class="condition-card"><strong>Важно</strong><code>si + subjuntivo, imperativo — невозможно</code><span>Нельзя: Si tuviera tiempo, ven. Только: Si tienes tiempo, ven.</span></div>
     </div>`
   },
 
@@ -3650,6 +3666,10 @@ const USEFUL_TABLES = [
       <tr><th>mientras</th><td>пока/в то время как; факт с indicativo, будущее с subjuntivo</td><td>Mientras estudias, preparo café. Mientras estudies, no te molesto.</td></tr>
       <tr><th>para que</th><td>цель; требует subjuntivo</td><td>Te escribo para que lo sepas.</td></tr>
       <tr><th>sin que</th><td>без того чтобы; требует subjuntivo</td><td>Se fue sin que nadie lo viera.</td></tr>
+      <tr><th>con tal de que</th><td>при условии что; требует subjuntivo</td><td>Te presto el coche con tal de que lo cuides.</td></tr>
+      <tr><th>siempre que</th><td>при условии что / всегда когда; subj для условия</td><td>Puedes venir siempre que avises.</td></tr>
+      <tr><th>a condición de que</th><td>при условии что; требует subjuntivo</td><td>Acepto a condición de que me paguen.</td></tr>
+      <tr><th>en caso de que</th><td>в случае если; требует subjuntivo</td><td>En caso de que llueva, nos quedamos.</td></tr>
     </tbody></table>`
   },
 
@@ -3680,6 +3700,10 @@ const USEFUL_TABLES = [
       <tr><th>en primer lugar</th><td>во-первых</td><td>En primer lugar, hay que estudiar.</td></tr>
       <tr><th>por último</th><td>наконец / в-последних</td><td>Por último, quiero agradecer…</td></tr>
       <tr><th>dicho esto</th><td>сказав это / тем не менее</td><td>Dicho esto, no estoy de acuerdo.</td></tr>
+      <tr><th>a lo mejor</th><td>может быть (indicativo!)</td><td>A lo mejor viene mañana.</td></tr>
+      <tr><th>quizá(s) / tal vez</th><td>возможно (+ subj или indic)</td><td>Quizá(s) llueva. Tal vez venga.</td></tr>
+      <tr><th>en cambio</th><td>с другой стороны / а вот</td><td>Él trabaja mucho; yo, en cambio, descanso.</td></tr>
+      <tr><th>por el contrario</th><td>напротив (формальнее)</td><td>No es fácil, por el contrario, es difícil.</td></tr>
     </tbody></table>`
   },
 
@@ -3721,6 +3745,8 @@ const USEFUL_TABLES = [
       <tr><th>preservativo</th><td>презерватив</td><td>Usa preservativo.</td></tr>
       <tr><th>ración</th><td>порция</td><td>Una ración de patatas bravas.</td></tr>
       <tr><th>vaso</th><td>стакан (не «ваза»)</td><td>Un vaso de agua.</td></tr>
+      <tr><th>turno</th><td>очередь / смена (не «турнир»)</td><td>Es mi turno. Trabajo en el turno de noche.</td></tr>
+      <tr><th>listo</th><td>готовый / умный (не «список»)</td><td>Estoy listo. Es muy listo. Lista = список.</td></tr>
     </tbody></table>`
   },
 
@@ -4136,6 +4162,235 @@ const USEFUL_TABLES = [
       <tr><th>-ín / -ina</th><td>Астурия</td><td>pequeño → pequeñín, casa → casina</td></tr>
       <tr><th>⚠️ -illo</th><td>Андалусия (очень частый)</td><td>casa → casilla, perro → perrillo</td></tr>
       <tr><th>⚠️ -ito</th><td>Кастилия / Мадрид (стандарт)</td><td>casa → casita, perro → perrito</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Местоимения и объекты",
+    subgroup: "Личные местоимения",
+    title: "Личные местоимения: полная таблица + предлоги",
+    description: "Все формы личных местоимений: подлежащие, прямые/косвенные объекты, предложные формы. Особые формы с предлогами: conmigo, contigo, consigo.",
+    table: `<table><thead><tr><th>Лицо</th><th>Подлежащее</th><th>CD</th><th>CI</th><th>После предлога</th></tr></thead><tbody>
+      <tr><th>yo</th><td>yo</td><td>me</td><td>me</td><td>mí (conmigo)</td></tr>
+      <tr><th>tú</th><td>tú</td><td>te</td><td>te</td><td>ti (contigo)</td></tr>
+      <tr><th>él/ella/usted</th><td>él/ella/usted</td><td>lo/la</td><td>le</td><td>él/ella/usted (consigo)</td></tr>
+      <tr><th>nosotros</th><td>nosotros</td><td>nos</td><td>nos</td><td>nosotros</td></tr>
+      <tr><th>vosotros</th><td>vosotros</td><td>os</td><td>os</td><td>vosotros</td></tr>
+      <tr><th>ellos/ustedes</th><td>ellos/ustedes</td><td>los/las</td><td>les</td><td>ellos/ustedes (consigo)</td></tr>
+      <tr><th colspan="5" style="text-align:center"><strong>Особые формы с «con»</strong></th></tr>
+      <tr><th>con + mí</th><td colspan="4">→ <strong>conmigo</strong> (не con mí)</td></tr>
+      <tr><th>con + ti</th><td colspan="4">→ <strong>contigo</strong> (не con ti)</td></tr>
+      <tr><th>con + él/ella/usted</th><td colspan="4">→ <strong>consigo</strong> (с собой)</td></tr>
+      <tr><th>⚠️ consigo</th><td colspan="4">= с собой (возвратное). Consigo mismo = с самим собой. Но: con él = с ним (не возвратное)</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Определители и существительные",
+    subgroup: "Определители количества",
+    title: "Todo, mucho, poco, bastante, demasiado: количественные определители",
+    description: "Слова для выражения количества: всё, много, мало, достаточно, слишком много. Согласуются с существительным.",
+    table: `<table><thead><tr><th>Определитель</th><th>Смысл</th><th>С сущ.</th><th>Без сущ.</th></tr></thead><tbody>
+      <tr><th>todo/a/os/as</th><td>весь / все</td><td>Todos los días. Toda la casa.</td><td>Lo quiero todo.</td></tr>
+      <tr><th>mucho/a/os/as</th><td>много</td><td>Mucho trabajo. Muchas casas.</td><td>Trabajo mucho.</td></tr>
+      <tr><th>poco/a/os/as</th><td>мало</td><td>Poco tiempo. Pocas personas.</td><td>Duermo poco.</td></tr>
+      <tr><th>bastante(s)</th><td>достаточно / довольно</td><td>Bastante dinero. Bastantes libros.</td><td>Es bastante caro.</td></tr>
+      <tr><th>demasiado/a/os/as</th><td>слишком много</td><td>Demasiado ruido. Demasiadas personas.</td><td>Comes demasiado.</td></tr>
+      <tr><th>algo de</th><td>немного</td><td>Algo de pan. Algo de tiempo.</td><td>—</td></tr>
+      <tr><th>un poco de</th><td>немного / чуть-чуть</td><td>Un poco de azúcar.</td><td>Habla un poco.</td></tr>
+      <tr><th>⚠️ mucho vs muy</th><td colspan="3">mucho + сущ./глагол; muy + прилаг./наречие. Mucho trabajo (ok). Muy trabajo (❌).</td></tr>
+      <tr><th>⚠️ bastante</th><td colspan="3">может быть наречием: bastante bien (довольно хорошо) или определителем: bastante gente</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Определители и существительные",
+    subgroup: "Множественное число",
+    title: "Множественное число: правила образования",
+    description: "Как образуется множественное число существительных и прилагательных. Особые случаи и исключения.",
+    table: `<table><thead><tr><th>Правило</th><th>Ед.ч.</th><th>Мн.ч.</th><th>Примечание</th></tr></thead><tbody>
+      <tr><th>гласная → +s</th><td>libro, casa, menú</td><td>libros, casas, menús</td><td>Самый частый случай</td></tr>
+      <tr><th>согласная → +es</th><td>flor, papel, ciudad</td><td>flores, papeles, ciudades</td></tr>
+      <tr><th>-z → -ces</th><td>lápiz, luz, voz</td><td>lápices, luces, voces</td><td>z меняется на c</td></tr>
+      <tr><th>-ión → -iones</th><td>canción, nación</td><td>canciones, naciones</td><td>Ударение сохраняется</td></tr>
+      <tr><th>-y → -es</th><td>rey, ley</td><td>reyes, leyes</td><td>y в конце → es</td></tr>
+      <tr><th>⚠️ -s/x без изменения</th><td>el lunes, el tórax</td><td>los lunes, los tórax</td><td>Не изменяются</td></tr>
+      <tr><th>⚠️ прилагательные</th><td>feliz, azul</td><td>felices, azules</td><td>Согласуются с сущ.</td></tr>
+      <tr><th>⚠️ составные сущ.</th><td>el hombre rana</td><td>los hombres rana</td><td>Только первое слово меняется</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Глаголы: пары и устойчивые",
+    subgroup: "Неправильные глаголы",
+    title: "Irregularidades: группы неправильных глаголов",
+    description: "Все типы неправильных глаголов в Presente: e→ie, o→ue, e→i, go-verbs, j-verbs и другие.",
+    table: `<table><thead><tr><th>Тип</th><th>Изменение</th><th>Глаголы</th><th>Пример (yo/tú/él)</th></tr></thead><tbody>
+      <tr><th>e → ie</th><td>корень меняется во всех формах, кроме nosotros/vosotros</td><td>querer, pensar, preferir, cerrar, empezar, entender, sentir</td><td>quiero / quieres / quiere</td></tr>
+      <tr><th>o → ue</th><td>корень меняется во всех формах, кроме nosotros/vosotros</td><td>poder, dormir, morir, volver, contar, encontrar, jugar(u→ue)</td><td>puedo / puedes / puede</td></tr>
+      <tr><th>e → i (-ir)</th><td>только глаголы на -ir</td><td>pedir, servir, vestir, repetir, seguir, decir</td><td>pido / pides / pide</td></tr>
+      <tr><th>go-verbs</th><td>yo → -go</td><td>hacer→hago, tener→tengo, salir→salgo, venir→vengo, poner→pongo, decir→digo</td><td>hago / haces / hace</td></tr>
+      <tr><th>j-verbs</th><td>yo → -je, 3-е лицо → -jeron (Indefinido)</td><td>decir→dije, traer→traje, conducir→conduje, producir→produje</td><td>dije / dijiste / dijo</td></tr>
+      <tr><th>i-verbs</th><td>3-е лицо Indefinido: ió → yo, ieron → yeron</td><td>leer, creer, oír, huir, construir</td><td>leyó / leyeron</td></tr>
+      <tr><th>u-verbs</th><td>Indefinido: u-корень</td><td>estar→estuv-, tener→tuv-, andar→anduv-, poder→pud-</td><td>estuve / tuviste / pudo</td></tr>
+      <tr><th>⚠️ полностью неправильные</th><td>ser, ir, haber, saber</td><td>ser: soy/eres/es; ir: voy/vas/va; haber: he/has/ha; saber: sé/sabes/sabe</td><td></td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Глаголы: пары и устойчивые",
+    subgroup: "Частые пары",
+    title: "Gustar: 20+ глаголов с косвенным объектом",
+    description: "Глаголы, которые строятся через косвенное местоимение (me/te/le): мне нравится, мне важно, мне не хватает.",
+    table: `<table><thead><tr><th>Глагол</th><th>Смысл</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>gustar</th><td>нравиться</td><td>Me gusta el café. Me gustan los libros.</td></tr>
+      <tr><th>encantar</th><td>обожать</td><td>Me encanta viajar.</td></tr>
+      <tr><th>doler</th><td>болеть</td><td>Me duele la cabeza.</td></tr>
+      <tr><th>importar</th><td>быть важным</td><td>Me importa tu opinión.</td></tr>
+      <tr><th>interesar</th><td>интересовать</td><td>Me interesa la historia.</td></tr>
+      <tr><th>preocupar</th><td>беспокоить</td><td>Me preocupa el examen.</td></tr>
+      <tr><th>faltar</th><td>не хватать</td><td>Me falta tiempo.</td></tr>
+      <tr><th>quedar</th><td>оставаться</td><td>Me quedan dos euros.</td></tr>
+      <tr><th>sobrar</th><td>быть лишним</td><td>Me sobra dinero.</td></tr>
+      <tr><th>bastar</th><td>быть достаточным</td><td>Me basta con eso.</td></tr>
+      <tr><th>molestar</th><td>мешать, раздражать</td><td>Me molesta el ruido.</td></tr>
+      <tr><th>fastidiar</th><td>раздражать</td><td>Me fastidia que llegues tarde.</td></tr>
+      <tr><th>importunar</th><td>докучать</td><td>Le importunan las preguntas.</td></tr>
+      <tr><th>apetecer</th><td>хотеться (еда)</td><td>Me apetece un café.</td></tr>
+      <tr><th>chocar</th><td>удивлять / шокировать</td><td>Me choca su actitud.</td></tr>
+      <tr><th>tocar</th><td>приходиться (по очереди)</td><td>Me toca limpiar.</td></tr>
+      <tr><th>corresponder</th><td>приходиться (доля)</td><td>Le corresponde la mitad.</td></tr>
+      <tr><th>urgir</th><td>быть срочным</td><td>Me urge terminar.</td></tr>
+      <tr><th>convenir</th><td>быть выгодным</td><td>Me conviene esperar.</td></tr>
+      <tr><th>disgustar</th><td>не нравиться</td><td>Me disgusta la violencia.</td></tr>
+      <tr><th>⚠️ схема</th><td colspan="2">IO (me/te/le/nos/os/les) + gusta(n)/encanta(n)/duele(n) + сущ.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Глаголы: пары и устойчивые",
+    subgroup: "Haber",
+    title: "Haber: hay, he, había, habrá — все формы",
+    description: "Haber — вспомогательный глагол для составных времён + безличная форма hay (есть/имеется).",
+    table: `<table><thead><tr><th>Время</th><th>Форма haber</th><th>Hay (есть)</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>Presente</th><td>he / has / ha / hemos / habéis / han</td><td>hay</td><td>He comido. Hay tres libros.</td></tr>
+      <tr><th>Imperfecto</th><td>había / habías / había / habíamos / habíais / habían</td><td>había</td><td>Había salido. Había mucha gente.</td></tr>
+      <tr><th>Indefinido</th><td>hube / hubiste / hubo / hubimos / hubisteis / hubieron</td><td>hubo</td><td>Hubo terminado. Hubo un accidente.</td></tr>
+      <tr><th>Futuro</th><td>habré / habrás / habrá / habremos / habréis / habrán</td><td>habrá</td><td>Habré llegado. Habrá sol mañana.</td></tr>
+      <tr><th>Condicional</th><td>habría / habrías / habría / habríamos / habríais / habrían</td><td>habría</td><td>Habría ido. Habría más opciones.</td></tr>
+      <tr><th>⚠️ hay</th><td colspan="3">безличная форма = есть/имеется. Не изменяется: hay un libro / hay dos libros (не han dos libros)</td></tr>
+      <tr><th>⚠️ hubo vs había</th><td colspan="3">hubo = произошло (событие); había = было (состояние/фон)</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Времена и синтаксис",
+    subgroup: "Прошедшее",
+    title: "Pluscuamperfecto: «я уже сделал до того как…\"",
+    description: "Había + participio — действие, которое произошло ДО другого прошлого действия.",
+    table: `<table><thead><tr><th>Ситуация</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>действие до другого прошлого</th><td>Cuando llegué, ya había salido.</td><td>Когда я пришёл, он уже ушёл.</td></tr>
+      <tr><th>предшествование</th><td>Ya había comido cuando me invitó.</td><td>Я уже поел, когда он пригласил.</td></tr>
+      <tr><th>опыт до момента в прошлом</th><td>Nunca había visto la nieve.</td><td>Я никогда не видел снег (до того момента).</td></tr>
+      <tr><th>сигналы</th><td>ya, todavía no, nunca, antes, cuando + indefinido</td><td>Ya había terminado. Cuando llegó, ya me había ido.</td></tr>
+      <tr><th>⚠️ формула</th><td colspan="2">había/habías/había/habíamos/habíais/habían + participio</td></tr>
+      <tr><th>⚠️ vs Indefinido</th><td colspan="2">Pluscuamperfecto = раньше другого прошлого; Indefinido = просто прошлое событие</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Времена и синтаксис",
+    subgroup: "Прошедшее",
+    title: "Indefinido: сигнальные слова",
+    description: "Маркеры, которые указывают на Pretérito Indefinido: завершённые действия в прошлом.",
+    table: `<table><thead><tr><th>Маркер</th><th>Смысл</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>ayer</th><td>вчера</td><td>Ayer fui al cine.</td></tr>
+      <tr><th>anteayer</th><td>позавчера</td><td>Anteayer llovió.</td></tr>
+      <tr><th>la semana/el mes/el año pasado</th><td>на прошлой неделе/в прошлом месяце/году</td><td>El año pasado viajé a Italia.</td></tr>
+      <tr><th>hace + время</th><td>…назад</td><td>Hace tres días llegué.</td></tr>
+      <tr><th>el lunes / el martes</th><td>в понедельник (прошедший)</td><td>El lunes empecé el curso.</td></tr>
+      <tr><th>en 2020 / en enero</th><td>в конкретном периоде</td><td>En 2020 nació mi hijo.</td></tr>
+      <tr><th>de repente / de pronto</th><td>внезапно</td><td>De repente sonó el teléfono.</td></tr>
+      <tr><th>en ese momento</th><td>в тот момент</td><td>En ese momento entró.</td></tr>
+      <tr><th>una vez / dos veces</th><td>один/два раза</td><td>Fui una vez a París.</td></tr>
+      <tr><th>al final / finalmente</th><td>в конце / наконец</td><td>Al final aprobé.</td></tr>
+      <tr><th>⚠️ vs Imperfecto</th><td colspan="2">Indefinido = конкретное завершённое событие; Imperfecto = фон, привычка, описание</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Наречия, предлоги и связки",
+    subgroup: "Предлоги места",
+    title: "Aquí / Acá / Ahí / Allí / Allá: 5 уровней места",
+    description: "Пять наречий места в зависимости от близости к говорящему и собеседнику.",
+    table: `<table><thead><tr><th>Наречие</th><th>Близость</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>aquí</th><td>здесь (рядом со мной)</td><td>Ponlo aquí. Estoy aquí.</td></tr>
+      <tr><th>acá</th><td>здесь / сюда (Испания: менее точно; LatAm: сюда)</td><td>Ven acá. (LatAm: иди сюда)</td></tr>
+      <tr><th>ahí</th><td>там (рядом с тобой)</td><td>¿Lo ves ahí? Déjalo ahí.</td></tr>
+      <tr><th>allí</th><td>там (далеко от обоих)</td><td>La casa está allí. Nos vemos allí.</td></tr>
+      <tr><th>allá</th><td>там далеко / вон там</td><td>Allá en el horizonte. Allá por los años 80.</td></tr>
+      <tr><th>⚠️ aquí vs acá</th><td colspan="2">В Испании: aquí = точно здесь, acá = примерно здесь. В LatAm: acá = сюда (Ven acá = Ven aquí)</td></tr>
+      <tr><th>⚠️ allí vs allá</th><td colspan="2">allí = конкретное место; allá = более отдалённое, размытое</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Живой испанский",
+    subgroup: "Телефон и мессенджер",
+    title: "Teléfono y WhatsApp: фразы для переписки и звонков",
+    description: "Типичные фразы для телефонных разговоров и мессенджеров в Испании.",
+    table: `<table><thead><tr><th>Фраза</th><th>Смысл</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>¿Estás libre?</th><td>Ты свободен?</td><td>¿Estás libre ahora?</td></tr>
+      <tr><th>Te llamo luego</th><td>Позвоню позже</td><td>Estoy ocupado, te llamo luego.</td></tr>
+      <tr><th>Mándame un audio</th><td>Пришли голосовое</td><td>No puedo escribir, mándame un audio.</td></tr>
+      <tr><th>¿Quedamos?</th><td>Встретимся?</td><td>¿Quedamos el viernes?</td></tr>
+      <tr><th>¿A qué hora?</th><td>Во сколько?</td><td>¿A qué hora quedamos?</td></tr>
+      <tr><th>Llego tarde</th><td>Опаздываю</td><td>Perdona, llego 10 minutos tarde.</td></tr>
+      <tr><th>Ya voy</th><td>Уже иду</td><td>Ya voy, estoy en el metro.</td></tr>
+      <tr><th>¿Me escuchas?</th><td>Ты меня слышишь?</td><td>¿Me escuchas bien?</td></tr>
+      <tr><th>Se me fue la línea</th><td>Связь пропала</td><td>Se me fue la línea, perdona.</td></tr>
+      <tr><th>Te escribo</th><td>Напишу тебе</td><td>Te escribo por WhatsApp.</td></tr>
+      <tr><th>Pásame tu número</th><td>Дай свой номер</td><td>Pásame tu número y te escribo.</td></tr>
+      <tr><th>¿Lo has visto?</th><td>Ты это видел? (прочитал?)</td><td>¿Has visto el mensaje que te envié?</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Время и числа",
+    subgroup: "Возраст",
+    title: "Возраст: cumplir, tener, llevar",
+    description: "Как говорить о возрасте в испанском: tener años, cumplir años, llevar + время.",
+    table: `<table><thead><tr><th>Конструкция</th><th>Смысл</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>tener + años</th><td>мне … лет</td><td>Tengo treinta años.</td></tr>
+      <tr><th>cumplir + años</th><td>исполнится … лет</td><td>Cumplo 31 el lunes. ¡Feliz cumpleaños!</td></tr>
+      <tr><th>hacer + años</th><td>… лет назад (событие)</td><td>Hace diez años que vivo aquí.</td></tr>
+      <tr><th>llevar + años</th><td>мне уже … лет (с оттенком «уже давно»)</td><td>Llevo 30 años. Llevo 5 años casado.</td></tr>
+      <tr><th>ser mayor / menor</th><td>быть взрослым / несовершеннолетним</td><td>Es mayor de edad. Es menor de edad.</td></tr>
+      <tr><th>tener la edad de</th><td>быть в возрасте</td><td>Tiene la edad de mi hijo.</td></tr>
+      <tr><th>⚠️ ser vs tener</th><td colspan="2">В испанском возраст = tener (иметь), НЕ ser. Tengo 30 años (не Soy 30 años).</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Глаголы: пары и устойчивые",
+    subgroup: "Возвратные глаголы",
+    title: "Возвратные глаголы: обычный vs возвратный",
+    description: "Многие глаголы имеют возвратную форму с другим или уточнённым смыслом. Сравнение обычных и возвратных форм.",
+    table: `<table><thead><tr><th>Обычный</th><th>Возвратный</th><th>Разница</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>lavar (мыть)</th><td>lavarse (мыться)</td><td>мыть что-то vs мыть себя</td><td>Lavo el coche. Me lavo las manos.</td></tr>
+      <tr><th>peinar (причёсывать)</th><td>peinarse (причёсываться)</td><td>кого-то vs себя</td><td>Peino a mi hija. Me peino.</td></tr>
+      <tr><th>vistir (одевать)</th><td>vestirse (одеваться)</td><td>кого-то vs себя</td><td>Visto al niño. Me visto.</td></tr>
+      <tr><th>despertar (будить)</th><td>despertarse (просыпаться)</td><td>кого-то vs себя</td><td>Despierto al perro. Me despierto a las siete.</td></tr>
+      <tr><th>dormir (спать)</th><td>dormirse (засыпать)</td><td>состояние vs действие засыпания</td><td>Duermo ocho horas. Me dormí en el sofá.</td></tr>
+      <tr><th>ir (идти)</th><td>irse (уходить)</td><td>идти куда-то vs уходить откуда-то</td><td>Voy al trabajo. Me voy de casa.</td></tr>
+      <tr><th>llevar (нести)</th><td>llevarse (уносить с собой)</td><td>нести vs унести</td><td>Llevo el libro. Me llevo el libro.</td></tr>
+      <tr><th>poner (класть)</th><td>ponerse (становиться / надевать)</td><td>класть vs становиться</td><td>Pongo el libro. Me puse nervioso.</td></tr>
+      <tr><th>llamar (звонить)</th><td>llamarse (зваться)</td><td>звонить кому-то vs как зовут</td><td>Llamo a Ana. Me llamo María.</td></tr>
+      <tr><th>acordar (соглашать)</th><td>acordarse (вспоминать)</td><td>соглашаться vs помнить</td><td>Acordamos el precio. Me acuerdo de ti.</td></tr>
+      <tr><th>parar (останавливать)</th><td>pararse (останавливаться / вставать)</td><td>кого-то vs себя</td><td>Paro el coche. Me paro en la esquina.</td></tr>
+      <tr><th>bajar (спускать)</th><td>bajarse (спускаться / выходить)</td><td>что-то vs себя</td><td>Bajo la maleta. Me bajo del tren.</td></tr>
+      <tr><th>subir (поднимать)</th><td>subirse (подниматься / залезать)</td><td>что-то vs себя</td><td>Subo la escalera. Me subo al árbol.</td></tr>
+      <tr><th>⚠️ не все меняют смысл</th><td colspan="3">Некоторые возвратные = просто «делать себе»: cepillarse los dientes, cortarse el pelo</td></tr>
     </tbody></table>`
   }
 ];

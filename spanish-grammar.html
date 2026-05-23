@@ -1807,7 +1807,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.20 · обновлено: 19.05.2026 22:00</footer>
+      <footer class="app-footer">Версия MVP 0.20 · обновлено: 23.05.2026 10:53</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -1999,7 +1999,9 @@ const IRREGULARS = {
     tags: ["indefinido irregular", "presente irregular"],
     presente: ["doy", "das", "da", "damos", "dais", "dan"],
     participle: "dado",
-    indefinido: ["di", "diste", "dio", "dimos", "disteis", "dieron"]
+    indefinido: ["di", "diste", "dio", "dimos", "disteis", "dieron"],
+    subjuntivo_presente: ["dé", "des", "dé", "demos", "deis", "den"],
+    imperativo_afirmativo: ["-", "da", "dé", "demos", "dad", "den"]
   },
   andar: {
     ru: "ходить",
@@ -4756,7 +4758,7 @@ function tenseById(id) {
 }
 
 function isReflexive(verb) {
-  return verb.endsWith("se") && verb.length > 4;
+  return verb.endsWith("se") && verb.length > 3;
 }
 
 function baseVerb(verb) {
@@ -4849,7 +4851,8 @@ function generatedPresent(verb) {
   for (const [ending, yo] of yoIrregulars) {
     if (verb.endsWith(ending)) base[0] = verb.slice(0, -ending.length) + yo;
   }
-  if (verb.endsWith("ducir")) base[0] = verb.slice(0, -3) + "zco";
+  if (verb.endsWith("facer")) base[0] = verb.slice(0, -5) + "fago";
+  else if (verb.endsWith("ducir")) base[0] = verb.slice(0, -3) + "zco";
   else if (verb.endsWith("cer") || verb.endsWith("cir")) base[0] = verb.slice(0, -3) + "zco";
   else if (verb.endsWith("ger") || verb.endsWith("gir")) {
     let root = verb.slice(0, -3);
@@ -4903,19 +4906,75 @@ function compoundPattern(auxKey, verb) {
 }
 
 function regularImperativoAfirmativo(verb) {
+  if (isReflexive(verb)) return reflexiveImperativoAfirmativo(verb);
   const present = regularPresent(verb);
   const subj = regularSubjuntivoPresente(verb);
-  return ["-", present[2], subj[2], subj[3], stem(verb) + "d", subj[5]];
+  return ["-", present[2], subj[2], subj[3], baseVerb(verb).slice(0, -1) + "d", subj[5]];
 }
 
 function regularImperativoAfirmativoPattern(verb) {
   const present = regularPresentPattern(verb);
   const subj = regularSubjuntivoPresentePattern(verb);
-  return ["-", present[2], subj[2], subj[3], stem(verb) + "d", subj[5]];
+  return ["-", present[2], subj[2], subj[3], baseVerb(verb).slice(0, -1) + "d", subj[5]];
 }
 
 function regularImperativoNegativoPattern(verb) {
   return regularSubjuntivoPresentePattern(verb).map((form, index) => index === 0 ? "-" : `no ${form}`);
+}
+
+function reflexiveImperativoAfirmativo(verb) {
+  const simpleVerb = baseVerb(verb);
+  const simple = IRREGULARS[simpleVerb]?.imperativo_afirmativo || regularImperativoAfirmativo(simpleVerb);
+  const attach = (form, pronoun) => addWrittenAccentForEnclitic(form, pronoun);
+  const vosotros = simpleVerb === "ir"
+    ? "idos"
+    : simple[4].endsWith("d") ? simple[4].slice(0, -1) + "os" : attach(simple[4], "os");
+  return [
+    "-",
+    attach(simple[1], "te"),
+    attach(simple[2], "se"),
+    attach(simple[3].replace(/s$/, ""), "nos"),
+    vosotros,
+    attach(simple[5], "se")
+  ];
+}
+
+function reflexiveImperativoNegativo(verb) {
+  const subj = regularSubjuntivoPresente(baseVerb(verb));
+  return [
+    "-",
+    `no te ${subj[1]}`,
+    `no se ${subj[2]}`,
+    `no nos ${subj[3]}`,
+    `no os ${subj[4]}`,
+    `no se ${subj[5]}`
+  ];
+}
+
+function addWrittenAccentForEnclitic(form, pronoun) {
+  if (/[áéíóú]/.test(form)) return form + pronoun;
+  const vowelGroups = [...form.matchAll(/[aeiouü]+/gi)];
+  if (vowelGroups.length <= 1) return form + pronoun;
+  const normalized = form.toLowerCase();
+  const stressGroupIndex = /[aeiouns]$/.test(normalized)
+    ? Math.max(0, vowelGroups.length - 2)
+    : vowelGroups.length - 1;
+  const group = vowelGroups[stressGroupIndex];
+  const chars = group[0].split("");
+  let offset = -1;
+  for (let index = chars.length - 1; index >= 0; index -= 1) {
+    if (/[aeo]/i.test(chars[index])) {
+      offset = index;
+      break;
+    }
+  }
+  if (offset < 0) offset = chars.length - 1;
+  const accentIndex = group.index + offset;
+  return form.slice(0, accentIndex) + accentVowel(form[accentIndex]) + form.slice(accentIndex + 1) + pronoun;
+}
+
+function accentVowel(char) {
+  return ({ a: "á", e: "é", i: "í", o: "ó", u: "ú", A: "Á", E: "É", I: "Í", O: "Ó", U: "Ú" })[char] || char;
 }
 
 function participle(verb) {
@@ -5065,6 +5124,9 @@ function generatedSubjuntivoPresente(verb) {
   if (verb.endsWith("poner")) return make(verb.slice(0, -5) + "pong", a);
   if (verb.endsWith("venir")) return make(verb.slice(0, -5) + "veng", a);
   if (verb.endsWith("salir")) return make(verb.slice(0, -5) + "salg", a);
+  if (verb.endsWith("facer")) return make(verb.slice(0, -5) + "fag", a);
+  if (verb.endsWith("hacer")) return make(verb.slice(0, -5) + "hag", a);
+  if (verb.endsWith("decir")) return make(verb.slice(0, -5) + "dig", a);
   if (verb.endsWith("traer")) return make(verb.slice(0, -5) + "traig", a);
   if (verb.endsWith("caer")) return make(verb.slice(0, -4) + "caig", a);
   if (verb === "oir") return make("oig", a);
@@ -5091,6 +5153,19 @@ function generatedSubjuntivoPresente(verb) {
     const baseRoot = verb.slice(0, -3); // "jug"
     const regularRoot = baseRoot + "gu"; // "jugu"
     const changedRoot = stemChange(baseRoot, "u", "ue") + "gu"; // "juegu"
+    return [
+      changedRoot + "e",
+      changedRoot + "es",
+      changedRoot + "e",
+      regularRoot + "emos",
+      regularRoot + "éis",
+      changedRoot + "en"
+    ];
+  }
+  if (verb.endsWith("gar") && (hasStemChange(verb, "e", "ie") || hasStemChange(verb, "o", "ue"))) {
+    const baseRoot = verb.slice(0, -3);
+    const regularRoot = baseRoot + "gu";
+    const changedRoot = stemChange(baseRoot, hasStemChange(verb, "e", "ie") ? "e" : "o", hasStemChange(verb, "e", "ie") ? "ie" : "ue") + "gu";
     return [
       changedRoot + "e",
       changedRoot + "es",
@@ -5159,14 +5234,17 @@ function generatedParticiple(verb) {
 }
 
 const STEM_CHANGE_GROUPS = {
-  "e:ie": ["tener", "venir", "pensar", "cerrar", "empezar", "comenzar", "querer", "entender", "perder", "preferir", "sentir", "mentir", "convertir", "divertir", "advertir", "sugerir", "atravesar", "calentar", "apretar", "acertar", "tropezar"],
-  "o:ue": ["poder", "dormir", "morir", "volver", "devolver", "recordar", "contar", "costar", "mostrar", "probar", "almorzar", "soñar", "mover", "morder", "sonar"],
-  "e:i": ["pedir", "repetir", "servir", "vestir", "seguir", "conseguir", "perseguir", "elegir", "corregir", "competir", "impedir", "medir", "despedir", "reir", "sonreir", "freir"],
+  "e:ie": ["tener", "venir", "pensar", "cerrar", "empezar", "comenzar", "querer", "entender", "perder", "defender", "encender", "tender", "ascender", "preferir", "sentir", "mentir", "convertir", "divertir", "advertir", "sugerir", "atravesar", "calentar", "apretar", "acertar", "tropezar", "sentar", "despertar", "negar", "regar", "gobernar", "recomendar", "sembrar", "temblar", "enterrar", "manifestar", "cegar", "helar", "serrar", "quebrar"],
+  "o:ue": ["poder", "dormir", "morir", "volver", "devolver", "resolver", "recordar", "acordar", "contar", "costar", "mostrar", "demostrar", "probar", "almorzar", "soñar", "sonar", "mover", "morder", "doler", "encontrar", "acostar", "apostar", "colgar", "forzar", "esforzar", "rogar", "rodar", "soltar", "volar", "poblar"],
+  "e:i": ["decir", "pedir", "repetir", "servir", "vestir", "seguir", "conseguir", "perseguir", "elegir", "corregir", "competir", "impedir", "medir", "despedir", "reir", "sonreir", "freir", "rendir", "regir", "gemir", "concebir", "derretir"],
   "u:ue": ["jugar"]
 };
+const STEM_CHANGE_EXCEPTIONS = ["agregar", "entregar", "presentar", "representar", "ausentar"];
 
 function hasStemChange(verb, from, to) {
-  return STEM_CHANGE_GROUPS[`${from}:${to}`]?.some((ending) => verb.endsWith(ending));
+  const b = baseVerb(verb);
+  if (STEM_CHANGE_EXCEPTIONS.includes(b)) return false;
+  return STEM_CHANGE_GROUPS[`${from}:${to}`]?.some((ending) => b.endsWith(ending));
 }
 
 function stemChange(value, from, to) {
@@ -5195,7 +5273,9 @@ function formsFor(verb) {
     subjuntivo_futuro: regularSubjuntivoFuturo(verb),
     subjuntivo_futuro_perfecto: compound("subjFuturo", verb),
     imperativo_afirmativo: irregular.imperativo_afirmativo || regularImperativoAfirmativo(verb),
-    imperativo_negativo: (irregular.subjuntivo_presente || regularSubjuntivoPresente(verb)).map((form, index) => index === 0 ? "-" : `no ${form}`),
+    imperativo_negativo: isReflexive(verb)
+      ? reflexiveImperativoNegativo(verb)
+      : (irregular.subjuntivo_presente || regularSubjuntivoPresente(verb)).map((form, index) => index === 0 ? "-" : `no ${form}`),
     formas_no_personales: [verb, gerund(verb), participle(verb), "-", "-", "-"]
   };
 }

@@ -1051,6 +1051,67 @@ td.irregular {
   row-gap: 10px;
 }
 
+.verb-list.is-frequency-list {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.verb-pick.frequency-verb-pick {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  align-items: center;
+  gap: 9px;
+  min-height: 64px;
+  padding: 8px 46px 8px 8px;
+}
+
+.frequency-rank {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 900;
+}
+
+.frequency-verb-copy {
+  min-width: 0;
+}
+
+.frequency-verb-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.frequency-verb-title strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.frequency-rate {
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.frequency-source {
+  margin-top: 2px;
+}
+
+.frequency-source p {
+  max-width: 92ch;
+}
+
 .verb-row {
   position: relative;
   display: block;
@@ -2161,6 +2222,18 @@ td.irregular {
   min-height: 52px;
 }
 
+@media (max-width: 1250px) {
+  .verb-list.is-frequency-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .verb-list.is-frequency-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 .control-row {
   display: grid;
   gap: 8px;
@@ -2341,6 +2414,16 @@ select {
 
   .verb-list.is-suggestions {
     grid-template-columns: 1fr;
+  }
+
+  .verb-list.is-frequency-list {
+    grid-template-columns: 1fr;
+  }
+
+  .verb-list.is-frequency-list .frequency-verb-pick {
+    grid-template-columns: 32px minmax(0, 1fr);
+    align-items: center;
+    min-height: 60px;
   }
 
   .verb-card-tabs {
@@ -2646,7 +2729,7 @@ select {
 
       <section id="content" class="content" aria-live="polite"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.44 · обновлено: 19.07.2026 21:35 CEST</span>
+        <span>Версия MVP 0.45 · обновлено: 19.07.2026 21:50 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -7276,12 +7359,35 @@ const state = {
   dark: localStorage.getItem("msg:theme") === "dark"
 };
 
-const COMMON_VERB_SUGGESTIONS = [
-  "ser", "estar", "tener", "hacer", "ir",
-  "poder", "decir", "haber", "ver", "dar",
-  "saber", "querer", "venir", "poner", "salir",
-  "hablar", "comer", "vivir", "trabajar", "estudiar"
+// Normalized frequency per million tokens in the Spain press subcorpus of CORPES 1.0.
+const COMMON_VERB_FREQUENCY = [
+  ["ser", 16145.2], ["tener", 4109.0], ["estar", 4079.5], ["poder", 3602.9],
+  ["hacer", 3211.7], ["haber", 2531.4], ["ir", 1428.0], ["decir", 1412.2],
+  ["dar", 1391.0], ["ver", 1179.3], ["deber", 1048.4], ["llegar", 957.0],
+  ["seguir", 866.8], ["querer", 862.4], ["pasar", 852.9], ["llevar", 832.6],
+  ["saber", 786.6], ["encontrar", 741.9], ["poner", 726.8], ["dejar", 684.2],
+  ["tratar", 638.2], ["parecer", 627.6], ["quedar", 612.4], ["explicar", 598.3],
+  ["presentar", 584.8], ["contar", 575.2], ["permitir", 547.5], ["creer", 547.5],
+  ["realizar", 534.6], ["conocer", 530.8], ["hablar", 519.2], ["mantener", 499.8],
+  ["considerar", 494.0], ["asegurar", 489.6], ["volver", 473.5], ["salir", 441.8],
+  ["producir", 435.9], ["acabar", 433.2], ["vivir", 429.3], ["trabajar", 407.3],
+  ["llamar", 407.1], ["mostrar", 404.0], ["pensar", 402.7], ["existir", 399.4],
+  ["esperar", 393.6], ["convertir", 386.2], ["ofrecer", 383.7], ["tomar", 382.2],
+  ["empezar", 382.0], ["recordar", 379.4], ["suponer", 376.0], ["ganar", 373.9],
+  ["conseguir", 373.6], ["recibir", 367.6], ["señalar", 366.0], ["jugar", 362.9],
+  ["venir", 357.6], ["utilizar", 352.3], ["perder", 347.0], ["pedir", 341.0],
+  ["afirmar", 335.2], ["crear", 329.2], ["buscar", 327.6], ["incluir", 327.2],
+  ["comenzar", 314.3], ["escribir", 309.1], ["formar", 307.9], ["resultar", 296.1],
+  ["abrir", 295.9], ["añadir", 295.3], ["intentar", 283.8], ["entrar", 281.7],
+  ["lograr", 279.4], ["desarrollar", 278.3], ["evitar", 276.3], ["entender", 272.5],
+  ["reconocer", 271.2], ["sentir", 271.0], ["destacar", 267.2], ["aparecer", 265.9],
+  ["decidir", 265.9], ["cambiar", 262.9], ["dirigir", 258.0], ["necesitar", 252.6],
+  ["sufrir", 251.0], ["alcanzar", 249.6], ["publicar", 248.0], ["celebrar", 244.2],
+  ["servir", 240.8], ["afectar", 234.2], ["ocurrir", 231.3], ["cumplir", 230.3],
+  ["indicar", 228.0], ["gustar", 222.1], ["ayudar", 221.7], ["establecer", 220.8],
+  ["reducir", 219.4], ["participar", 219.2], ["obtener", 217.1], ["superar", 211.9]
 ];
+const COMMON_VERB_SUGGESTIONS = COMMON_VERB_FREQUENCY.map(([verb]) => verb);
 
 const CORE_FORMS_REVIEWED = new Set([
   "ser", "estar", "ir", "haber", "tener", "hacer", "decir", "venir", "poder", "poner",
@@ -8553,18 +8659,31 @@ function renderVerbResults(content, results, selectedPanel) {
   listCard.innerHTML = `
     <div class="card-head">
       <div>
-        <h2>${state.query ? `Найдено: ${verbs.length}` : "20 частых глаголов"}</h2>
-        <p class="muted">${state.query ? "Выбери глагол, чтобы открыть карточку с основными временами." : "Кликни по глаголу из списка или набери слово/форму в поиске, если нужного глагола здесь нет."}</p>
+        <h2>${state.query ? `Найдено: ${verbs.length}` : "100 самых частых глаголов"}</h2>
+        <p class="muted">${state.query ? "Выбери глагол, чтобы открыть карточку с основными временами." : "Рейтинг по письменной прессе Испании. Кликни по глаголу или найди другой через поиск."}</p>
       </div>
     </div>
     <div class="verb-list"></div>
+    ${isDefaultSuggestionPage ? `
+      <details class="table-sources frequency-source">
+        <summary>Источник и методика</summary>
+        <p>Рейтинг составлен по нормализованной частоте глагольных лемм в испанском подкорпусе письменной прессы CORPES 1.0: 50 307 664 словоупотребления. Число у глагола показывает частоту на 1 млн словоупотреблений. Это статистика употребления, а не порядок изучения.</p>
+        <div class="table-source-links">
+          <a href="https://www.rae.es/corpes/assets/rae/files/corpes/Lemas_por_paises/Lemas_subcorpus_espa%C3%B1a.TXT" target="_blank" rel="noopener noreferrer">Данные RAE: Испания (2025)</a>
+          <a href="https://www.rae.es/corpes/assets/rae/files/corpes/guiaDiccionariosFrecuenciasLex.pdf" target="_blank" rel="noopener noreferrer">Методика CORPES</a>
+          <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.es" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a>
+        </div>
+      </details>
+    ` : ""}
   `;
   const list = listCard.querySelector(".verb-list");
   if (isDefaultSuggestionPage) {
-    list.classList.add("is-suggestions");
-    COMMON_VERB_SUGGESTIONS
-      .filter((verb) => BASE_VERBS.includes(verb))
-      .forEach((verb) => list.appendChild(renderVerbListItem(verb, { showBadges: true })));
+    list.classList.add("is-frequency-list");
+    COMMON_VERB_FREQUENCY
+      .filter(([verb]) => BASE_VERBS.includes(verb))
+      .forEach(([verb, perMillion], index) => {
+        list.appendChild(renderFrequentVerbListItem(verb, index + 1, perMillion));
+      });
   } else {
     verbs.forEach((verb, index) => list.appendChild(renderVerbListItem(verb, { isBestMatch: isSearchMode && index === 0 })));
   }
@@ -8662,6 +8781,24 @@ function renderVerbListItem(verb, { showBadges = true, isBestMatch = false } = {
     selectVerb(verb, { keepReturnQuery: state.view === "verbs" });
   });
   row.querySelector(".verb-row-favorite").addEventListener("click", () => toggleCard(verb));
+  return row;
+}
+
+function renderFrequentVerbListItem(verb, rank, perMillion) {
+  const info = verbInfo(verb);
+  const row = renderVerbListItem(verb, { showBadges: false });
+  const pick = row.querySelector(".verb-pick");
+  pick.classList.add("frequency-verb-pick");
+  pick.innerHTML = `
+    <span class="frequency-rank" aria-label="Место ${rank}">${rank}</span>
+    <span class="frequency-verb-copy">
+      <span class="frequency-verb-title">
+        <strong>${escapeHTML(info.displayInfinitive)}</strong>
+        <span class="frequency-rate" title="${perMillion.toLocaleString("ru-RU")} на миллион словоупотреблений">${perMillion.toLocaleString("ru-RU")}/млн</span>
+      </span>
+      <small>${escapeHTML(info.ru)}</small>
+    </span>
+  `;
   return row;
 }
 

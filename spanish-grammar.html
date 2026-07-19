@@ -2696,14 +2696,41 @@ select {
 }
 
 @media print {
+  :root,
+  body.dark {
+    color-scheme: light;
+    --bg: #fff;
+    --surface: #fff;
+    --surface-2: #fff;
+    --text: #000;
+    --muted: #333;
+    --line: #999;
+    --accent: #000;
+    --accent-2: #000;
+    --accent-soft: #fff;
+    --success: #000;
+    --success-soft: #fff;
+    --danger: #000;
+    --danger-soft: #fff;
+    --shadow: none;
+  }
+
+  @page {
+    margin: 12mm;
+  }
+
+  html,
   body {
-    background: white;
-    color: black;
+    height: auto !important;
+    min-height: 0 !important;
+    background: #fff !important;
+    color: #000 !important;
     font-size: 11pt;
   }
 
   .app-shell {
     width: 100%;
+    min-height: 0;
     margin: 0;
     padding: 0;
   }
@@ -2730,6 +2757,10 @@ select {
     max-width: none;
   }
 
+  .content {
+    margin-top: 0;
+  }
+
   .content > *,
   .list-grid > article,
   .list-grid > section,
@@ -2742,12 +2773,20 @@ select {
     background: white;
     border: none;
     box-shadow: none;
-    break-inside: avoid;
+    break-inside: auto;
+    page-break-inside: auto;
   }
 
   .info-card table,
   .table-wrap table {
     page-break-inside: avoid;
+  }
+
+  h1,
+  h2,
+  h3 {
+    break-after: avoid;
+    page-break-after: avoid;
   }
 
   .table-card.is-open .table-wrap,
@@ -2804,7 +2843,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.55 · обновлено: 20.07.2026 00:04 CEST</span>
+        <span>Версия MVP 0.56 · обновлено: 20.07.2026 00:12 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>

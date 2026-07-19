@@ -321,14 +321,17 @@ input[type="search"] {
 
 .tense-group-links {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 6px;
 }
 
-.tense-nav-button {
-  justify-content: start;
-  min-height: 86px;
-  padding: 10px;
+.term-button.tense-nav-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 56px;
+  padding: 7px 9px;
   text-align: left;
 }
 
@@ -476,6 +479,29 @@ input[type="search"] {
   flex: 0 1 auto;
   max-width: 42%;
   text-align: right;
+}
+
+.formula-button {
+  border: 1px solid transparent;
+  cursor: pointer;
+  font: inherit;
+}
+
+.formula-button:hover,
+.formula-button:focus-visible {
+  border-color: var(--accent-2);
+  color: var(--accent-2);
+}
+
+.focused-tense-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.focused-tense-toolbar h2 {
+  margin: 0;
 }
 
 .tense-actions {
@@ -724,6 +750,11 @@ input[type="search"] {
 .example-card strong,
 .condition-card strong {
   color: var(--accent-2);
+}
+
+.example-more-button {
+  width: fit-content;
+  margin: -4px 0 12px;
 }
 
 .condition-card code {
@@ -1773,6 +1804,10 @@ select {
     grid-template-columns: 1fr;
   }
 
+  .tense-actions.is-compact {
+    grid-template-columns: 1fr;
+  }
+
   .filter-tabs {
     grid-template-columns: 1fr;
   }
@@ -2010,7 +2045,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.27 · обновлено: 19.07.2026 17:21</footer>
+      <footer class="app-footer">Версия MVP 0.28 · обновлено: 19.07.2026 17:38</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -3675,7 +3710,7 @@ const TENSES = [
   },
   {
     id: "perfecto",
-    name: "Pretérito Perfecto Compuesto",
+    name: "Pretérito Perfecto Compuesto de Indicativo",
     mood: "Indicativo",
     ru: "прошедшее, связанное с настоящим",
     use: "Действие произошло в периоде, который говорящий ощущает как незавершенный.",
@@ -3690,7 +3725,7 @@ const TENSES = [
   },
   {
     id: "indefinido",
-    name: "Pretérito Indefinido / Perfecto Simple",
+    name: "Pretérito Perfecto Simple (Indefinido)",
     mood: "Indicativo",
     ru: "завершенное прошедшее",
     use: "Завершенное действие в конкретный момент прошлого.",
@@ -3709,7 +3744,7 @@ const TENSES = [
   },
   {
     id: "imperfecto",
-    name: "Pretérito Imperfecto",
+    name: "Pretérito Imperfecto de Indicativo",
     mood: "Indicativo",
     ru: "описательное прошедшее",
     use: "Фон, привычки в прошлом, длительные или повторяющиеся действия.",
@@ -3728,7 +3763,7 @@ const TENSES = [
   },
   {
     id: "pluscuamperfecto",
-    name: "Pretérito Pluscuamperfecto",
+    name: "Pretérito Pluscuamperfecto de Indicativo",
     mood: "Indicativo",
     ru: "предпрошедшее время",
     use: "Действие произошло раньше другого действия в прошлом.",
@@ -3743,7 +3778,7 @@ const TENSES = [
   },
   {
     id: "preterito_anterior",
-    name: "Pretérito Anterior",
+    name: "Pretérito Anterior de Indicativo",
     mood: "Indicativo",
     ru: "книжное предпрошедшее",
     use: "Редкая книжная форма для действия, завершенного непосредственно перед другим прошлым действием.",
@@ -3758,7 +3793,7 @@ const TENSES = [
   },
   {
     id: "futuro",
-    name: "Futuro Simple",
+    name: "Futuro Simple de Indicativo",
     mood: "Indicativo",
     ru: "будущее время",
     use: "Будущее действие, прогноз, обещание или предположение.",
@@ -3773,7 +3808,7 @@ const TENSES = [
   },
   {
     id: "futuro_perfecto",
-    name: "Futuro Perfecto",
+    name: "Futuro Compuesto de Indicativo (Futuro Perfecto)",
     mood: "Indicativo",
     ru: "будущее совершенное",
     use: "Действие будет завершено к моменту в будущем; также предположение о прошлом.",
@@ -3920,7 +3955,7 @@ const TENSES = [
   },
   {
     id: "imperativo_afirmativo",
-    name: "Imperativo Afirmativo",
+    name: "Imperativo afirmativo",
     mood: "Imperativo",
     ru: "утвердительное повелительное",
     use: "Прямая команда, просьба или инструкция.",
@@ -3935,7 +3970,7 @@ const TENSES = [
   },
   {
     id: "imperativo_negativo",
-    name: "Imperativo Negativo",
+    name: "Imperativo negativo",
     mood: "Imperativo",
     ru: "отрицательное повелительное",
     use: "Запрет или просьба не делать действие.",
@@ -4040,6 +4075,28 @@ const TENSE_BADGES = {
   imperativo_afirmativo: ["команда", "core"],
   imperativo_negativo: ["команда", "core"],
   formas_no_personales: ["основа", "core"]
+};
+
+const TENSE_NAV_LABELS = {
+  presente: "Presente",
+  perfecto: "Perfecto Compuesto",
+  indefinido: "Indefinido",
+  imperfecto: "Imperfecto",
+  pluscuamperfecto: "Pluscuamperfecto",
+  preterito_anterior: "Pretérito Anterior",
+  futuro: "Futuro Simple",
+  futuro_perfecto: "Futuro Perfecto",
+  condicional: "Condicional Simple",
+  condicional_compuesto: "Condicional Compuesto",
+  subjuntivo_presente: "Presente de Subjuntivo",
+  subjuntivo_perfecto: "Perfecto de Subjuntivo",
+  subjuntivo_imperfecto: "Imperfecto de Subjuntivo",
+  subjuntivo_pluscuamperfecto: "Pluscuamperfecto de Subjuntivo",
+  subjuntivo_futuro: "Futuro de Subjuntivo",
+  subjuntivo_futuro_perfecto: "Futuro Perfecto de Subjuntivo",
+  imperativo_afirmativo: "Imperativo afirmativo",
+  imperativo_negativo: "Imperativo negativo",
+  formas_no_personales: "Formas no personales"
 };
 
 const TENSE_FILTERS = {
@@ -5870,7 +5927,11 @@ const state = {
   showToc: false,
   showTenseToc: false,
   openTables: {},
-  tenseFilter: "basic",
+  tenseFilter: ["basic", "frequent", "all"].includes(localStorage.getItem("msg:tenseFilter"))
+    ? localStorage.getItem("msg:tenseFilter")
+    : "basic",
+  focusedTense: null,
+  openMoreExamplesTense: null,
   openExceptionTense: null,
   openSignalsTense: null,
   openFormationTense: null,
@@ -7401,6 +7462,29 @@ function hasIrregularBehavior(info) {
 
 function renderTenses() {
   const content = clearContent();
+  const focusedTense = tenseById(state.focusedTense);
+
+  if (focusedTense) {
+    const focusNav = infoSection({
+      id: "tensesTop",
+      html: `
+        <div class="focused-tense-toolbar">
+          <button class="small-button" type="button" data-show-all-tenses>← Все времена</button>
+          <span class="muted">Режим одного времени</span>
+        </div>
+      `
+    });
+    content.appendChild(focusNav);
+    content.appendChild(renderTenseCard(focusedTense));
+    bindClickAll(focusNav, "[data-show-all-tenses]", () => {
+      state.focusedTense = null;
+      state.openMoreExamplesTense = null;
+      renderTenses();
+      scrollToCard("tensesTop");
+    });
+    return;
+  }
+
   const activeFilter = TENSE_FILTERS[state.tenseFilter] || TENSE_FILTERS.basic;
   const visibleGroups = visibleTenseGroups();
   const nav = infoSection({
@@ -7411,7 +7495,7 @@ function renderTenses() {
     <div class="filter-tabs" aria-label="Фильтр времен">
       ${Object.entries(TENSE_FILTERS).map(([key, filter]) => `
         <button class="small-button ${state.tenseFilter === key ? "is-active" : ""}" type="button" data-tense-filter="${key}">
-          ${filter.label}
+          ${filter.label}<span class="filter-count">${filter.ids.length}</span>
         </button>
       `).join("")}
     </div>
@@ -7431,7 +7515,7 @@ function renderTenses() {
               return `
                 <button class="small-button term-button tense-nav-button ${badge.kind === "rare" ? "is-rare" : ""}" type="button" data-jump="${id}">
                   <span class="tense-nav-main">
-                    <span>${tense.name}</span>
+                    <span>${TENSE_NAV_LABELS[id] || tense.name}</span>
                     <small>${tense.ru}</small>
                   </span>
                   ${badgeMarkup(id)}
@@ -7453,11 +7537,15 @@ function renderTenses() {
   bindClickAll(nav, "[data-tense-filter]", (event) => {
     const button = event.currentTarget;
     state.tenseFilter = button.dataset.tenseFilter;
+    localStorage.setItem("msg:tenseFilter", state.tenseFilter);
     renderTenses();
     scrollToCard("tensesTop");
   });
   bindClickAll(nav, "[data-jump]", (event) => {
-    scrollToCard(`tense-${event.currentTarget.dataset.jump}`);
+    state.focusedTense = event.currentTarget.dataset.jump;
+    state.openMoreExamplesTense = null;
+    renderTenses();
+    scrollToCard(`tense-${state.focusedTense}`);
   });
 
   visibleGroups.forEach((group) => {
@@ -7481,11 +7569,6 @@ function renderTenseCard(tense) {
   const formationOpen = state.openFormationTense === tense.id;
   const signalsOpen = state.openSignalsTense === tense.id;
   const exceptionsOpen = state.openExceptionTense === tense.id;
-  const activeStateText = [
-    formationOpen ? "образование открыто" : null,
-    signalsOpen ? "признаки открыты" : null,
-    exceptionsOpen ? "исключения открыты" : null
-  ].filter(Boolean).join(" · ");
   section.innerHTML = `
     <div class="tense-card-head">
       <div>
@@ -7495,7 +7578,9 @@ function renderTenseCard(tense) {
         </div>
         <p class="muted">${tense.ru} · ${tense.mood}</p>
       </div>
-      <span class="chip">${formatFormula(tense.formula || "окончания по типу глагола")}</span>
+      <button class="chip formula-button" type="button" data-formation="${tense.id}" aria-expanded="${formationOpen}" title="Показать образование времени">
+        ${formatFormula(tense.formula || "окончания по типу глагола")}
+      </button>
     </div>
     <p>${tense.use}</p>
     ${tenseExamplesMarkup(tense.id)}
@@ -7504,9 +7589,8 @@ function renderTenseCard(tense) {
       ${disclosureButton({ open: signalsOpen, target: tense.id, label: "Признаки", hideLabel: "Скрыть признаки", action: "signals" })}
       ${disclosureButton({ open: exceptionsOpen, target: tense.id, label: "Исключения", hideLabel: "Скрыть исключения", action: "exceptions" })}
     </div>
-    ${activeStateText ? `<div class="state-note">${activeStateText}</div>` : ""}
   `;
-  section.querySelector("[data-formation]").addEventListener("click", () => {
+  bindClickAll(section, "[data-formation]", () => {
     state.openFormationTense = state.openFormationTense === tense.id ? null : tense.id;
     renderTenses();
     scrollToCard(`tense-${tense.id}`);
@@ -7518,6 +7602,11 @@ function renderTenseCard(tense) {
   });
   section.querySelector("[data-exceptions]").addEventListener("click", () => {
     state.openExceptionTense = state.openExceptionTense === tense.id ? null : tense.id;
+    renderTenses();
+    scrollToCard(`tense-${tense.id}`);
+  });
+  section.querySelector("[data-tense-examples]")?.addEventListener("click", () => {
+    state.openMoreExamplesTense = state.openMoreExamplesTense === tense.id ? null : tense.id;
     renderTenses();
     scrollToCard(`tense-${tense.id}`);
   });
@@ -7541,9 +7630,14 @@ function filteredTenseIds(ids) {
 function tenseExamplesMarkup(id) {
   const examples = TENSE_EXAMPLES[id] || [];
   if (examples.length === 0) return "";
+  const expanded = state.openMoreExamplesTense === id;
+  const visibleExamples = expanded ? examples : examples.slice(0, 1);
   return `<div class="example-grid">
-    ${examples.map(([es, ru]) => `<div class="example-card"><strong>${es}</strong><span>${ru}</span></div>`).join("")}
-  </div>`;
+    ${visibleExamples.map(([es, ru]) => `<div class="example-card"><strong>${es}</strong><span>${ru}</span></div>`).join("")}
+  </div>
+  ${examples.length > 1 ? `<button class="small-button example-more-button" type="button" data-tense-examples="${id}" aria-expanded="${expanded}">
+    ${expanded ? "Скрыть дополнительный пример" : `Ещё пример (${examples.length - 1})`}
+  </button>` : ""}`;
 }
 
 function tenseBadge(id) {
@@ -8923,7 +9017,8 @@ function openVerbFromReference(verb) {
 function openTenseFromVerb(tenseId) {
   if (!tenseById(tenseId)) return;
   state.view = "tenses";
-  state.tenseFilter = "all";
+  state.focusedTense = tenseId;
+  state.openMoreExamplesTense = null;
   syncActiveTab("tenses");
   render();
   scrollToCard(`tense-${tenseId}`);

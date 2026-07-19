@@ -38,12 +38,12 @@ const sandbox = {
 // Execute the JS in the sandbox
 const fn = new Function(
   ...Object.keys(sandbox),
-  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, CORE_FORMS_REVIEWED, VERB_TENSE_GROUPS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize, generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer, cardAccuracy, isCardMastered, cardNeedsReview, cardsForFilter, studyCardCounts };"
+  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, TENSE_EXAMPLES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, CORE_FORMS_REVIEWED, VERB_TENSE_GROUPS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize, generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer, cardAccuracy, isCardMastered, cardNeedsReview, cardsForFilter, studyCardCounts };"
 );
 const api = fn(...Object.values(sandbox));
 
 const {
-  IRREGULARS, TRANSLATIONS, BASE_VERBS, TENSES, PEOPLE, VERB_TENSE_GROUPS,
+  IRREGULARS, TRANSLATIONS, BASE_VERBS, TENSES, TENSE_EXAMPLES, PEOPLE, VERB_TENSE_GROUPS,
   COMMON_VERB_SUGGESTIONS, CORE_FORMS_REVIEWED,
   verbType, stem, regularPresent, regularIndefinido, regularImperfecto,
   regularFuture, regularCondicional, regularSubjuntivoPresente,
@@ -1021,6 +1021,37 @@ if (missingGroupedTenses.length > 0 || duplicateGroupedTenses.length > 0 || uniq
   });
 }
 
+const tenseExampleCount = Object.values(TENSE_EXAMPLES).reduce((total, rows) => total + rows.length, 0);
+for (const tense of TENSES) {
+  const examples = TENSE_EXAMPLES[tense.id];
+  if (!Array.isArray(examples) || examples.length < 4) {
+    issues.push({
+      verb: tense.id,
+      tense: "examples",
+      person: "-",
+      expected: "не менее 4 примеров",
+      actual: Array.isArray(examples) ? String(examples.length) : "(missing)",
+      severity: "high",
+    });
+    continue;
+  }
+  examples.forEach((row, index) => {
+    const complete = Array.isArray(row)
+      && row.length >= 3
+      && row.slice(0, 3).every((value) => typeof value === "string" && value.trim() !== "");
+    if (!complete) {
+      issues.push({
+        verb: tense.id,
+        tense: "examples",
+        person: index + 1,
+        expected: "испанский пример, русский перевод и пояснение",
+        actual: JSON.stringify(row),
+        severity: "high",
+      });
+    }
+  });
+}
+
 const SEARCH_CASES = [
   { query: "tener", first: "tener", count: 1 },
   { query: "tengo", first: "tener", count: 1 },
@@ -1558,6 +1589,7 @@ console.log(`Total reference checks: ${Object.keys(REFERENCE).length}`);
 console.log(`Translations complete: ${BASE_VERBS.length - issues.filter((issue) => issue.tense === "translation").length}/${BASE_VERBS.length}`);
 console.log(`Search cases checked: ${SEARCH_CASES.length}`);
 console.log(`Quiz cases checked: ${QUIZ_CASES.length}`);
+console.log(`Tense examples checked: ${tenseExampleCount}`);
 console.log(`Total issues found: ${issues.length}`);
 console.log(`  High severity:   ${highIssues.length}`);
 console.log(`  Medium severity: ${mediumIssues.length}`);

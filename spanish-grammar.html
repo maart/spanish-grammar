@@ -788,6 +788,19 @@ button.choice-card:focus-visible {
   color: var(--accent-2);
 }
 
+.example-card .example-context {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+@media (min-width: 760px) {
+  .example-grid.is-expanded {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 .example-more-button {
   width: fit-content;
   margin: -4px 0 12px;
@@ -2651,7 +2664,7 @@ select {
 
       <section id="content" class="content" aria-live="polite"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.48 · обновлено: 19.07.2026 22:10 CEST</span>
+        <span>Версия MVP 0.49 · обновлено: 19.07.2026 22:19 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -4761,25 +4774,143 @@ const TENSE_FILTERS = {
 };
 
 const TENSE_EXAMPLES = {
-  presente: [["Trabajo en casa.", "Я работаю дома."], ["Mañana salgo temprano.", "Завтра я выхожу рано."]],
-  perfecto: [["Hoy he comido tarde.", "Сегодня я поел поздно."], ["Esta semana hemos visto a Ana.", "На этой неделе мы видели Ану."]],
-  indefinido: [["Ayer comí tarde.", "Вчера я поел поздно."], ["Llegué, cené y me acosté.", "Я пришел, поужинал и лег спать."]],
-  imperfecto: [["De niño vivía en Valencia.", "В детстве я жил в Валенсии."], ["Dormía cuando llamó Ana.", "Я спал, когда позвонила Ана."]],
-  pluscuamperfecto: [["Cuando llegué, Ana ya había salido.", "Когда я пришел, Ана уже ушла."], ["Nunca lo había visto antes.", "Я никогда не видел этого раньше."]],
-  preterito_anterior: [["Apenas hubo terminado, salió.", "Как только он закончил, он вышел."], ["En cuanto hube llegado, empezó la reunión.", "Как только я пришел, началась встреча."]],
-  futuro: [["Mañana te llamaré.", "Завтра я тебе позвоню."], ["Estará en casa.", "Наверное, он дома."]],
-  futuro_perfecto: [["Para mañana habré terminado.", "К завтрашнему дню я закончу."], ["Habrá salido ya.", "Наверное, он уже вышел."]],
-  condicional: [["Dijo que volvería al día siguiente.", "Он сказал, что вернется на следующий день."], ["Si pudiera, viajaría más.", "Если бы я мог, я бы больше путешествовал."], ["Serían las diez.", "Было, вероятно, часов десять."]],
-  condicional_compuesto: [["Dijo que para el viernes habría terminado.", "Он сказал, что к пятнице уже закончит."], ["Si hubiera podido, habría ido.", "Если бы я тогда смог, я бы пошел."], ["Habrían salido de madrugada.", "Вероятно, они вышли на рассвете."]],
-  subjuntivo_presente: [["Quiero que vengas.", "Я хочу, чтобы ты пришел."], ["No creo que sea fácil.", "Не думаю, что это легко."]],
-  subjuntivo_perfecto: [["Me alegra que hayas venido.", "Я рад, что ты пришел."], ["No creo que haya terminado.", "Не думаю, что он закончил."], ["Te llamaré cuando haya terminado.", "Я позвоню тебе, когда закончу."]],
-  subjuntivo_imperfecto: [["Quería que vinieras.", "Я хотел, чтобы ты пришел."], ["Si tuviera tiempo, iría.", "Если бы у меня было время, я бы пошел."], ["Quisiera hablar con usted.", "Я хотел бы поговорить с Вами."]],
-  subjuntivo_pluscuamperfecto: [["Ojalá hubiera estudiado más.", "Вот бы я больше занимался."], ["Si hubieras llamado, habría ido.", "Если бы ты позвонил, я бы пошел."], ["No creía que hubiesen llegado.", "Я не думал, что они приехали."]],
-  subjuntivo_futuro: [["Sea quien fuere, no abras.", "Кто бы это ни был, не открывай."], ["Haga lo que hiciere, responderá.", "Что бы он ни сделал, он ответит."]],
-  subjuntivo_futuro_perfecto: [["Cuando hubiere terminado, se archivará.", "Когда будет завершено, это будет передано в архив."], ["Si hubiere incumplido, será sancionado.", "Если он нарушит, его накажут."]],
-  imperativo_afirmativo: [["Ven aquí.", "Иди сюда."], ["Dime la verdad.", "Скажи мне правду."]],
-  imperativo_negativo: [["No hables tan rápido.", "Не говори так быстро."], ["No lo hagas.", "Не делай этого."]],
-  formas_no_personales: [["Quiero estudiar.", "Я хочу учиться."], ["Estoy leyendo.", "Я читаю сейчас."], ["Después de haber comido, salimos.", "Поев, мы вышли."]]
+  presente: [
+    ["Trabajo en casa.", "Я работаю дома.", "состояние сейчас"],
+    ["Todos los lunes voy al gimnasio.", "Каждый понедельник я хожу в спортзал.", "привычка"],
+    ["El agua hierve a cien grados.", "Вода кипит при ста градусах.", "общий факт"],
+    ["Mañana salgo temprano.", "Завтра я выезжаю рано.", "запланированное будущее"],
+    ["Ahora no puedo hablar.", "Сейчас я не могу говорить.", "текущее состояние"]
+  ],
+  perfecto: [
+    ["Hoy he comido tarde.", "Сегодня я поел поздно.", "текущий период"],
+    ["Esta semana hemos visto a Ana dos veces.", "На этой неделе мы дважды видели Ану.", "незавершенный период"],
+    ["He perdido las llaves y no puedo entrar.", "Я потерял ключи и не могу войти.", "результат сейчас"],
+    ["¿Has estado alguna vez en Asturias?", "Ты когда-нибудь был в Астурии?", "жизненный опыт"],
+    ["Todavía no han llegado.", "Они еще не приехали.", "ожидаемый результат"],
+    ["Siempre he querido aprender español.", "Я всегда хотел выучить испанский.", "ситуация до настоящего"]
+  ],
+  indefinido: [
+    ["Ayer comí tarde.", "Вчера я поел поздно.", "закрытый момент"],
+    ["Llegué, cené y me acosté.", "Я пришел, поужинал и лег спать.", "цепочка событий"],
+    ["Viví en Sevilla durante tres años.", "Я прожил в Севилье три года.", "завершенная длительность"],
+    ["Cervantes murió en 1616.", "Сервантес умер в 1616 году.", "исторический факт"],
+    ["De repente sonó el teléfono.", "Вдруг зазвонил телефон.", "событие в повествовании"]
+  ],
+  imperfecto: [
+    ["De niño vivía en Valencia.", "В детстве я жил в Валенсии.", "ситуация в прошлом"],
+    ["Cada verano íbamos al pueblo.", "Каждое лето мы ездили в деревню.", "прошлая привычка"],
+    ["Hacía frío y la calle estaba vacía.", "Было холодно, и улица была пустой.", "описание фона"],
+    ["Dormía cuando llamó Ana.", "Я спал, когда позвонила Ана.", "процесс и событие"],
+    ["Mientras Ana cocinaba, yo ponía la mesa.", "Пока Ана готовила, я накрывал на стол.", "одновременность"],
+    ["Quería pedirte un favor.", "Я хотел попросить тебя об одолжении.", "смягчение просьбы"]
+  ],
+  pluscuamperfecto: [
+    ["Cuando llegué, Ana ya había salido.", "Когда я пришел, Ана уже ушла.", "прошлое до прошлого"],
+    ["A las ocho ya habían cerrado la tienda.", "К восьми магазин уже закрыли.", "результат к прошлой точке"],
+    ["Nunca lo había visto antes.", "Я никогда не видел этого раньше.", "опыт до прошлого момента"],
+    ["Estaba cansada porque no había dormido bien.", "Она устала, потому что плохо спала.", "причина прошлого состояния"],
+    ["Dijo que había perdido el tren.", "Он сказал, что опоздал на поезд.", "предшествование в рассказе"]
+  ],
+  preterito_anterior: [
+    ["Apenas hubo terminado, salió.", "Едва он закончил, как вышел.", "непосредственное предшествование"],
+    ["En cuanto hube llegado, empezó la reunión.", "Как только я пришел, началась встреча.", "книжная последовательность"],
+    ["Tan pronto como hubieron firmado, abandonaron la sala.", "Как только они подписали, то покинули зал.", "формальный рассказ"],
+    ["No bien hubo amanecido, partieron.", "Едва рассвело, они отправились в путь.", "литературный стиль"]
+  ],
+  futuro: [
+    ["Mañana te llamaré.", "Завтра я тебе позвоню.", "будущее действие"],
+    ["Te ayudaré, te lo prometo.", "Я помогу тебе, обещаю.", "обещание"],
+    ["Lloverá por la tarde.", "Во второй половине дня будет дождь.", "прогноз"],
+    ["Estará en casa.", "Наверное, он дома.", "предположение о настоящем"],
+    ["Me llamarás en cuanto llegues.", "Позвони мне, как только приедешь.", "распоряжение"],
+    ["Será muy práctico, pero es demasiado caro.", "Возможно, это очень практично, но слишком дорого.", "уступительное предположение"]
+  ],
+  futuro_perfecto: [
+    ["Para mañana habré terminado.", "К завтрашнему дню я закончу.", "завершение к сроку"],
+    ["Cuando llegues, ya habremos cenado.", "Когда ты придешь, мы уже поужинаем.", "до будущего события"],
+    ["Dentro de un año habrán construido el puente.", "Через год мост уже построят.", "будущий результат"],
+    ["Habrá salido ya.", "Наверное, он уже вышел.", "предположение о прошлом"],
+    ["¿Habrá recibido mi mensaje?", "Интересно, получил ли он мое сообщение?", "неуверенность о прошлом"]
+  ],
+  condicional: [
+    ["Dijo que volvería al día siguiente.", "Он сказал, что вернется на следующий день.", "будущее из прошлого"],
+    ["Si pudiera, viajaría más.", "Если бы я мог, я бы больше путешествовал.", "нереальная гипотеза"],
+    ["¿Podrías ayudarme?", "Не мог бы ты мне помочь?", "вежливая просьба"],
+    ["Yo que tú, descansaría.", "На твоем месте я бы отдохнул.", "совет"],
+    ["Serían las diez.", "Было, вероятно, часов десять.", "предположение о прошлом"]
+  ],
+  condicional_compuesto: [
+    ["Dijo que para el viernes habría terminado.", "Он сказал, что к пятнице уже закончит.", "завершенность в будущем из прошлого"],
+    ["Si hubiera podido, habría ido.", "Если бы я тогда смог, я бы пошел.", "нереальное прошлое"],
+    ["Habría ido, pero estaba enfermo.", "Я бы пошел, но был болен.", "невыполненное намерение"],
+    ["Me habría gustado verte.", "Мне бы хотелось тогда увидеться с тобой.", "сожаление или желание"],
+    ["Habrían salido de madrugada.", "Вероятно, они вышли на рассвете.", "предположение о более раннем прошлом"]
+  ],
+  subjuntivo_presente: [
+    ["Quiero que vengas.", "Я хочу, чтобы ты пришел.", "желание"],
+    ["No creo que sea fácil.", "Не думаю, что это легко.", "сомнение"],
+    ["Me alegra que estés aquí.", "Я рад, что ты здесь.", "эмоция"],
+    ["Te lo explico para que lo entiendas.", "Я объясняю это, чтобы ты понял.", "цель"],
+    ["Te llamaré cuando llegue.", "Я позвоню тебе, когда приеду.", "будущее после cuando"],
+    ["Busco a alguien que sepa japonés.", "Я ищу кого-нибудь, кто знает японский.", "неопределенный объект"],
+    ["Ojalá haga buen tiempo.", "Надеюсь, погода будет хорошей.", "пожелание"]
+  ],
+  subjuntivo_perfecto: [
+    ["Me alegra que hayas venido.", "Я рад, что ты пришел.", "эмоция о завершенном"],
+    ["No creo que haya terminado.", "Не думаю, что он закончил.", "сомнение о прошлом"],
+    ["Puede que hayan perdido el tren.", "Возможно, они опоздали на поезд.", "вероятность"],
+    ["Es raro que no haya llamado todavía.", "Странно, что он до сих пор не позвонил.", "оценка результата"],
+    ["Te llamaré cuando haya terminado.", "Я позвоню тебе, когда закончу.", "завершение до будущей точки"]
+  ],
+  subjuntivo_imperfecto: [
+    ["Quería que vinieras.", "Я хотел, чтобы ты пришел.", "зависимость от прошлого"],
+    ["Si tuviera tiempo, iría.", "Если бы у меня было время, я бы пошел.", "гипотеза о настоящем"],
+    ["Quisiera hablar con usted.", "Я хотел бы поговорить с Вами.", "вежливость"],
+    ["Habla como si supiera todo.", "Он говорит так, будто знает все.", "сравнение с como si"],
+    ["Te lo expliqué para que lo entendieras.", "Я объяснил это, чтобы ты понял.", "цель в прошлом"],
+    ["Ojalá viviera más cerca.", "Вот бы он жил поближе.", "трудноосуществимое желание"]
+  ],
+  subjuntivo_pluscuamperfecto: [
+    ["Ojalá hubiera estudiado más.", "Вот бы я больше занимался.", "сожаление о прошлом"],
+    ["Si hubieras llamado, habría ido.", "Если бы ты позвонил, я бы пошел.", "невыполненное условие"],
+    ["No creía que hubiesen llegado.", "Я не думал, что они приехали.", "сомнение из прошлой точки"],
+    ["Me sorprendió que no hubieras avisado.", "Меня удивило, что ты не предупредил.", "эмоция о предшествующем"],
+    ["Habríamos salido antes si no hubiera llovido.", "Мы бы вышли раньше, если бы не шел дождь.", "результат и условие в прошлом"]
+  ],
+  subjuntivo_futuro: [
+    ["Sea quien fuere, no abras.", "Кто бы это ни был, не открывай.", "устойчивая книжная формула"],
+    ["Donde fueres, haz lo que vieres.", "В чужой монастырь со своим уставом не ходят.", "пословица"],
+    ["Quien causare daños responderá de ellos.", "Тот, кто причинит ущерб, будет за него отвечать.", "юридический стиль"],
+    ["Si el acusado no compareciere, continuará el proceso.", "Если обвиняемый не явится, процесс продолжится.", "формальное условие"]
+  ],
+  subjuntivo_futuro_perfecto: [
+    ["Una vez hubiere vencido el plazo, no se admitirán solicitudes.", "После истечения срока заявления принимать не будут.", "юридическая временная граница"],
+    ["Si el contratista hubiere incumplido, será sancionado.", "Если подрядчик нарушит условия, его накажут.", "формальное условие"],
+    ["Una vez hubieren firmado, el acuerdo entrará en vigor.", "После подписания соглашение вступит в силу.", "завершение до будущего"],
+    ["Quien hubiere recibido el pago deberá declararlo.", "Получивший выплату должен будет ее задекларировать.", "официальное предписание"]
+  ],
+  imperativo_afirmativo: [
+    ["Ven aquí.", "Иди сюда.", "команда tú"],
+    ["Dime la verdad, por favor.", "Скажи мне правду, пожалуйста.", "просьба с местоимением"],
+    ["Hable más despacio, por favor.", "Говорите помедленнее, пожалуйста.", "вежливая форма usted"],
+    ["Pasad y sentaos.", "Проходите и садитесь.", "обращение к vosotros"],
+    ["Empecemos por el principio.", "Давайте начнем с начала.", "побуждение nosotros"]
+  ],
+  imperativo_negativo: [
+    ["No hables tan rápido.", "Не говори так быстро.", "запрет для tú"],
+    ["No lo hagas.", "Не делай этого.", "местоимение перед глаголом"],
+    ["No se preocupe.", "Не беспокойтесь.", "вежливая форма usted"],
+    ["No os vayáis todavía.", "Пока не уходите.", "обращение к vosotros"],
+    ["No me lo diga ahora.", "Не говорите мне этого сейчас.", "два местоимения"]
+  ],
+  formas_no_personales: [
+    ["Quiero estudiar.", "Я хочу учиться.", "infinitivo после другого глагола"],
+    ["Voy a llamar a Ana.", "Я собираюсь позвонить Ане.", "перифраза с infinitivo"],
+    ["Estoy leyendo.", "Я сейчас читаю.", "estar + gerundio"],
+    ["La puerta está cerrada.", "Дверь закрыта.", "participio как прилагательное"],
+    ["Después de haber comido, salimos.", "Поев, мы вышли.", "infinitivo compuesto"],
+    ["Habiendo terminado el trabajo, se fue.", "Закончив работу, он ушел.", "gerundio compuesto"]
+  ]
 };
 
 const USEFUL_TABLES = [
@@ -9019,11 +9150,15 @@ function tenseExamplesMarkup(id) {
   if (examples.length === 0) return "";
   const expanded = state.openMoreExamplesTense === id;
   const visibleExamples = expanded ? examples : examples.slice(0, 1);
-  return `<div class="example-grid">
-    ${visibleExamples.map(([es, ru]) => `<div class="example-card"><strong>${es}</strong><span>${ru}</span></div>`).join("")}
+  return `<div class="example-grid ${expanded ? "is-expanded" : ""}">
+    ${visibleExamples.map(([es, ru, context]) => `<div class="example-card">
+      ${context ? `<small class="example-context">${context}</small>` : ""}
+      <strong>${es}</strong>
+      <span>${ru}</span>
+    </div>`).join("")}
   </div>
   ${examples.length > 1 ? `<button class="small-button example-more-button" type="button" data-tense-examples="${id}" aria-expanded="${expanded}">
-    ${expanded ? "Скрыть дополнительный пример" : `Ещё пример (${examples.length - 1})`}
+    ${expanded ? "Скрыть остальные примеры" : `Показать остальные примеры (${examples.length - 1})`}
   </button>` : ""}`;
 }
 

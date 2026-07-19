@@ -497,11 +497,14 @@ input[type="search"] {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 12px;
 }
 
-.focused-tense-toolbar h2 {
-  margin: 0;
+.focused-tense-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .tense-actions {
@@ -619,8 +622,8 @@ input[type="search"] {
 
 .mood-tabs .small-button {
   height: auto;
-  min-height: 50px;
-  padding: 7px 10px;
+  min-height: 46px;
+  padding: 6px 9px;
 }
 
 .mood-tabs .small-button span,
@@ -643,6 +646,11 @@ input[type="search"] {
 
 .mood-tabs .small-button.is-active small {
   color: white;
+}
+
+.mood-tabs .small-button.is-related:not(.is-active) {
+  border-style: dashed;
+  border-color: color-mix(in srgb, var(--accent-2) 55%, var(--line));
 }
 
 .mood-chooser-block {
@@ -669,7 +677,6 @@ input[type="search"] {
 .choice-card,
 .mood-trigger-group,
 .confusion-card,
-.mood-quiz-card,
 .condicional-note {
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -677,10 +684,23 @@ input[type="search"] {
   background: var(--surface-2);
 }
 
+button.choice-card {
+  width: 100%;
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+button.choice-card:hover,
+button.choice-card:focus-visible {
+  border-color: var(--accent-2);
+  background: var(--success-soft);
+}
+
 .choice-card strong,
 .mood-trigger-group strong,
-.confusion-card strong,
-.mood-quiz-card strong {
+.confusion-card strong {
   display: block;
   margin-bottom: 4px;
   color: var(--accent-2);
@@ -688,18 +708,10 @@ input[type="search"] {
 
 .choice-card span,
 .mood-trigger-group span,
-.confusion-card span,
-.mood-quiz-card span {
+.confusion-card span {
   color: var(--muted);
   font-size: 13px;
   font-weight: 800;
-}
-
-.mood-quiz-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 8px;
 }
 
 .condicional-note {
@@ -1841,7 +1853,7 @@ select {
   }
 
   .mood-tabs {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .choice-grid,
@@ -2045,7 +2057,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.28 · обновлено: 19.07.2026 17:38</footer>
+      <footer class="app-footer">Версия MVP 0.29 · обновлено: 19.07.2026 17:54</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -5912,15 +5924,16 @@ const state = {
   previousVerbQuery: null,
   recentVerbs: JSON.parse(localStorage.getItem("msg:recentVerbs") || "[]"),
   verbCardMode: "basic",
-  selectedMood: "indicativo",
+  selectedMood: ["indicativo", "subjuntivo", "imperativo", "condicional"].includes(localStorage.getItem("msg:selectedMood"))
+    ? localStorage.getItem("msg:selectedMood")
+    : "indicativo",
   showMoodChooser: false,
   showMoodConfusion: false,
+  showMoodAdvanced: false,
   showSubjuntivoMoreTriggers: false,
   showImperativoIrregulars: false,
   showImperativoPronouns: false,
   showImperativoMoreExamples: false,
-  moodQuizIndex: 0,
-  moodQuizRevealed: false,
   tableFilter: localStorage.getItem("msg:tableFilter") || "all",
   tableSubgroup: localStorage.getItem("msg:tableSubgroup") || "",
   tableQuery: "",
@@ -5931,6 +5944,7 @@ const state = {
     ? localStorage.getItem("msg:tenseFilter")
     : "basic",
   focusedTense: null,
+  returnMood: null,
   openMoreExamplesTense: null,
   openExceptionTense: null,
   openSignalsTense: null,
@@ -5970,29 +5984,6 @@ const CORE_FORMS_REVIEWED = new Set([
   "introducir", "freir", "reir", "sonreir", "oler", "adquirir", "cocer", "llover", "prever",
   "hablar", "comer", "vivir", "trabajar", "estudiar"
 ]);
-
-const MOOD_QUIZ = [
-  {
-    phrase: "Quiero que vengas.",
-    answer: "Subjuntivo",
-    reason: "желание + que: действие не подается как факт"
-  },
-  {
-    phrase: "Sé que tienes razón.",
-    answer: "Indicativo",
-    reason: "знание и уверенность: говорящий подает информацию как факт"
-  },
-  {
-    phrase: "No hables tan rápido.",
-    answer: "Imperativo",
-    reason: "запрет: отрицательный imperativo строится через subjuntivo"
-  },
-  {
-    phrase: "Iría si tuviera tiempo.",
-    answer: "Condicional",
-    reason: "гипотетический результат условия"
-  }
-];
 
 const SUBJUNTIVO_MORE_TRIGGERS = [
   ["Надеюсь, что...", "espero que + subjuntivo: Espero que todo salga bien."],
@@ -6114,7 +6105,7 @@ function subgroupHeading(title) {
 }
 
 function disclosureButton({ open, target, label, hideLabel = `Скрыть ${label.toLowerCase()}`, action }) {
-  return `<button class="small-button ${open ? "danger" : "success"}" type="button" data-${action}="${target}">
+  return `<button class="small-button ${open ? "danger" : "success"}" type="button" data-${action}="${target}" aria-expanded="${open}">
     ${open ? hideLabel : label}
   </button>`;
 }
@@ -7463,13 +7454,17 @@ function hasIrregularBehavior(info) {
 function renderTenses() {
   const content = clearContent();
   const focusedTense = tenseById(state.focusedTense);
+  const returnMood = MOODS.find((mood) => mood.id === state.returnMood);
 
   if (focusedTense) {
     const focusNav = infoSection({
       id: "tensesTop",
       html: `
         <div class="focused-tense-toolbar">
-          <button class="small-button" type="button" data-show-all-tenses>← Все времена</button>
+          <div class="focused-tense-actions">
+            ${returnMood ? `<button class="small-button primary" type="button" data-return-mood="${returnMood.id}">← Назад к ${returnMood.title.split(":")[0]}</button>` : ""}
+            <button class="small-button" type="button" data-show-all-tenses>Все времена</button>
+          </div>
           <span class="muted">Режим одного времени</span>
         </div>
       `
@@ -7478,9 +7473,21 @@ function renderTenses() {
     content.appendChild(renderTenseCard(focusedTense));
     bindClickAll(focusNav, "[data-show-all-tenses]", () => {
       state.focusedTense = null;
+      state.returnMood = null;
       state.openMoreExamplesTense = null;
       renderTenses();
       scrollToCard("tensesTop");
+    });
+    bindClickAll(focusNav, "[data-return-mood]", (event) => {
+      state.selectedMood = event.currentTarget.dataset.returnMood;
+      localStorage.setItem("msg:selectedMood", state.selectedMood);
+      resetMoodDetailState();
+      state.view = "moods";
+      state.focusedTense = null;
+      state.returnMood = null;
+      syncActiveTab("moods");
+      renderMoods();
+      scrollToCard("content");
     });
     return;
   }
@@ -7543,6 +7550,7 @@ function renderTenses() {
   });
   bindClickAll(nav, "[data-jump]", (event) => {
     state.focusedTense = event.currentTarget.dataset.jump;
+    state.returnMood = null;
     state.openMoreExamplesTense = null;
     renderTenses();
     scrollToCard(`tense-${state.focusedTense}`);
@@ -8112,17 +8120,17 @@ function renderMoods() {
   const selector = document.createElement("section");
   selector.className = "info-card";
   selector.innerHTML = `
-    <h2>Наклонения</h2>
-    <p class="muted">Наклонение показывает, как говорящий относится к действию: факт, желание, условие, команда или сомнение.</p>
+    <h2>Наклонения и условные формы</h2>
+    <p class="muted">Выбери, как говорящий подает действие: как факт, желание, команду, сомнение или условный результат.</p>
     <div class="tense-actions">
-      <button class="small-button ${state.showMoodChooser ? "danger" : "success"}" type="button" data-toggle-mood-chooser>
-        ${state.showMoodChooser ? "Скрыть что выбрать" : "Показать что выбрать"}
+      <button class="small-button ${state.showMoodChooser ? "danger" : "success"}" type="button" data-toggle-mood-chooser aria-expanded="${state.showMoodChooser}" aria-controls="moodChooser">
+        ${state.showMoodChooser ? "Скрыть подсказку" : "Как выбрать наклонение"}
       </button>
     </div>
     ${state.showMoodChooser ? moodChooserMarkup() : ""}
-    <div class="mood-tabs" aria-label="Выбор наклонения">
+    <div class="mood-tabs" role="tablist" aria-label="Выбор наклонения">
       ${MOODS.map((mood) => `
-        <button class="small-button ${mood.id === selected.id ? "is-active" : ""}" type="button" data-mood="${mood.id}">
+        <button class="small-button ${mood.id === selected.id ? "is-active" : ""} ${mood.id === "condicional" ? "is-related" : ""}" id="mood-tab-${mood.id}" type="button" role="tab" aria-selected="${mood.id === selected.id}" aria-controls="mood-panel-${mood.id}" data-mood="${mood.id}">
           <span>${mood.title}</span>
           <small>${mood.ru}</small>
         </button>
@@ -8130,42 +8138,29 @@ function renderMoods() {
     </div>
   `;
   content.appendChild(selector);
-  selector.querySelectorAll("[data-mood]").forEach((button) => {
+  selector.querySelectorAll("[data-mood], [data-choose-mood]").forEach((button) => {
     button.addEventListener("click", () => {
-      state.selectedMood = button.dataset.mood;
-      state.moodQuizRevealed = false;
-      state.showMoodConfusion = false;
-      state.showSubjuntivoMoreTriggers = false;
-      state.showImperativoIrregulars = false;
-      state.showImperativoPronouns = false;
-      state.showImperativoMoreExamples = false;
-      renderMoods();
+      selectMood(button.dataset.mood || button.dataset.chooseMood);
     });
   });
   selector.querySelector("[data-toggle-mood-chooser]").addEventListener("click", () => {
     state.showMoodChooser = !state.showMoodChooser;
     renderMoods();
   });
-  selector.querySelectorAll("[data-mood-answer]").forEach((button) => {
-    button.addEventListener("click", () => {
-      state.moodQuizRevealed = true;
-      renderMoods();
-    });
-  });
-  selector.querySelector("[data-next-mood-quiz]")?.addEventListener("click", () => {
-    state.moodQuizIndex = (state.moodQuizIndex + 1) % MOOD_QUIZ.length;
-    state.moodQuizRevealed = false;
-    renderMoods();
-  });
+
+  if (state.showMoodChooser) return;
 
   const section = document.createElement("section");
   section.className = "info-card";
+  section.id = `mood-panel-${selected.id}`;
+  section.setAttribute("role", "tabpanel");
+  section.setAttribute("aria-labelledby", `mood-tab-${selected.id}`);
   section.innerHTML = `
     <h2>${selected.title}</h2>
     <p class="muted">${selected.ru}</p>
     ${selected.id === "condicional" ? `<div class="condicional-note"><strong>Особый раздел</strong><span>Condicional часто изучают рядом с наклонениями по значению, хотя формально это условные формы в системе времен.</span></div>` : ""}
     <p>${selected.description}</p>
-    <div class="chips">${selected.tags.map((tag) => `<span class="chip">${tag}</span>`).join("")}</div>
+    <div class="chips">${selected.tags.slice(0, 3).map((tag) => `<span class="chip">${tag}</span>`).join("")}</div>
     <div class="detail-list">
       <div><dt>Когда использовать</dt><dd>${selected.when}</dd></div>
       <div><dt>Как узнать</dt><dd>${selected.signals}</dd></div>
@@ -8178,21 +8173,32 @@ function renderMoods() {
     ${selected.id === "imperativo" ? imperativoDetailsMarkup() : ""}
     ${selected.confusions?.length ? `
       <div class="tense-actions">
-        <button class="small-button ${state.showMoodConfusion ? "danger" : "success"}" type="button" data-toggle-mood-confusion>
-          ${state.showMoodConfusion ? "Скрыть не путать" : "Показать не путать"}
+        <button class="small-button ${state.showMoodConfusion ? "danger" : "success"}" type="button" data-toggle-mood-confusion aria-expanded="${state.showMoodConfusion}">
+          ${state.showMoodConfusion ? "Скрыть сравнение" : moodComparisonLabel(selected.id)}
         </button>
       </div>
     ` : ""}
     ${state.showMoodConfusion ? moodConfusionMarkup(selected) : ""}
-    ${selected.extra || ""}
+    ${selected.extra ? `
+      <div class="tense-actions">
+        <button class="small-button ${state.showMoodAdvanced ? "danger" : "success"}" type="button" data-toggle-mood-advanced aria-expanded="${state.showMoodAdvanced}" aria-controls="moodAdvanced">
+          ${state.showMoodAdvanced ? "Скрыть расширенную схему" : "Показать расширенную схему"}
+        </button>
+      </div>
+      ${state.showMoodAdvanced ? `<div id="moodAdvanced">${selected.extra}</div>` : ""}
+    ` : ""}
     ${moodTableMarkup(selected)}
   `;
   content.appendChild(section);
   section.querySelectorAll("[data-open-tense]").forEach((button) => {
-    button.addEventListener("click", () => openTenseFromVerb(button.dataset.openTense));
+    button.addEventListener("click", () => openTenseFromMood(button.dataset.openTense, selected.id));
   });
   section.querySelector("[data-toggle-mood-confusion]")?.addEventListener("click", () => {
     state.showMoodConfusion = !state.showMoodConfusion;
+    renderMoods();
+  });
+  section.querySelector("[data-toggle-mood-advanced]")?.addEventListener("click", () => {
+    state.showMoodAdvanced = !state.showMoodAdvanced;
     renderMoods();
   });
   section.querySelector("[data-toggle-subjuntivo-triggers]")?.addEventListener("click", () => {
@@ -8213,17 +8219,34 @@ function renderMoods() {
   });
 }
 
+function selectMood(moodId) {
+  if (!MOODS.some((mood) => mood.id === moodId)) return;
+  state.selectedMood = moodId;
+  localStorage.setItem("msg:selectedMood", moodId);
+  resetMoodDetailState();
+  renderMoods();
+}
+
+function resetMoodDetailState() {
+  state.showMoodChooser = false;
+  state.showMoodConfusion = false;
+  state.showMoodAdvanced = false;
+  state.showSubjuntivoMoreTriggers = false;
+  state.showImperativoIrregulars = false;
+  state.showImperativoPronouns = false;
+  state.showImperativoMoreExamples = false;
+}
+
 function moodChooserMarkup() {
   return `
-    <div class="mood-chooser-block">
+    <div class="mood-chooser-block" id="moodChooser">
       <h2>Что выбрать?</h2>
       <div class="choice-grid">
-        <div class="choice-card"><strong>Факт</strong><span>Indicativo: Sé que viene.</span></div>
-        <div class="choice-card"><strong>Не факт</strong><span>Subjuntivo: Quiero que venga.</span></div>
-        <div class="choice-card"><strong>Команда</strong><span>Imperativo: Ven aquí.</span></div>
-        <div class="choice-card"><strong>Условие / вежливость</strong><span>Condicional: Iría si pudiera.</span></div>
+        <button class="choice-card" type="button" data-choose-mood="indicativo"><strong>Факт</strong><span>Indicativo: Sé que viene.</span></button>
+        <button class="choice-card" type="button" data-choose-mood="subjuntivo"><strong>Не факт</strong><span>Subjuntivo: Quiero que venga.</span></button>
+        <button class="choice-card" type="button" data-choose-mood="imperativo"><strong>Команда</strong><span>Imperativo: Ven aquí.</span></button>
+        <button class="choice-card" type="button" data-choose-mood="condicional"><strong>Условие / вежливость</strong><span>Condicional: Iría si pudiera.</span></button>
       </div>
-      ${moodQuizMarkup()}
       <h3>Indicativo vs Subjuntivo</h3>
       <p class="muted">Главный вопрос: говорящий подает действие как факт или как желание, сомнение, оценку, цель.</p>
       <div class="table-wrap">
@@ -8236,21 +8259,6 @@ function moodChooserMarkup() {
           </tbody>
         </table>
       </div>
-    </div>
-  `;
-}
-
-function moodQuizMarkup() {
-  const item = MOOD_QUIZ[state.moodQuizIndex] || MOOD_QUIZ[0];
-  return `
-    <div class="mood-quiz-card">
-      <strong>Быстрый тест выбора</strong>
-      <span>${item.phrase}</span>
-      <div class="mood-quiz-actions">
-        ${MOODS.map((mood) => `<button class="small-button" type="button" data-mood-answer="${mood.title.split(":")[0]}">${mood.title.split(":")[0]}</button>`).join("")}
-        <button class="small-button" type="button" data-next-mood-quiz>Следующий</button>
-      </div>
-      ${state.moodQuizRevealed ? `<p class="state-note">${item.answer}: ${item.reason}</p>` : ""}
     </div>
   `;
 }
@@ -8275,7 +8283,7 @@ function moodTriggerMarkup(mood) {
 function subjuntivoMoreTriggersMarkup() {
   return `
     <div class="tense-actions">
-      <button class="small-button ${state.showSubjuntivoMoreTriggers ? "danger" : "success"}" type="button" data-toggle-subjuntivo-triggers>
+      <button class="small-button ${state.showSubjuntivoMoreTriggers ? "danger" : "success"}" type="button" data-toggle-subjuntivo-triggers aria-expanded="${state.showSubjuntivoMoreTriggers}">
         ${state.showSubjuntivoMoreTriggers ? "Скрыть больше триггеров" : "Показать больше триггеров"}
       </button>
     </div>
@@ -8290,10 +8298,10 @@ function subjuntivoMoreTriggersMarkup() {
 function imperativoDetailsMarkup() {
   return `
     <div class="tense-actions">
-      <button class="small-button ${state.showImperativoIrregulars ? "danger" : "success"}" type="button" data-toggle-imperativo-irregulars>
+      <button class="small-button ${state.showImperativoIrregulars ? "danger" : "success"}" type="button" data-toggle-imperativo-irregulars aria-expanded="${state.showImperativoIrregulars}">
         ${state.showImperativoIrregulars ? "Скрыть неправильные tú" : "Показать неправильные tú"}
       </button>
-      <button class="small-button ${state.showImperativoPronouns ? "danger" : "success"}" type="button" data-toggle-imperativo-pronouns>
+      <button class="small-button ${state.showImperativoPronouns ? "danger" : "success"}" type="button" data-toggle-imperativo-pronouns aria-expanded="${state.showImperativoPronouns}">
         ${state.showImperativoPronouns ? "Скрыть местоимения" : "Показать местоимения"}
       </button>
     </div>
@@ -8346,7 +8354,7 @@ function imperativoTableMarkup() {
       </table>
     </div>
     <div class="tense-actions">
-      <button class="small-button ${state.showImperativoMoreExamples ? "danger" : "success"}" type="button" data-toggle-imperativo-examples>
+      <button class="small-button ${state.showImperativoMoreExamples ? "danger" : "success"}" type="button" data-toggle-imperativo-examples aria-expanded="${state.showImperativoMoreExamples}">
         ${state.showImperativoMoreExamples ? "Скрыть остальные примеры" : "Показать остальные примеры"}
       </button>
     </div>
@@ -8356,7 +8364,7 @@ function imperativoTableMarkup() {
 function moodConfusionMarkup(mood) {
   if (!mood.confusions?.length) return "";
   return `
-    <h3>Не путать</h3>
+    <h3>${moodComparisonLabel(mood.id)}</h3>
     <div class="confusion-grid">
       ${mood.confusions.map(([left, right, note]) => `
         <div class="confusion-card">
@@ -8367,6 +8375,16 @@ function moodConfusionMarkup(mood) {
       `).join("")}
     </div>
   `;
+}
+
+function moodComparisonLabel(moodId) {
+  const labels = {
+    indicativo: "Indicativo или Subjuntivo",
+    subjuntivo: "Indicativo или Subjuntivo",
+    imperativo: "Команда или запрет",
+    condicional: "Реальное или гипотетическое условие"
+  };
+  return labels[moodId] || "Сравнить формы";
 }
 
 const QUIZ_TENSES = [
@@ -9018,6 +9036,18 @@ function openTenseFromVerb(tenseId) {
   if (!tenseById(tenseId)) return;
   state.view = "tenses";
   state.focusedTense = tenseId;
+  state.returnMood = null;
+  state.openMoreExamplesTense = null;
+  syncActiveTab("tenses");
+  render();
+  scrollToCard(`tense-${tenseId}`);
+}
+
+function openTenseFromMood(tenseId, moodId) {
+  if (!tenseById(tenseId) || !MOODS.some((mood) => mood.id === moodId)) return;
+  state.view = "tenses";
+  state.focusedTense = tenseId;
+  state.returnMood = moodId;
   state.openMoreExamplesTense = null;
   syncActiveTab("tenses");
   render();

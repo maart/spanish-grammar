@@ -38,7 +38,7 @@ const sandbox = {
 // Execute the JS in the sandbox
 const fn = new Function(
   ...Object.keys(sandbox),
-  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, VERB_TENSE_GROUPS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize, generateInfinitiveQuestions, generateConjugationQuestions, checkAnswer };"
+  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, VERB_TENSE_GROUPS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize, generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer };"
 );
 const api = fn(...Object.values(sandbox));
 
@@ -56,7 +56,7 @@ const {
   regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern,
   regularParticiplePattern, irregularIndefinidoStem,
   isReflexive, baseVerb, state, filteredVerbs,
-  generateInfinitiveQuestions, generateConjugationQuestions, checkAnswer,
+  generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer,
 } = api;
 
 // ─── Reference data: known correct conjugations ─────────────────────────────
@@ -1017,8 +1017,8 @@ const QUIZ_CASES = [
   },
   {
     label: "answer comparison ignores case",
-    actual: () => checkAnswer("TENGO", { type: "conjugation", verb: "tener", tense: "presente", person: 0, answer: "tengo" }),
-    expected: true,
+    actual: () => evaluateAnswer("TENGO", { type: "conjugation", verb: "tener", tense: "presente", person: 0, answer: "tengo" }).status,
+    expected: "correct",
   },
 ];
 

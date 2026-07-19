@@ -550,14 +550,16 @@ input[type="search"] {
   }
 }
 
-.toc-toggle {
+.toc-toggle,
+.tense-toc-toggle {
   width: 100%;
   margin-top: 10px;
   font-size: 13px;
   opacity: 0.7;
 }
 
-.toc-toggle:hover {
+.toc-toggle:hover,
+.tense-toc-toggle:hover {
   opacity: 1;
 }
 
@@ -842,6 +844,7 @@ dd {
 }
 
 .table-wrap {
+  max-width: 100%;
   min-width: 0;
   overflow-x: visible;
 }
@@ -1698,34 +1701,67 @@ select {
     grid-template-columns: 1fr;
   }
 
-  .table-card .table-wrap table,
-  .table-card .table-wrap thead,
-  .table-card .table-wrap tbody,
-  .table-card .table-wrap tr,
-  .table-card .table-wrap th,
-  .table-card .table-wrap td {
+  table.responsive-table,
+  table.responsive-table tbody,
+  table.responsive-table tr,
+  table.responsive-table th,
+  table.responsive-table td {
     display: block;
     width: 100%;
   }
 
-  .table-card .table-wrap thead {
+  table.responsive-table thead {
     display: none;
   }
 
-  .table-card .table-wrap tr {
+  table.responsive-table tbody {
+    display: grid;
+    gap: 8px;
+  }
+
+  table.responsive-table tr {
     border: 1px solid var(--line);
     border-radius: 8px;
-    margin-bottom: 8px;
     overflow: hidden;
     background: var(--surface);
   }
 
-  .table-card .table-wrap th,
-  .table-card .table-wrap td {
+  table.responsive-table th,
+  table.responsive-table td {
+    display: grid;
+    grid-template-columns: minmax(88px, 34%) minmax(0, 1fr);
+    gap: 8px;
     border-width: 0 0 1px;
+    text-align: left;
   }
 
-  .table-card .table-wrap tr > :last-child {
+  table.responsive-table th::before,
+  table.responsive-table td::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 900;
+  }
+
+  table.responsive-table [data-label=""] {
+    display: block;
+  }
+
+  table.responsive-table [data-label=""]::before {
+    content: none;
+  }
+
+  table.responsive-table tr.is-section-row > * {
+    display: block;
+    background: var(--surface-2);
+    font-weight: 900;
+  }
+
+  table.responsive-table tr.is-section-row > *::before {
+    content: none;
+  }
+
+  table.responsive-table tr > :last-child {
     border-bottom: 0;
   }
 
@@ -1782,6 +1818,7 @@ select {
   .verb-card-tabs,
   .filter-tabs,
   .toc-toggle,
+  .tense-toc-toggle,
   .table-card-actions,
   .table-related,
   .brand-stats,
@@ -1855,7 +1892,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.24 · обновлено: 19.07.2026 16:47</footer>
+      <footer class="app-footer">Версия MVP 0.25 · обновлено: 19.07.2026 16:55</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -5697,6 +5734,7 @@ const state = {
   tableSubgroup: localStorage.getItem("msg:tableSubgroup") || "",
   tableQuery: "",
   showToc: false,
+  showTenseToc: false,
   openTables: {},
   tenseFilter: "basic",
   openExceptionTense: null,
@@ -5854,6 +5892,7 @@ function $all(selector, root = document) {
 function clearContent() {
   const content = $(SELECTORS.content);
   content.innerHTML = "";
+  queueMicrotask(() => prepareResponsiveTables(content));
   return content;
 }
 
@@ -7207,7 +7246,11 @@ function renderTenses() {
       `).join("")}
     </div>
     <p class="muted">${activeFilter.description}</p>
-    <div class="quick-nav">
+    <button class="small-button tense-toc-toggle" type="button" data-toggle-tense-toc aria-controls="tenseToc" aria-expanded="${state.showTenseToc}">
+      ${state.showTenseToc ? "▲ Скрыть оглавление" : `▼ Показать оглавление (${visibleGroups.reduce((total, group) => total + group.visibleIds.length, 0)})`}
+    </button>
+    ${state.showTenseToc ? `
+    <div class="quick-nav" id="tenseToc" aria-label="Оглавление времен">
       ${visibleGroups.map((group) => `
         <div class="tense-group">
           <div class="tense-group-title">${group.title}</div>
@@ -7229,8 +7272,14 @@ function renderTenses() {
         </div>
       `).join("")}
     </div>
+    ` : ""}
   `});
   content.appendChild(nav);
+  bindClickAll(nav, "[data-toggle-tense-toc]", () => {
+    state.showTenseToc = !state.showTenseToc;
+    renderTenses();
+    scrollToCard("tensesTop");
+  });
   bindClickAll(nav, "[data-tense-filter]", (event) => {
     const button = event.currentTarget;
     state.tenseFilter = button.dataset.tenseFilter;
@@ -7420,11 +7469,11 @@ function renderTables() {
       `).join("")}
     </div>
     ${renderSubgroupFilters(visibleTables)}
-    <button class="small-button toc-toggle" type="button" data-toggle-toc>
+    <button class="small-button toc-toggle" type="button" data-toggle-toc aria-controls="tablesToc" aria-expanded="${state.showToc}">
       ${state.showToc ? "▲ Скрыть оглавление" : "▼ Показать оглавление"}
     </button>
     ${state.showToc ? `
-    <div class="table-toc" aria-label="Оглавление шпаргалок">
+    <div class="table-toc" id="tablesToc" aria-label="Оглавление шпаргалок">
       ${TABLE_GROUPS.map((group) => {
         const items = visibleTables.filter((item) => item.group === group.title);
         if (items.length === 0) return "";
@@ -7461,7 +7510,7 @@ function renderTables() {
     renderTables();
   });
   bindClickAll(nav, "[data-table-jump]", (event) => {
-    scrollToCard(event.currentTarget.dataset.tableJump);
+    openTableFromLink(event.currentTarget.dataset.tableJump);
   });
   bindClickAll(nav, "[data-toggle-toc]", () => {
     state.showToc = !state.showToc;
@@ -7545,9 +7594,27 @@ function renderUsefulTableCard(item) {
     openTenseFromVerb(event.currentTarget.dataset.openTense);
   });
   bindClickAll(section, "[data-table-jump-related]", (event) => {
-    scrollToCard(event.currentTarget.dataset.tableJumpRelated);
+    openTableFromLink(event.currentTarget.dataset.tableJumpRelated);
   });
   return section;
+}
+
+function openTableFromLink(targetId) {
+  const match = /^table-(\d+)$/.exec(targetId);
+  if (!match) return;
+  const index = Number(match[1]);
+  const item = INDEXED_TABLES[index];
+  if (!item) return;
+  if (!tableMatchesFilter(item)) {
+    state.tableFilter = "all";
+    state.tableSubgroup = "";
+    state.tableQuery = "";
+    localStorage.setItem("msg:tableFilter", state.tableFilter);
+    localStorage.setItem("msg:tableSubgroup", state.tableSubgroup);
+  }
+  state.openTables[index] = true;
+  renderTables();
+  requestAnimationFrame(() => scrollToCard(targetId));
 }
 
 function relatedTablesMarkup(indices) {
@@ -8758,6 +8825,40 @@ function render() {
   document.body.classList.toggle("dark", state.dark);
   syncActiveTab();
   (VIEW_RENDERERS[state.view] || renderVerbs)();
+}
+
+function prepareResponsiveTables(root) {
+  root.querySelectorAll("table").forEach((table) => {
+    const headRows = table.tHead?.rows;
+    const headRow = headRows?.[headRows.length - 1];
+    if (!headRow) return;
+
+    const headers = [];
+    Array.from(headRow.cells).forEach((cell) => {
+      const label = cell.textContent.trim();
+      const span = Math.max(1, cell.colSpan || 1);
+      for (let index = 0; index < span; index += 1) headers.push(label);
+    });
+    if (headers.length === 0) return;
+
+    table.classList.add("responsive-table");
+    Array.from(table.tBodies).forEach((body) => {
+      Array.from(body.rows).forEach((row) => {
+        const cells = Array.from(row.cells);
+        const isSectionRow = cells.length === 1 && cells[0].colSpan > 1;
+        row.classList.toggle("is-section-row", isSectionRow);
+        let column = 0;
+        cells.forEach((cell) => {
+          const span = Math.max(1, cell.colSpan || 1);
+          const labels = headers.slice(column, column + span).filter(Boolean);
+          const label = isSectionRow ? "" : [...new Set(labels)].join(" / ");
+          cell.dataset.label = label;
+          if (label) cell.setAttribute("aria-label", label);
+          column += span;
+        });
+      });
+    });
+  });
 }
 
 const dataIssues = validateData();

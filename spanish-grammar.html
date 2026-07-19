@@ -192,6 +192,10 @@ h3 {
   font-weight: 800;
 }
 
+.search-status:empty {
+  display: none;
+}
+
 input[type="search"] {
   min-width: 0;
   height: 46px;
@@ -208,8 +212,8 @@ input[type="search"] {
 
 .tabs {
   position: sticky;
-  top: 0;
-  z-index: 2;
+  top: 8px;
+  z-index: 15;
   display: grid;
   grid-template-columns: repeat(5, minmax(72px, 1fr));
   gap: 6px;
@@ -229,6 +233,10 @@ input[type="search"] {
   cursor: pointer;
   font-weight: 800;
   white-space: nowrap;
+}
+
+.tab-label-mobile {
+  display: none;
 }
 
 .tab.is-active {
@@ -620,13 +628,14 @@ input[type="search"] {
 .mood-tabs {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
   gap: 6px;
   margin-top: 12px;
 }
 
 .mood-tabs .small-button {
-  height: auto;
-  min-height: 46px;
+  height: 100%;
+  min-height: 62px;
   padding: 6px 9px;
 }
 
@@ -1037,18 +1046,17 @@ td.irregular {
 }
 
 .verb-row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: stretch;
-  gap: 8px;
+  position: relative;
+  display: block;
 }
 
 .verb-pick {
+  width: 100%;
   min-width: 0;
   min-height: 58px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 9px 10px;
+  padding: 9px 58px 9px 10px;
   background: var(--surface-2);
   color: var(--text);
   cursor: pointer;
@@ -1172,8 +1180,7 @@ td.irregular {
 }
 
 .verb-match-note {
-  grid-column: 1 / -1;
-  margin-top: -4px;
+  margin-top: 4px;
   color: var(--muted);
   font-size: 12px;
   font-weight: 800;
@@ -1245,14 +1252,16 @@ td.irregular {
 }
 
 .verb-row-favorite {
-  align-self: stretch;
-  width: 46px;
-  height: auto;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  width: 40px;
+  height: 42px;
 }
 
 .favorite-feedback {
-  grid-column: 1 / -1;
-  margin-top: -4px;
+  margin-top: 4px;
   color: var(--success);
   font-size: 12px;
   font-weight: 900;
@@ -1878,11 +1887,34 @@ td.irregular {
   display: -webkit-box;
   overflow: hidden;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   line-height: 1.35;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+}
+
+.tense-card-mobile-toggle {
+  display: none;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.starter-verb-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.starter-verb-link {
+  border: 0;
+  padding: 5px 2px;
+  background: transparent;
+  color: var(--accent-2);
+  cursor: pointer;
+  font-weight: 900;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .table-catalog-link small strong {
@@ -2004,11 +2036,23 @@ select {
 
 @media (max-width: 560px) {
   .app-shell {
-    padding-inline: 10px;
+    padding: 10px 10px calc(92px + env(safe-area-inset-bottom));
   }
 
   .tabs {
-    grid-template-columns: repeat(5, max-content);
+    position: fixed;
+    inset: auto 10px max(8px, env(safe-area-inset-bottom));
+    z-index: 30;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 3px;
+    width: auto;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 5px;
+    overflow: visible;
+    background: color-mix(in srgb, var(--surface) 94%, transparent);
+    box-shadow: var(--shadow);
   }
 
   .topbar {
@@ -2021,7 +2065,22 @@ select {
   }
 
   .tab {
-    padding: 0 12px;
+    min-width: 0;
+    min-height: 48px;
+    padding: 0 2px;
+    border-color: transparent;
+    background: transparent;
+    font-size: 10px;
+    line-height: 1.05;
+    white-space: nowrap;
+  }
+
+  .tab-label-full {
+    display: none;
+  }
+
+  .tab-label-mobile {
+    display: inline;
   }
 
   .action-row .small-button {
@@ -2042,14 +2101,18 @@ select {
   }
 
   .tense-actions.is-compact {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .tense-actions.is-compact .small-button {
+    padding-inline: 4px;
+    font-size: 12px;
   }
 
   .filter-tabs {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .table-filter-controls,
   .table-catalog-links {
     grid-template-columns: 1fr;
   }
@@ -2083,10 +2146,25 @@ select {
     grid-template-columns: 1fr;
   }
 
-  .verb-pick,
-  .verb-row-meta {
+  .verb-pick {
+    display: grid;
+    grid-template-columns: 1fr;
     align-items: start;
-    flex-direction: column;
+    gap: 7px;
+    min-height: 74px;
+    padding-right: 54px;
+  }
+
+  .verb-row-meta {
+    align-items: center;
+    justify-content: start;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .verb-row-meta .badge-reflexive {
+    display: none;
   }
 
   .verb-list.is-suggestions {
@@ -2099,6 +2177,47 @@ select {
 
   .mood-tabs {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mood-tabs .small-button {
+    min-height: 78px;
+  }
+
+  .tense-card-head .formula-button,
+  .tense-card:not(.is-mobile-open) .tense-actions.is-compact,
+  .tense-card:not(.is-mobile-open) .example-more-button,
+  .tense-card:not(.is-mobile-open) > .tense-detail-block,
+  .tense-card:not(.is-mobile-open) > .compact-exceptions {
+    display: none;
+  }
+
+  .tense-card-mobile-toggle {
+    display: block;
+  }
+
+  .tense-card {
+    padding: 14px;
+  }
+
+  .tense-card .tense-title-row h2 {
+    font-size: 22px;
+    line-height: 1.15;
+  }
+
+  .tense-card > p {
+    margin-bottom: 8px;
+  }
+
+  .tense-card .tense-card-head p {
+    margin-bottom: 0;
+  }
+
+  .tense-card .example-grid {
+    margin: 8px 0;
+  }
+
+  .tense-card .example-card {
+    padding: 8px;
   }
 
   .choice-grid,
@@ -2212,6 +2331,10 @@ select {
   .study-face h2 {
     font-size: 28px;
   }
+
+  .floating-top-button {
+    bottom: calc(78px + env(safe-area-inset-bottom));
+  }
 }
 
 .table-related {
@@ -2324,15 +2447,15 @@ select {
       </header>
 
       <nav class="tabs" aria-label="Разделы">
-        <button class="tab is-active" data-view="verbs" type="button">Глаголы</button>
-        <button class="tab" data-view="tenses" type="button">Времена</button>
-        <button class="tab" data-view="moods" type="button">Наклонения</button>
-        <button class="tab" data-view="tables" type="button">Шпаргалки</button>
-        <button class="tab" data-view="cards" type="button">Избранное</button>
+        <button class="tab is-active" data-view="verbs" type="button" aria-label="Глаголы"><span class="tab-label-full">Глаголы</span><span class="tab-label-mobile">Глаголы</span></button>
+        <button class="tab" data-view="tenses" type="button" aria-label="Времена"><span class="tab-label-full">Времена</span><span class="tab-label-mobile">Времена</span></button>
+        <button class="tab" data-view="moods" type="button" aria-label="Наклонения"><span class="tab-label-full">Наклонения</span><span class="tab-label-mobile">Наклон.</span></button>
+        <button class="tab" data-view="tables" type="button" aria-label="Шпаргалки"><span class="tab-label-full">Шпаргалки</span><span class="tab-label-mobile">Шпаргалки</span></button>
+        <button class="tab" data-view="cards" type="button" aria-label="Избранное"><span class="tab-label-full">Избранное</span><span class="tab-label-mobile">Избранное</span></button>
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.35 · обновлено: 19.07.2026 19:42</footer>
+      <footer class="app-footer">Версия MVP 0.36 · обновлено: 19.07.2026 20:12 CEST</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -6861,6 +6984,7 @@ const state = {
   openExceptionTense: null,
   openSignalsTense: null,
   openFormationTense: null,
+  openMobileTense: null,
   cardFeedback: null,
   searchCursor: -1,
   cards: JSON.parse(localStorage.getItem("msg:cards") || localStorage.getItem("msg:favorites") || "[]"),
@@ -8130,7 +8254,7 @@ function renderVerbResults(content, results, selectedPanel) {
   if (status) {
     status.textContent = isSearchMode
       ? `Найдено глаголов: ${verbs.length}. Enter откроет первое совпадение.`
-      : "Выбери частый глагол или начни вводить запрос.";
+      : "";
   }
 
   if (state.selectedVerb) {
@@ -8492,7 +8616,8 @@ function visibleTenseGroups() {
 }
 
 function renderTenseCard(tense) {
-  const section = infoSection({ id: `tense-${tense.id}` });
+  const mobileOpen = state.focusedTense === tense.id || state.openMobileTense === tense.id;
+  const section = infoSection({ id: `tense-${tense.id}`, className: `info-card tense-card ${mobileOpen ? "is-mobile-open" : ""}` });
   const formationOpen = state.openFormationTense === tense.id;
   const signalsOpen = state.openSignalsTense === tense.id;
   const exceptionsOpen = state.openExceptionTense === tense.id;
@@ -8511,12 +8636,25 @@ function renderTenseCard(tense) {
     </div>
     <p>${tense.use}</p>
     ${tenseExamplesMarkup(tense.id)}
+    ${state.focusedTense === tense.id ? "" : `<button class="small-button tense-card-mobile-toggle ${mobileOpen ? "danger" : "success"}" type="button" data-mobile-tense="${tense.id}" aria-expanded="${mobileOpen}">
+      ${mobileOpen ? "Скрыть детали" : "Показать детали"}
+    </button>`}
     <div class="tense-actions is-compact">
       ${disclosureButton({ open: formationOpen, target: tense.id, label: "Образование", hideLabel: "Скрыть образование", action: "formation" })}
       ${disclosureButton({ open: signalsOpen, target: tense.id, label: "Признаки", hideLabel: "Скрыть признаки", action: "signals" })}
       ${disclosureButton({ open: exceptionsOpen, target: tense.id, label: "Исключения", hideLabel: "Скрыть исключения", action: "exceptions" })}
     </div>
   `;
+  bindClickAll(section, "[data-mobile-tense]", () => {
+    const closing = state.openMobileTense === tense.id;
+    state.openMobileTense = closing ? null : tense.id;
+    state.openFormationTense = null;
+    state.openSignalsTense = null;
+    state.openExceptionTense = null;
+    state.openMoreExamplesTense = null;
+    renderTenses();
+    scrollToCard(`tense-${tense.id}`);
+  });
   bindClickAll(section, "[data-formation]", () => {
     state.openFormationTense = state.openFormationTense === tense.id ? null : tense.id;
     renderTenses();
@@ -9002,6 +9140,13 @@ function linkTableTenses(html) {
   }, html);
 }
 
+const MOOD_TAB_LABELS = {
+  indicativo: ["Indicativo", "изъявительное"],
+  subjuntivo: ["Subjuntivo", "сослагательное"],
+  imperativo: ["Imperativo", "повелительное"],
+  condicional: ["Condicional", "условные формы"]
+};
+
 function renderMoods() {
   const content = clearContent();
   const selected = MOODS.find((mood) => mood.id === state.selectedMood) || MOODS[0];
@@ -9019,8 +9164,8 @@ function renderMoods() {
     <div class="mood-tabs" role="tablist" aria-label="Выбор наклонения">
       ${MOODS.map((mood) => `
         <button class="small-button ${mood.id === selected.id ? "is-active" : ""} ${mood.id === "condicional" ? "is-related" : ""}" id="mood-tab-${mood.id}" type="button" role="tab" aria-selected="${mood.id === selected.id}" aria-controls="mood-panel-${mood.id}" data-mood="${mood.id}">
-          <span>${mood.title}</span>
-          <small>${mood.ru}</small>
+          <span>${MOOD_TAB_LABELS[mood.id]?.[0] || mood.title}</span>
+          <small>${MOOD_TAB_LABELS[mood.id]?.[1] || mood.ru}</small>
         </button>
       `).join("")}
     </div>
@@ -9637,12 +9782,15 @@ function renderCards() {
     const suggestedCards = COMMON_VERB_SUGGESTIONS.filter((verb) => BASE_VERBS.includes(verb)).slice(0, 5);
     emptyCard.innerHTML = `
       <h2>Избранное пока пусто</h2>
-      <p class="muted">Нажми ☆ во вкладке «Глаголы» или добавь базовый набор для первой проверки.</p>
+      <p class="muted">Добавь базовый набор для первой проверки. Отдельные глаголы можно выбирать звездочкой в разделе «Глаголы».</p>
       <button class="small-button primary" type="button" data-add-starter>Добавить 5 базовых глаголов</button>
-      <div class="verb-list is-suggestions"></div>
+      <div class="starter-verb-links" aria-label="Посмотреть базовые глаголы">
+        ${suggestedCards.map((verb) => `<button class="starter-verb-link" type="button" data-starter-verb="${verb}">${escapeHTML(displayInfinitive(verb))}</button>`).join("")}
+      </div>
     `;
-    const list = emptyCard.querySelector(".verb-list");
-    suggestedCards.forEach((verb) => list.appendChild(renderVerbListItem(verb, { showBadges: false })));
+    emptyCard.querySelectorAll("[data-starter-verb]").forEach((button) => button.addEventListener("click", () => {
+      openVerbFromReference(button.dataset.starterVerb);
+    }));
     emptyCard.querySelector("[data-add-starter]").addEventListener("click", () => {
       state.cards = [...new Set([...state.cards, ...suggestedCards])];
       saveCards();

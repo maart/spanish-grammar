@@ -2115,7 +2115,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.31 · обновлено: 19.07.2026 18:25</footer>
+      <footer class="app-footer">Версия MVP 0.32 · обновлено: 19.07.2026 18:47</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -4328,12 +4328,17 @@ const USEFUL_TABLES = [
   {
     group: "Местоимения и объекты",
     subgroup: "Нейтральный артикль lo",
-    title: "Lo / lo que / lo cual: нейтральный артикль",
-    description: "Артикль lo превращает прилагательные и относительные конструкции в абстрактные понятия.",
+    title: "Lo + прилагательное/наречие, lo que, lo cual",
+    description: "Нейтральное lo превращает признаки и обстоятельства в абстрактные понятия, усиливает степень качества и вводит конструкции «то, что».",
+    summary: "Lo importante — важное; lo bien que habla — как хорошо он говорит; lo que dices — то, что ты говоришь.",
+    mistake: "Lo не ставится перед существительным: lo libro неверно. Нужен артикль el или конструкция lo + прилагательное/наречие.",
     table: `<table><thead><tr><th>Конструкция</th><th>Смысл</th><th>Пример</th></tr></thead><tbody>
       <tr><th>lo + прилагательное</th><td>абстрактное понятие «то, что …»</td><td>Lo importante es participar. Lo bueno es que llegó.</td></tr>
       <tr><th>lo + прилагательное + que</th><td>степень качества</td><td>¡Lo guapa que estás! No sabes lo difícil que es.</td></tr>
+      <tr><th>lo + наречие + que</th><td>степень или интенсивность действия</td><td>¡Lo bien que habla! No sabes lo lejos que está.</td></tr>
+      <tr><th>lo más / menos + прилагательное</th><td>самое / наименее важное</td><td>Lo más difícil fue empezar. Es lo menos urgente.</td></tr>
       <tr><th>lo que</th><td>то, что (нейтральное относительное)</td><td>No entiendo lo que dices. Lo que quiero es descansar.</td></tr>
+      <tr><th>todo lo que</th><td>всё, что</td><td>Te contaré todo lo que sé.</td></tr>
       <tr><th>lo cual</th><td>что (ссылка на всю предыдущую фразу)</td><td>Llegó tarde, lo cual me molestó.</td></tr>
       <tr><th>lo de</th><td>то, что касается / история с</td><td>Lo de ayer fue terrible. ¿Sabes lo de María?</td></tr>
       <tr><th>lo mío / lo tuyo / lo suyo</th><td>моё дело / твоё / его</td><td>Lo mío es la cocina. Eso no es lo tuyo.</td></tr>
@@ -5993,6 +5998,179 @@ const USEFUL_TABLES = [
       <tr><th>прямая речь</th><td>raya</td><td>—No lo sé —dijo Ana.</td><td>Реплика начинается с длинной черты.</td></tr>
       <tr><th>дни и месяцы</th><td>со строчной</td><td>el lunes 5 de mayo</td><td>Прописная нужна только в начале предложения или имени.</td></tr>
       <tr><th>языки и национальности</th><td>со строчной</td><td>Habla español. Es española.</td><td>español и española не пишутся с прописной.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Орфография и письмо",
+    subgroup: "Омонимы",
+    title: "Hay/ahí/ay, a ver/haber, hecho/echo: частые омонимы",
+    description: "Слова звучат одинаково или очень похоже, но относятся к разным частям речи и имеют разное написание.",
+    summary: "Hay — имеется; ahí — там; ay — междометие. A ver — посмотрим; haber — глагол. Hecho — сделанный; echo — я бросаю/наливаю.",
+    mistake: "Aver и haber si неверны в значении «посмотрим»: правильно A ver si funciona.",
+    table: `<table><thead><tr><th>Формы</th><th>Разница</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>hay / ahí / ay</th><td>имеется / там / междометие</td><td>Hay un bar ahí. ¡Ay, qué frío!</td><td>Там есть бар. Ой, как холодно!</td></tr>
+      <tr><th>a ver / haber</th><td>посмотрим / глагол «иметься»</td><td>A ver si puede haber otra opción.</td><td>Посмотрим, может ли быть другой вариант.</td></tr>
+      <tr><th>hecho / echo</th><td>participio от hacer / форма echar</td><td>He hecho café y echo leche.</td><td>Я приготовил кофе и наливаю молоко.</td></tr>
+      <tr><th>vaya / valla / baya</th><td>форма ir или междометие / ограда / ягода</td><td>¡Vaya! Saltó la valla para coger una baya.</td><td>Вот это да! Он перепрыгнул ограду за ягодой.</td></tr>
+      <tr><th>haya / halla / aya</th><td>haber или бук / находит / няня</td><td>Espero que haya tiempo y que ella halle la solución.</td><td>Надеюсь, будет время и она найдёт решение.</td></tr>
+      <tr><th>tuvo / tubo</th><td>Indefinido от tener / труба</td><td>Tuvo que cambiar el tubo.</td><td>Ему пришлось заменить трубу.</td></tr>
+      <tr><th>hasta / asta</th><td>до / шест, рог</td><td>Caminó hasta el asta de la bandera.</td><td>Он дошёл до флагштока.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Определители и существительные",
+    subgroup: "Артикли",
+    title: "Части тела и одежда: me lavo las manos",
+    description: "Когда обладатель понятен из местоимения или ситуации, с частями тела и одеждой испанский обычно использует определённый артикль, а не притяжательное.",
+    summary: "Me duele la cabeza и Me pongo el abrigo естественнее, чем me duele mi cabeza и me pongo mi abrigo.",
+    mistake: "Притяжательное возможно для контраста или уточнения, но в нейтральной фразе Me lavo mis manos нужно заменить на Me lavo las manos.",
+    table: `<table><thead><tr><th>Ситуация</th><th>Естественная модель</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>уход за телом</th><td>возвратное местоимение + артикль</td><td>Me lavo las manos.</td><td>Я мою руки.</td></tr>
+      <tr><th>ощущение или боль</th><td>косвенное местоимение + артикль</td><td>Me duele la cabeza.</td><td>У меня болит голова.</td></tr>
+      <tr><th>действие с частью тела</th><td>местоимение + артикль</td><td>Se rompió la pierna.</td><td>Он сломал ногу.</td></tr>
+      <tr><th>одежда</th><td>возвратное местоимение + артикль</td><td>Me pongo el abrigo.</td><td>Я надеваю пальто.</td></tr>
+      <tr><th>действие другого человека</th><td>косвенное местоимение показывает обладателя</td><td>Le cortaron el pelo.</td><td>Ему подстригли волосы.</td></tr>
+      <tr><th>контраст</th><td>притяжательное допустимо</td><td>Me duele mi rodilla operada, no la otra.</td><td>У меня болит прооперированное колено, не другое.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Местоимения и объекты",
+    subgroup: "Дублирование местоимений",
+    title: "A María le escribí, el libro lo compré: дублирование объекта",
+    description: "Безударное местоимение может повторять названный объект. При вынесении объекта в начало или с ударным местоимением такое дублирование часто обязательно.",
+    summary: "A mí me gusta и A Juan le di el libro требуют местоимения; El libro lo compré ayer повторяет вынесенный прямой объект.",
+    mistake: "A mí gusta неверно: ударная форма a mí не заменяет безударное me — нужно A mí me gusta.",
+    table: `<table><thead><tr><th>Положение объекта</th><th>Дублирование</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>косвенный объект после глагола</th><td>обычно le/les сохраняется</td><td>Le di el libro a Ana.</td><td>Я дал книгу Ане.</td></tr>
+      <tr><th>косвенный объект перед глаголом</th><td>обязательно</td><td>A Ana le di el libro.</td><td>Ане я дал книгу.</td></tr>
+      <tr><th>ударное местоимение</th><td>обязательно</td><td>A mí me gusta; a él no le gusta.</td><td>Мне нравится, а ему нет.</td></tr>
+      <tr><th>прямой объект после глагола</th><td>обычно без повтора</td><td>Compré el libro ayer.</td><td>Я купил книгу вчера.</td></tr>
+      <tr><th>прямой объект перед глаголом</th><td>повторяется lo/la/los/las</td><td>El libro lo compré ayer.</td><td>Книгу я купил вчера.</td></tr>
+      <tr><th>контраст людей</th><td>местоимение + a + ударная форма</td><td>La vi a ella, no a él.</td><td>Я видел её, не его.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Времена и синтаксис",
+    subgroup: "Прошедшее",
+    title: "Как рассказывать историю: фон, событие и предыстория",
+    description: "В связном рассказе Imperfecto создаёт сцену, Indefinido продвигает события, а Pluscuamperfecto возвращает к тому, что произошло ещё раньше.",
+    summary: "Llovía — фон; llegó — событие; antes había llamado — предыстория. В одном рассказе времена работают вместе.",
+    mistake: "Не нужно выбирать одно прошедшее время для всего рассказа: смена функции требует смены времени.",
+    table: `<table><thead><tr><th>Роль в рассказе</th><th>Время</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>обстановка и описание</th><td>Imperfecto</td><td>Era de noche y llovía.</td><td>Была ночь, и шёл дождь.</td></tr>
+      <tr><th>привычка или длительный фон</th><td>Imperfecto</td><td>La gente corría por la calle.</td><td>Люди бежали по улице.</td></tr>
+      <tr><th>событие, меняющее ситуацию</th><td>Indefinido</td><td>De repente, llegó un taxi.</td><td>Вдруг приехало такси.</td></tr>
+      <tr><th>последовательность событий</th><td>Indefinido</td><td>Abrió la puerta, entró y se sentó.</td><td>Он открыл дверь, вошёл и сел.</td></tr>
+      <tr><th>событие прерывает фон</th><td>Imperfecto + Indefinido</td><td>Dormía cuando sonó el teléfono.</td><td>Я спал, когда зазвонил телефон.</td></tr>
+      <tr><th>более раннее прошлое</th><td>Pluscuamperfecto</td><td>Ya había llamado antes de venir.</td><td>Он уже позвонил перед тем, как прийти.</td></tr>
+      <tr><th>итоговый фрагмент</th><td>все три</td><td>Llovía cuando llegó; antes había llamado.</td><td>Шёл дождь, когда он пришёл; до этого он звонил.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Перифразы и модальность",
+    subgroup: "Вероятность",
+    title: "Вероятность: quizá, a lo mejor, debe de, futuro",
+    description: "Испанский выражает предположение наречиями, subjuntivo, перифразой deber de и специальными значениями Futuro и Condicional.",
+    summary: "A lo mejor + indicativo; puede que + subjuntivo; debe de + infinitivo; Serán las ocho — вероятно, около восьми.",
+    mistake: "Deber + infinitivo обычно выражает обязанность, а deber de + infinitivo — предположение: Debe estudiar / Debe de estar estudiando.",
+    table: `<table><thead><tr><th>Модель</th><th>Наклонение</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>a lo mejor</th><td>indicativo</td><td>A lo mejor viene mañana.</td><td>Может быть, он придёт завтра.</td></tr>
+      <tr><th>igual, разговорное в Испании</th><td>indicativo</td><td>Igual está en casa.</td><td>Возможно, он дома.</td></tr>
+      <tr><th>quizá(s) / tal vez</th><td>indicativo или subjuntivo</td><td>Quizá viene / venga luego.</td><td>Возможно, он придёт позже.</td></tr>
+      <tr><th>puede que / es posible que</th><td>subjuntivo</td><td>Puede que lleguen tarde.</td><td>Возможно, они опоздают.</td></tr>
+      <tr><th>deber de + infinitivo</th><td>перифраза вероятности</td><td>Debe de estar cansado.</td><td>Должно быть, он устал.</td></tr>
+      <tr><th>Futuro de probabilidad</th><td>догадка о настоящем</td><td>Serán las ocho. Estará trabajando.</td><td>Наверное, около восьми. Вероятно, он работает.</td></tr>
+      <tr><th>Condicional de probabilidad</th><td>догадка о прошлом</td><td>Serían las ocho cuando llegó.</td><td>Было, вероятно, около восьми, когда он пришёл.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Живой испанский",
+    subgroup: "Вежливость",
+    title: "Вежливые просьбы в Испании: puedes, podrías, quería",
+    description: "Форма просьбы зависит от дистанции, ситуации и размера услуги. Imperfecto и Condicional смягчают высказывание.",
+    summary: "¿Puedes…? нейтрально; ¿Podrías…? мягче; Quería… естественно в магазине; ¿Me pones…? обычно в баре Испании.",
+    mistake: "Quiero un café грамматически правильно, но без por favor и подходящей интонации может прозвучать слишком прямо.",
+    table: `<table><thead><tr><th>Форма</th><th>Оттенок</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>imperativo</th><td>прямо, между близкими</td><td>Pásame el pan, por favor.</td><td>Передай хлеб, пожалуйста.</td></tr>
+      <tr><th>¿puedes…?</th><td>обычная нейтральная просьба</td><td>¿Puedes ayudarme un momento?</td><td>Можешь мне помочь?</td></tr>
+      <tr><th>¿podrías…?</th><td>мягкая или более трудная просьба</td><td>¿Podrías enviármelo hoy?</td><td>Не мог бы ты отправить это сегодня?</td></tr>
+      <tr><th>quería…</th><td>смягчённое желание в обслуживании</td><td>Quería cambiar esta camisa.</td><td>Я хотел бы поменять эту рубашку.</td></tr>
+      <tr><th>quisiera…</th><td>формально и вежливо</td><td>Quisiera pedir una cita.</td><td>Я хотел бы записаться на приём.</td></tr>
+      <tr><th>¿me pones…?</th><td>естественный заказ в баре Испании</td><td>¿Me pones una caña, por favor?</td><td>Налейте мне маленькое пиво, пожалуйста.</td></tr>
+      <tr><th>¿le importaría…?</th><td>очень вежливо, usted</td><td>¿Le importaría cerrar la ventana?</td><td>Вы не могли бы закрыть окно?</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Времена и синтаксис",
+    subgroup: "Subjuntivo",
+    title: "Como si + Subjuntivo: как будто",
+    description: "После como si используется Imperfecto de Subjuntivo для одновременной нереальной ситуации и Pluscuamperfecto для предполагаемого предшествующего действия.",
+    summary: "Habla como si supiera todo; me miró como si hubiera visto un fantasma. Presente de Subjuntivo после como si не используется.",
+    mistake: "Como si sabe и como si sepa неверны: нужно como si supiera.",
+    table: `<table><thead><tr><th>Отношение действий</th><th>Форма</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>одновременно сейчас</th><td>Imperfecto de Subjuntivo</td><td>Habla como si supiera todo.</td><td>Он говорит так, будто знает всё.</td></tr>
+      <tr><th>воображаемое состояние</th><td>Imperfecto de Subjuntivo</td><td>Me trata como si fuera un niño.</td><td>Он обращается со мной, как будто я ребёнок.</td></tr>
+      <tr><th>сравнение в прошлом</th><td>Imperfecto de Subjuntivo</td><td>Corría como si lo persiguieran.</td><td>Он бежал, будто его преследовали.</td></tr>
+      <tr><th>действие произошло раньше</th><td>Pluscuamperfecto de Subjuntivo</td><td>Me miró como si hubiera visto un fantasma.</td><td>Он посмотрел на меня, будто увидел привидение.</td></tr>
+      <tr><th>устойчивая форма</th><td>como si nada</td><td>Siguió hablando como si nada.</td><td>Он продолжил говорить как ни в чём не бывало.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Времена и синтаксис",
+    subgroup: "Subjuntivo",
+    title: "Ojalá: venga, viniera, haya llegado, hubiera venido",
+    description: "Время Subjuntivo после ojalá показывает не только время действия, но и оценку его осуществимости говорящим.",
+    summary: "Ojalá venga — реальное желание; viniera — трудное или далёкое; haya llegado — надежда о недавнем прошлом; hubiera venido — сожаление.",
+    mistake: "После ojalá не используется indicativo: Ojalá viene неверно, нужно Ojalá venga.",
+    table: `<table><thead><tr><th>Форма</th><th>Значение</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>Presente de Subjuntivo</th><td>возможное желание о настоящем или будущем</td><td>Ojalá venga mañana.</td><td>Надеюсь, он придёт завтра.</td></tr>
+      <tr><th>Imperfecto de Subjuntivo</th><td>маловероятное или далёкое желание</td><td>Ojalá viviera cerca.</td><td>Вот бы он жил рядом.</td></tr>
+      <tr><th>Pretérito Perfecto de Subjuntivo</th><td>надежда о недавнем завершённом действии</td><td>Ojalá haya llegado bien.</td><td>Надеюсь, он благополучно добрался.</td></tr>
+      <tr><th>Pluscuamperfecto de Subjuntivo</th><td>невыполнимое сожаление о прошлом</td><td>Ojalá hubiera estudiado más.</td><td>Вот бы я тогда больше учился.</td></tr>
+      <tr><th>ojalá que</th><td>que допустимо, смысл тот же</td><td>Ojalá que todo salga bien.</td><td>Надеюсь, всё пройдёт хорошо.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Наречия, предлоги и связки",
+    subgroup: "Союзы",
+    title: "Pero, sino, sino que, si no: но или если не",
+    description: "Pero добавляет контраст, sino исправляет отвергнутый элемент, sino que соединяет предложения, а si no вводит условие «если не».",
+    summary: "No es rojo, sino azul; no vino, sino que llamó; si no vienes, avísame. Sino всегда опирается на отрицание.",
+    mistake: "No es caro, si no barato неверно: здесь не условие, а исправление — No es caro, sino barato.",
+    table: `<table><thead><tr><th>Связка</th><th>Когда</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>pero</th><td>контраст без исправления</td><td>Es caro, pero es bueno.</td><td>Это дорого, но хорошо.</td></tr>
+      <tr><th>sino</th><td>после отрицания заменяет слово или группу</td><td>No quiero té, sino café.</td><td>Я хочу не чай, а кофе.</td></tr>
+      <tr><th>sino que</th><td>после отрицания вводит глагольное предложение</td><td>No vino, sino que llamó.</td><td>Он не пришёл, а позвонил.</td></tr>
+      <tr><th>si no</th><td>условие «если не»</td><td>Si no vienes, avísame.</td><td>Если не придёшь, предупреди.</td></tr>
+      <tr><th>no solo… sino también</th><td>не только… но и</td><td>No solo canta, sino que también compone.</td><td>Он не только поёт, но и сочиняет.</td></tr>
+      <tr><th>no porque… sino porque</th><td>исправление причины</td><td>No fui porque estuviera cansado, sino porque era tarde.</td><td>Я не пошёл не из-за усталости, а потому что было поздно.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Перифразы и модальность",
+    subgroup: "Infinitivo",
+    title: "Al llegar, antes de salir, sin decir nada: конструкции с infinitivo",
+    description: "Infinitivo компактно заменяет придаточное, когда субъект понятен или совпадает с субъектом главного действия.",
+    summary: "Al llegar — когда пришёл; antes de salir — перед уходом; sin decir — не сказав; nada más entrar — сразу после входа.",
+    mistake: "При разных субъектах обычно нужна личная форма: antes de que salgas, а не antes de tú salir в нейтральном испанском Испании.",
+    table: `<table><thead><tr><th>Конструкция</th><th>Значение</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>al + infinitivo</th><td>когда / при совершении</td><td>Al llegar, te llamé.</td><td>Приехав, я тебе позвонил.</td></tr>
+      <tr><th>antes de + infinitivo</th><td>до действия того же субъекта</td><td>Cierra la puerta antes de salir.</td><td>Закрой дверь перед уходом.</td></tr>
+      <tr><th>después de + infinitivo</th><td>после действия</td><td>Descansé después de comer.</td><td>Я отдохнул после еды.</td></tr>
+      <tr><th>sin + infinitivo</th><td>не совершая действия</td><td>Se fue sin decir nada.</td><td>Он ушёл, ничего не сказав.</td></tr>
+      <tr><th>para + infinitivo</th><td>цель того же субъекта</td><td>Estudio para aprobar.</td><td>Я учусь, чтобы сдать экзамен.</td></tr>
+      <tr><th>nada más + infinitivo</th><td>сразу после</td><td>Nada más entrar, encendió la luz.</td><td>Войдя, он сразу включил свет.</td></tr>
+      <tr><th>de + infinitivo compuesto</th><td>нереальное условие в прошлом</td><td>De haberlo sabido, habría ido.</td><td>Если бы я это знал, я бы пошёл.</td></tr>
     </tbody></table>`
   }
 ];

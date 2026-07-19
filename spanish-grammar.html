@@ -1059,6 +1059,12 @@ td.irregular {
   color: #b8860b;
 }
 
+.verb-passport span.badge-generated {
+  border: 1px dashed color-mix(in srgb, var(--muted) 55%, transparent);
+  background: transparent;
+  color: var(--muted);
+}
+
 .verb-row-meta span.badge-yo,
 .verb-passport span.badge-yo {
   background: color-mix(in srgb, #8b5cf6 15%, transparent);
@@ -1807,7 +1813,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.21 · обновлено: 19.07.2026 16:14</footer>
+      <footer class="app-footer">Версия MVP 0.22 · обновлено: 19.07.2026 16:26</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -2154,6 +2160,46 @@ const IRREGULARS = {
     presente: ["sonrío", "sonríes", "sonríe", "sonreímos", "sonreís", "sonríen"],
     indefinido: ["sonreí", "sonreíste", "sonrió", "sonreímos", "sonreísteis", "sonrieron"],
     subjuntivo_presente: ["sonría", "sonrías", "sonría", "sonriamos", "sonriáis", "sonrían"]
+  },
+  oler: {
+    ru: "пахнуть, нюхать",
+    tags: ["o -> hue"],
+    gerund: "oliendo",
+    participle: "olido",
+    presente: ["huelo", "hueles", "huele", "olemos", "oléis", "huelen"],
+    subjuntivo_presente: ["huela", "huelas", "huela", "olamos", "oláis", "huelan"]
+  },
+  adquirir: {
+    ru: "приобретать",
+    tags: ["i -> ie"],
+    gerund: "adquiriendo",
+    participle: "adquirido",
+    presente: ["adquiero", "adquieres", "adquiere", "adquirimos", "adquirís", "adquieren"],
+    subjuntivo_presente: ["adquiera", "adquieras", "adquiera", "adquiramos", "adquiráis", "adquieran"]
+  },
+  cocer: {
+    ru: "варить, готовить",
+    tags: ["o -> ue", "c -> z перед a"],
+    gerund: "cociendo",
+    participle: "cocido",
+    presente: ["cuezo", "cueces", "cuece", "cocemos", "cocéis", "cuecen"],
+    subjuntivo_presente: ["cueza", "cuezas", "cueza", "cozamos", "cozáis", "cuezan"]
+  },
+  llover: {
+    ru: "идти (о дожде)",
+    tags: ["o -> ue", "обычно безличный"],
+    gerund: "lloviendo",
+    participle: "llovido",
+    presente: ["lluevo", "llueves", "llueve", "llovemos", "llovéis", "llueven"],
+    subjuntivo_presente: ["llueva", "lluevas", "llueva", "llovamos", "llováis", "lluevan"]
+  },
+  prever: {
+    ru: "предвидеть",
+    tags: ["по модели ver", "participio irregular"],
+    gerund: "previendo",
+    participle: "previsto",
+    presente: ["preveo", "prevés", "prevé", "prevemos", "prevéis", "prevén"],
+    subjuntivo_presente: ["prevea", "preveas", "prevea", "preveamos", "preveáis", "prevean"]
   },
   imprimir: {
     ru: "печатать",
@@ -4625,6 +4671,14 @@ const COMMON_VERB_SUGGESTIONS = [
   "hablar", "comer", "vivir", "trabajar", "estudiar"
 ];
 
+const CORE_FORMS_REVIEWED = new Set([
+  "ser", "estar", "ir", "haber", "tener", "hacer", "decir", "venir", "poder", "poner",
+  "ver", "dar", "caber", "valer", "querer", "saber", "salir", "traer", "oir", "pedir",
+  "repetir", "servir", "vestir", "dormir", "conducir", "traducir", "producir", "reducir",
+  "introducir", "freir", "reir", "sonreir", "oler", "adquirir", "cocer", "llover", "prever",
+  "hablar", "comer", "vivir", "trabajar", "estudiar"
+]);
+
 const MOOD_QUIZ = [
   {
     phrase: "Quiero que vengas.",
@@ -4914,14 +4968,26 @@ function generatedPresent(verb) {
   return base.some((form, index) => form !== stem(verb) + endings[index]) ? base : null;
 }
 
+function subjuntivoPastStem(verb) {
+  const simpleVerb = baseVerb(verb);
+  const indefinido = irregularIndefinido(simpleVerb) || regularIndefinido(simpleVerb);
+  return indefinido[5].replace(/ron$/, "");
+}
+
+function accentLastVowel(value) {
+  return value.replace(/([aeiou])([^aeiou]*)$/i, (_, vowel, rest) => accentVowel(vowel) + rest);
+}
+
 function regularSubjuntivoImperfecto(verb) {
-  const endings = tenseById("subjuntivo_imperfecto").endings[verbType(verb)];
-  return endings.map((ending) => stem(verb) + ending);
+  const base = subjuntivoPastStem(verb);
+  const endings = ["ra", "ras", "ra", "ramos", "rais", "ran"];
+  return endings.map((ending, index) => (index === 3 ? accentLastVowel(base) : base) + ending);
 }
 
 function regularSubjuntivoFuturo(verb) {
-  const endings = tenseById("subjuntivo_futuro").endings[verbType(verb)];
-  return endings.map((ending) => stem(verb) + ending);
+  const base = subjuntivoPastStem(verb);
+  const endings = ["re", "res", "re", "remos", "reis", "ren"];
+  return endings.map((ending, index) => (index === 3 ? accentLastVowel(base) : base) + ending);
 }
 
 function compound(auxKey, verb) {
@@ -5544,6 +5610,10 @@ function verbPassport(info) {
 
   if (rawTags.includes("вспомогательный")) {
     badges.push(`<span title="Вспомогательный глагол">вспомогательный</span>`);
+  }
+
+  if (!CORE_FORMS_REVIEWED.has(baseVerb(verb))) {
+    badges.push(`<span class="badge-generated" title="Формы построены автоматически и ещё не вошли в расширенный эталонный набор">автоформы</span>`);
   }
 
   return `<div class="verb-passport">${badges.join("")}</div>`;

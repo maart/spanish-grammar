@@ -254,10 +254,6 @@ const REFERENCE = {
     presente: ["cierro", "cierras", "cierra", "cerramos", "cerráis", "cierran"],
     subjuntivo_presente: ["cierre", "cierres", "cierre", "cerremos", "cerréis", "cierren"],
   },
-  empezar: {
-    presente: ["empiezo", "empiezas", "empieza", "empezamos", "empezáis", "empiezan"],
-    subjuntivo_presente: ["empiece", "empieces", "empiece", "empecemos", "empecéis", "empiecen"],
-  },
   comenzar: {
     presente: ["comienzo", "comienzas", "comienza", "comenzamos", "comenzáis", "comienzan"],
     subjuntivo_presente: ["comience", "comiences", "comience", "comencemos", "comencéis", "comiencen"],
@@ -344,10 +340,6 @@ const REFERENCE = {
   almorzar: {
     presente: ["almuerzo", "almuerzas", "almuerza", "almorzamos", "almorzáis", "almuerzan"],
     subjuntivo_presente: ["almuerce", "almuerces", "almuerce", "almorcemos", "almorcéis", "almuercen"],
-  },
-  jugar: {
-    presente: ["juego", "juegas", "juega", "jugamos", "jugáis", "juegan"],
-    subjuntivo_presente: ["juegue", "juegues", "juegue", "juguemos", "juguéis", "jueguen"],
   },
   mover: {
     presente: ["muevo", "mueves", "mueve", "movemos", "movéis", "mueven"],
@@ -863,15 +855,74 @@ const REFERENCE = {
   proveer: {
     gerund: "proveyendo",
   },
-
-  // === irregular yo forms ===
-  saber: {
-    presente: ["sé", "sabes", "sabe", "sabemos", "sabéis", "saben"],
+  oler: {
+    presente: ["huelo", "hueles", "huele", "olemos", "oléis", "huelen"],
+    subjuntivo_presente: ["huela", "huelas", "huela", "olamos", "oláis", "huelan"],
+    imperativo_afirmativo: ["-", "huele", "huela", "olamos", "oled", "huelan"],
+    participle: "olido",
+    gerund: "oliendo",
   },
+  adquirir: {
+    presente: ["adquiero", "adquieres", "adquiere", "adquirimos", "adquirís", "adquieren"],
+    subjuntivo_presente: ["adquiera", "adquieras", "adquiera", "adquiramos", "adquiráis", "adquieran"],
+    imperativo_afirmativo: ["-", "adquiere", "adquiera", "adquiramos", "adquirid", "adquieran"],
+    participle: "adquirido",
+    gerund: "adquiriendo",
+  },
+  cocer: {
+    presente: ["cuezo", "cueces", "cuece", "cocemos", "cocéis", "cuecen"],
+    subjuntivo_presente: ["cueza", "cuezas", "cueza", "cozamos", "cozáis", "cuezan"],
+    imperativo_afirmativo: ["-", "cuece", "cueza", "cozamos", "coced", "cuezan"],
+    participle: "cocido",
+    gerund: "cociendo",
+  },
+  llover: {
+    presente: ["lluevo", "llueves", "llueve", "llovemos", "llovéis", "llueven"],
+    subjuntivo_presente: ["llueva", "lluevas", "llueva", "llovamos", "llováis", "lluevan"],
+    participle: "llovido",
+    gerund: "lloviendo",
+  },
+  prever: {
+    presente: ["preveo", "prevés", "prevé", "prevemos", "prevéis", "prevén"],
+    subjuntivo_presente: ["prevea", "preveas", "prevea", "preveamos", "preveáis", "prevean"],
+    imperativo_afirmativo: ["-", "prevé", "prevea", "preveamos", "preved", "prevean"],
+    participle: "previsto",
+    gerund: "previendo",
+  },
+};
 
-  // === verbs with full present irregular ===
-  dar: {
-    presente: ["doy", "das", "da", "damos", "dais", "dan"],
+const PAST_SUBJUNCTIVE_REFERENCE = {
+  hablar: {
+    imperfecto: ["hablara", "hablaras", "hablara", "habláramos", "hablarais", "hablaran"],
+    futuro: ["hablare", "hablares", "hablare", "habláremos", "hablareis", "hablaren"],
+  },
+  comer: {
+    imperfecto: ["comiera", "comieras", "comiera", "comiéramos", "comierais", "comieran"],
+    futuro: ["comiere", "comieres", "comiere", "comiéremos", "comiereis", "comieren"],
+  },
+  vivir: {
+    imperfecto: ["viviera", "vivieras", "viviera", "viviéramos", "vivierais", "vivieran"],
+    futuro: ["viviere", "vivieres", "viviere", "viviéremos", "viviereis", "vivieren"],
+  },
+  ser: {
+    imperfecto: ["fuera", "fueras", "fuera", "fuéramos", "fuerais", "fueran"],
+    futuro: ["fuere", "fueres", "fuere", "fuéremos", "fuereis", "fueren"],
+  },
+  tener: {
+    imperfecto: ["tuviera", "tuvieras", "tuviera", "tuviéramos", "tuvierais", "tuvieran"],
+    futuro: ["tuviere", "tuvieres", "tuviere", "tuviéremos", "tuviereis", "tuvieren"],
+  },
+  decir: {
+    imperfecto: ["dijera", "dijeras", "dijera", "dijéramos", "dijerais", "dijeran"],
+    futuro: ["dijere", "dijeres", "dijere", "dijéremos", "dijereis", "dijeren"],
+  },
+  pedir: {
+    imperfecto: ["pidiera", "pidieras", "pidiera", "pidiéramos", "pidierais", "pidieran"],
+    futuro: ["pidiere", "pidieres", "pidiere", "pidiéremos", "pidiereis", "pidieren"],
+  },
+  oler: {
+    imperfecto: ["oliera", "olieras", "oliera", "oliéramos", "olierais", "olieran"],
+    futuro: ["oliere", "olieres", "oliere", "oliéremos", "oliereis", "olieren"],
   },
 };
 
@@ -948,6 +999,14 @@ for (const [verb, refData] of Object.entries(REFERENCE)) {
     checkArray(verb, "subjuntivo_presente", refData.subjuntivo_presente, actual, "high");
   }
 
+  if (refData.subjuntivo_imperfecto) {
+    checkArray(verb, "subjuntivo_imperfecto", refData.subjuntivo_imperfecto, info.forms.subjuntivo_imperfecto, "high");
+  }
+
+  if (refData.subjuntivo_futuro) {
+    checkArray(verb, "subjuntivo_futuro", refData.subjuntivo_futuro, info.forms.subjuntivo_futuro, "high");
+  }
+
   // Imperativo afirmativo
   if (refData.imperativo_afirmativo) {
     const actual = info.forms.imperativo_afirmativo;
@@ -963,6 +1022,14 @@ for (const [verb, refData] of Object.entries(REFERENCE)) {
   if (refData.gerund) {
     checkScalar(verb, "gerundio", refData.gerund, info.gerund, "medium");
   }
+}
+
+for (const [verb, expected] of Object.entries(PAST_SUBJUNCTIVE_REFERENCE)) {
+  if (!BASE_VERBS.includes(verb)) continue;
+  checkedVerbs.add(verb);
+  const forms = verbInfo(verb).forms;
+  checkArray(verb, "subjuntivo_imperfecto", expected.imperfecto, forms.subjuntivo_imperfecto, "high");
+  checkArray(verb, "subjuntivo_futuro", expected.futuro, forms.subjuntivo_futuro, "high");
 }
 
 // ─── Additional pattern-based checks ────────────────────────────────────────

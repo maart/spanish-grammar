@@ -384,7 +384,10 @@ input[type="search"] {
 .tense-badge {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
   width: fit-content;
+  min-width: max-content;
   min-height: 22px;
   border: 1px solid color-mix(in srgb, var(--accent-2) 35%, var(--line));
   border-radius: 999px;
@@ -393,6 +396,8 @@ input[type="search"] {
   color: var(--accent-2);
   font-size: 11px;
   font-weight: 900;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
 .tense-badge.compound {
@@ -2646,7 +2651,7 @@ select {
 
       <section id="content" class="content" aria-live="polite"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.47 · обновлено: 19.07.2026 22:06 CEST</span>
+        <span>Версия MVP 0.48 · обновлено: 19.07.2026 22:10 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>

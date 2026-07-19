@@ -2738,7 +2738,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.51 · обновлено: 19.07.2026 23:05 CEST</span>
+        <span>Версия MVP 0.52 · обновлено: 19.07.2026 23:22 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -7175,6 +7175,290 @@ const USEFUL_TABLES = [
       <tr><th>благодарность</th><td>Gracias de antemano.</td><td>Le agradezco de antemano su ayuda.</td><td>Заранее спасибо / Заранее благодарю Вас за помощь.</td></tr>
       <tr><th>завершение</th><td>Un abrazo, / Un saludo,</td><td>Atentamente, / Reciba un cordial saludo,</td><td>Обнимаю / С уважением.</td></tr>
       <tr><th>подпись</th><td colspan="2">Имя пишется на следующей строке без повторного приветствия.</td><td>Un saludo,<br>Ana</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Глаголы и управление",
+    subgroup: "Возвратные глаголы",
+    title: "Ir / Irse и другие пары с -se",
+    description: "Частица se не всегда означает буквальную возвратность: у многих глаголов она меняет значение, вид действия или управление.",
+    summary: "Voy al trabajo — иду на работу; Me voy — ухожу. Duermo — сплю; Me duermo — засыпаю.",
+    mistake: "Нельзя автоматически переводить форму с se как «себя»: irse, dormirse и acordarse de имеют самостоятельное значение.",
+    table: `<table><thead><tr><th>Без se</th><th>С se</th><th>Контраст</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>ir</th><td>irse</td><td>Voy a Madrid. / Me voy de Madrid.</td><td>ехать в Мадрид / уезжать из Мадрида</td></tr>
+      <tr><th>dormir</th><td>dormirse</td><td>El niño duerme. / El niño se duerme.</td><td>ребёнок спит / засыпает</td></tr>
+      <tr><th>acordar</th><td>acordarse de</td><td>Acordamos la fecha. / Me acuerdo de la fecha.</td><td>согласовали дату / помню дату</td></tr>
+      <tr><th>encontrar</th><td>encontrarse</td><td>Encontré las llaves. / Me encuentro mejor.</td><td>нашёл ключи / чувствую себя лучше</td></tr>
+      <tr><th>llevar</th><td>llevarse</td><td>Llevo el libro. / Me llevo el libro.</td><td>несу книгу / забираю книгу с собой</td></tr>
+      <tr><th>decidir</th><td>decidirse a</td><td>Decidí el destino. / Me decidí a llamar.</td><td>выбрал направление / решился позвонить</td></tr>
+      <tr><th>parecer</th><td>parecerse a</td><td>Me parece bien. / Se parece a Ana.</td><td>мне кажется хорошим / похож на Ану</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Синтаксис и порядок слов",
+    subgroup: "Функции se",
+    title: "Se accidental: se me cayó, se nos olvidó",
+    description: "Конструкция se + косвенное местоимение представляет событие как непреднамеренное или вышедшее из-под контроля участника.",
+    summary: "Se me cayó el móvil — телефон у меня упал; Se nos olvidaron las llaves — мы забыли ключи.",
+    mistake: "Глагол согласуется с тем, что упало, забылось или сломалось: Se me cayó el vaso, но Se me cayeron los vasos.",
+    table: `<table><thead><tr><th>Схема</th><th>Пример</th><th>Перевод</th><th>Что согласуется</th></tr></thead><tbody>
+      <tr><th>se + me + глагол</th><td>Se me cayó el móvil.</td><td>У меня упал телефон.</td><td>cayó ↔ el móvil</td></tr>
+      <tr><th>se + te + глагол</th><td>Se te ha olvidado la cita.</td><td>Ты забыл о встрече.</td><td>ha olvidado ↔ la cita</td></tr>
+      <tr><th>se + le + глагол</th><td>Se le rompieron las gafas.</td><td>У него/неё сломались очки.</td><td>rompieron ↔ las gafas</td></tr>
+      <tr><th>se + nos + глагол</th><td>Se nos acabó el café.</td><td>У нас закончился кофе.</td><td>acabó ↔ el café</td></tr>
+      <tr><th>se + os + глагол</th><td>Se os perdió el billete.</td><td>Вы потеряли билет.</td><td>perdió ↔ el billete</td></tr>
+      <tr><th>se + les + глагол</th><td>Se les quemó la cena.</td><td>У них подгорел ужин.</td><td>quemó ↔ la cena</td></tr>
+      <tr><th>не только случайность</th><td>Se me olvidó llamarte.</td><td>Я забыл тебе позвонить.</td><td>Конструкция смещает фокус на событие, но не отменяет ответственность.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Синтаксис и порядок слов",
+    subgroup: "Функции se",
+    title: "Se завершённости: comer / comerse, leer / leerse",
+    description: "В некоторых переходных глаголах местоимение подчёркивает полную вовлечённость участника или достижение естественного предела действия.",
+    summary: "Comió tarta — ел торт; Se comió toda la tarta — съел весь торт.",
+    mistake: "Это se не возвратное: Me leí la novela не означает «прочитал себя», а подчёркивает завершённое чтение целого произведения.",
+    table: `<table><thead><tr><th>Нейтрально</th><th>С se</th><th>Оттенок</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>Comió tarta.</th><td>Se comió toda la tarta.</td><td>объект охвачен целиком</td><td>Он ел торт. / Он съел весь торт.</td></tr>
+      <tr><th>Leí la novela.</th><td>Me leí la novela en una noche.</td><td>завершённость и вовлечённость</td><td>Я прочитал роман за одну ночь.</td></tr>
+      <tr><th>Bebió un café.</th><td>Se bebió tres cafés.</td><td>подчёркнутый объём</td><td>Он выпил три чашки кофе.</td></tr>
+      <tr><th>Vimos la serie.</th><td>Nos vimos la serie entera.</td><td>целиком, часто разговорно</td><td>Мы посмотрели весь сериал.</td></tr>
+      <tr><th>Aprendió el texto.</th><td>Se aprendió el texto de memoria.</td><td>полностью усвоил</td><td>Он выучил текст наизусть.</td></tr>
+      <tr><th>ограниченный объект</th><td colspan="3">С se особенно естественны todo/a, entero/a, числовой объём и другие границы: toda la tarta, dos libros, la película entera.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Местоимения и объекты",
+    subgroup: "Прямые и косвенные объекты",
+    title: "Leísmo, laísmo и loísmo в Испании",
+    description: "Нейтральная система различает прямой объект lo/la/los/las и косвенный le/les; в Испании встречаются региональные отклонения.",
+    summary: "Нейтрально: Lo vi / La vi; Le di el libro. RAE допускает Le vi о мужчине в единственном числе, но для обучения безопаснее сохранять различие CD и CI.",
+    mistake: "La dije и Lo di un libro — laísmo и loísmo: в нейтральной норме нужны Le dije и Le di un libro.",
+    table: `<table><thead><tr><th>Явление</th><th>Пример</th><th>Нейтральная форма</th><th>Статус</th></tr></thead><tbody>
+      <tr><th>CD, мужчина</th><td>Lo vi ayer.</td><td>lo</td><td>нейтральная норма</td></tr>
+      <tr><th>CD, женщина</th><td>La vi ayer.</td><td>la</td><td>нейтральная норма</td></tr>
+      <tr><th>CI, любое лицо</th><td>Le di el libro.</td><td>le</td><td>нейтральная норма</td></tr>
+      <tr><th>leísmo de persona</th><td>Le vi ayer. (о мужчине)</td><td>Lo vi ayer.</td><td>допускается RAE для мужчины, ед. число</td></tr>
+      <tr><th>laísmo</th><td>La dije que viniera.</td><td>Le dije que viniera.</td><td>не рекомендуется в нормативной речи</td></tr>
+      <tr><th>loísmo</th><td>Lo di un libro.</td><td>Le di un libro.</td><td>не рекомендуется в нормативной речи</td></tr>
+      <tr><th>ориентир</th><td colspan="3">Если вопрос «кого/что?» — lo/la; если «кому?» — le. Реальная речь Испании регионально варьируется.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Местоимения и объекты",
+    subgroup: "Нейтральный артикль lo",
+    title: "Lo de, lo del и eso de: как ссылаться на ситуацию",
+    description: "Нейтральное lo превращает событие, тему или ранее известную ситуацию в предмет разговора без повторения длинного названия.",
+    summary: "Lo de ayer — то, что было вчера; lo del trabajo — то, что касается работы; eso de madrugar — эта история с ранним подъёмом.",
+    mistake: "Lo de не переводится одним фиксированным словом: конкретный смысл восстанавливается из контекста.",
+    table: `<table><thead><tr><th>Конструкция</th><th>Значение</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>lo de + время</th><td>событие в этот момент</td><td>Lo de ayer fue increíble.</td><td>То, что случилось вчера, было невероятно.</td></tr>
+      <tr><th>lo de + человек</th><td>ситуация, связанная с человеком</td><td>¿Sabes lo de Ana?</td><td>Ты знаешь, что случилось с Аной?</td></tr>
+      <tr><th>lo del + существительное</th><td>тема или дело</td><td>Tenemos que hablar de lo del contrato.</td><td>Нужно поговорить о договоре.</td></tr>
+      <tr><th>eso de + infinitivo</th><td>названная идея или привычка</td><td>Eso de levantarse a las seis no me gusta.</td><td>Мне не нравится эта история с подъёмом в шесть.</td></tr>
+      <tr><th>¿qué hay de lo de…?</th><td>спросить о развитии дела</td><td>¿Qué hay de lo de tu viaje?</td><td>Что там с твоей поездкой?</td></tr>
+      <tr><th>retomar el tema</th><td>вернуться к теме</td><td>Volviendo a lo de antes…</td><td>Возвращаясь к тому, о чём мы говорили…</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Глаголы и управление",
+    subgroup: "Gustar и похожие глаголы",
+    title: "Faltar, quedar и sobrar: чего не хватает или сколько осталось",
+    description: "Эти глаголы часто строятся как gustar: лицо выражается косвенным местоимением, а глагол согласуется с недостающим, оставшимся или лишним предметом.",
+    summary: "Me falta un euro; Me faltan dos euros. Nos queda una hora; Nos quedan diez minutos.",
+    mistake: "Не согласуй глагол с me/te/nos: Me faltan dos euros, а не Me falta dos euros.",
+    table: `<table><thead><tr><th>Глагол</th><th>Смысл</th><th>Единственное число</th><th>Множественное число</th></tr></thead><tbody>
+      <tr><th>faltar</th><td>не хватать</td><td>Me falta tiempo.</td><td>Me faltan dos euros.</td></tr>
+      <tr><th>quedar</th><td>оставаться</td><td>Nos queda una hora.</td><td>Nos quedan tres días.</td></tr>
+      <tr><th>sobrar</th><td>быть лишним, оставаться сверх нужного</td><td>Me sobra pan.</td><td>Nos sobran dos entradas.</td></tr>
+      <tr><th>faltar por + inf.</th><td>оставаться сделать</td><td colspan="2">Falta revisar el último capítulo.</td></tr>
+      <tr><th>quedar por + inf.</th><td>ещё не сделано</td><td colspan="2">Quedan por resolver dos problemas.</td></tr>
+      <tr><th>без местоимения</th><td>общее наличие</td><td>Falta una firma.</td><td>Sobran sillas.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Глаголы и управление",
+    subgroup: "Частые пары",
+    title: "Recordar / Acordarse de и Olvidar / Olvidarse de",
+    description: "Пары передают близкий смысл, но различаются возвратностью и управлением: acordarse и olvidarse требуют de.",
+    summary: "Recuerdo tu nombre = Me acuerdo de tu nombre. Olvidé la cita = Me olvidé de la cita.",
+    mistake: "После acordarse и olvidarse нельзя терять de: Me acuerdo de Ana; Me olvidé de llamarte.",
+    table: `<table><thead><tr><th>Конструкция</th><th>Управление</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>recordar algo</th><td>без предлога</td><td>Recuerdo aquella casa.</td><td>Я помню тот дом.</td></tr>
+      <tr><th>acordarse de algo</th><td>de + объект</td><td>Me acuerdo de aquella casa.</td><td>Я помню тот дом.</td></tr>
+      <tr><th>recordar + que</th><td>que + предложение</td><td>Recuerdo que vivía allí.</td><td>Я помню, что жил там.</td></tr>
+      <tr><th>acordarse de + inf.</th><td>de + infinitivo</td><td>Acuérdate de cerrar la puerta.</td><td>Не забудь закрыть дверь.</td></tr>
+      <tr><th>olvidar algo</th><td>без предлога</td><td>Olvidé las llaves.</td><td>Я забыл ключи.</td></tr>
+      <tr><th>olvidarse de algo</th><td>de + объект</td><td>Me olvidé de las llaves.</td><td>Я забыл о ключах.</td></tr>
+      <tr><th>acordar</th><td>не равно acordarse</td><td>Acordamos vernos el viernes.</td><td>Мы договорились встретиться в пятницу.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Глаголы и управление",
+    subgroup: "Частые пары",
+    title: "Ver / Mirar, Oír / Escuchar, Tocar / Jugar",
+    description: "Испанский различает восприятие и намеренное действие, а русскому «играть» соответствуют разные глаголы.",
+    summary: "Veo una película — вижу/смотрю фильм; Miro la pantalla — направляю взгляд. Oigo ruido — слышу; Escucho música — слушаю.",
+    mistake: "С видами спорта используется jugar a, а с инструментами — tocar: jugar al tenis, tocar la guitarra.",
+    table: `<table><thead><tr><th>Пара</th><th>Первый глагол</th><th>Второй глагол</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>ver / mirar</th><td>видеть, воспринимать результат</td><td>смотреть, направлять взгляд</td><td>Veo la televisión. / Mira esta foto.</td></tr>
+      <tr><th>oír / escuchar</th><td>слышать</td><td>слушать внимательно</td><td>Oigo un ruido. / Escucho la radio.</td></tr>
+      <tr><th>tocar / jugar</th><td>играть на инструменте; касаться</td><td>играть в игру или спорт</td><td>Toca el piano. / Juega al fútbol.</td></tr>
+      <tr><th>ver a alguien</th><td>увидеть или встретиться</td><td>mirar a alguien</td><td>Vi a Ana ayer. / Ana me miró.</td></tr>
+      <tr><th>oír hablar de</th><td>слышать о чём-либо</td><td>escuchar a alguien</td><td>He oído hablar de ese sitio. / Escucha al profesor.</td></tr>
+      <tr><th>tocar a alguien</th><td>быть чьей-то очередью</td><td>jugar con alguien</td><td>Ahora te toca a ti. / Juego con Marta.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Глаголы и управление",
+    subgroup: "Gustar и похожие глаголы",
+    title: "Doler и части тела: me duele / me duelen",
+    description: "Doler строится как gustar: человек выражается косвенным местоимением, а число глагола зависит от части тела.",
+    summary: "Me duele la cabeza; Me duelen los pies. В испанском обычно используется артикль, а не притяжательное местоимение.",
+    mistake: "Нужно Me duele la cabeza, а не Me duele mi cabeza, если владелец уже понятен по me.",
+    table: `<table><thead><tr><th>Ситуация</th><th>Испанский</th><th>Перевод</th><th>Правило</th></tr></thead><tbody>
+      <tr><th>одна часть тела</th><td>Me duele la cabeza.</td><td>У меня болит голова.</td><td>duele + ед. число</td></tr>
+      <tr><th>несколько частей</th><td>Me duelen los pies.</td><td>У меня болят ноги.</td><td>duelen + мн. число</td></tr>
+      <tr><th>вопрос</th><td>¿Te duele la garganta?</td><td>У тебя болит горло?</td><td>te показывает человека</td></tr>
+      <tr><th>травма</th><td>Me he roto el brazo.</td><td>Я сломал руку.</td><td>артикль el, не mi</td></tr>
+      <tr><th>движение</th><td>Se torció el tobillo.</td><td>Он/она подвернул(а) лодыжку.</td><td>возвратная конструкция + артикль</td></tr>
+      <tr><th>конкретизация</th><td>A Ana le duele la espalda.</td><td>У Аны болит спина.</td><td>a Ana уточняет le</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Существительные и определители",
+    subgroup: "Артикли",
+    title: "Когда артикль не используется",
+    description: "После некоторых глаголов и предлогов существительное называет профессию, язык, способ передвижения или класс предметов без отдельного артикля.",
+    summary: "Soy médico; Hablo español; Voy en metro. Но: Es un médico excelente; El español de España; Cojo el metro.",
+    mistake: "Отсутствие артикля зависит от конструкции, а не только от слова: Voy en metro, но Cojo el metro.",
+    table: `<table><thead><tr><th>Контекст</th><th>Без артикля</th><th>Когда артикль появляется</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>профессия после ser</th><td>Soy médico.</td><td>оценка или уточнение</td><td>Es un médico excelente.</td></tr>
+      <tr><th>язык после hablar/estudiar</th><td>Hablo español.</td><td>язык как тема или определённая разновидность</td><td>El español es una lengua romance.</td></tr>
+      <tr><th>транспорт после en</th><td>Voy en metro.</td><td>конкретный транспорт как объект</td><td>Cojo el metro cada día.</td></tr>
+      <tr><th>материал после de</th><td>una mesa de madera</td><td>конкретный материал как предмет</td><td>La madera es clara.</td></tr>
+      <tr><th>количество/масса</th><td>Necesito agua.</td><td>определённый объём</td><td>Necesito el agua de la botella.</td></tr>
+      <tr><th>неопределённое мн. число</th><td>Busco piso. / Vende libros.</td><td>известные предметы</td><td>Busco el piso de Ana. / Vende los libros usados.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Синтаксис и порядок слов",
+    subgroup: "Согласование",
+    title: "Согласование: la gente, había personas, la mayoría",
+    description: "Коллективные слова, безличный haber и количественные конструкции требуют разных моделей согласования.",
+    summary: "La gente es amable; Había muchas personas; La mayoría de los alumnos aprobó/aprobaron.",
+    mistake: "В безличном значении haber остаётся в единственном числе: Había problemas и Hubo muchas personas, не Habían/Hobieron.",
+    table: `<table><thead><tr><th>Конструкция</th><th>Норма</th><th>Комментарий</th><th>Пример</th></tr></thead><tbody>
+      <tr><th>la gente</th><td>единственное число</td><td>собирательное существительное</td><td>La gente está cansada.</td></tr>
+      <tr><th>la familia / el equipo</th><td>обычно единственное</td><td>группа представлена как единое целое</td><td>El equipo ganó.</td></tr>
+      <tr><th>la mayoría de + мн.</th><td>ед. или мн. число</td><td>обе модели возможны; выбор зависит от фокуса</td><td>La mayoría de los alumnos aprobó / aprobaron.</td></tr>
+      <tr><th>un grupo de + мн.</th><td>ед. или мн. число</td><td>формальное или смысловое согласование</td><td>Un grupo de turistas llegó / llegaron.</td></tr>
+      <tr><th>haber безличный</th><td>только единственное</td><td>объект не является подлежащим</td><td>Hay problemas. Había muchas personas. Hubo cambios.</td></tr>
+      <tr><th>veintiuno</th><td>согласуется перед существительным</td><td>veintiún + м.; veintiuna + ж.</td><td>veintiún libros; veintiuna personas</td></tr>
+      <tr><th>сотни</th><td>род существительного</td><td>doscientos/doscientas</td><td>doscientos euros; doscientas páginas</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Синтаксис и порядок слов",
+    subgroup: "Вопросы",
+    title: "Косвенные вопросы и восклицания",
+    description: "Вопросительные слова сохраняют tilde внутри утверждения, если вводят косвенный вопрос или восклицание.",
+    summary: "No sé qué quiere; Dime dónde vives; ¡Qué bien!; No sabes cuánto cuesta.",
+    mistake: "Наличие вопросительного знака не определяет tilde: No sé qué quiere пишется с qué, хотя всё предложение не является прямым вопросом.",
+    table: `<table><thead><tr><th>Тип</th><th>Пример</th><th>Перевод</th><th>Форма</th></tr></thead><tbody>
+      <tr><th>прямой вопрос</th><td>¿Dónde vive Ana?</td><td>Где живёт Ана?</td><td>dónde с tilde</td></tr>
+      <tr><th>косвенный вопрос</th><td>No sé dónde vive Ana.</td><td>Я не знаю, где живёт Ана.</td><td>dónde сохраняет tilde</td></tr>
+      <tr><th>просьба сообщить</th><td>Dime cuándo llegas.</td><td>Скажи, когда ты приедешь.</td><td>cuándo — неизвестный ответ</td></tr>
+      <tr><th>вопрос с si</th><td>No sé si viene.</td><td>Я не знаю, придёт ли он.</td><td>si без tilde</td></tr>
+      <tr><th>косвенное восклицание</th><td>No sabes cuánto cuesta.</td><td>Ты не представляешь, сколько это стоит.</td><td>cuánto с tilde</td></tr>
+      <tr><th>прямое восклицание</th><td>¡Qué bien canta!</td><td>Как хорошо он поёт!</td><td>qué с tilde</td></tr>
+      <tr><th>относительное слово</th><td>La casa donde vive Ana.</td><td>Дом, где живёт Ана.</td><td>donde без tilde: это не вопрос</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Произношение, орфография и письмо",
+    subgroup: "Диакритика",
+    title: "Aun / Aún, solo / sólo и este / éste",
+    description: "Aún получает tilde в значении todavía; aun без tilde означает incluso или aunque. Solo и указательные обычно пишутся без tilde.",
+    summary: "Aún no ha llegado = todavía no; Aun cansado, siguió = aunque estaba cansado. Рекомендация RAE: solo, este, ese, aquel без tilde.",
+    mistake: "Не ставь tilde в sólo и éste автоматически по старому правилу; современная норма рекомендует форму без tilde и допускает знак лишь для устранения реально воспринятой неоднозначности.",
+    table: `<table><thead><tr><th>Форма</th><th>Значение</th><th>Пример</th><th>Проверка</th></tr></thead><tbody>
+      <tr><th>aún</th><td>todavía: ещё, всё ещё</td><td>Aún no ha llegado.</td><td>можно заменить на todavía</td></tr>
+      <tr><th>aún</th><td>усиление сравнения</td><td>Es aún más difícil.</td><td>ещё более</td></tr>
+      <tr><th>aun</th><td>incluso: даже</td><td>Aun los niños lo entendieron.</td><td>можно заменить на incluso</td></tr>
+      <tr><th>aun</th><td>aunque: даже если</td><td>Aun cansado, siguió trabajando.</td><td>уступительное значение</td></tr>
+      <tr><th>solo</th><td>один / только</td><td>Trabajo solo. / Solo trabajo los lunes.</td><td>обычно всегда без tilde</td></tr>
+      <tr><th>este, ese, aquel</th><td>определитель или местоимение</td><td>Este libro; Prefiero este.</td><td>обычно без tilde в обеих функциях</td></tr>
+      <tr><th>неоднозначность</th><td colspan="3">Если контекст действительно допускает два чтения, RAE позволяет автору поставить tilde или, что часто яснее, перестроить фразу.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Живой испанский",
+    subgroup: "Связки в разговоре",
+    title: "Es que, lo que pasa es que, resulta que",
+    description: "Эти конструкции вводят объяснение, оправдание, возражение или неожиданное развитие событий и очень часты в разговорной речи.",
+    summary: "No voy, es que estoy cansado; Lo que pasa es que no tengo tiempo; Resulta que la tienda estaba cerrada.",
+    mistake: "Es que не всегда переводится буквально как «это то, что»: чаще по-русски достаточно «дело в том, что» или естественного объяснения без отдельной связки.",
+    table: `<table><thead><tr><th>Конструкция</th><th>Функция</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>es que…</th><td>объяснение или оправдание</td><td>No puedo ir, es que trabajo.</td><td>Я не могу пойти: я работаю.</td></tr>
+      <tr><th>¿es que…?</th><td>удивление или поиск причины</td><td>¿Es que no me escuchas?</td><td>Ты что, меня не слушаешь?</td></tr>
+      <tr><th>lo que pasa es que…</th><td>развёрнутое объяснение</td><td>Lo que pasa es que no tengo tiempo.</td><td>Дело в том, что у меня нет времени.</td></tr>
+      <tr><th>resulta que…</th><td>неожиданно выяснилось</td><td>Resulta que el museo estaba cerrado.</td><td>Оказалось, что музей был закрыт.</td></tr>
+      <tr><th>si es que…</th><td>эмоциональное усиление причины</td><td>¡Si es que nunca avisas!</td><td>Ты же никогда не предупреждаешь!</td></tr>
+      <tr><th>total, que…</th><td>итог рассказа</td><td>Total, que perdimos el tren.</td><td>В общем, мы опоздали на поезд.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Живой испанский",
+    subgroup: "Встречи и расписание",
+    title: "Как договориться о встрече в Испании",
+    description: "Quedar, venir bien и coger cita помогают предложить время, согласовать встречу и записаться на приём.",
+    summary: "¿Quedamos el jueves?; ¿Te viene bien a las ocho?; Quería pedir cita; La tienda abre de nueve a dos.",
+    mistake: "Quedar con alguien означает договориться встретиться, а quedarse — остаться: Quedo con Ana, но Me quedo en casa.",
+    table: `<table><thead><tr><th>Ситуация</th><th>Фраза</th><th>Перевод</th><th>Ответ</th></tr></thead><tbody>
+      <tr><th>предложить встречу</th><td>¿Quedamos el jueves?</td><td>Встретимся в четверг?</td><td>Vale, perfecto.</td></tr>
+      <tr><th>уточнить время</th><td>¿A qué hora quedamos?</td><td>Во сколько встречаемся?</td><td>A las ocho.</td></tr>
+      <tr><th>проверить удобство</th><td>¿Te viene bien a las ocho?</td><td>Тебе удобно в восемь?</td><td>Sí, me viene bien.</td></tr>
+      <tr><th>предложить другое время</th><td>¿Qué tal el viernes por la tarde?</td><td>Как насчёт пятницы вечером?</td><td>Mejor por la mañana.</td></tr>
+      <tr><th>записаться</th><td>Quería pedir/coger cita.</td><td>Я хотел бы записаться.</td><td>¿Para qué día?</td></tr>
+      <tr><th>есть запись</th><td>Tengo cita a las diez.</td><td>Я записан на десять.</td><td>¿A nombre de quién?</td></tr>
+      <tr><th>расписание</th><td>Abre de nueve a dos y de cinco a ocho.</td><td>Открыто с девяти до двух и с пяти до восьми.</td><td>Cierra al mediodía.</td></tr>
+      <tr><th>перенести</th><td>¿Podemos cambiar la cita?</td><td>Можно перенести запись?</td><td>¿Le viene bien mañana?</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Живой испанский",
+    subgroup: "Транспорт",
+    title: "Транспорт и маршруты в Испании",
+    description: "Основные глаголы и существительные для метро, автобуса и поезда: coger, subir, bajarse, hacer transbordo, ida y vuelta.",
+    summary: "Cojo el metro; Me bajo en Sol; Hay que hacer transbordo; Quiero un billete de ida y vuelta.",
+    mistake: "В Испании coger — нейтральное «брать/садиться на транспорт»: coger el autobús, coger un taxi.",
+    table: `<table><thead><tr><th>Действие</th><th>Фраза</th><th>Перевод</th><th>Примечание</th></tr></thead><tbody>
+      <tr><th>сесть на транспорт</th><td>Coger el metro / el autobús / un taxi.</td><td>Сесть на метро / автобус / такси.</td><td>Обычная лексика Испании.</td></tr>
+      <tr><th>войти</th><td>Subir al autobús / al tren.</td><td>Сесть в автобус / поезд.</td><td>a + el → al</td></tr>
+      <tr><th>выйти</th><td>Bajarse del metro en Sol.</td><td>Выйти из метро на станции Sol.</td><td>de + el → del</td></tr>
+      <tr><th>пересадка</th><td>Hay que hacer transbordo en Nuevos Ministerios.</td><td>Нужно сделать пересадку.</td><td>transbordo — пересадка</td></tr>
+      <tr><th>направление</th><td>¿Este tren va hacia Atocha?</td><td>Этот поезд идёт в сторону Аточи?</td><td>hacia + место</td></tr>
+      <tr><th>остановки</th><td>Está a dos paradas.</td><td>Это через две остановки.</td><td>parada — остановка</td></tr>
+      <tr><th>билет</th><td>Un billete de ida / de ida y vuelta.</td><td>Билет в одну сторону / туда и обратно.</td><td>Для поезда также billete.</td></tr>
+      <tr><th>платформа</th><td>¿De qué andén sale? / ¿En qué vía?</td><td>С какой платформы отправляется?</td><td>andén и vía зависят от системы.</td></tr>
+      <tr><th>абонемент</th><td>Tengo un abono transporte.</td><td>У меня есть транспортный абонемент.</td><td>В Мадриде: abono transporte.</td></tr>
     </tbody></table>`
   }
 ];

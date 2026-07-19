@@ -2115,7 +2115,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.30 · обновлено: 19.07.2026 18:10</footer>
+      <footer class="app-footer">Версия MVP 0.31 · обновлено: 19.07.2026 18:25</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -5443,15 +5443,18 @@ const USEFUL_TABLES = [
   {
     group: "Времена и синтаксис",
     subgroup: "Прошедшее",
-    title: "Pretérito Perfecto: Испания vs Латинская Америка",
-    description: "В Испании Perfecto используется для недавнего прошлого (hoy, esta semana). В LatAm предпочитают Indefinido.",
-    table: `<table><thead><tr><th>Контекст</th><th>Испания</th><th>Латинская Америка</th></tr></thead><tbody>
-      <tr><th>сегодня</th><td>Hoy he comido tarde.</td><td>Hoy comí tarde.</td></tr>
-      <tr><th>на этой неделе</th><td>Esta semana he ido al gym.</td><td>Esta semana fui al gym.</td></tr>
-      <tr><th>только что</th><td>Acabo de llegar. (универсально)</td><td>Acabo de llegar. (универсально)</td></tr>
-      <tr><th>вчера</th><td>Ayer fui al cine. (Indefinido)</td><td>Ayer fui al cine. (Indefinido)</td></tr>
-      <tr><th>⚠️ правило</th><td>Perfecto = сегодня/эта неделя; Indefinido = вчера/раньше</td><td>Indefinido для всего прошедшего</td></tr>
-      <tr><th>⚠️ в Испании</th><td colspan="2">Perfecto — маркеры: hoy, esta mañana, esta semana, este mes, este año</td></tr>
+    title: "Pretérito Perfecto vs Indefinido в Испании",
+    description: "Perfecto связывает прошлое с текущим периодом или настоящим результатом; Indefinido помещает событие в завершённый прошлый период.",
+    summary: "В нормативном учебном варианте Испании: hoy/esta semana → he hecho; ayer/la semana pasada → hice. Говорящий может по-разному очертить период.",
+    mistake: "Hoy fui al médico возможно в отдельных региональных и контекстных употреблениях, но для базовой модели Испании с незавершённым hoy ожидается Hoy he ido al médico.",
+    table: `<table><thead><tr><th>Контекст</th><th>Perfecto</th><th>Indefinido</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>текущий период</th><td>Hoy he hablado con Ana.</td><td>—</td><td>Сегодня я поговорил с Аной.</td></tr>
+      <tr><th>завершённый период</th><td>—</td><td>Ayer hablé con Ana.</td><td>Вчера я поговорил с Аной.</td></tr>
+      <tr><th>опыт к настоящему</th><td>He estado tres veces en Sevilla.</td><td>—</td><td>Я трижды бывал в Севилье.</td></tr>
+      <tr><th>конкретный законченный эпизод</th><td>—</td><td>Estuve en Sevilla en 2022.</td><td>Я был в Севилье в 2022 году.</td></tr>
+      <tr><th>результат важен сейчас</th><td>He perdido las llaves.</td><td>—</td><td>Я потерял ключи (сейчас их нет).</td></tr>
+      <tr><th>цепочка событий</th><td>—</td><td>Entró, saludó y se sentó.</td><td>Он вошёл, поздоровался и сел.</td></tr>
+      <tr><th>частые маркеры</th><td>hoy, esta mañana, esta semana, este año, todavía no, ya</td><td>ayer, anoche, la semana pasada, en 2020, hace dos días</td><td>Текущий период / законченный период.</td></tr>
     </tbody></table>`
   },
 
@@ -5489,7 +5492,7 @@ const USEFUL_TABLES = [
   {
     group: "Живой испанский",
     subgroup: "В баре / ресторане",
-    title: "En un bar: фразы для бара и ресторара в Испании",
+    title: "En un bar: фразы для бара и ресторана в Испании",
     description: "Типичные фразы для заказа в баре, тапас-баре и ресторане. Castellano de España.",
     table: `<table><thead><tr><th>Фраза</th><th>Смысл</th><th>Пример</th></tr></thead><tbody>
       <tr><th>¿Me pone…?</th><td>Мне… (вежливый заказ)</td><td>¿Me pone una caña, por favor?</td></tr>
@@ -5661,7 +5664,7 @@ const USEFUL_TABLES = [
   {
     group: "Времена и синтаксис",
     subgroup: "Прошедшее",
-    title: "Pluscuamperfecto: «я уже сделал до того как…\"",
+    title: "Pluscuamperfecto: «я уже сделал до того, как…»",
     description: "Había + participio — действие, которое произошло ДО другого прошлого действия.",
     table: `<table><thead><tr><th>Ситуация</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
       <tr><th>действие до другого прошлого</th><td>Cuando llegué, ya había salido.</td><td>Когда я пришёл, он уже ушёл.</td></tr>
@@ -5767,6 +5770,230 @@ const USEFUL_TABLES = [
       <tr><th>subir (поднимать)</th><td>subirse (подниматься / залезать)</td><td>что-то vs себя</td><td>Subo la escalera. Me subo al árbol.</td></tr>
       <tr><th>⚠️ не все меняют смысл</th><td colspan="3">Некоторые возвратные = просто «делать себе»: cepillarse los dientes, cortarse el pelo</td></tr>
     </tbody></table>`
+  },
+
+  {
+    group: "Местоимения и объекты",
+    subgroup: "Прямой объект",
+    title: "Персональная a: veo a María, busco un médico",
+    description: "Предлог a обычно ставится перед определённым прямым объектом — человеком или одушевлённым существом, но выбор зависит от определённости и смысла.",
+    summary: "Конкретный человек обычно требует a: Conozco a Marta. Неопределённая профессия или тип человека часто без a: Busco un traductor.",
+    mistake: "Предлог a не превращает прямой объект в косвенный: Vi a Carlos → Lo vi, а не Le vi в нейтральной норме справочника.",
+    table: `<table><thead><tr><th>Ситуация</th><th>Правило</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>конкретный человек</th><td>a обязательна</td><td>Veo a María.</td><td>Я вижу Марию.</td></tr>
+      <tr><th>известная группа людей</th><td>a обязательна</td><td>Invitaron a los vecinos.</td><td>Они пригласили соседей.</td></tr>
+      <tr><th>alguien / nadie</th><td>обычно с a</td><td>No conozco a nadie aquí.</td><td>Я никого здесь не знаю.</td></tr>
+      <tr><th>домашнее животное</th><td>a при личном отношении</td><td>Llevo al perro al veterinario.</td><td>Я веду собаку к ветеринару.</td></tr>
+      <tr><th>неопределённая профессия</th><td>часто без a</td><td>Busco un médico que hable ruso.</td><td>Я ищу врача, говорящего по-русски.</td></tr>
+      <tr><th>конкретный специалист</th><td>с a</td><td>Busco al médico de guardia.</td><td>Я ищу дежурного врача.</td></tr>
+      <tr><th>неодушевлённый объект</th><td>без a</td><td>Busco las llaves.</td><td>Я ищу ключи.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Времена и синтаксис",
+    subgroup: "Сложное предложение",
+    title: "Infinitivo или que + subjuntivo: один или разные субъекты",
+    description: "При одном исполнителе обычно используется infinitivo; при разных субъектах желание, просьба, оценка или цель оформляются через que + subjuntivo.",
+    summary: "Quiero salir — выйти хочу я. Quiero que salgas — выйти должен ты. Сначала сравни субъект главного и зависимого действия.",
+    mistake: "Quiero que salir и Quiero tú salir неверны: при разных субъектах нужна личная форма subjuntivo — Quiero que salgas.",
+    table: `<table><thead><tr><th>Значение</th><th>Один субъект</th><th>Разные субъекты</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>желание</th><td>Quiero descansar.</td><td>Quiero que descanses.</td><td>Я хочу отдохнуть / хочу, чтобы ты отдохнул.</td></tr>
+      <tr><th>необходимость</th><td>Necesito salir.</td><td>Necesito que vengas.</td><td>Мне нужно уйти / нужно, чтобы ты пришёл.</td></tr>
+      <tr><th>цель</th><td>Estudio para aprobar.</td><td>Te lo explico para que lo entiendas.</td><td>Учусь, чтобы сдать / объясняю, чтобы ты понял.</td></tr>
+      <tr><th>до действия</th><td>Llámame antes de salir.</td><td>Llámame antes de que salgas.</td><td>Позвони до своего ухода / до того, как ты уйдёшь.</td></tr>
+      <tr><th>оценка</th><td>Es importante dormir bien.</td><td>Es importante que duermas bien.</td><td>Важно хорошо спать / важно, чтобы ты хорошо спал.</td></tr>
+      <tr><th>просьба</th><td>Prefiero esperar.</td><td>Te pido que esperes.</td><td>Я предпочитаю подождать / прошу тебя подождать.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Времена и синтаксис",
+    subgroup: "Придаточные времени",
+    title: "Cuando, hasta que, en cuanto: indicativo или subjuntivo",
+    description: "В придаточных времени indicativo описывает известный факт или привычку, а subjuntivo — ещё не наступившее, ожидаемое действие.",
+    summary: "Прошлое и привычка: cuando llego/llegué. Будущее: cuando llegue. После cuando для будущего не ставится futuro.",
+    mistake: "Cuando llegaré неверно в придаточном времени: нужно Cuando llegue, te llamaré.",
+    table: `<table><thead><tr><th>Союз</th><th>Факт или привычка</th><th>Будущее или ожидание</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>cuando</th><td>Cuando llego, te llamo.</td><td>Cuando llegue, te llamaré.</td><td>Когда приезжаю / когда приеду, позвоню.</td></tr>
+      <tr><th>hasta que</th><td>Esperé hasta que llegó.</td><td>Esperaré hasta que llegue.</td><td>Ждал, пока он пришёл / буду ждать, пока придёт.</td></tr>
+      <tr><th>en cuanto</th><td>En cuanto lo vi, lo entendí.</td><td>En cuanto lo vea, te aviso.</td><td>Как только увидел / как только увижу.</td></tr>
+      <tr><th>mientras</th><td>Mientras trabajo, escucho música.</td><td>Mientras estés aquí, podrás usar mi despacho.</td><td>Пока работаю / пока будешь здесь, сможешь пользоваться моим кабинетом.</td></tr>
+      <tr><th>después de que</th><td>Se fue después de que terminó.</td><td>Lo haré después de que terminemos.</td><td>Ушёл после того, как закончил / сделаю после того, как закончим.</td></tr>
+      <tr><th>antes de que</th><td colspan="2">Siempre exige subjuntivo: Sal antes de que empiece a llover.</td><td>Уходи до того, как начнётся дождь.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Времена и синтаксис",
+    subgroup: "Относительные предложения",
+    title: "Busco un piso que tenga: indicativo или subjuntivo",
+    description: "В относительных предложениях indicativo описывает известный существующий объект, а subjuntivo — искомый, неизвестный, отрицаемый или желаемый.",
+    summary: "Tengo un piso que tiene balcón — квартира существует. Busco un piso que tenga balcón — неизвестно, найдётся ли такая квартира.",
+    mistake: "Subjuntivo выбирается не из-за слова que самого по себе, а из-за неопределённости или отрицания antecedente.",
+    table: `<table><thead><tr><th>Antecedente</th><th>Наклонение</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>известный и конкретный</th><td>indicativo</td><td>Tengo un vecino que habla japonés.</td><td>У меня есть сосед, который говорит по-японски.</td></tr>
+      <tr><th>искомый и неопределённый</th><td>subjuntivo</td><td>Busco un profesor que hable japonés.</td><td>Ищу преподавателя, говорящего по-японски.</td></tr>
+      <tr><th>объекта не существует</th><td>subjuntivo</td><td>No hay nadie que lo sepa.</td><td>Нет никого, кто бы это знал.</td></tr>
+      <tr><th>вопрос о существовании</th><td>subjuntivo</td><td>¿Conoces a alguien que pueda ayudarme?</td><td>Ты знаешь кого-нибудь, кто мог бы помочь?</td></tr>
+      <tr><th>конкретный выбор</th><td>indicativo</td><td>Quiero el libro que está en la mesa.</td><td>Мне нужна книга, которая лежит на столе.</td></tr>
+      <tr><th>требование к любому объекту</th><td>subjuntivo</td><td>Quiero un libro que sea fácil.</td><td>Мне нужна какая-нибудь простая книга.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Времена и синтаксис",
+    subgroup: "Управление",
+    title: "Que, de que, en que, con que: как выбрать предлог",
+    description: "Предлог перед que определяется управляющим глаголом, существительным или прилагательным: creer que, acordarse de que, insistir en que, contar con que.",
+    summary: "Замени придаточное словом eso: creo eso → creo que; me acuerdo de eso → me acuerdo de que.",
+    mistake: "Pienso de que и Estoy seguro que нарушают управление: правильно Pienso que и Estoy seguro de que.",
+    table: `<table><thead><tr><th>Модель</th><th>Проверка с eso</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>creer / pensar / decir + que</th><td>Creo eso.</td><td>Creo que tiene razón.</td><td>Думаю, что он прав.</td></tr>
+      <tr><th>acordarse / alegrarse + de que</th><td>Me acuerdo de eso.</td><td>Me alegro de que estés aquí.</td><td>Я рад, что ты здесь.</td></tr>
+      <tr><th>estar seguro + de que</th><td>Estoy seguro de eso.</td><td>Estoy seguro de que vendrá.</td><td>Я уверен, что он придёт.</td></tr>
+      <tr><th>insistir / confiar + en que</th><td>Insisto en eso.</td><td>Insisto en que lo hagas.</td><td>Я настаиваю, чтобы ты это сделал.</td></tr>
+      <tr><th>contar + con que</th><td>Cuento con eso.</td><td>Cuento con que vengas.</td><td>Я рассчитываю, что ты придёшь.</td></tr>
+      <tr><th>darse cuenta + de que</th><td>Me doy cuenta de eso.</td><td>Me di cuenta de que era tarde.</td><td>Я понял, что было поздно.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Глаголы: пары и устойчивые",
+    subgroup: "Participio",
+    title: "Participio: he escrito, fue escrita, está escrita",
+    description: "Participio не изменяется после haber, но согласуется с существительным в пассиве с ser и при описании результата с estar.",
+    summary: "Haber + participio неизменяемо: he escrito las cartas. С ser/estar форма согласуется: las cartas fueron/están escritas.",
+    mistake: "He escritas las cartas неверно: после haber всегда participio мужского рода единственного числа — he escrito.",
+    table: `<table><thead><tr><th>Конструкция</th><th>Согласование</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>haber + participio</th><td>нет</td><td>He escrito dos cartas.</td><td>Я написал два письма.</td></tr>
+      <tr><th>haber + participio</th><td>нет</td><td>Las hemos visto.</td><td>Мы их видели.</td></tr>
+      <tr><th>ser + participio</th><td>с подлежащим</td><td>Las cartas fueron escritas ayer.</td><td>Письма были написаны вчера.</td></tr>
+      <tr><th>estar + participio</th><td>с подлежащим</td><td>La puerta está cerrada.</td><td>Дверь закрыта.</td></tr>
+      <tr><th>participio как прилагательное</th><td>род и число</td><td>Compré verduras congeladas.</td><td>Я купил замороженные овощи.</td></tr>
+      <tr><th>частые неправильные</th><td>форму запомнить</td><td>hecho, dicho, visto, puesto, escrito, abierto, vuelto, roto</td><td>сделанный, сказанный, увиденный и т. д.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Времена и синтаксис",
+    subgroup: "Порядок слов",
+    title: "Yo, tú, él: когда подлежащее нужно называть",
+    description: "Личное окончание обычно позволяет опустить подлежащее. Местоимение возвращается для противопоставления, акцента, устранения неоднозначности или смены участника.",
+    summary: "Обычно: Vivo en Madrid. Для контраста: Yo vivo en Madrid, pero ella vive en Toledo.",
+    mistake: "Постоянное повторение yo перед каждым глаголом грамматически возможно, но звучит неестественно и создаёт ненужный акцент.",
+    table: `<table><thead><tr><th>Ситуация</th><th>Подлежащее</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>нейтральное сообщение</th><td>обычно опускается</td><td>Trabajo desde casa.</td><td>Я работаю из дома.</td></tr>
+      <tr><th>противопоставление</th><td>называется</td><td>Yo cocino y tú lavas los platos.</td><td>Я готовлю, а ты моешь посуду.</td></tr>
+      <tr><th>смена участника</th><td>называется</td><td>Él llegó y ella se fue.</td><td>Он пришёл, а она ушла.</td></tr>
+      <tr><th>неоднозначная форма</th><td>по необходимости</td><td>¿Qué quería usted?</td><td>Что вы хотели?</td></tr>
+      <tr><th>эмфатический ответ</th><td>называется</td><td>—¿Quién lo hizo? —Yo.</td><td>—Кто это сделал? —Я.</td></tr>
+      <tr><th>после глагола</th><td>возможна инверсия</td><td>¿Vienes tú también?</td><td>Ты тоже идёшь?</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Орфография и письмо",
+    subgroup: "Ударение",
+    title: "Agudas, llanas, esdrújulas: основные правила ударения",
+    description: "Наличие tilde зависит от ударного слога и последней буквы слова: сначала определи тип слова, затем примени правило.",
+    summary: "Agudas получают tilde перед гласной, n или s; llanas — во всех остальных окончаниях; esdrújulas и sobresdrújulas — всегда.",
+    mistake: "Окончание слова само по себе не гарантирует tilde: canción с ударением на последнем слоге, но joven без tilde с ударением на предпоследнем.",
+    table: `<table><thead><tr><th>Тип</th><th>Ударение</th><th>Когда ставится tilde</th><th>Примеры</th></tr></thead><tbody>
+      <tr><th>aguda</th><td>последний слог</td><td>если слово оканчивается на гласную, n или s</td><td>café, canción, además; но reloj</td></tr>
+      <tr><th>llana</th><td>предпоследний слог</td><td>если окончание не гласная, не n и не s</td><td>árbol, lápiz, fácil; но casa, joven</td></tr>
+      <tr><th>esdrújula</th><td>третий слог с конца</td><td>всегда</td><td>música, teléfono, médico</td></tr>
+      <tr><th>sobresdrújula</th><td>раньше третьего с конца</td><td>всегда</td><td>dígamelo, explícaselo</td></tr>
+      <tr><th>односложные</th><td>один слог</td><td>обычно без tilde; исключение — диакритика</td><td>fue, dio, vi; но tú, él, sé</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Орфография и письмо",
+    subgroup: "Ударение",
+    title: "Diptongo и hiato: tiene, país, María, oír",
+    description: "Сочетание гласных может образовать один слог — diptongo — или два слога — hiato. Ударная закрытая гласная часто разрывает дифтонг.",
+    summary: "Слабая ударная í/ú рядом с a/e/o образует hiato и всегда получает tilde: país, María, río, oír.",
+    mistake: "Буква h между гласными не отменяет hiato и ударение: prohíbo, búho.",
+    table: `<table><thead><tr><th>Сочетание</th><th>Результат</th><th>Примеры</th><th>Деление на слоги</th></tr></thead><tbody>
+      <tr><th>слабая безударная + сильная</th><td>diptongo</td><td>tiene, causa, ciudad</td><td>tie-ne, cau-sa, ciu-dad</td></tr>
+      <tr><th>две слабые</th><td>обычно diptongo</td><td>ruido, cuidado</td><td>rui-do, cui-da-do</td></tr>
+      <tr><th>две сильные</th><td>hiato</td><td>teatro, caer, poeta</td><td>te-a-tro, ca-er, po-e-ta</td></tr>
+      <tr><th>слабая ударная + сильная</th><td>hiato, tilde обязательна</td><td>país, María, río, oír</td><td>pa-ís, Ma-rí-a, rí-o, o-ír</td></tr>
+      <tr><th>h между гласными</th><td>не меняет правило</td><td>prohíbo, búho</td><td>pro-hí-bo, bú-ho</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Орфография и письмо",
+    subgroup: "Диакритика",
+    title: "Tilde diacrítica: tú/tu, él/el, sí/si, dé/de",
+    description: "Диакритическое ударение различает короткие слова, которые пишутся одинаково, но выполняют разные грамматические функции.",
+    summary: "Местоимения и ударные слова часто получают tilde: tú, él, mí, sí, té, dé, sé, más; служебные пары пишутся без неё.",
+    mistake: "Mi с существительным без tilde — mi casa; после предлога с tilde — para mí.",
+    table: `<table><thead><tr><th>С tilde</th><th>Без tilde</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>tú — ты</th><td>tu — твой</td><td>Tú tienes tu llave.</td><td>У тебя есть твой ключ.</td></tr>
+      <tr><th>él — он</th><td>el — артикль</td><td>Él tiene el libro.</td><td>У него есть книга.</td></tr>
+      <tr><th>mí — мне/меня</th><td>mi — мой</td><td>Es para mí, no para mi hermano.</td><td>Это для меня, не для моего брата.</td></tr>
+      <tr><th>sí — да/себя</th><td>si — если</td><td>Si dice que sí, iremos.</td><td>Если он скажет «да», мы пойдём.</td></tr>
+      <tr><th>té — чай</th><td>te — тебя/тебе</td><td>Te preparo un té.</td><td>Я приготовлю тебе чай.</td></tr>
+      <tr><th>dé — дать</th><td>de — предлог</td><td>Quiero que me dé un vaso de agua.</td><td>Хочу, чтобы он дал мне стакан воды.</td></tr>
+      <tr><th>sé — знаю/будь</th><td>se — местоимение</td><td>Sé que se llama Ana.</td><td>Я знаю, что её зовут Ана.</td></tr>
+      <tr><th>más — больше</th><td>mas — но, книжное</td><td>Quiero más, mas no queda nada.</td><td>Хочу ещё, но ничего не осталось.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Орфография и письмо",
+    subgroup: "Вопросительные слова",
+    title: "Qué/que, cómo/como, cuándo/cuando: когда нужна tilde",
+    description: "Вопросительные и восклицательные слова получают tilde как в прямых, так и в косвенных вопросах; союзы и относительные слова пишутся без неё.",
+    summary: "No sé dónde está — это косвенный вопрос, поэтому dónde сохраняет tilde, хотя знаков ¿? нет.",
+    mistake: "No sé donde vive неверно, если смысл — «не знаю, где он живёт»: нужно No sé dónde vive.",
+    table: `<table><thead><tr><th>Форма с tilde</th><th>Вопрос или восклицание</th><th>Форма без tilde</th><th>Связь или относительное значение</th></tr></thead><tbody>
+      <tr><th>qué</th><td>¿Qué quieres? No sé qué quiere.</td><td>que</td><td>El libro que quiero.</td></tr>
+      <tr><th>quién</th><td>¿Quién viene? Dime quién viene.</td><td>quien</td><td>La persona con quien hablé.</td></tr>
+      <tr><th>cuál</th><td>¿Cuál prefieres?</td><td>cual</td><td>La razón por la cual vine.</td></tr>
+      <tr><th>cómo</th><td>¿Cómo estás? Mira cómo lo hace.</td><td>como</td><td>Hazlo como quieras.</td></tr>
+      <tr><th>cuándo</th><td>No sé cuándo llegará.</td><td>cuando</td><td>Te llamaré cuando llegue.</td></tr>
+      <tr><th>dónde / adónde</th><td>¿Dónde estás? ¿Adónde vas?</td><td>donde / adonde</td><td>La casa donde vivo.</td></tr>
+      <tr><th>cuánto</th><td>¡Cuánto tiempo! ¿Cuánto cuesta?</td><td>cuanto</td><td>Come cuanto quieras.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Орфография и письмо",
+    subgroup: "Слитно или раздельно",
+    title: "Por qué, porque, el porqué, por que",
+    description: "Четыре написания различают вопрос, объяснение причины, существительное «причина» и сочетание предлога por с que.",
+    summary: "¿Por qué? — вопрос. Porque — ответ. El porqué — существительное. Por que — редкое сочетание, которое часто можно раскрыть как por el que или выбрать por + придаточное.",
+    mistake: "¿Porque llegas tarde? неверно в обычном вопросе о причине: нужно ¿Por qué llegas tarde?",
+    table: `<table><thead><tr><th>Форма</th><th>Функция</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>por qué</th><td>прямой вопрос</td><td>¿Por qué te vas?</td><td>Почему ты уходишь?</td></tr>
+      <tr><th>por qué</th><td>косвенный вопрос</td><td>No sé por qué se fue.</td><td>Не знаю, почему он ушёл.</td></tr>
+      <tr><th>porque</th><td>причина или ответ</td><td>Me voy porque estoy cansado.</td><td>Я ухожу, потому что устал.</td></tr>
+      <tr><th>el porqué</th><td>существительное, имеет множественное число</td><td>No entiendo el porqué de su decisión.</td><td>Я не понимаю причину его решения.</td></tr>
+      <tr><th>por que</th><td>por + que после управления</td><td>Optaron por que la reunión fuera breve.</td><td>Они выбрали, чтобы встреча была короткой.</td></tr>
+      <tr><th>por que</th><td>por + относительное que, часто por el que</td><td>Esa fue la razón por (la) que volvió.</td><td>Это была причина, по которой он вернулся.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Орфография и письмо",
+    subgroup: "Пунктуация и регистр",
+    title: "¿? ¡! Запятые, кавычки и прописные буквы",
+    description: "Испанская пунктуация использует открывающие вопросительные и восклицательные знаки; регистр дней, месяцев, языков и национальностей отличается от русского и английского.",
+    summary: "Вопрос и восклицание открываются знаками ¿ и ¡. Días, meses, idiomas и gentilicios обычно пишутся со строчной буквы.",
+    mistake: "Испанское предложение нельзя оформлять только закрывающим знаком: правильно ¿Vienes mañana?, а не Vienes mañana? в нормативном письме.",
+    table: `<table><thead><tr><th>Правило</th><th>Норма</th><th>Пример</th><th>Комментарий</th></tr></thead><tbody>
+      <tr><th>вопрос</th><td>¿ ... ?</td><td>¿A qué hora llegas?</td><td>Открывающий знак ставится с начала вопросительной части.</td></tr>
+      <tr><th>восклицание</th><td>¡ ... !</td><td>¡Qué buena idea!</td><td>После ? и ! дополнительная точка не нужна.</td></tr>
+      <tr><th>обращение</th><td>выделяется запятой</td><td>María, ven aquí.</td><td>Имя не является подлежащим команды.</td></tr>
+      <tr><th>кавычки</th><td>«…» или “…”</td><td>Dijo: «No puedo».</td><td>Угловые кавычки предпочтительны в издательском тексте.</td></tr>
+      <tr><th>прямая речь</th><td>raya</td><td>—No lo sé —dijo Ana.</td><td>Реплика начинается с длинной черты.</td></tr>
+      <tr><th>дни и месяцы</th><td>со строчной</td><td>el lunes 5 de mayo</td><td>Прописная нужна только в начале предложения или имени.</td></tr>
+      <tr><th>языки и национальности</th><td>со строчной</td><td>Habla español. Es española.</td><td>español и española не пишутся с прописной.</td></tr>
+    </tbody></table>`
   }
 ];
 const TABLE_GROUPS = [
@@ -5799,6 +6026,10 @@ const TABLE_GROUPS = [
     description: "Приставки, суффиксы, уменьшительные, ложные друзья и сокращения."
   },
   {
+    title: "Орфография и письмо",
+    description: "Ударения, слитное и раздельное написание, пунктуация и регистр."
+  },
+  {
     title: "Живой испанский",
     description: "Погода, разговорные выражения Испании и слова-связки."
   },
@@ -5817,6 +6048,7 @@ const TABLE_FILTERS = [
   { id: "tenses", label: "Грамматические времена" },
   { id: "adverbs", label: "Наречия и связки" },
   { id: "word_formation", label: "Словообразование" },
+  { id: "orthography", label: "Орфография" },
   { id: "colloquial", label: "Живой испанский" },
   { id: "time", label: "Дата и время" }
 ];
@@ -5829,6 +6061,7 @@ const TABLE_FILTER_GROUPS = {
   tenses: ["Времена и синтаксис"],
   adverbs: ["Наречия, предлоги и связки"],
   word_formation: ["Словообразование и лексика"],
+  orthography: ["Орфография и письмо"],
   colloquial: ["Живой испанский"],
   time: ["Время и числа"],
 };

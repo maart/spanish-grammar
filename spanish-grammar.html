@@ -2738,7 +2738,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.53 · обновлено: 19.07.2026 23:29 CEST</span>
+        <span>Версия MVP 0.54 · обновлено: 19.07.2026 23:43 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -7786,15 +7786,6 @@ const COMMON_VERB_SUGGESTIONS = [
   "ocurrir", "cumplir", "indicar", "gustar", "ayudar", "establecer", "reducir", "participar", "obtener", "superar"
 ];
 
-const CORE_FORMS_REVIEWED = new Set([
-  ...COMMON_VERB_SUGGESTIONS,
-  "ser", "estar", "ir", "haber", "tener", "hacer", "decir", "venir", "poder", "poner",
-  "ver", "dar", "caber", "valer", "querer", "saber", "salir", "traer", "oir", "pedir",
-  "repetir", "servir", "vestir", "dormir", "conducir", "traducir", "producir", "reducir",
-  "introducir", "freir", "reir", "sonreir", "oler", "adquirir", "cocer", "llover", "prever",
-  "hablar", "comer", "vivir", "trabajar", "estudiar"
-]);
-
 const SUBJUNTIVO_MORE_TRIGGERS = [
   ["Надеюсь, что...", "espero que + subjuntivo: Espero que todo salga bien."],
   ["Предпочитаю, чтобы...", "prefiero que + subjuntivo: Prefiero que vengas mañana."],
@@ -8097,6 +8088,18 @@ function generatedPresent(verb) {
   const type = verbType(verb);
   const endings = TENSES[0].endings[type];
   const base = endings.map((ending) => stem(verb) + ending);
+  if (STRESSED_IAR_VERBS.has(verb)) {
+    const stressedStem = accentLastLetter(stem(verb), "i");
+    [0, 1, 2, 5].forEach((index) => {
+      base[index] = stressedStem + endings[index];
+    });
+  }
+  if (STRESSED_UAR_VERBS.has(verb)) {
+    const stressedStem = accentLastLetter(stem(verb), "u");
+    [0, 1, 2, 5].forEach((index) => {
+      base[index] = stressedStem + endings[index];
+    });
+  }
   const yoIrregulars = [
     ["tener", "tengo"], ["poner", "pongo"], ["venir", "vengo"], ["salir", "salgo"],
     ["hacer", "hago"], ["decir", "digo"], ["traer", "traigo"], ["caer", "caigo"],
@@ -8251,6 +8254,11 @@ function addWrittenAccentForEnclitic(form, pronoun) {
 
 function accentVowel(char) {
   return ({ a: "á", e: "é", i: "í", o: "ó", u: "ú", A: "Á", E: "É", I: "Í", O: "Ó", U: "Ú" })[char] || char;
+}
+
+function accentLastLetter(value, letter) {
+  const index = value.lastIndexOf(letter);
+  return index < 0 ? value : value.slice(0, index) + accentVowel(letter) + value.slice(index + 1);
 }
 
 function participle(verb) {
@@ -8414,6 +8422,16 @@ function generatedSubjuntivoPresente(verb) {
   const a = ["a", "as", "a", "amos", "áis", "an"];
   const e = ["e", "es", "e", "emos", "éis", "en"];
   const make = (root, endings) => endings.map((ending) => root + ending);
+  if (STRESSED_IAR_VERBS.has(verb)) {
+    const regularStem = stem(verb);
+    const stressedStem = accentLastLetter(regularStem, "i");
+    return [stressedStem + "e", stressedStem + "es", stressedStem + "e", regularStem + "emos", regularStem + "éis", stressedStem + "en"];
+  }
+  if (STRESSED_UAR_VERBS.has(verb)) {
+    const regularStem = stem(verb);
+    const stressedStem = accentLastLetter(regularStem, "u");
+    return [stressedStem + "e", stressedStem + "es", stressedStem + "e", regularStem + "emos", regularStem + "éis", stressedStem + "en"];
+  }
   if (verb.endsWith("tener")) return make(verb.slice(0, -5) + "teng", a);
   if (verb.endsWith("poner")) return make(verb.slice(0, -5) + "pong", a);
   if (verb.endsWith("venir")) return make(verb.slice(0, -5) + "veng", a);
@@ -8528,12 +8546,20 @@ function generatedParticiple(verb) {
 }
 
 const STEM_CHANGE_GROUPS = {
-  "e:ie": ["tener", "venir", "pensar", "cerrar", "empezar", "comenzar", "querer", "entender", "perder", "defender", "encender", "tender", "ascender", "preferir", "sentir", "mentir", "convertir", "divertir", "advertir", "sugerir", "atravesar", "calentar", "apretar", "acertar", "tropezar", "sentar", "despertar", "negar", "regar", "gobernar", "recomendar", "sembrar", "temblar", "enterrar", "manifestar", "cegar", "helar", "serrar", "quebrar"],
+  "e:ie": ["tener", "venir", "pensar", "cerrar", "empezar", "comenzar", "querer", "entender", "perder", "defender", "encender", "tender", "ascender", "preferir", "sentir", "mentir", "convertir", "divertir", "advertir", "sugerir", "atravesar", "calentar", "apretar", "acertar", "tropezar", "sentar", "despertar", "negar", "regar", "gobernar", "recomendar", "sembrar", "temblar", "enterrar", "manifestar", "cegar", "helar", "serrar", "quebrar", "nevar"],
   "o:ue": ["poder", "dormir", "morir", "volver", "devolver", "resolver", "recordar", "acordar", "contar", "costar", "mostrar", "demostrar", "probar", "almorzar", "soñar", "sonar", "mover", "morder", "doler", "encontrar", "acostar", "apostar", "colgar", "forzar", "esforzar", "rogar", "rodar", "soltar", "volar", "poblar"],
   "e:i": ["decir", "pedir", "repetir", "servir", "vestir", "seguir", "conseguir", "perseguir", "elegir", "corregir", "competir", "impedir", "medir", "despedir", "reir", "sonreir", "freir", "rendir", "regir", "gemir", "concebir", "derretir"],
   "u:ue": ["jugar"]
 };
 const STEM_CHANGE_EXCEPTIONS = ["agregar", "entregar", "presentar", "representar", "ausentar"];
+// RAE/DLE: modelos enviar y actuar. Solo se incluyen verbos comprobados en esos modelos.
+const STRESSED_IAR_VERBS = new Set([
+  "ampliar", "ansiar", "confiar", "criar", "desafiar", "desconfiar", "desviar",
+  "enfriar", "enviar", "fiar", "guiar", "reenviar", "vaciar", "variar"
+]);
+const STRESSED_UAR_VERBS = new Set([
+  "actuar", "acentuar", "continuar", "evaluar", "graduar", "situar"
+]);
 
 function hasStemChange(verb, from, to) {
   const b = baseVerb(verb);
@@ -8918,10 +8944,6 @@ function verbPassport(info) {
 
   if (rawTags.includes("вспомогательный")) {
     badges.push(`<span title="Вспомогательный глагол">вспомогательный</span>`);
-  }
-
-  if (!CORE_FORMS_REVIEWED.has(baseVerb(verb))) {
-    badges.push(`<span class="badge-generated" title="Спряжения построены по грамматическим правилам и пока не сверены с расширенным эталонным набором">рассчитано по правилу</span>`);
   }
 
   return `<div class="verb-passport">${badges.join("")}</div>`;

@@ -38,13 +38,13 @@ const sandbox = {
 // Execute the JS in the sandbox
 const fn = new Function(
   ...Object.keys(sandbox),
-  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, TENSE_EXAMPLES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, CORE_FORMS_REVIEWED, VERB_TENSE_GROUPS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize, generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer, cardAccuracy, isCardMastered, cardNeedsReview, cardsForFilter, studyCardCounts };"
+  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, TENSE_EXAMPLES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, VERB_TENSE_GROUPS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize, generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer, cardAccuracy, isCardMastered, cardNeedsReview, cardsForFilter, studyCardCounts };"
 );
 const api = fn(...Object.values(sandbox));
 
 const {
   IRREGULARS, TRANSLATIONS, BASE_VERBS, TENSES, TENSE_EXAMPLES, PEOPLE, VERB_TENSE_GROUPS,
-  COMMON_VERB_SUGGESTIONS, CORE_FORMS_REVIEWED,
+  COMMON_VERB_SUGGESTIONS,
   verbType, stem, regularPresent, regularIndefinido, regularImperfecto,
   regularFuture, regularCondicional, regularSubjuntivoPresente,
   regularImperativoAfirmativo, participle, gerund,
@@ -1007,6 +1007,29 @@ const COMMON_REGULAR_MODEL_VERBS = [
   "celebrar", "afectar", "ocurrir", "cumplir", "gustar", "ayudar", "participar", "superar"
 ];
 
+const ACCENTED_MODEL_REFERENCE = {
+  ampliar: {
+    presente: ["amplío", "amplías", "amplía", "ampliamos", "ampliáis", "amplían"],
+    subjuntivo_presente: ["amplíe", "amplíes", "amplíe", "ampliemos", "ampliéis", "amplíen"]
+  },
+  enviar: {
+    presente: ["envío", "envías", "envía", "enviamos", "enviáis", "envían"],
+    subjuntivo_presente: ["envíe", "envíes", "envíe", "enviemos", "enviéis", "envíen"]
+  },
+  actuar: {
+    presente: ["actúo", "actúas", "actúa", "actuamos", "actuáis", "actúan"],
+    subjuntivo_presente: ["actúe", "actúes", "actúe", "actuemos", "actuéis", "actúen"]
+  },
+  continuar: {
+    presente: ["continúo", "continúas", "continúa", "continuamos", "continuáis", "continúan"],
+    subjuntivo_presente: ["continúe", "continúes", "continúe", "continuemos", "continuéis", "continúen"]
+  },
+  nevar: {
+    presente: ["nievo", "nievas", "nieva", "nevamos", "neváis", "nievan"],
+    subjuntivo_presente: ["nieve", "nieves", "nieve", "nevemos", "nevéis", "nieven"]
+  }
+};
+
 // ─── Validation logic ───────────────────────────────────────────────────────
 const issues = [];
 let totalChecked = 0;
@@ -1377,17 +1400,12 @@ for (const verb of COMMON_REGULAR_MODEL_VERBS) {
   checkScalar(verb, "common_regular_gerundio", root + model.gerundio, info.gerund, "high");
 }
 
-for (const verb of COMMON_VERB_SUGGESTIONS) {
-  if (!CORE_FORMS_REVIEWED.has(baseVerb(verb))) {
-    issues.push({
-      verb,
-      tense: "review_status",
-      person: "-",
-      expected: "проверенный частый глагол",
-      actual: "рассчитано по правилу",
-      severity: "high"
-    });
-  }
+for (const [verb, reference] of Object.entries(ACCENTED_MODEL_REFERENCE)) {
+  if (!BASE_VERBS.includes(verb)) continue;
+  checkedVerbs.add(verb);
+  const forms = verbInfo(verb).forms;
+  checkArray(verb, "presente", reference.presente, forms.presente, "high");
+  checkArray(verb, "subjuntivo_presente", reference.subjuntivo_presente, forms.subjuntivo_presente, "high");
 }
 
 for (const [verb, expected] of Object.entries(PAST_SUBJUNCTIVE_REFERENCE)) {

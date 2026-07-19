@@ -2457,7 +2457,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.37 · обновлено: 19.07.2026 20:18 CEST</footer>
+      <footer class="app-footer">Версия MVP 0.38 · обновлено: 19.07.2026 20:24 CEST</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -7738,7 +7738,7 @@ function translationFor(verb) {
 }
 
 function generatedTags(verb) {
-  const tags = ["правильный", `-${verbType(verb)}`, ...verbExceptionLabels(verb)];
+  const tags = ["правильный", ...verbExceptionLabels(verb)];
   if (isReflexive(verb)) tags.push("-se");
   return Array.from(new Set(tags));
 }
@@ -8004,11 +8004,8 @@ function pluralizeTenses(count) {
 function verbPassport(info) {
   const verb = info.infinitive;
   const reflexive = isReflexive(verb);
-  const baseType = verbType(verb);
   const rawTags = info.tags || [];
   const badges = [];
-
-  badges.push(`<span>- ${baseType}</span>`);
 
   if (reflexive) {
     badges.push(`<span class="badge-reflexive" title="Возвратный глагол">-se</span>`);
@@ -8399,11 +8396,7 @@ function renderVerbListItem(verb, { showBadges = true, isBestMatch = false } = {
 function verbListBadges(info) {
   const verb = info.infinitive;
   const reflexive = isReflexive(verb);
-  const baseType = verbType(verb);
   const badges = [];
-
-  const typeLabel = reflexive ? `- ${baseType}` : `-${baseType}`;
-  badges.push(`<span>${typeLabel}</span>`);
 
   if (reflexive) {
     badges.push(`<span class="badge-reflexive" title="Возвратный глагол">-se</span>`);

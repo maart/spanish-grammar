@@ -535,48 +535,28 @@ input[type="search"] {
   color: white;
 }
 
-.table-filter-tabs {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+.table-filter-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 14px;
 }
 
-.table-subgroup-tabs {
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  margin-top: 0;
-  margin-bottom: 4px;
-}
-
-.table-subgroup-tabs .small-button {
-  font-size: 12px;
-  min-height: 32px;
-  padding: 0 8px;
-}
-
-.table-search {
-  width: 100%;
-  padding: 8px 12px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--surface);
-  color: var(--text);
-  font-size: 14px;
-  outline: none;
-  margin: 8px 0;
-}
-.table-search:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 20%, transparent);
-}
-.table-search-count {
-  margin: -4px 0 8px;
-  font-size: 13px;
+.table-filter-control {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
   color: var(--muted);
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 900;
 }
 
-@media (min-width: 640px) {
-  .table-filter-tabs {
-    grid-template-columns: repeat(4, 1fr);
-  }
+.table-filter-control select {
+  width: 100%;
+}
+
+.table-filter-control:only-child {
+  grid-column: 1 / -1;
 }
 
 .toc-toggle,
@@ -1649,46 +1629,104 @@ td.irregular {
   font-size: 15px;
 }
 
-.table-toc {
+.table-catalog {
+  display: grid;
+  gap: 12px;
+}
+
+.content > section.table-catalog-group {
   display: grid;
   gap: 10px;
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid var(--line);
 }
 
-.table-toc h3 {
-  margin-bottom: 0;
-  color: var(--accent-2);
-  font-size: 14px;
-}
-
-.table-toc-group {
+.table-catalog-group > header {
   display: grid;
+  gap: 3px;
+}
+
+.table-catalog-group > header h2,
+.table-catalog-group > header p {
+  margin: 0;
+}
+
+.table-catalog-group > header h2 {
+  color: var(--accent-2);
+  font-size: 17px;
+}
+
+.table-catalog-links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px;
 }
 
-.table-toc-title {
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 900;
-  text-transform: uppercase;
+.table-catalog-link {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  min-height: 58px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 9px 10px;
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
 }
 
-.table-toc-links {
+.table-catalog-link:hover,
+.table-catalog-link:focus-visible {
+  border-color: var(--accent-2);
+  background: var(--success-soft);
+}
+
+.table-catalog-link span {
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.table-catalog-link small {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.table-catalog-link small strong {
+  color: var(--accent-2);
+  font-weight: 900;
+}
+
+.focused-table-toolbar,
+.focused-table-actions,
+.focused-table-paging {
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
   gap: 6px;
 }
 
-.table-toc-links .small-button {
-  min-height: 30px;
-  padding-inline: 8px;
-  font-size: 12px;
+.focused-table-toolbar {
+  justify-content: space-between;
 }
-.table-toc-links .small-button.is-open-toc {
-  border-color: var(--accent-2);
+
+.focused-table-status {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.table-context {
+  margin-bottom: 5px;
   color: var(--accent-2);
+  font-size: 12px;
+  font-weight: 900;
 }
 
 .app-footer {
@@ -1822,6 +1860,26 @@ select {
 
   .filter-tabs {
     grid-template-columns: 1fr;
+  }
+
+  .table-filter-controls,
+  .table-catalog-links {
+    grid-template-columns: 1fr;
+  }
+
+  .focused-table-toolbar,
+  .focused-table-actions,
+  .focused-table-paging {
+    align-items: stretch;
+  }
+
+  .focused-table-toolbar {
+    display: grid;
+  }
+
+  .focused-table-actions .small-button,
+  .focused-table-paging .small-button {
+    flex: 1 1 0;
   }
 
   th,
@@ -2057,7 +2115,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.29 · обновлено: 19.07.2026 17:54</footer>
+      <footer class="app-footer">Версия MVP 0.30 · обновлено: 19.07.2026 18:10</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -5714,62 +5772,53 @@ const USEFUL_TABLES = [
 const TABLE_GROUPS = [
   {
     title: "Местоимения и объекты",
-    emoji: "🔤",
     description: "Местоимения заменяют существительные и помогают строить фразы с объектами."
   },
   {
     title: "Определители и существительные",
-    emoji: "📦",
     description: "Артикли, прилагательные, числительные и gentilicios — всё, что определяет существительное."
   },
   {
     title: "Глаголы: пары и устойчивые",
-    emoji: "🔧",
     description: "Пары глаголов, устойчивые выражения, функции se, пассив и косвенная речь."
   },
   {
     title: "Перифразы и модальность",
-    emoji: "🔄",
     description: "Глагольные обороты: намерение, начало, продолжение, окончание, долженствование."
   },
   {
     title: "Времена и синтаксис",
-    emoji: "⏳",
     description: "Прошедшие, будущее, условия, согласование времён, вопросы."
   },
   {
     title: "Наречия, предлоги и связки",
-    emoji: "🔗",
     description: "Наречия, союзы, коннекторы и предлоги — связки для построения фраз."
   },
   {
     title: "Словообразование и лексика",
-    emoji: "🧩",
     description: "Приставки, суффиксы, уменьшительные, ложные друзья и сокращения."
   },
   {
     title: "Живой испанский",
-    emoji: "💬",
     description: "Погода, разговорные выражения Испании и слова-связки."
   },
   {
     title: "Время и числа",
-    emoji: "📐",
     description: "Как называть время, дни, месяцы и даты."
   }
 ];
 
 const TABLE_FILTERS = [
-  { id: "all", label: "Все" },
+  { id: "all", label: "Все разделы" },
   { id: "pronouns", label: "Местоимения" },
   { id: "determiners", label: "Определители" },
   { id: "verbs", label: "Глаголы" },
   { id: "periphrasis", label: "Перифразы" },
-  { id: "tenses", label: "Времена" },
-  { id: "adverbs", label: "Наречия" },
-  { id: "word_formation", label: "Словообр." },
-  { id: "colloquial", label: "Живой" },
-  { id: "time", label: "Время" }
+  { id: "tenses", label: "Грамматические времена" },
+  { id: "adverbs", label: "Наречия и связки" },
+  { id: "word_formation", label: "Словообразование" },
+  { id: "colloquial", label: "Живой испанский" },
+  { id: "time", label: "Дата и время" }
 ];
 
 const TABLE_FILTER_GROUPS = {
@@ -5936,10 +5985,8 @@ const state = {
   showImperativoMoreExamples: false,
   tableFilter: localStorage.getItem("msg:tableFilter") || "all",
   tableSubgroup: localStorage.getItem("msg:tableSubgroup") || "",
-  tableQuery: "",
-  showToc: false,
+  focusedTable: null,
   showTenseToc: false,
-  openTables: {},
   tenseFilter: ["basic", "frequent", "all"].includes(localStorage.getItem("msg:tenseFilter"))
     ? localStorage.getItem("msg:tenseFilter")
     : "basic",
@@ -7723,144 +7770,131 @@ function formatFormula(value) {
 
 function renderTables() {
   const content = clearContent();
+  const focusedTable = Number.isInteger(state.focusedTable) ? INDEXED_TABLES[state.focusedTable] : null;
+
+  if (focusedTable) {
+    const groupTables = INDEXED_TABLES.filter((item) => item.group === focusedTable.group);
+    const position = groupTables.findIndex((item) => item.index === focusedTable.index);
+    const previous = position > 0 ? groupTables[position - 1] : null;
+    const next = position < groupTables.length - 1 ? groupTables[position + 1] : null;
+    const toolbar = infoSection({
+      id: "tablesTop",
+      html: `
+        <div class="focused-table-toolbar">
+          <div class="focused-table-actions">
+            <button class="small-button primary" type="button" data-table-back>← К оглавлению</button>
+            <span class="focused-table-status">${position + 1} из ${groupTables.length} в разделе</span>
+          </div>
+          <div class="focused-table-paging" aria-label="Навигация между шпаргалками">
+            <button class="small-button" type="button" data-table-previous="${previous?.index ?? ""}" ${previous ? `aria-label="Предыдущая шпаргалка: ${escapeHTML(previous.title)}"` : "disabled"}>← Ранее</button>
+            <button class="small-button" type="button" data-table-next="${next?.index ?? ""}" ${next ? `aria-label="Следующая шпаргалка: ${escapeHTML(next.title)}"` : "disabled"}>Далее →</button>
+          </div>
+        </div>
+      `
+    });
+    content.appendChild(toolbar);
+    content.appendChild(renderUsefulTableCard(focusedTable));
+    bindClickAll(toolbar, "[data-table-back]", () => {
+      state.focusedTable = null;
+      renderTables();
+      scrollToCard("tablesTop");
+    });
+    bindClickAll(toolbar, "[data-table-previous]", (event) => {
+      openTableByIndex(Number(event.currentTarget.dataset.tablePrevious));
+    });
+    bindClickAll(toolbar, "[data-table-next]", (event) => {
+      openTableByIndex(Number(event.currentTarget.dataset.tableNext));
+    });
+    return;
+  }
+
   const visibleTables = INDEXED_TABLES.filter((item) => tableMatchesFilter(item));
+  const subgroups = getSubgroupsForFilter(state.tableFilter);
   const nav = infoSection({
     id: "tablesTop",
     html: `
     <h2>Шпаргалки</h2>
-    <p class="muted">Выбери раздел или ищи по названию — ниже останутся только нужные шпаргалки.</p>
-    <input class="table-search" type="search" placeholder="Поиск по шпаргалкам…" value="${state.tableQuery}" data-table-search>
-    ${state.tableQuery ? `<p class="table-search-count">Найдено: ${visibleTables.length}</p>` : ""}
-    <div class="filter-tabs table-filter-tabs" aria-label="Фильтр шпаргалок">
-      ${TABLE_FILTERS.slice(0, 1).concat(
-        TABLE_FILTERS.slice(1).sort((a, b) => TABLE_FILTER_COUNTS[b.id] - TABLE_FILTER_COUNTS[a.id])
-      ).map((filter) => `
-        <button class="small-button ${state.tableFilter === filter.id ? "is-active" : ""}" type="button" data-table-filter="${filter.id}">
-          ${filter.label} <span class="filter-count">${TABLE_FILTER_COUNTS[filter.id]}</span>
-        </button>
-      `).join("")}
+    <p class="muted">Выбери раздел, затем открой нужную шпаргалку. На экране будет показан только один материал.</p>
+    <div class="table-filter-controls">
+      <label class="table-filter-control">
+        <span>Раздел</span>
+        <select data-table-filter aria-label="Раздел шпаргалок">
+          ${TABLE_FILTERS.map((filter) => `<option value="${filter.id}" ${state.tableFilter === filter.id ? "selected" : ""}>${filter.label} · ${TABLE_FILTER_COUNTS[filter.id]}</option>`).join("")}
+        </select>
+      </label>
+      ${subgroups.length > 1 ? `
+        <label class="table-filter-control">
+          <span>Тема</span>
+          <select data-table-subgroup aria-label="Тема шпаргалок">
+            <option value="">Все темы · ${visibleTables.length}</option>
+            ${subgroups.map((subgroup) => `<option value="${escapeHTML(subgroup)}" ${state.tableSubgroup === subgroup ? "selected" : ""}>${subgroup} · ${countSubgroupTables(state.tableFilter, subgroup)}</option>`).join("")}
+          </select>
+        </label>
+      ` : ""}
     </div>
-    ${renderSubgroupFilters(visibleTables)}
-    <button class="small-button toc-toggle" type="button" data-toggle-toc aria-controls="tablesToc" aria-expanded="${state.showToc}">
-      ${state.showToc ? "▲ Скрыть оглавление" : "▼ Показать оглавление"}
-    </button>
-    ${state.showToc ? `
-    <div class="table-toc" id="tablesToc" aria-label="Оглавление шпаргалок">
-      ${TABLE_GROUPS.map((group) => {
-        const items = visibleTables.filter((item) => item.group === group.title);
-        if (items.length === 0) return "";
-        return `
-          <div class="table-toc-group">
-            <div class="table-toc-title">${group.title} <span class="filter-count">${items.length}</span></div>
-            <div class="table-toc-links">
-              ${items.map((item) => `<button class="small-button${state.openTables[item.index] ? " is-open-toc" : ""}" type="button" data-table-jump="table-${item.index}">${state.openTables[item.index] ? "▾ " : ""}${item.title}</button>`).join("")}
-            </div>
-          </div>
-        `;
-      }).join("")}
-    </div>
-    ` : ""}
   `});
   content.appendChild(nav);
-  bindClickAll(nav, "[data-table-filter]", (event) => {
-    const id = event.currentTarget.dataset.tableFilter;
-    if (state.tableFilter === id) {
-      state.tableFilter = "all";
-      state.tableSubgroup = "";
-    } else {
-      state.tableFilter = id;
-      state.tableSubgroup = "";
-    }
+  nav.querySelector("[data-table-filter]")?.addEventListener("change", (event) => {
+    state.tableFilter = event.currentTarget.value;
+    state.tableSubgroup = "";
     localStorage.setItem("msg:tableFilter", state.tableFilter);
     localStorage.setItem("msg:tableSubgroup", state.tableSubgroup);
     renderTables();
   });
-  bindClickAll(nav, "[data-table-subgroup]", (event) => {
-    const sub = event.currentTarget.dataset.tableSubgroup;
-    state.tableSubgroup = state.tableSubgroup === sub ? "" : sub;
+  nav.querySelector("[data-table-subgroup]")?.addEventListener("change", (event) => {
+    state.tableSubgroup = event.currentTarget.value;
     localStorage.setItem("msg:tableSubgroup", state.tableSubgroup);
     renderTables();
   });
-  bindClickAll(nav, "[data-table-jump]", (event) => {
-    openTableFromLink(event.currentTarget.dataset.tableJump);
-  });
-  bindClickAll(nav, "[data-toggle-toc]", () => {
-    state.showToc = !state.showToc;
-    renderTables();
-  });
-  const searchInput = nav.querySelector("[data-table-search]");
-  if (searchInput) {
-    let timer;
-    searchInput.addEventListener("input", () => {
-      state.tableQuery = searchInput.value;
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        const pos = searchInput.selectionStart;
-        renderTables();
-        const newInput = document.querySelector("[data-table-search]");
-        if (newInput && document.activeElement !== newInput) {
-          newInput.focus();
-          newInput.setSelectionRange(pos, pos);
-        }
-      }, 120);
-    });
-    searchInput.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") { state.tableQuery = ""; renderTables(); }
-    });
-  }
+
+  const catalog = document.createElement("div");
+  catalog.className = "table-catalog";
+  catalog.setAttribute("aria-label", "Оглавление шпаргалок");
   TABLE_GROUPS.forEach((group) => {
     const groupTables = visibleTables.filter((item) => item.group === group.title);
     if (groupTables.length === 0) return;
-    const emoji = group.emoji ? `${group.emoji} ` : "";
-    content.appendChild(groupHeading(`${emoji}${group.title}`, group.description));
-
-    const subgroupMap = {};
-    groupTables.forEach((item) => {
-      const sg = item.subgroup || "—";
-      if (!subgroupMap[sg]) subgroupMap[sg] = [];
-      subgroupMap[sg].push(item);
+    const section = infoSection({
+      className: "info-card table-catalog-group",
+      html: `
+        <header>
+          <h2>${group.title} <span class="filter-count">${groupTables.length}</span></h2>
+          <p class="muted">${group.description}</p>
+        </header>
+        <div class="table-catalog-links">
+          ${groupTables.map((item) => `
+            <button class="table-catalog-link" type="button" data-table-open="${item.index}">
+              <span>${item.title}</span>
+              <small>${item.subgroup ? `<strong>${item.subgroup}.</strong> ` : ""}${item.summary || tableSummary(item)}</small>
+            </button>
+          `).join("")}
+        </div>
+      `
     });
-
-    Object.entries(subgroupMap).forEach(([subgroup, items]) => {
-      if (subgroup !== "—") {
-        content.appendChild(subgroupHeading(subgroup));
-      }
-      items.forEach((item) => {
-        content.appendChild(renderUsefulTableCard(item));
-      });
-    });
+    catalog.appendChild(section);
+  });
+  content.appendChild(catalog);
+  bindClickAll(catalog, "[data-table-open]", (event) => {
+    openTableByIndex(Number(event.currentTarget.dataset.tableOpen));
   });
 }
 
 function renderUsefulTableCard(item) {
   const index = item.index;
-  const isOpen = state.openTables[index] === true;
   const summary = item.summary || tableSummary(item);
   const mistake = item.mistake || tableMistake(item);
   const related = item.related ? relatedTablesMarkup(item.related) : "";
   const section = infoSection({
     id: `table-${index}`,
-    className: `info-card table-card${isOpen ? " is-open" : ""}`,
+    className: "info-card table-card is-open",
     html: `
+      <p class="table-context">${item.group}${item.subgroup ? ` · ${item.subgroup}` : ""}</p>
       <h2>${item.title}</h2>
       <p class="muted">${item.description}</p>
       <div class="table-summary"><strong>Главное:</strong> ${summary}</div>
-      ${mistake ? `<div class="table-mistake"><strong>Типичная ошибка:</strong> ${mistake}</div>` : ""}
-      <div class="table-card-actions">
-        ${disclosureButton({ open: isOpen, target: index, label: "Показать шпаргалку", hideLabel: "Скрыть шпаргалку", action: "toggle-table" })}
-      </div>
       <div class="table-wrap">${LINKED_TABLE_HTML[index]}</div>
+      ${mistake ? `<div class="table-mistake"><strong>Типичная ошибка:</strong> ${mistake}</div>` : ""}
       ${related}
     `
-  });
-  section.querySelector("[data-toggle-table]")?.addEventListener("click", () => {
-    const btn = section.querySelector("[data-toggle-table]");
-    const isNowOpen = section.classList.toggle("is-open");
-    state.openTables[index] = isNowOpen;
-    btn.textContent = isNowOpen ? "Скрыть шпаргалку" : "Показать шпаргалку";
-    btn.classList.toggle("danger", isNowOpen);
-    btn.classList.toggle("success", !isNowOpen);
-    if (isNowOpen) scrollToCard(`table-${index}`);
   });
   bindClickAll(section, "[data-open-tense]", (event) => {
     openTenseFromVerb(event.currentTarget.dataset.openTense);
@@ -7874,19 +7908,15 @@ function renderUsefulTableCard(item) {
 function openTableFromLink(targetId) {
   const match = /^table-(\d+)$/.exec(targetId);
   if (!match) return;
-  const index = Number(match[1]);
+  openTableByIndex(Number(match[1]));
+}
+
+function openTableByIndex(index) {
   const item = INDEXED_TABLES[index];
   if (!item) return;
-  if (!tableMatchesFilter(item)) {
-    state.tableFilter = "all";
-    state.tableSubgroup = "";
-    state.tableQuery = "";
-    localStorage.setItem("msg:tableFilter", state.tableFilter);
-    localStorage.setItem("msg:tableSubgroup", state.tableSubgroup);
-  }
-  state.openTables[index] = true;
+  state.focusedTable = index;
   renderTables();
-  requestAnimationFrame(() => scrollToCard(targetId));
+  requestAnimationFrame(() => scrollToCard("tablesTop"));
 }
 
 function relatedTablesMarkup(indices) {
@@ -7912,12 +7942,7 @@ function tableMatchesFilter(item) {
   }
   if (!ok) return false;
   if (state.tableSubgroup && item.subgroup !== state.tableSubgroup) return false;
-  const q = state.tableQuery && normalize(state.tableQuery);
-  if (!q) return true;
-  const tableText = item.table ? normalize(item.table.replace(/<[^>]*>/g, " ")) : "";
-  const summaryText = item.summary ? normalize(item.summary) : normalize(tableSummary(item));
-  const searchText = normalize(item.title + " " + item.description + " " + summaryText + " " + tableText);
-  return searchText.includes(q);
+  return true;
 }
 
 function getSubgroupsForFilter(filterId) {
@@ -7940,24 +7965,6 @@ function countSubgroupTables(filterId, subgroup) {
     if (!groups) return item.subgroup === subgroup;
     return groups.some((g) => item.group === g) && item.subgroup === subgroup;
   }).length;
-}
-
-function renderSubgroupFilters(visibleTables) {
-  if (state.tableFilter === "all") return "";
-  const subgroups = getSubgroupsForFilter(state.tableFilter);
-  if (subgroups.length <= 1) return "";
-  return `
-    <div class="filter-tabs table-subgroup-tabs" aria-label="Подкатегории">
-      <button class="small-button ${state.tableSubgroup === "" ? "is-active" : ""}" type="button" data-table-subgroup="">
-        Все <span class="filter-count">${visibleTables.length}</span>
-      </button>
-      ${subgroups.map((sub) => `
-        <button class="small-button ${state.tableSubgroup === sub ? "is-active" : ""}" type="button" data-table-subgroup="${sub}">
-          ${sub} <span class="filter-count">${countSubgroupTables(state.tableFilter, sub)}</span>
-        </button>
-      `).join("")}
-    </div>
-  `;
 }
 
 function countFilteredTables(filterId) {

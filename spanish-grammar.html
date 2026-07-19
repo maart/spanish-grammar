@@ -2646,7 +2646,7 @@ select {
 
       <section id="content" class="content" aria-live="polite"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.43 · обновлено: 19.07.2026 21:22 CEST</span>
+        <span>Версия MVP 0.44 · обновлено: 19.07.2026 21:35 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -7054,17 +7054,23 @@ const MOODS = [
     id: "indicativo",
     title: "Indicativo",
     ru: "изъявительное наклонение",
-    description: "Индикатив описывает факты, реальные действия, привычки, события и информацию, которую говорящий подает как достоверную.",
-    tags: ["реальность", "факты", "основные времена"],
-    when: "Используется, когда говорящий сообщает факт, наблюдение, привычку, реальное событие или уверенный план.",
-    signals: "Creo que, sé que, es verdad que, está claro que обычно ведут к indicativo.",
-    remember: "Если информация подается как факт, чаще всего нужен indicativo, даже если событие относится к прошлому или будущему.",
-    tenses: "Presente, Pretérito Perfecto Compuesto, Pretérito Indefinido / Perfecto Simple, Imperfecto, Pluscuamperfecto, Futuro.",
-    tenseIds: ["presente", "perfecto", "indefinido", "imperfecto", "pluscuamperfecto", "futuro"],
-    triggers: ["creo que + indicativo", "sé que + indicativo", "es verdad que + indicativo", "está claro que + indicativo"],
+    description: "Indicativo используется, когда говорящий сообщает, утверждает или описывает содержание: факт, наблюдение, мнение, привычку, событие либо прогноз.",
+    tags: ["утверждение", "сообщение", "уверенность"],
+    when: "Когда содержание представлено как сообщаемая информация, а не как цель желания, оценка, сомнение, приказ или другое отношение к нему.",
+    signals: "Утвердительные глаголы речи, знания и уверенности обычно требуют indicativo: digo que, sé que, creo que, es evidente que, está claro que.",
+    remember: "Indicativo не гарантирует объективную истинность. В Creo que viene это мнение, но говорящий утверждает его, поэтому выбирает indicativo.",
+    tenses: "Все простые и сложные времена Indicativo, включая Condicional Simple и Condicional Compuesto.",
+    tenseIds: ["presente", "perfecto", "indefinido", "imperfecto", "pluscuamperfecto", "preterito_anterior", "futuro", "futuro_perfecto", "condicional", "condicional_compuesto"],
+    triggerGroups: [
+      ["Сообщение", "decir / afirmar / asegurar que + indicativo: Afirma que todo está listo."],
+      ["Знание", "saber / comprobar que + indicativo: Sé que tienes razón."],
+      ["Уверенность", "es evidente / cierto / seguro que + indicativo: Está claro que funciona."],
+      ["Мнение", "creer / pensar que + indicativo в утвердительной форме: Creo que viene."]
+    ],
     confusions: [
-      ["Creo que viene.", "No creo que venga.", "утверждаю как факт / не утверждаю как факт"],
-      ["Busco el libro que está aquí.", "Busco un libro que esté cerca.", "конкретный объект / неопределенный объект"]
+      ["Creo que viene.", "No creo que venga.", "утверждаю мнение / отрицаю уверенность"],
+      ["Sé que estás aquí.", "Me alegra que estés aquí.", "сообщаю знание / оцениваю тот же факт эмоционально"],
+      ["Busco el libro que está aquí.", "Busco un libro que esté cerca.", "конкретный объект / любой подходящий объект"]
     ],
     table: `<table><thead><tr><th>Использование</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
       <tr><td>факт</td><td>Vivo en Madrid.</td><td>Я живу в Мадриде.</td></tr>
@@ -7072,6 +7078,7 @@ const MOODS = [
       <tr><td>будущее</td><td>Mañana trabajaré.</td><td>Завтра я буду работать.</td></tr>
       <tr><td>привычка</td><td>Normalmente desayuno a las ocho.</td><td>Обычно я завтракаю в восемь.</td></tr>
       <tr><td>уверенность</td><td>Sé que tienes razón.</td><td>Я знаю, что ты прав.</td></tr>
+      <tr><td>утверждаемое мнение</td><td>Creo que llegará pronto.</td><td>Думаю, что он скоро приедет.</td></tr>
       <tr><td>план</td><td>Esta tarde vamos al cine.</td><td>Сегодня вечером мы идем в кино.</td></tr>
     </tbody></table>`
   },
@@ -7079,47 +7086,57 @@ const MOODS = [
     id: "subjuntivo",
     title: "Subjuntivo",
     ru: "сослагательное наклонение",
-    description: "Субхунтив нужен, когда говорящий не утверждает действие как простой факт: он хочет, сомневается, оценивает, реагирует эмоционально, задает цель или говорит о будущем событии до его наступления.",
-    tags: ["не факт", "желание", "сомнение", "оценка", "цель"],
-    when: "Чаще всего нужен после конструкции с que, если в первой части есть желание, сомнение, отрицание факта, эмоция, оценка, необходимость, цель или будущий временной ориентир.",
-    signals: "Ищи не само слово que, а смысл перед ним: quiero que, no creo que, me alegra que, es importante que, para que, antes de que, cuando + будущее действие.",
-    remember: "Subjuntivo не означает 'нереально'. Он показывает, что говорящий не подает действие как установленный факт.",
-    tenses: "Presente, Pretérito Perfecto de Subjuntivo, Imperfecto, Pluscuamperfecto; Futuro de Subjuntivo почти только в юридическом стиле.",
-    tenseIds: ["subjuntivo_presente", "subjuntivo_perfecto", "subjuntivo_imperfecto", "subjuntivo_pluscuamperfecto", "subjuntivo_futuro"],
+    description: "Subjuntivo показывает отношение говорящего к ситуации: желание, влияние, эмоцию, оценку, сомнение, возможность, цель или ожидаемое будущее событие. Его часто выбирает управляющее слово или конструкция.",
+    tags: ["отношение", "желание", "сомнение", "оценка", "цель"],
+    when: "После выражений воли, влияния, эмоции, оценки, сомнения, необходимости и возможности; в целях, некоторых придаточных времени и условиях. Возможны и независимые употребления: Ojalá venga; Que te vaya bien.",
+    signals: "Ищи не само que, а элемент, который управляет наклонением: quiero que, me alegra que, dudo que, es importante que, para que, antes de que, cuando + еще не наступившее действие.",
+    remember: "Subjuntivo не равен 'нереальности'. В Me alegra que estés aquí событие может быть фактом, но говорящий прежде всего выражает эмоциональную реакцию.",
+    tenses: "Presente, Pretérito Perfecto Compuesto, Imperfecto и Pluscuamperfecto de Subjuntivo. Futuro Simple и Futuro Compuesto сохраняются главным образом в юридических и устойчивых формулах.",
+    tenseIds: ["subjuntivo_presente", "subjuntivo_perfecto", "subjuntivo_imperfecto", "subjuntivo_pluscuamperfecto", "subjuntivo_futuro", "subjuntivo_futuro_perfecto"],
     triggers: ["querer que", "esperar que", "preferir que", "pedir que", "no creer que", "dudar que", "es posible que", "me alegra que", "es importante que", "para que", "antes de que", "cuando + будущее действие", "ojalá"],
     triggerGroups: [
-      ["Хочу, чтобы...", "quiero que + subjuntivo: Quiero que vengas."],
+      ["Воля и влияние", "querer / pedir / aconsejar que + subjuntivo: Quiero que vengas."],
       ["Не думаю, что...", "no creo que + subjuntivo: No creo que sea verdad."],
-      ["Важно, чтобы...", "es importante que + subjuntivo: Es importante que estudies."],
+      ["Оценка и эмоция", "es importante / me alegra que + subjuntivo: Me alegra que estés aquí."],
+      ["Возможность", "es posible / puede que + subjuntivo: Puede que llueva."],
       ["Чтобы / для того чтобы...", "para que + subjuntivo: Te llamo para que lo sepas."],
-      ["Когда сделает...", "cuando + subjuntivo, если речь о будущем: Llámame cuando llegues."]
+      ["Когда сделает...", "cuando + subjuntivo, если событие еще не наступило: Llámame cuando llegues."]
     ],
     confusions: [
-      ["Creo que viene.", "No creo que venga.", "утверждаю как факт / сомневаюсь"],
-      ["Es verdad que trabaja.", "Es importante que trabaje.", "факт / оценка важности"],
-      ["Busco el libro que está aquí.", "Busco un libro que sea barato.", "известный предмет / желаемое свойство"]
+      ["Creo que viene.", "No creo que venga.", "утверждаю мнение / отрицаю уверенность"],
+      ["Sé que está aquí.", "Me alegra que esté aquí.", "сообщаю знание / выражаю эмоцию"],
+      ["Cuando llega, llama.", "Cuando llegue, llamará.", "обычное действие / еще не наступившее"],
+      ["Busco el libro que está aquí.", "Busco un libro que sea barato.", "известный предмет / любой с нужным свойством"]
     ],
     extra: `
-      <h3>Не ставь Subjuntivo после факта</h3>
+      <h3>Инфинитив или que + Subjuntivo</h3>
       <div class="detail-list">
-        <div><dt>Creo que viene.</dt><dd>Думаю, что он придет. Говорящий подает это как факт или уверенное мнение.</dd></div>
-        <div><dt>Sé que viene.</dt><dd>Я знаю, что он придет. Знание и уверенность ведут к indicativo.</dd></div>
-        <div><dt>Es verdad que viene.</dt><dd>Правда, что он придет. После утверждения факта нужен indicativo.</dd></div>
+        <div><dt>Один исполнитель</dt><dd>Обычно инфинитив: Quiero salir. Trabajo para ganar dinero.</dd></div>
+        <div><dt>Разные исполнители</dt><dd>que + subjuntivo: Quiero que salgas. Te ayudo para que termines.</dd></div>
+      </div>
+      <h3>Согласование времен</h3>
+      <div class="table-wrap">
+        <table><thead><tr><th>Главная часть</th><th>Отношение во времени</th><th>Subjuntivo</th><th>Пример</th></tr></thead><tbody>
+          <tr><td>настоящее или будущее</td><td>одновременно или позже</td><td>Presente</td><td>Quiero que vengas. Te pediré que vengas.</td></tr>
+          <tr><td>настоящее или будущее</td><td>раньше</td><td>Pretérito Perfecto Compuesto</td><td>Me alegra que hayas venido.</td></tr>
+          <tr><td>прошедшее или Condicional</td><td>одновременно или позже относительно него</td><td>Imperfecto</td><td>Quería que vinieras. Me gustaría que vinieras.</td></tr>
+          <tr><td>прошедшее или Condicional</td><td>раньше</td><td>Pluscuamperfecto</td><td>Me alegró que hubieras venido.</td></tr>
+        </tbody></table>
       </div>
       <h3>10 типов придаточных с Subjuntivo</h3>
       <table><thead><tr><th>Тип</th><th>Триггеры</th><th>Условие</th><th>Пример</th></tr></thead><tbody>
-        <tr><th>1. Tiempo</th><td>cuando, mientras, hasta que, antes de que, después de que, en cuanto, tan pronto como, siempre que, cada vez que</td><td>Будущее действие или поиск момента в будущем</td><td>Llamaré a mi madre cuando llegue a casa. No te vayas hasta que termines el informe.</td></tr>
+        <tr><th>1. Tiempo</th><td>cuando, mientras, hasta que, en cuanto, tan pronto como</td><td>Еще не наступившее действие — subjuntivo; привычное или уже известное — indicativo. Antes de que требует subjuntivo.</td><td>Llámame cuando llegues. Siempre me llama cuando llega.</td></tr>
         <tr><th>2. Relativas</th><td>que, quien, quienes, el/la que, los/las que, donde, como, cuanto</td><td>Антецедент неопределён, отрицается или неизвестно</td><td>Busco un profesor que hable japonés. No hay nadie que pueda ayudarme.</td></tr>
-        <tr><th>3. Finales</th><td>para que, a fin de que, con el fin de que, con objeto de que</td><td>Всегда subjuntivo — цель относится к будущему</td><td>Te lo explico para que entiendas la lección.</td></tr>
-        <tr><th>4. Condicionales</th><td>si (нереальное), a condición de que, con tal de que, en caso de que</td><td>Нереальное условие: si + Impf. Subj. → Condicional</td><td>Si tuviera dinero, viajaría a Japón.</td></tr>
-        <tr><th>5. Concesión</th><td>aunque, por más que, por mucho que, a pesar de que, aun cuando</td><td>Препятствие гипотетическое или будущее. Факт — индикатив</td><td>Aunque llueva, saldré a correr.</td></tr>
-        <tr><th>6. Modo</th><td>como si</td><td>Только <strong>como si</strong> — нереальное сравнение</td><td>Me trata como si fuera su hijo.</td></tr>
-        <tr><th>7. Consecuencia</th><td>de ahí que</td><td>Остальные (así que, luego) — индикатив</td><td>No habla de ahí que no entienda la urgencia.</td></tr>
-        <tr><th>8. Causa</th><td>no porque</td><td>Только отрицательная причина — отвергаемая</td><td>No lo hizo no porque tuviera miedo, sino por pereza.</td></tr>
+        <tr><th>3. Finales</th><td>para que, a fin de que, con el fin de que</td><td>Разные исполнители: que + subjuntivo. Один исполнитель: para + infinitivo.</td><td>Te lo explico para que entiendas. Estudio para aprender.</td></tr>
+        <tr><th>4. Condicionales</th><td>si, a condición de que, con tal de que, en caso de que</td><td>Гипотеза: si + imperfecto / pluscuamperfecto de subjuntivo. После si не ставят condicional.</td><td>Si tuviera tiempo, iría. Si lo hubiera sabido, habría ido.</td></tr>
+        <tr><th>5. Concesión</th><td>aunque, por más que, a pesar de que</td><td>Indicativo утверждает сведения; subjuntivo представляет их как гипотетические, известные или не влияющие на результат.</td><td>Aunque llueve, salgo. Aunque llueva, saldré.</td></tr>
+        <tr><th>6. Modo</th><td>como si</td><td>Imperfecto для одновременного или последующего; pluscuamperfecto для предшествующего.</td><td>Habla como si lo supiera. Actuó como si no hubiera pasado nada.</td></tr>
+        <tr><th>7. Consecuencia</th><td>de ahí que</td><td>Устойчивый союз требует subjuntivo; así que и por eso обычно ведут к indicativo.</td><td>No recibió el aviso, de ahí que no entienda la urgencia.</td></tr>
+        <tr><th>8. Causa</th><td>no porque</td><td>Subjuntivo отвергает предполагаемую причину; утверждаемая причина оформляется indicativo.</td><td>No lo hizo porque tuviera miedo, sino porque no quiso.</td></tr>
         <tr><th>9. Sujeto (безличные)</th><td>es importante que, es necesario que, es posible que, me sorprende que, conviene que</td><td>Оценка, эмоция, сомнение, необходимость, вероятность</td><td>Es importante que estudies. Me sorprende que no haya llamado.</td></tr>
-        <tr><th>10. Complemento (личные)</th><td>dudo que, me alegro de que, necesito que, exige que, teme que</td><td>Личное: сомнение, эмоция, необходимость</td><td>Dudo que venga. Me alegro de que estés aquí.</td></tr>
-        <tr><th>⚠️ ojalá</th><td colspan="3">ojalá + subj. Presente (реально) / subj. Imperfecto (нереально): Ojalá venga. Ojalá viniera.</td></tr>
-        <tr><th>⚠️ indicativo</th><td colspan="3">creer que, pensar que, es verdad que, es cierto que, es seguro que → indicativo (факт)</td></tr>
+        <tr><th>10. Complemento (личные)</th><td>dudo que, me alegro de que, necesito que, exijo que, temo que</td><td>Сомнение, эмоция, воля, влияние или необходимость</td><td>Dudo que venga. Me alegro de que estés aquí.</td></tr>
+        <tr><th>Ojalá</th><td colspan="3">Ojalá venga (достижимое желание); Ojalá viniera (отдаленное или маловероятное); Ojalá haya llegado bien (о завершенном); Ojalá hubiera venido (сожаление о прошлом).</td></tr>
+        <tr><th>Вариант Испании</th><td colspan="3">После no sé si в Испании обычно употребляется indicativo: No sé si te gusta esta comida.</td></tr>
       </tbody></table>
     `
   },
@@ -7127,24 +7144,27 @@ const MOODS = [
     id: "imperativo",
     title: "Imperativo",
     ru: "повелительное наклонение",
-    description: "Императив используется для команд, просьб, инструкций и запретов. Отрицательный императив строится через формы субхунтива.",
-    tags: ["команда", "просьба", "запрет"],
-    when: "Используется, когда говорящий прямо побуждает адресата что-то сделать или не делать.",
-    signals: "Контекст команды, инструкции, рецепта, просьбы или запрета: abre, escucha, dime, no vayas.",
-    remember: "Если команда с no, почти всегда думай о subjuntivo: habla -> no hables, ven -> no vengas, di -> no digas.",
-    tenses: "Imperativo afirmativo и imperativo negativo.",
+    description: "Imperativo прямо побуждает адресата к действию: это может быть приказ, просьба, совет, инструкция, приглашение, разрешение или запрет.",
+    tags: ["побуждение", "просьба", "запрет"],
+    when: "Когда говорящий обращается к tú, usted, nosotros, vosotros или ustedes и хочет, чтобы действие было выполнено либо прекращено.",
+    signals: "Контекст команды, инструкции, рецепта, просьбы, совета или разрешения: abre, escuche, pasad, no vayáis, hablemos.",
+    remember: "У Imperativo нет формы yo. Все отрицательные команды совпадают с Presente de Subjuntivo: habla -> no hables; ven -> no vengas; decid -> no digáis.",
+    tenses: "Imperativo Afirmativo; отрицательное побуждение выражается формами Presente de Subjuntivo.",
     tenseIds: ["imperativo_afirmativo", "imperativo_negativo"],
     triggerGroups: [
       ["tú afirmativo", "часто как 3-е лицо presente: habla, come, vive"],
       ["usted / ustedes", "через presente de subjuntivo: hable, hablen"],
       ["vosotros", "infinitivo без -r + d: hablad, comed, vivid"],
-      ["отрицание", "no + subjuntivo: no hables, no comáis, no digan"],
-      ["местоимения", "утвердительно приклеиваются, отрицательно стоят перед глаголом: dímelo / no me lo digas"]
+      ["nosotros", "призыв 'давайте' через presente de subjuntivo: hablemos, vayamos"],
+      ["отрицание", "все лица: no + presente de subjuntivo: no hables, no comáis, no digan"],
+      ["местоимения", "утвердительно после глагола, отрицательно перед ним: dímelo / no me lo digas"],
+      ["возвратный vosotros", "перед os конечная -d выпадает: sentad + os -> sentaos"]
     ],
     confusions: [
       ["Habla más despacio.", "No hables tan rápido.", "утвердительная команда / запрет через subjuntivo"],
       ["Dime la verdad.", "No me digas eso.", "местоимение после утвердительной формы / перед отрицательной"],
-      ["Ven aquí.", "No vengas tarde.", "особая форма imperativo / отрицание через subjuntivo"]
+      ["Ven aquí.", "No vengas tarde.", "особая форма imperativo / отрицание через subjuntivo"],
+      ["Sentad al niño aquí.", "Sentaos aquí.", "переходная форма / возвратная форма без -d"]
     ],
     table: `<table><thead><tr><th>Тип</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
       <tr><td>утвердительный</td><td>Habla más despacio.</td><td>Говори медленнее.</td></tr>
@@ -7153,31 +7173,43 @@ const MOODS = [
       <tr><td>просьба</td><td>Dime la verdad, por favor.</td><td>Скажи мне правду, пожалуйста.</td></tr>
       <tr><td>инструкция</td><td>Mezcla los ingredientes.</td><td>Смешай ингредиенты.</td></tr>
       <tr><td>запрет</td><td>No os preocupéis.</td><td>Не беспокойтесь.</td></tr>
+      <tr><td>призыв nosotros</td><td>Hablemos mañana.</td><td>Давайте поговорим завтра.</td></tr>
+      <tr><td>приглашение</td><td>Pasa, pasa.</td><td>Проходи, проходи.</td></tr>
     </tbody></table>`
   },
   {
     id: "condicional",
-    title: "Condicional: условные формы",
-    ru: "вежливость, гипотеза и результат условия",
-    description: "Condicional формально связан с системой времен, но в справочнике его удобно держать рядом с наклонениями: он выражает вежливость, гипотезу, совет или результат условия.",
-    tags: ["вежливость", "гипотеза", "совет"],
-    when: "Используется для вежливых просьб, советов, вероятности в прошлом и результата при условии.",
-    signals: "Me gustaría, podría, debería, si tuviera..., yo que tú часто ведут к condicional.",
-    remember: "В условных фразах часто работает пара: si + imperfecto de subjuntivo, затем condicional.",
+    title: "Condicional",
+    ru: "время Indicativo: будущее из прошлого, гипотеза и вежливость",
+    description: "В современной грамматике Condicional обычно классифицируют как относительное время Indicativo. Оно показывает будущее относительно прошлого, гипотезу, результат условия, предположение о прошлом или смягченную просьбу.",
+    tags: ["будущее из прошлого", "гипотеза", "вежливость"],
+    when: "Для будущего из точки в прошлом, гипотетического результата, совета, вежливой просьбы, желания и предположения о прошлом.",
+    signals: "Dijo que volvería, me gustaría, podría, debería, si tuviera..., yo que tú, serían las ocho.",
+    remember: "После условного si в нормативном испанском не ставят Condicional: Si tengo tiempo, iré; Si tuviera tiempo, iría; не *Si tendría tiempo.",
     tenses: "Condicional Simple и Condicional Compuesto.",
     tenseIds: ["condicional", "condicional_compuesto"],
-    triggers: ["me gustaría + infinitivo", "podría + infinitivo", "debería + infinitivo", "si + imperfecto de subjuntivo, condicional", "yo que tú + condicional"],
+    triggerGroups: [
+      ["Будущее из прошлого", "dijo / prometió que + condicional: Dijo que volvería."],
+      ["Гипотетический результат", "si + imperfecto de subjuntivo, condicional: Si pudiera, iría."],
+      ["Нереальное прошлое", "si + pluscuamperfecto de subjuntivo, condicional compuesto: Si lo hubiera sabido, habría ido."],
+      ["Вежливость и желание", "podría / querría / me gustaría + infinitivo: ¿Podrías ayudarme?"],
+      ["Совет", "debería / yo que tú + condicional: Yo que tú descansaría."],
+      ["Предположение о прошлом", "condicional de conjetura: Serían las ocho."]
+    ],
     confusions: [
-      ["Si tengo tiempo, voy.", "Si tuviera tiempo, iría.", "реальное условие / гипотетическое условие"],
-      ["Quiero viajar.", "Me gustaría viajar.", "прямое желание / вежливая или мягкая форма"]
+      ["Si tengo tiempo, iré.", "Si tuviera tiempo, iría.", "реальное или возможное условие / гипотетическое"],
+      ["Dijo: 'Volveré'.", "Dijo que volvería.", "будущее от настоящего / будущее из прошлого"],
+      ["Quiero viajar.", "Me gustaría viajar.", "прямое желание / смягченная форма"]
     ],
     table: `<table><thead><tr><th>Использование</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
       <tr><td>вежливая просьба</td><td>¿Podrías ayudarme?</td><td>Ты мог бы мне помочь?</td></tr>
       <tr><td>желание</td><td>Me gustaría viajar.</td><td>Мне бы хотелось путешествовать.</td></tr>
-      <tr><td>условие</td><td>Iría si tuviera tiempo.</td><td>Я бы пошел, если бы было время.</td></tr>
+      <tr><td>будущее из прошлого</td><td>Dijo que volvería.</td><td>Он сказал, что вернется.</td></tr>
+      <tr><td>гипотетический результат</td><td>Iría si tuviera tiempo.</td><td>Я бы пошел, если бы было время.</td></tr>
+      <tr><td>нереальное прошлое</td><td>Habría ido si lo hubiera sabido.</td><td>Я бы пошел, если бы знал об этом.</td></tr>
       <tr><td>совет</td><td>Yo que tú hablaría con ella.</td><td>На твоем месте я бы поговорил с ней.</td></tr>
       <tr><td>вероятность в прошлом</td><td>Serían las ocho.</td><td>Было, наверное, около восьми.</td></tr>
-      <tr><td>гипотеза</td><td>No sabría decirte.</td><td>Я бы не смог тебе сказать.</td></tr>
+      <tr><td>смягчение</td><td>No sabría decirte.</td><td>Я затрудняюсь тебе ответить.</td></tr>
     </tbody></table>`
   }
 ];
@@ -7304,7 +7336,9 @@ const IMPERATIVO_EXAMPLES = [
   ["нерегулярный tú", "Ven aquí.", "Иди сюда."],
   ["vosotros", "No os preocupéis.", "Не беспокойтесь."],
   ["usted", "Pase, por favor.", "Проходите, пожалуйста."],
-  ["ustedes", "Escuchen atentamente.", "Слушайте внимательно."]
+  ["ustedes", "Escuchen atentamente.", "Слушайте внимательно."],
+  ["призыв nosotros", "Hablemos mañana.", "Давайте поговорим завтра."],
+  ["возвратный vosotros", "Sentaos aquí.", "Садитесь здесь."]
 ];
 
 const DISPLAY_INFINITIVES = {
@@ -9401,7 +9435,7 @@ const MOOD_TAB_LABELS = {
   indicativo: ["Indicativo", "изъявительное"],
   subjuntivo: ["Subjuntivo", "сослагательное"],
   imperativo: ["Imperativo", "повелительное"],
-  condicional: ["Condicional", "условные формы"]
+  condicional: ["Condicional", "время Indicativo"]
 };
 
 function renderMoods() {
@@ -9410,8 +9444,12 @@ function renderMoods() {
   const selector = document.createElement("section");
   selector.className = "info-card";
   selector.innerHTML = `
-    <h2>Наклонения и условные формы</h2>
-    <p class="muted">Выбери, как говорящий подает действие: как факт, желание, команду, сомнение или условный результат.</p>
+    <h2>Наклонения и Condicional</h2>
+    <p class="muted">Сравни, сообщает ли говорящий содержание, выражает отношение к нему, побуждает адресата или помещает действие в гипотетическую рамку.</p>
+    <details class="table-sources">
+      <summary>Источники и терминология</summary>
+      <p>Правила сверены с <a href="https://www.rae.es/libro-estilo-lengua-espa%C3%B1ola/el-modo-indicativo-o-subjuntivo" target="_blank" rel="noopener">RAE: Indicativo o Subjuntivo</a>, <a href="https://www.rae.es/gtg/condicional-simple" target="_blank" rel="noopener">RAE: Condicional Simple</a> и <a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/niveles/02_gramatica_inventario_b1-b2.htm" target="_blank" rel="noopener">Plan Curricular del Instituto Cervantes B1-B2</a>. Condicional оставлен отдельной учебной карточкой для сравнения, но нормативно это время Indicativo.</p>
+    </details>
     <div class="tense-actions">
       <button class="small-button ${state.showMoodChooser ? "danger" : "success"}" type="button" data-toggle-mood-chooser aria-expanded="${state.showMoodChooser}" aria-controls="moodChooser">
         ${state.showMoodChooser ? "Скрыть подсказку" : "Как выбрать наклонение"}
@@ -9448,7 +9486,7 @@ function renderMoods() {
   section.innerHTML = `
     <h2>${selected.title}</h2>
     <p class="muted">${selected.ru}</p>
-    ${selected.id === "condicional" ? `<div class="condicional-note"><strong>Особый раздел</strong><span>Condicional часто изучают рядом с наклонениями по значению, хотя формально это условные формы в системе времен.</span></div>` : ""}
+    ${selected.id === "condicional" ? `<div class="condicional-note"><strong>Важно</strong><span>Condicional показан рядом с наклонениями только для удобства сравнения. По современной классификации RAE это относительное время Indicativo.</span></div>` : ""}
     <p>${selected.description}</p>
     <div class="chips">${selected.tags.slice(0, 3).map((tag) => `<span class="chip">${tag}</span>`).join("")}</div>
     <div class="detail-list">
@@ -9532,19 +9570,20 @@ function moodChooserMarkup() {
     <div class="mood-chooser-block" id="moodChooser">
       <h2>Что выбрать?</h2>
       <div class="choice-grid">
-        <button class="choice-card" type="button" data-choose-mood="indicativo"><strong>Факт</strong><span>Indicativo: Sé que viene.</span></button>
-        <button class="choice-card" type="button" data-choose-mood="subjuntivo"><strong>Не факт</strong><span>Subjuntivo: Quiero que venga.</span></button>
-        <button class="choice-card" type="button" data-choose-mood="imperativo"><strong>Команда</strong><span>Imperativo: Ven aquí.</span></button>
-        <button class="choice-card" type="button" data-choose-mood="condicional"><strong>Условие / вежливость</strong><span>Condicional: Iría si pudiera.</span></button>
+        <button class="choice-card" type="button" data-choose-mood="indicativo"><strong>Сообщаю или утверждаю</strong><span>Indicativo: Sé que viene.</span></button>
+        <button class="choice-card" type="button" data-choose-mood="subjuntivo"><strong>Выражаю отношение</strong><span>Subjuntivo: Quiero que venga.</span></button>
+        <button class="choice-card" type="button" data-choose-mood="imperativo"><strong>Побуждаю</strong><span>Imperativo: Ven aquí.</span></button>
+        <button class="choice-card" type="button" data-choose-mood="condicional"><strong>Гипотеза или будущее из прошлого</strong><span>Condicional: Dijo que volvería.</span></button>
       </div>
       <h3>Indicativo vs Subjuntivo</h3>
-      <p class="muted">Главный вопрос: говорящий подает действие как факт или как желание, сомнение, оценку, цель.</p>
+      <p class="muted">Выбор зависит не только от истинности события, но и от управляющего слова, типа придаточного и коммуникативной задачи.</p>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Indicativo</th><th>Subjuntivo</th><th>Разница</th></tr></thead>
           <tbody>
-            <tr><td>Creo que viene.</td><td>No creo que venga.</td><td>верю как в факт / не подаю как факт</td></tr>
+            <tr><td>Creo que viene.</td><td>No creo que venga.</td><td>утверждаю мнение / отрицаю уверенность</td></tr>
             <tr><td>Es verdad que trabaja.</td><td>Es importante que trabaje.</td><td>сообщаю факт / оцениваю необходимость</td></tr>
+            <tr><td>Sé que estás aquí.</td><td>Me alegra que estés aquí.</td><td>сообщаю знание / эмоционально оцениваю тот же факт</td></tr>
             <tr><td>Busco el libro que está aquí.</td><td>Busco un libro que sea fácil.</td><td>конкретный объект / желаемое качество</td></tr>
           </tbody>
         </table>

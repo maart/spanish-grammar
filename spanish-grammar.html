@@ -1483,6 +1483,34 @@ td.irregular {
   margin: 0;
 }
 
+.cards-overview {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.cards-overview div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 9px 11px;
+  background: var(--surface-2);
+}
+
+.cards-overview strong {
+  color: var(--accent);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.cards-overview span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
 .cards-dashboard-actions,
 .quiz-presets,
 .cards-list-toolbar,
@@ -1523,6 +1551,15 @@ td.irregular {
   min-height: 38px;
 }
 
+.cards-quiz-panel {
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  background: var(--surface-2);
+}
+
 .quiz-config-fieldset {
   display: grid;
   gap: 8px;
@@ -1550,7 +1587,10 @@ td.irregular {
 }
 
 .cards-list-toolbar {
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(220px, 240px) auto;
+  align-items: center;
+  gap: 8px;
   margin-bottom: 12px;
 }
 
@@ -1570,20 +1610,79 @@ td.irregular {
 }
 
 .cards-list-toolbar select {
-  flex: 0 1 280px;
-  width: 280px;
+  width: 240px;
   max-width: 100%;
 }
 
 .cards-list-summary {
-  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.cards-filter-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.cards-filter-tabs .small-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.cards-filter-tabs .small-button span {
+  min-width: 22px;
+  border-radius: 999px;
+  padding: 2px 6px;
+  background: var(--surface);
+  font-size: 11px;
+}
+
+.cards-filter-tabs .small-button.is-active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+}
+
+.cards-filter-tabs .small-button.is-active span {
+  background: color-mix(in srgb, white 22%, transparent);
+}
+
+.verb-row.is-study-card {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+
+.verb-row.is-study-card .verb-pick {
+  min-height: 54px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.cards-study-footer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-top: 1px solid color-mix(in srgb, var(--line) 75%, transparent);
+  padding: 7px 9px 8px;
+  background: color-mix(in srgb, var(--surface) 45%, transparent);
 }
 
 .cards-study-meta {
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
-  gap: 10px;
-  padding: 8px 10px 4px;
+  gap: 8px;
+  padding: 0;
   color: var(--muted);
   font-size: 12px;
   font-weight: 800;
@@ -1593,6 +1692,60 @@ td.irregular {
   border-radius: 999px;
   padding: 4px 9px;
   background: var(--surface-2);
+}
+
+.cards-study-meta .is-mastered {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.cards-study-meta .is-mistake {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.cards-study-meta .is-progress {
+  background: color-mix(in srgb, var(--accent-2) 14%, transparent);
+  color: var(--accent-2);
+}
+
+.cards-study-progress {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.cards-study-progress-track {
+  display: block;
+  overflow: hidden;
+  width: 74px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--line);
+}
+
+.cards-study-progress-track i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--success);
+}
+
+.study-verb-quiz {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0;
+  background: var(--surface);
+  color: var(--accent);
+  cursor: pointer;
+  font-size: 12px;
 }
 
 .cards-undo {
@@ -2318,11 +2471,29 @@ select {
     width: 100%;
   }
 
+  .cards-overview,
+  .cards-filter-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .cards-dashboard-actions .small-button,
   .quiz-presets .small-button,
   .cards-list-toolbar input,
   .cards-list-toolbar select {
     width: 100%;
+  }
+
+  .cards-list-summary {
+    white-space: normal;
+  }
+
+  .cards-study-footer {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+  }
+
+  .cards-study-progress {
+    margin-left: 0;
   }
 
   .study-face {
@@ -2457,7 +2628,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.39 · обновлено: 19.07.2026 20:29 CEST</footer>
+      <footer class="app-footer">Версия MVP 0.40 · обновлено: 19.07.2026 20:44 CEST</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -6997,8 +7168,12 @@ const state = {
     count: 5
   })),
   showQuizSettings: false,
+  showQuizPanel: localStorage.getItem("msg:showQuizPanel") === "true",
   cardsQuery: "",
   cardsSort: localStorage.getItem("msg:cardsSort") || "recent",
+  cardsFilter: ["all", "unreviewed", "mistakes", "mastered"].includes(localStorage.getItem("msg:cardsFilter"))
+    ? localStorage.getItem("msg:cardsFilter")
+    : "all",
   cardStats: JSON.parse(localStorage.getItem("msg:cardStats") || "{}"),
   savedQuizSession: JSON.parse(localStorage.getItem("msg:quizSession") || "null"),
   cardUndo: null,
@@ -9436,6 +9611,9 @@ const QUIZ_TENSES = [
 const QUIZ_COUNTS = [3, 5, 10, 20, 0];
 const QUIZ_CHARACTERS = ["á", "é", "í", "ó", "ú", "ü", "ñ"];
 const BASIC_QUIZ_TENSES = ["presente", "perfecto", "indefinido", "imperfecto", "futuro"];
+const CARD_MASTERY_MIN_ATTEMPTS = 3;
+const CARD_MASTERY_MIN_ACCURACY = 80;
+const CARD_MASTERY_MIN_STREAK = 2;
 const QUIZ_TYPE_LABELS = {
   infinitive: "Русский → испанский",
   meaning: "Испанский → русский",
@@ -9592,6 +9770,39 @@ function cardStatsFor(verb) {
   return state.cardStats[verb] || { attempts: 0, correct: 0, mistakes: 0, streak: 0, lastReviewed: null };
 }
 
+function cardAccuracy(stats) {
+  return stats.attempts > 0 ? Math.round((stats.correct / stats.attempts) * 100) : 0;
+}
+
+function isCardMastered(verb) {
+  const stats = cardStatsFor(verb);
+  return stats.attempts >= CARD_MASTERY_MIN_ATTEMPTS &&
+    cardAccuracy(stats) >= CARD_MASTERY_MIN_ACCURACY &&
+    stats.streak >= CARD_MASTERY_MIN_STREAK;
+}
+
+function cardNeedsReview(verb) {
+  return cardStatsFor(verb).mistakes > 0 && !isCardMastered(verb);
+}
+
+function studyCardCounts() {
+  return state.cards.reduce((counts, verb) => {
+    const stats = cardStatsFor(verb);
+    if (stats.attempts === 0) counts.unreviewed += 1;
+    else counts.reviewed += 1;
+    if (cardNeedsReview(verb)) counts.mistakes += 1;
+    if (isCardMastered(verb)) counts.mastered += 1;
+    return counts;
+  }, { reviewed: 0, unreviewed: 0, mistakes: 0, mastered: 0 });
+}
+
+function cardsForFilter(filter = state.cardsFilter) {
+  if (filter === "unreviewed") return state.cards.filter((verb) => cardStatsFor(verb).attempts === 0);
+  if (filter === "mistakes") return state.cards.filter(cardNeedsReview);
+  if (filter === "mastered") return state.cards.filter(isCardMastered);
+  return [...state.cards];
+}
+
 function cardDifficulty(verb) {
   const stats = cardStatsFor(verb);
   if (stats.attempts === 0) return verbInfo(verb).irregular ? 1 : 0;
@@ -9603,14 +9814,14 @@ function saveCardStats() {
 }
 
 function difficultStudyCards() {
-  const reviewed = state.cards.filter((verb) => cardStatsFor(verb).mistakes > 0);
+  const reviewed = state.cards.filter(cardNeedsReview);
   const source = reviewed.length > 0 ? reviewed : state.cards.filter((verb) => verbInfo(verb).irregular);
   return [...(source.length > 0 ? source : state.cards)].sort((a, b) => cardDifficulty(b) - cardDifficulty(a));
 }
 
 function visibleStudyCards() {
   const query = normalize(state.cardsQuery);
-  const filtered = state.cards.filter((verb) => {
+  const filtered = cardsForFilter().filter((verb) => {
     if (!query) return true;
     return normalize(displayInfinitive(verb)).includes(query) || normalize(translationFor(verb)).includes(query);
   });
@@ -9643,6 +9854,8 @@ function renderCards() {
   if (!Array.isArray(cfg.persons)) cfg.persons = PEOPLE.map((_, index) => index);
   cfg.persons = selectedQuizPersons();
   const quickCount = Math.min(5, state.cards.length);
+  const studyCounts = studyCardCounts();
+  const mistakeCards = cardsForFilter("mistakes");
   const canStartCustom = cfg.type !== "conjugation" || (cfg.tenses.length > 0 && cfg.persons.length > 0);
 
   const tenseButtons = QUIZ_TENSES.map((tense) => {
@@ -9671,11 +9884,17 @@ function renderCards() {
         <p class="muted">${state.cards.length} ${state.cards.length === 1 ? "глагол" : "глаголов"} для повторения</p>
       </div>
       ${state.cards.length > 0 ? `<div class="cards-dashboard-actions">
-        <button class="small-button primary" type="button" data-preset="quick">Начать: ${quickCount} вопросов</button>
-        <button class="small-button" type="button" data-toggle-quiz-settings aria-expanded="${state.showQuizSettings}">${state.showQuizSettings ? "Скрыть настройки" : "Настроить квиз"}</button>
+        <button class="small-button primary" type="button" data-preset="quick">Быстрая проверка · ${quickCount}</button>
+        ${mistakeCards.length > 0 ? `<button class="small-button danger" type="button" data-preset="mistakes">Повторить ошибки · ${mistakeCards.length}</button>` : ""}
+        <button class="small-button" type="button" data-toggle-quiz-panel aria-expanded="${state.showQuizPanel}">${state.showQuizPanel ? "Скрыть режимы" : "Режимы квиза"}</button>
       </div>` : ""}
     </div>
-    <p class="muted">Глаголы, выбранные для повторения. Результаты сохраняются только на этом устройстве.</p>
+    ${state.cards.length > 0 ? `<div class="cards-overview" aria-label="Прогресс изучения">
+      <div><strong>${studyCounts.reviewed}</strong><span>проверено</span></div>
+      <div><strong>${studyCounts.unreviewed}</strong><span>не проверено</span></div>
+      <div><strong>${studyCounts.mistakes}</strong><span>с ошибками</span></div>
+      <div><strong>${studyCounts.mastered}</strong><span>освоено</span></div>
+    </div>` : `<p class="muted">Глаголы, выбранные для повторения. Результаты сохраняются только на этом устройстве.</p>`}
     ${hasSavedQuizSession() ? `<div class="cards-resume" role="status">
       <p><strong>Есть незавершенный квиз.</strong> Вопрос ${Math.min(state.savedQuizSession.cardQuizIndex + 1, state.savedQuizSession.cardQuiz.length)} из ${state.savedQuizSession.cardQuiz.length}.</p>
       <div class="cards-dashboard-actions">
@@ -9683,12 +9902,16 @@ function renderCards() {
         <button class="small-button" type="button" data-discard-quiz>Начать заново</button>
       </div>
     </div>` : ""}
-    ${state.cards.length > 0 ? `<div class="quiz-presets" aria-label="Готовые режимы">
-      <button class="small-button quiz-preset-button" type="button" data-preset="quick"><strong>Быстрая 5</strong>&nbsp; перевод</button>
-      <button class="small-button quiz-preset-button" type="button" data-preset="basic"><strong>Основные времена</strong>&nbsp; 10 форм</button>
-      <button class="small-button quiz-preset-button" type="button" data-preset="difficult"><strong>Нужно повторить</strong>&nbsp; сложные</button>
-    </div>` : ""}
-    ${state.showQuizSettings && state.cards.length > 0 ? `<div class="quiz-config">
+    ${state.showQuizPanel && state.cards.length > 0 ? `<div class="cards-quiz-panel">
+      <div class="quiz-config-heading">
+        <h3>Режимы квиза</h3>
+        <button class="small-button" type="button" data-toggle-quiz-settings aria-expanded="${state.showQuizSettings}">${state.showQuizSettings ? "Скрыть настройки" : "Настроить свой"}</button>
+      </div>
+      <div class="quiz-presets" aria-label="Готовые режимы">
+        <button class="small-button quiz-preset-button" type="button" data-preset="basic"><strong>Основные времена</strong>&nbsp; 10 форм</button>
+        <button class="small-button quiz-preset-button" type="button" data-preset="difficult"><strong>Сложные глаголы</strong>&nbsp; 10 форм</button>
+      </div>
+    ${state.showQuizSettings ? `<div class="quiz-config">
       <div class="quiz-config-heading"><h3>Настройки квиза</h3><span class="muted">Количество означает число вопросов</span></div>
       <fieldset class="quiz-config-fieldset">
         <legend class="quiz-config-label">Направление проверки</legend>
@@ -9719,12 +9942,18 @@ function renderCards() {
       </fieldset>
       <button class="small-button primary" type="button" id="startCardQuiz" ${canStartCustom ? "" : "disabled"}>Начать квиз</button>
     </div>` : ""}
+    </div>` : ""}
   `;
   content.appendChild(header);
 
   header.querySelectorAll("[data-preset]").forEach((button) => button.addEventListener("click", () => startQuizPreset(button.dataset.preset)));
   header.querySelector("[data-toggle-quiz-settings]")?.addEventListener("click", () => {
     state.showQuizSettings = !state.showQuizSettings;
+    renderCards();
+  });
+  header.querySelector("[data-toggle-quiz-panel]")?.addEventListener("click", () => {
+    state.showQuizPanel = !state.showQuizPanel;
+    localStorage.setItem("msg:showQuizPanel", String(state.showQuizPanel));
     renderCards();
   });
   header.querySelector("[data-resume-quiz]")?.addEventListener("click", resumeCardQuiz);
@@ -9804,24 +10033,40 @@ function renderCards() {
     <div class="cards-list-toolbar">
       <input id="cardsSearch" type="search" aria-label="Поиск в избранном" placeholder="Найти глагол или перевод" value="${escapeHTML(state.cardsQuery)}">
       <select id="cardsSort" aria-label="Сортировка избранного">
-        <option value="recent" ${state.cardsSort === "recent" ? "selected" : ""}>Сначала добавленные недавно</option>
+        <option value="recent" ${state.cardsSort === "recent" ? "selected" : ""}>Недавно добавленные</option>
         <option value="alphabetical" ${state.cardsSort === "alphabetical" ? "selected" : ""}>По алфавиту</option>
-        <option value="difficult" ${state.cardsSort === "difficult" ? "selected" : ""}>Сначала сложные</option>
-        <option value="irregular" ${state.cardsSort === "irregular" ? "selected" : ""}>Сначала неправильные</option>
+        <option value="difficult" ${state.cardsSort === "difficult" ? "selected" : ""}>Сложные сначала</option>
+        <option value="irregular" ${state.cardsSort === "irregular" ? "selected" : ""}>Неправильные сначала</option>
       </select>
+      <span class="cards-list-summary">Показано: ${visibleCards.length} из ${state.cards.length}</span>
     </div>
-    <p class="muted cards-list-summary">Показано: ${visibleCards.length} из ${state.cards.length}</p>
+    <div class="cards-filter-tabs" aria-label="Фильтр глаголов для изучения">
+      <button class="small-button ${state.cardsFilter === "all" ? "is-active" : ""}" type="button" data-cards-filter="all" aria-pressed="${state.cardsFilter === "all"}">Все <span>${state.cards.length}</span></button>
+      <button class="small-button ${state.cardsFilter === "unreviewed" ? "is-active" : ""}" type="button" data-cards-filter="unreviewed" aria-pressed="${state.cardsFilter === "unreviewed"}">Не проверены <span>${studyCounts.unreviewed}</span></button>
+      <button class="small-button ${state.cardsFilter === "mistakes" ? "is-active" : ""}" type="button" data-cards-filter="mistakes" aria-pressed="${state.cardsFilter === "mistakes"}">С ошибками <span>${studyCounts.mistakes}</span></button>
+      <button class="small-button ${state.cardsFilter === "mastered" ? "is-active" : ""}" type="button" data-cards-filter="mastered" aria-pressed="${state.cardsFilter === "mastered"}">Освоены <span>${studyCounts.mastered}</span></button>
+    </div>
     <div class="verb-list is-suggestions"></div>
   `;
   const list = listCard.querySelector(".verb-list");
   visibleCards.forEach((verb) => {
     const stats = cardStatsFor(verb);
-    const accuracy = stats.attempts > 0 ? Math.round((stats.correct / stats.attempts) * 100) : null;
+    const accuracy = cardAccuracy(stats);
+    const mastered = isCardMastered(verb);
+    const needsReview = cardNeedsReview(verb);
+    const status = stats.attempts === 0 ? "Не проверялся" : mastered ? "Освоен" : needsReview ? "Повторить" : "В работе";
+    const statusClass = stats.attempts === 0 ? "is-unreviewed" : mastered ? "is-mastered" : needsReview ? "is-mistake" : "is-progress";
     const row = renderVerbListItem(verb, { showBadges: false });
-    row.insertAdjacentHTML("beforeend", `<div class="cards-study-meta">
-      <span>${verbInfo(verb).irregular ? "неправильный" : "правильный"}</span>
-      <span>${accuracy === null ? "еще не проверялся" : `точность ${accuracy}%`}</span>
-      ${stats.mistakes > 0 ? `<span>ошибок: ${stats.mistakes}</span>` : ""}
+    row.classList.add("is-study-card");
+    row.insertAdjacentHTML("beforeend", `<div class="cards-study-footer">
+      <div class="cards-study-meta">
+        <span class="${statusClass}" title="${mastered ? "Минимум 3 ответа, точность от 80% и серия от 2" : "Статус изучения"}">${status}</span>
+      </div>
+      <div class="cards-study-progress" title="${stats.correct} правильных из ${stats.attempts}">
+        <span class="cards-study-progress-track" role="progressbar" aria-label="Точность: ${accuracy}%" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${accuracy}"><i style="width: ${accuracy}%"></i></span>
+        <strong>${stats.attempts > 0 ? `${accuracy}%` : "—"}</strong>
+      </div>
+      <button class="study-verb-quiz" type="button" data-quiz-verb="${verb}" aria-label="Проверить глагол ${escapeHTML(displayInfinitive(verb))}" title="Проверить 5 форм">▶</button>
     </div>`);
     list.appendChild(row);
   });
@@ -9840,6 +10085,14 @@ function renderCards() {
     localStorage.setItem("msg:cardsSort", state.cardsSort);
     renderCards();
   });
+  listCard.querySelectorAll("[data-cards-filter]").forEach((button) => button.addEventListener("click", () => {
+    state.cardsFilter = button.dataset.cardsFilter;
+    localStorage.setItem("msg:cardsFilter", state.cardsFilter);
+    renderCards();
+  }));
+  listCard.querySelectorAll("[data-quiz-verb]").forEach((button) => button.addEventListener("click", () => {
+    startSingleVerbQuiz(button.dataset.quizVerb);
+  }));
   content.appendChild(listCard);
 }
 
@@ -9918,11 +10171,48 @@ function startQuizPreset(preset) {
     startCardQuiz("new", { cards: state.cards });
     return;
   }
+  if (preset === "mistakes") {
+    const mistakeCards = cardsForFilter("mistakes");
+    const questions = generateConjugationQuestions(
+      mistakeCards,
+      BASIC_QUIZ_TENSES,
+      PEOPLE.map((_, index) => index),
+      10
+    );
+    beginCardQuiz(questions);
+    return;
+  }
   const difficult = difficultStudyCards();
   state.quizConfig = { ...state.quizConfig, type: "conjugation", count: 10, tenses: [...BASIC_QUIZ_TENSES] };
   if (selectedQuizPersons().length === 0) state.quizConfig.persons = PEOPLE.map((_, index) => index);
   saveQuizConfig();
   startCardQuiz("new", { cards: difficult });
+}
+
+function startSingleVerbQuiz(verb) {
+  const questions = generateConjugationQuestions(
+    [verb],
+    BASIC_QUIZ_TENSES,
+    PEOPLE.map((_, index) => index),
+    5
+  );
+  beginCardQuiz(questions);
+}
+
+function beginCardQuiz(questions) {
+  if (!Array.isArray(questions) || questions.length === 0) return;
+  state.cardQuiz = questions;
+  state.cardQuizSnapshot = questions.map((q) => ({ ...q }));
+  state.cardQuizAllVerbs = [...new Set(questions.map((q) => q.verb))];
+  state.cardQuizIndex = 0;
+  state.cardQuizInput = "";
+  state.cardQuizAnswered = false;
+  state.cardQuizCorrect = 0;
+  state.cardQuizTotal = 0;
+  state.cardQuizAttempts = [];
+  state.cardUndo = null;
+  saveQuizSession();
+  renderCards();
 }
 
 function startCardQuiz(mode = "new", options = {}) {
@@ -9942,19 +10232,7 @@ function startCardQuiz(mode = "new", options = {}) {
   } else {
     questions = generateInfinitiveQuestions(sourceCards, cfg.count);
   }
-  if (questions.length === 0) return;
-  state.cardQuiz = questions;
-  state.cardQuizSnapshot = questions.map((q) => ({ ...q }));
-  state.cardQuizAllVerbs = [...new Set(questions.map((q) => q.verb))];
-  state.cardQuizIndex = 0;
-  state.cardQuizInput = "";
-  state.cardQuizAnswered = false;
-  state.cardQuizCorrect = 0;
-  state.cardQuizTotal = 0;
-  state.cardQuizAttempts = [];
-  state.cardUndo = null;
-  saveQuizSession();
-  renderCards();
+  beginCardQuiz(questions);
 }
 
 function renderCardQuiz(content) {

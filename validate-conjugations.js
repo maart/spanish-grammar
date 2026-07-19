@@ -38,7 +38,7 @@ const sandbox = {
 // Execute the JS in the sandbox
 const fn = new Function(
   ...Object.keys(sandbox),
-  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, VERB_TENSE_GROUPS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize, generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer };"
+  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, VERB_TENSE_GROUPS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize, generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer, cardAccuracy, isCardMastered, cardNeedsReview, cardsForFilter, studyCardCounts };"
 );
 const api = fn(...Object.values(sandbox));
 
@@ -57,6 +57,7 @@ const {
   regularParticiplePattern, irregularIndefinidoStem,
   isReflexive, baseVerb, state, filteredVerbs,
   generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer,
+  cardAccuracy, isCardMastered, cardNeedsReview, cardsForFilter, studyCardCounts,
 } = api;
 
 // ─── Reference data: known correct conjugations ─────────────────────────────
@@ -1019,6 +1020,40 @@ const QUIZ_CASES = [
     label: "answer comparison ignores case",
     actual: () => evaluateAnswer("TENGO", { type: "conjugation", verb: "tener", tense: "presente", person: 0, answer: "tengo" }).status,
     expected: "correct",
+  },
+  {
+    label: "single verb quiz has five forms",
+    actual: () => generateConjugationQuestions(["tener"], ["presente", "indefinido"], PEOPLE.map((_, index) => index), 5).length,
+    expected: 5,
+  },
+  {
+    label: "mastery threshold",
+    actual: () => {
+      const previousStats = state.cardStats;
+      state.cardStats = { tener: { attempts: 3, correct: 3, mistakes: 0, streak: 2, lastReviewed: null } };
+      const result = isCardMastered("tener");
+      state.cardStats = previousStats;
+      return result;
+    },
+    expected: true,
+  },
+  {
+    label: "study filters and counters",
+    actual: () => {
+      const previousCards = state.cards;
+      const previousStats = state.cardStats;
+      state.cards = ["tener", "hacer", "hablar"];
+      state.cardStats = {
+        hacer: { attempts: 2, correct: 1, mistakes: 1, streak: 0, lastReviewed: null },
+        hablar: { attempts: 3, correct: 3, mistakes: 0, streak: 3, lastReviewed: null }
+      };
+      const counts = studyCardCounts();
+      const result = [counts.reviewed, counts.unreviewed, counts.mistakes, counts.mastered, cardsForFilter("mistakes").length, cardsForFilter("mastered").length].join(",");
+      state.cards = previousCards;
+      state.cardStats = previousStats;
+      return result;
+    },
+    expected: "2,1,1,1,1,1",
   },
 ];
 

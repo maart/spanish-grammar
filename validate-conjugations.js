@@ -38,12 +38,12 @@ const sandbox = {
 // Execute the JS in the sandbox
 const fn = new Function(
   ...Object.keys(sandbox),
-  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize, generateInfinitiveQuestions, generateConjugationQuestions, checkAnswer };"
+  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, VERB_TENSE_GROUPS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize, generateInfinitiveQuestions, generateConjugationQuestions, checkAnswer };"
 );
 const api = fn(...Object.values(sandbox));
 
 const {
-  IRREGULARS, TRANSLATIONS, BASE_VERBS, TENSES, PEOPLE,
+  IRREGULARS, TRANSLATIONS, BASE_VERBS, TENSES, PEOPLE, VERB_TENSE_GROUPS,
   verbType, stem, regularPresent, regularIndefinido, regularImperfecto,
   regularFuture, regularCondicional, regularSubjuntivoPresente,
   regularImperativoAfirmativo, participle, gerund,
@@ -943,6 +943,24 @@ for (const verb of BASE_VERBS) {
       severity: "high",
     });
   }
+}
+
+const groupedVerbTenses = VERB_TENSE_GROUPS.flatMap((group) => group.tenseIds);
+const expectedVerbTenses = TENSES
+  .map((tense) => tense.id)
+  .filter((id) => id !== "formas_no_personales");
+const uniqueGroupedVerbTenses = [...new Set(groupedVerbTenses)];
+const missingGroupedTenses = expectedVerbTenses.filter((id) => !uniqueGroupedVerbTenses.includes(id));
+const duplicateGroupedTenses = uniqueGroupedVerbTenses.filter((id) => groupedVerbTenses.filter((item) => item === id).length > 1);
+if (missingGroupedTenses.length > 0 || duplicateGroupedTenses.length > 0 || uniqueGroupedVerbTenses.length !== expectedVerbTenses.length) {
+  issues.push({
+    verb: "verb tense groups",
+    tense: "ui",
+    person: "-",
+    expected: expectedVerbTenses.join(", "),
+    actual: groupedVerbTenses.join(", "),
+    severity: "high",
+  });
 }
 
 const SEARCH_CASES = [

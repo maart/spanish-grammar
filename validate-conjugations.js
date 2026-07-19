@@ -97,6 +97,28 @@ const REFERENCE = {
     participle: "ido",
     gerund: "yendo",
   },
+  irse: {
+    presente: ["me voy", "te vas", "se va", "nos vamos", "os vais", "se van"],
+    perfecto: ["me he ido", "te has ido", "se ha ido", "nos hemos ido", "os habéis ido", "se han ido"],
+    indefinido: ["me fui", "te fuiste", "se fue", "nos fuimos", "os fuisteis", "se fueron"],
+    imperfecto: ["me iba", "te ibas", "se iba", "nos íbamos", "os ibais", "se iban"],
+    futuro: ["me iré", "te irás", "se irá", "nos iremos", "os iréis", "se irán"],
+    condicional: ["me iría", "te irías", "se iría", "nos iríamos", "os iríais", "se irían"],
+    subjuntivo_presente: ["me vaya", "te vayas", "se vaya", "nos vayamos", "os vayáis", "se vayan"],
+    subjuntivo_imperfecto: ["me fuera", "te fueras", "se fuera", "nos fuéramos", "os fuerais", "se fueran"],
+    imperativo_afirmativo: ["-", "vete", "váyase", "vayámonos", "idos", "váyanse"],
+    imperativo_negativo: ["-", "no te vayas", "no se vaya", "no nos vayamos", "no os vayáis", "no se vayan"],
+    participle: "ido",
+    gerund: "yéndose",
+  },
+  ducharse: {
+    presente: ["me ducho", "te duchas", "se ducha", "nos duchamos", "os ducháis", "se duchan"],
+    perfecto: ["me he duchado", "te has duchado", "se ha duchado", "nos hemos duchado", "os habéis duchado", "se han duchado"],
+    imperativo_afirmativo: ["-", "dúchate", "dúchese", "duchémonos", "duchaos", "dúchense"],
+    imperativo_negativo: ["-", "no te duches", "no se duche", "no nos duchemos", "no os duchéis", "no se duchen"],
+    participle: "duchado",
+    gerund: "duchándose",
+  },
   haber: {
     presente: ["he", "has", "ha", "hemos", "habéis", "han"],
     indefinido: ["hube", "hubiste", "hubo", "hubimos", "hubisteis", "hubieron"],
@@ -1059,6 +1081,8 @@ const SEARCH_CASES = [
   { query: "hecho", first: "hacer", count: 1 },
   { query: "покупать", first: "comprar", count: 1 },
   { query: "reír", first: "reir", count: 1 },
+  { query: "irse", first: "irse", count: 1 },
+  { query: "уходить", first: "irse" },
   { query: "tenre", first: "tener" },
   { query: "sd", count: 0 },
 ];
@@ -1098,6 +1122,11 @@ const QUIZ_CASES = [
     label: "single conjugation form",
     actual: () => generateConjugationQuestions(["tener"], ["presente"], [0], 0)[0]?.answer,
     expected: "tengo",
+  },
+  {
+    label: "reflexive conjugation is not doubled",
+    actual: () => generateConjugationQuestions(["irse"], ["presente"], [0], 0)[0]?.answer,
+    expected: "me voy",
   },
   {
     label: "imperative skips yo",
@@ -1198,6 +1227,10 @@ for (const [verb, refData] of Object.entries(REFERENCE)) {
     checkArray(verb, "presente", refData.presente, actual, "high");
   }
 
+  if (refData.perfecto) {
+    checkArray(verb, "perfecto", refData.perfecto, info.forms.perfecto, "high");
+  }
+
   // Indefinido
   if (refData.indefinido) {
     const actual = info.forms.indefinido;
@@ -1242,6 +1275,10 @@ for (const [verb, refData] of Object.entries(REFERENCE)) {
     checkArray(verb, "imperativo_afirmativo", refData.imperativo_afirmativo, actual, "high");
   }
 
+  if (refData.imperativo_negativo) {
+    checkArray(verb, "imperativo_negativo", refData.imperativo_negativo, info.forms.imperativo_negativo, "high");
+  }
+
   // Participio
   if (refData.participle) {
     checkScalar(verb, "participio", refData.participle, info.participle, "high");
@@ -1250,6 +1287,31 @@ for (const [verb, refData] of Object.entries(REFERENCE)) {
   // Gerund
   if (refData.gerund) {
     checkScalar(verb, "gerundio", refData.gerund, info.gerund, "medium");
+  }
+}
+
+const REFLEXIVE_PERSONAL_TENSES = [
+  "presente", "perfecto", "indefinido", "imperfecto", "pluscuamperfecto",
+  "futuro", "futuro_perfecto", "condicional", "condicional_compuesto",
+  "subjuntivo_presente", "subjuntivo_perfecto", "subjuntivo_imperfecto",
+  "subjuntivo_pluscuamperfecto"
+];
+const reflexivePronouns = ["me ", "te ", "se ", "nos ", "os ", "se "];
+for (const verb of BASE_VERBS.filter(isReflexive)) {
+  const forms = verbInfo(verb).forms;
+  for (const tenseId of REFLEXIVE_PERSONAL_TENSES) {
+    forms[tenseId]?.forEach((form, index) => {
+      if (!form.startsWith(reflexivePronouns[index])) {
+        issues.push({
+          verb,
+          tense: tenseId,
+          person: PEOPLE[index],
+          expected: `форма начинается с «${reflexivePronouns[index].trim()}»`,
+          actual: form,
+          severity: "high",
+        });
+      }
+    });
   }
 }
 

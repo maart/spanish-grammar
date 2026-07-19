@@ -2104,11 +2104,22 @@ td.irregular {
 }
 
 .app-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px 12px;
   margin-top: 16px;
   color: var(--muted);
   font-size: 12px;
   font-weight: 700;
   text-align: center;
+}
+
+.app-footer a {
+  color: var(--accent-2);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
 .floating-top-button {
@@ -2628,7 +2639,10 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.40 · обновлено: 19.07.2026 20:44 CEST</footer>
+      <footer class="app-footer">
+        <span>Версия MVP 0.41 · обновлено: 19.07.2026 20:48 CEST</span>
+        <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
+      </footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 

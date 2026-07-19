@@ -14,6 +14,7 @@
   --muted: #6e675d;
   --line: #d9d0c3;
   --accent: #c43d31;
+  --on-accent: #fff;
   --accent-2: #176b5b;
   --accent-soft: #fde7e1;
   --success: #1f7a4d;
@@ -33,6 +34,7 @@ body.dark {
   --muted: #bbb3a6;
   --line: #464237;
   --accent: #f36f5d;
+  --on-accent: #20201d;
   --accent-2: #5cc4ac;
   --accent-soft: #402621;
   --success: #71d39b;
@@ -57,6 +59,11 @@ body {
 button,
 input {
   font: inherit;
+}
+
+:where(button, input, select, summary, a):focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent-2) 72%, white);
+  outline-offset: 2px;
 }
 
 .app-shell {
@@ -242,7 +249,7 @@ input[type="search"] {
 .tab.is-active {
   border-color: var(--accent);
   background: var(--accent);
-  color: white;
+  color: var(--on-accent);
 }
 
 .content {
@@ -551,7 +558,7 @@ input[type="search"] {
 .filter-tabs .small-button.is-active {
   border-color: var(--accent);
   background: var(--accent);
-  color: white;
+  color: var(--on-accent);
 }
 
 .table-filter-controls {
@@ -632,8 +639,8 @@ input[type="search"] {
 }
 
 .small-button.is-active .filter-count {
-  background: rgba(255,255,255,0.25);
-  color: white;
+  background: color-mix(in srgb, var(--on-accent) 16%, transparent);
+  color: var(--on-accent);
 }
 
 .mood-tabs {
@@ -665,11 +672,11 @@ input[type="search"] {
 .mood-tabs .small-button.is-active {
   border-color: var(--accent);
   background: var(--accent);
-  color: white;
+  color: var(--on-accent);
 }
 
 .mood-tabs .small-button.is-active small {
-  color: white;
+  color: var(--on-accent);
 }
 
 .mood-tabs .small-button.is-related:not(.is-active) {
@@ -1318,7 +1325,7 @@ td.irregular {
 .verb-card-tabs .small-button.is-active {
   border-color: var(--accent);
   background: var(--accent);
-  color: white;
+  color: var(--on-accent);
 }
 
 .verb-table-toolbar {
@@ -1670,7 +1677,7 @@ td.irregular {
 .cards-filter-tabs .small-button.is-active {
   border-color: var(--accent);
   background: var(--accent);
-  color: white;
+  color: var(--on-accent);
 }
 
 .cards-filter-tabs .small-button.is-active span {
@@ -1759,17 +1766,55 @@ td.irregular {
 }
 
 .study-verb-quiz {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 92px;
+  min-height: 34px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 0;
+  padding: 0 9px;
   background: var(--surface);
   color: var(--accent);
   cursor: pointer;
   font-size: 12px;
+  font-weight: 900;
+}
+
+.cards-status-help {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.cards-status-help summary {
+  width: fit-content;
+  cursor: pointer;
+  color: var(--accent-2);
+  font-weight: 900;
+}
+
+.cards-status-help-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.cards-status-help-grid div {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 9px;
+  background: var(--surface-2);
+}
+
+.cards-status-help-grid strong,
+.cards-status-help-grid span {
+  display: block;
+}
+
+.cards-status-help-grid span {
+  margin-top: 2px;
 }
 
 .cards-undo {
@@ -1832,7 +1877,7 @@ td.irregular {
 .quiz-config-options .small-button.is-active {
   border-color: var(--accent);
   background: var(--accent);
-  color: white;
+  color: var(--on-accent);
 }
 
 .quiz-character-row {
@@ -2158,7 +2203,7 @@ td.irregular {
   border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--line));
   border-radius: 999px;
   background: var(--accent);
-  color: white;
+  color: var(--on-accent);
   box-shadow: var(--shadow);
   cursor: pointer;
   font-size: 21px;
@@ -2173,6 +2218,20 @@ td.irregular {
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0);
+}
+
+.common-verbs-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.common-verbs-footer .muted {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 800;
 }
 
 .verb-list.is-suggestions .verb-pick {
@@ -2507,7 +2566,8 @@ select {
   }
 
   .cards-overview,
-  .cards-filter-tabs {
+  .cards-filter-tabs,
+  .cards-status-help-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -2524,11 +2584,24 @@ select {
 
   .cards-study-footer {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-columns: minmax(0, 1fr) auto;
   }
 
   .cards-study-progress {
     margin-left: 0;
+  }
+
+  .study-verb-quiz {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .common-verbs-footer {
+    align-items: stretch;
+  }
+
+  .common-verbs-footer .small-button {
+    width: 100%;
   }
 
   .study-face {
@@ -2541,7 +2614,8 @@ select {
   }
 
   .floating-top-button {
-    bottom: calc(78px + env(safe-area-inset-bottom));
+    right: 16px;
+    bottom: calc(96px + env(safe-area-inset-bottom));
   }
 }
 
@@ -2662,13 +2736,13 @@ select {
         <button class="tab" data-view="cards" type="button" aria-label="Избранное"><span class="tab-label-full">Избранное</span><span class="tab-label-mobile">Избранное</span></button>
       </nav>
 
-      <section id="content" class="content" aria-live="polite"></section>
+      <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.49 · обновлено: 19.07.2026 22:19 CEST</span>
+        <span>Версия MVP 0.50 · обновлено: 19.07.2026 22:53 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
-    <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
+    <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" aria-hidden="true" tabindex="-1" title="Наверх">↑</button>
 
     <template id="verbTemplate">
       <article class="verb-card">
@@ -7356,6 +7430,7 @@ const state = {
   selectedVerb: null,
   previousVerbQuery: null,
   recentVerbs: JSON.parse(localStorage.getItem("msg:recentVerbs") || "[]"),
+  showAllCommonVerbs: false,
   verbCardMode: "basic",
   selectedMood: ["indicativo", "subjuntivo", "imperativo", "condicional"].includes(localStorage.getItem("msg:selectedMood"))
     ? localStorage.getItem("msg:selectedMood")
@@ -7572,8 +7647,71 @@ function scrollAppTop() {
 
 function syncActiveTab(view = state.view) {
   $all(SELECTORS.tabs).forEach((tab) => {
-    tab.classList.toggle("is-active", tab.dataset.view === view);
+    const active = tab.dataset.view === view;
+    tab.classList.toggle("is-active", active);
+    if (active) tab.setAttribute("aria-current", "page");
+    else tab.removeAttribute("aria-current");
   });
+}
+
+function updateRouteHash(route, { replace = false } = {}) {
+  const nextHash = `#${route}`;
+  if (window.location.hash === nextHash) return;
+  window.history[replace ? "replaceState" : "pushState"](null, "", nextHash);
+}
+
+function applyRouteHash() {
+  let route = window.location.hash.slice(1);
+  try {
+    route = decodeURIComponent(route);
+  } catch {
+    route = "";
+  }
+
+  const views = ["verbs", "tenses", "moods", "tables", "cards"];
+  if (!route || route === "verbs") {
+    resetVerbLanding();
+  } else if (views.includes(route)) {
+    state.view = route;
+    if (route === "tenses") state.focusedTense = null;
+    if (route === "tables") state.focusedTable = null;
+  } else if (route.startsWith("verb-")) {
+    const verb = route.slice(5);
+    if (!BASE_VERBS.includes(verb)) return false;
+    state.view = "verbs";
+    state.selectedVerb = verb;
+    state.query = verb;
+    state.previousVerbQuery = null;
+    state.verbCardMode = "basic";
+    rememberRecentVerb(verb);
+  } else if (route.startsWith("tense-")) {
+    const tenseId = route.slice(6);
+    if (!tenseById(tenseId)) return false;
+    state.view = "tenses";
+    state.focusedTense = tenseId;
+    state.returnMood = null;
+  } else if (route.startsWith("mood-")) {
+    const moodId = route.slice(5);
+    if (!MOODS.some((mood) => mood.id === moodId)) return false;
+    state.view = "moods";
+    state.selectedMood = moodId;
+    localStorage.setItem("msg:selectedMood", moodId);
+    resetMoodDetailState();
+  } else if (route.startsWith("table-")) {
+    const index = Number(route.slice(6));
+    if (!Number.isInteger(index) || !INDEXED_TABLES[index]) return false;
+    state.view = "tables";
+    state.focusedTable = index;
+  } else {
+    return false;
+  }
+
+  syncActiveTab();
+  render();
+  if (route.startsWith("verb-") || route.startsWith("tense-") || route.startsWith("table-") || route.startsWith("mood-")) {
+    requestAnimationFrame(() => scrollToCard("content"));
+  }
+  return true;
 }
 
 function tenseById(id) {
@@ -8301,7 +8439,7 @@ function rememberRecentVerb(verb) {
   localStorage.setItem("msg:recentVerbs", JSON.stringify(state.recentVerbs));
 }
 
-function selectVerb(verb, { keepReturnQuery = true } = {}) {
+function selectVerb(verb, { keepReturnQuery = true, updateRoute = true } = {}) {
   const sourceQuery = String(state.query).trim();
   state.previousVerbQuery = keepReturnQuery && sourceQuery && normalize(sourceQuery) !== normalize(verb)
     ? sourceQuery
@@ -8313,6 +8451,7 @@ function selectVerb(verb, { keepReturnQuery = true } = {}) {
   rememberRecentVerb(verb);
   syncActiveTab("verbs");
   renderVerbs();
+  if (updateRoute) updateRouteHash(`verb-${encodeURIComponent(verb)}`);
   scrollToCard("content");
 }
 
@@ -8324,7 +8463,7 @@ function resetVerbLanding() {
   state.verbCardMode = "basic";
 }
 
-function setView(view) {
+function setView(view, { updateRoute = true } = {}) {
   if (view !== "cards") clearQuizHotkeys();
   if (view === "verbs") {
     resetVerbLanding();
@@ -8333,6 +8472,7 @@ function setView(view) {
   }
   syncActiveTab(view);
   render();
+  if (updateRoute) updateRouteHash(view);
 }
 
 function renderVerbCard(verb) {
@@ -8340,6 +8480,7 @@ function renderVerbCard(verb) {
   const node = template.content.firstElementChild.cloneNode(true);
   const info = verbInfo(verb);
   node.querySelector("h2").textContent = info.displayInfinitive;
+  node.querySelector("h2").lang = "es";
   node.querySelector(".muted").textContent = info.ru;
 
   const favoriteButton = node.querySelector(".favorite-button");
@@ -8359,6 +8500,7 @@ function renderVerbCard(verb) {
       state.previousVerbQuery = null;
       state.selectedVerb = null;
       state.verbCardMode = "basic";
+      updateRouteHash("verbs");
       renderVerbs();
       scrollToCard("content");
       requestAnimationFrame(() => document.getElementById("searchInput")?.focus());
@@ -8375,7 +8517,7 @@ function renderVerbCard(verb) {
     ["Participio", info.participle]
   ].forEach(([label, value]) => {
     const item = document.createElement("div");
-    item.innerHTML = `<dt>${label}</dt><dd>${value}</dd>`;
+    item.innerHTML = `<dt>${label}</dt><dd lang="es">${value}</dd>`;
     line.appendChild(item);
   });
 
@@ -8386,8 +8528,8 @@ function renderVerbCard(verb) {
   wrap.insertAdjacentHTML("beforebegin", `
     <div class="verb-table-toolbar">
       <div class="verb-card-tabs" aria-label="Режим карточки глагола">
-        <button class="small-button ${state.verbCardMode === "basic" ? "is-active" : ""}" type="button" data-verb-mode="basic">Основные</button>
-        <button class="small-button ${state.verbCardMode === "all" ? "is-active" : ""}" type="button" data-verb-mode="all">Все времена</button>
+        <button class="small-button ${state.verbCardMode === "basic" ? "is-active" : ""}" type="button" data-verb-mode="basic" aria-pressed="${state.verbCardMode === "basic"}">Основные</button>
+        <button class="small-button ${state.verbCardMode === "all" ? "is-active" : ""}" type="button" data-verb-mode="all" aria-pressed="${state.verbCardMode === "all"}">Все времена</button>
       </div>
       ${hasIrregularFormsInTenses(info, activeTenseIds) ? `<span class="irregular-legend">Формы не по шаблону</span>` : ""}
     </div>
@@ -8537,7 +8679,7 @@ function conjugationTable(info, tenseIds = MAIN_VERB_TENSE_IDS) {
     const forms = info.forms[tense.id];
     row.innerHTML = `<th><button class="verb-link-button" type="button" data-open-tense="${tense.id}">${verbTenseLabel(tense)}</button></th>${forms.map((form, index) => {
       const cls = isIrregularForm(info.infinitive, tense.id, form, index) ? " class=\"irregular\"" : "";
-      return `<td${cls}>${form}</td>`;
+      return `<td${cls} lang="es">${form}</td>`;
     }).join("")}`;
     body.appendChild(row);
   });
@@ -8582,7 +8724,7 @@ function singleTenseTable(verbs, tenseId) {
     const info = verbInfo(verb);
     const row = document.createElement("tr");
     const forms = info.forms[tenseId] || [];
-    row.innerHTML = `<th>${info.displayInfinitive}</th>${PEOPLE.map((_, index) => `<td>${forms[index] || "-"}</td>`).join("")}`;
+    row.innerHTML = `<th lang="es">${info.displayInfinitive}</th>${PEOPLE.map((_, index) => `<td lang="es">${forms[index] || "-"}</td>`).join("")}`;
     body.appendChild(row);
   });
   table.appendChild(body);
@@ -8594,7 +8736,7 @@ function selectedTenseOnlyTable(verb, tenseId) {
   const table = document.createElement("table");
   table.innerHTML = `<thead><tr>${PEOPLE.map((person) => `<th>${person}</th>`).join("")}</tr></thead>`;
   const body = document.createElement("tbody");
-  body.innerHTML = `<tr>${PEOPLE.map((_, index) => `<td class="irregular">${info.forms[tenseId]?.[index] || "-"}</td>`).join("")}</tr>`;
+  body.innerHTML = `<tr>${PEOPLE.map((_, index) => `<td class="irregular" lang="es">${info.forms[tenseId]?.[index] || "-"}</td>`).join("")}</tr>`;
   table.appendChild(body);
   return table;
 }
@@ -8650,6 +8792,7 @@ function renderVerbs() {
     state.verbCardMode = "basic";
     state.searchCursor = -1;
     state.selectedVerb = null;
+    updateRouteHash("verbs", { replace: true });
     renderVerbResults(content, results, selectedPanel);
   });
   renderVerbResults(content, results, selectedPanel);
@@ -8680,9 +8823,11 @@ function renderVerbResults(content, results, selectedPanel) {
   }
 
   if (status) {
-    status.textContent = isSearchMode
-      ? `Найдено глаголов: ${verbs.length}. Enter откроет первое совпадение.`
-      : "";
+    status.textContent = state.selectedVerb
+      ? `Открыт глагол ${displayInfinitive(state.selectedVerb)}.`
+      : isSearchMode
+        ? `Найдено глаголов: ${verbs.length}. Enter откроет первое совпадение.`
+        : "";
   }
 
   if (state.selectedVerb) {
@@ -8713,6 +8858,8 @@ function renderVerbResults(content, results, selectedPanel) {
     }
   }
 
+  const commonVerbs = COMMON_VERB_SUGGESTIONS.filter((verb) => BASE_VERBS.includes(verb));
+  const visibleCommonVerbs = state.showAllCommonVerbs ? commonVerbs : commonVerbs.slice(0, 20);
   const listCard = document.createElement("section");
   listCard.className = "info-card verb-list-card";
   listCard.innerHTML = `
@@ -8722,7 +8869,15 @@ function renderVerbResults(content, results, selectedPanel) {
         <p class="muted">${state.query ? "Выбери глагол, чтобы открыть карточку с основными временами." : "Рейтинг по письменной прессе Испании. Кликни по глаголу или найди другой через поиск."}</p>
       </div>
     </div>
-    <div class="verb-list"></div>
+    <div class="verb-list" ${isDefaultSuggestionPage ? `id="commonVerbList"` : ""}></div>
+    ${isDefaultSuggestionPage ? `
+      <div class="common-verbs-footer">
+        <p class="muted">Показано ${visibleCommonVerbs.length} из ${commonVerbs.length}</p>
+        <button class="small-button" type="button" data-toggle-common-verbs aria-expanded="${state.showAllCommonVerbs}" aria-controls="commonVerbList">
+          ${state.showAllCommonVerbs ? "Свернуть до 20" : `Показать остальные ${Math.max(0, commonVerbs.length - visibleCommonVerbs.length)}`}
+        </button>
+      </div>
+    ` : ""}
     ${isDefaultSuggestionPage ? `
       <details class="table-sources">
         <summary>Источник и методика</summary>
@@ -8738,9 +8893,12 @@ function renderVerbResults(content, results, selectedPanel) {
   const list = listCard.querySelector(".verb-list");
   if (isDefaultSuggestionPage) {
     list.classList.add("is-suggestions");
-    COMMON_VERB_SUGGESTIONS
-      .filter((verb) => BASE_VERBS.includes(verb))
-      .forEach((verb) => list.appendChild(renderVerbListItem(verb, { showBadges: true })));
+    visibleCommonVerbs.forEach((verb) => list.appendChild(renderVerbListItem(verb, { showBadges: true })));
+    listCard.querySelector("[data-toggle-common-verbs]")?.addEventListener("click", () => {
+      state.showAllCommonVerbs = !state.showAllCommonVerbs;
+      renderVerbs();
+      if (!state.showAllCommonVerbs) requestAnimationFrame(() => scrollToCard("commonVerbList"));
+    });
   } else {
     verbs.forEach((verb, index) => list.appendChild(renderVerbListItem(verb, { isBestMatch: isSearchMode && index === 0 })));
   }
@@ -8791,7 +8949,7 @@ function renderEmptyVerbSearch(rawQuery) {
       <div class="search-suggestions">
         ${suggestions.map((verb) => {
           const info = verbInfo(verb);
-          return `<button class="search-suggestion-button" type="button" data-verb-suggestion="${verb}"><strong>${escapeHTML(info.displayInfinitive)}</strong><small>${escapeHTML(info.ru)}</small></button>`;
+          return `<button class="search-suggestion-button" type="button" data-verb-suggestion="${verb}"><strong lang="es">${escapeHTML(info.displayInfinitive)}</strong><small>${escapeHTML(info.ru)}</small></button>`;
         }).join("")}
       </div>
     </div>
@@ -8815,7 +8973,7 @@ function renderVerbListItem(verb, { showBadges = true, isBestMatch = false } = {
   row.innerHTML = `
     <button class="verb-pick" type="button" data-verb-pick="${verb}">
       <span>
-        <strong>${infinitiveLabel}</strong>
+        <strong lang="es">${infinitiveLabel}</strong>
         <small>${translationLabel}</small>
       </span>
       <span class="verb-row-meta">
@@ -8832,7 +8990,7 @@ function renderVerbListItem(verb, { showBadges = true, isBestMatch = false } = {
     row.insertAdjacentHTML("beforeend", `<div class="verb-match-note">${[bestLabel, reason].filter(Boolean).join(" · ")}</div>`);
   }
   if (feedback) {
-    row.insertAdjacentHTML("beforeend", `<div class="favorite-feedback">${state.cardFeedback.added ? "Добавлено в избранное" : "Убрано из избранного"}</div>`);
+    row.insertAdjacentHTML("beforeend", `<div class="favorite-feedback" role="status">${state.cardFeedback.added ? "Добавлено в избранное" : "Убрано из избранного"}</div>`);
   }
   row.querySelector(".verb-pick").addEventListener("click", () => {
     selectVerb(verb, { keepReturnQuery: state.view === "verbs" });
@@ -8962,6 +9120,7 @@ function renderTenses() {
       state.returnMood = null;
       state.openMoreExamplesTense = null;
       renderTenses();
+      updateRouteHash("tenses");
       scrollToCard("tensesTop");
     });
     bindClickAll(focusNav, "[data-return-mood]", (event) => {
@@ -8973,6 +9132,7 @@ function renderTenses() {
       state.returnMood = null;
       syncActiveTab("moods");
       renderMoods();
+      updateRouteHash(`mood-${state.selectedMood}`);
       scrollToCard("content");
     });
     return;
@@ -8997,7 +9157,7 @@ function renderTenses() {
     </details>
     <div class="filter-tabs" aria-label="Фильтр времен">
       ${Object.entries(TENSE_FILTERS).map(([key, filter]) => `
-        <button class="small-button ${state.tenseFilter === key ? "is-active" : ""}" type="button" data-tense-filter="${key}">
+        <button class="small-button ${state.tenseFilter === key ? "is-active" : ""}" type="button" data-tense-filter="${key}" aria-pressed="${state.tenseFilter === key}">
           ${filter.label}<span class="filter-count">${filter.ids.length}</span>
         </button>
       `).join("")}
@@ -9049,6 +9209,7 @@ function renderTenses() {
     state.returnMood = null;
     state.openMoreExamplesTense = null;
     renderTenses();
+    updateRouteHash(`tense-${state.focusedTense}`);
     scrollToCard(`tense-${state.focusedTense}`);
   });
 
@@ -9078,7 +9239,7 @@ function renderTenseCard(tense) {
     <div class="tense-card-head">
       <div>
         <div class="tense-title-row">
-          <h2>${tense.name}</h2>
+          <h2 lang="es">${tense.name}</h2>
           ${badgeMarkup(tense.id)}
         </div>
         <p class="muted">${tense.ru} · ${tense.mood}</p>
@@ -9153,7 +9314,7 @@ function tenseExamplesMarkup(id) {
   return `<div class="example-grid ${expanded ? "is-expanded" : ""}">
     ${visibleExamples.map(([es, ru, context]) => `<div class="example-card">
       ${context ? `<small class="example-context">${context}</small>` : ""}
-      <strong>${es}</strong>
+      <strong lang="es">${es}</strong>
       <span>${ru}</span>
     </div>`).join("")}
   </div>
@@ -9278,6 +9439,7 @@ function renderTables() {
     bindClickAll(toolbar, "[data-table-back]", () => {
       state.focusedTable = null;
       renderTables();
+      updateRouteHash("tables");
       scrollToCard("tablesTop");
     });
     bindClickAll(toolbar, "[data-table-previous]", (event) => {
@@ -9401,11 +9563,12 @@ function openTableFromLink(targetId) {
   openTableByIndex(Number(match[1]));
 }
 
-function openTableByIndex(index) {
+function openTableByIndex(index, { updateRoute = true } = {}) {
   const item = INDEXED_TABLES[index];
   if (!item) return;
   state.focusedTable = index;
   renderTables();
+  if (updateRoute) updateRouteHash(`table-${index}`);
   requestAnimationFrame(() => scrollToCard("tablesTop"));
 }
 
@@ -9664,7 +9827,7 @@ function renderMoods() {
   section.setAttribute("role", "tabpanel");
   section.setAttribute("aria-labelledby", `mood-tab-${selected.id}`);
   section.innerHTML = `
-    <h2>${selected.title}</h2>
+    <h2 lang="es">${selected.title}</h2>
     <p class="muted">${selected.ru}</p>
     ${selected.id === "condicional" ? `<div class="condicional-note"><strong>Важно</strong><span>Condicional показан рядом с наклонениями только для удобства сравнения. По современной классификации RAE это относительное время Indicativo.</span></div>` : ""}
     <p>${selected.description}</p>
@@ -9727,12 +9890,13 @@ function renderMoods() {
   });
 }
 
-function selectMood(moodId) {
+function selectMood(moodId, { updateRoute = true } = {}) {
   if (!MOODS.some((mood) => mood.id === moodId)) return;
   state.selectedMood = moodId;
   localStorage.setItem("msg:selectedMood", moodId);
   resetMoodDetailState();
   renderMoods();
+  if (updateRoute) updateRouteHash(`mood-${moodId}`);
 }
 
 function resetMoodDetailState() {
@@ -10200,7 +10364,16 @@ function renderCards() {
       <div><strong>${studyCounts.unreviewed}</strong><span>не проверено</span></div>
       <div><strong>${studyCounts.mistakes}</strong><span>с ошибками</span></div>
       <div><strong>${studyCounts.mastered}</strong><span>освоено</span></div>
-    </div>` : `<p class="muted">Глаголы, выбранные для повторения. Результаты сохраняются только на этом устройстве.</p>`}
+    </div>
+    <details class="cards-status-help">
+      <summary>Как считаются статусы?</summary>
+      <div class="cards-status-help-grid">
+        <div><strong>Проверено</strong><span>Есть хотя бы один ответ.</span></div>
+        <div><strong>Не проверено</strong><span>Ответов пока не было.</span></div>
+        <div><strong>С ошибками</strong><span>Есть ошибки, и глагол ещё не освоен.</span></div>
+        <div><strong>Освоено</strong><span>Минимум 3 ответа, точность от 80% и серия от 2.</span></div>
+      </div>
+    </details>` : `<p class="muted">Глаголы, выбранные для повторения. Результаты сохраняются только на этом устройстве.</p>`}
     ${hasSavedQuizSession() ? `<div class="cards-resume" role="status">
       <p><strong>Есть незавершенный квиз.</strong> Вопрос ${Math.min(state.savedQuizSession.cardQuizIndex + 1, state.savedQuizSession.cardQuiz.length)} из ${state.savedQuizSession.cardQuiz.length}.</p>
       <div class="cards-dashboard-actions">
@@ -10315,7 +10488,7 @@ function renderCards() {
       <p class="muted">Добавь базовый набор для первой проверки. Отдельные глаголы можно выбирать звездочкой в разделе «Глаголы».</p>
       <button class="small-button primary" type="button" data-add-starter>Добавить 5 базовых глаголов</button>
       <div class="starter-verb-links" aria-label="Посмотреть базовые глаголы">
-        ${suggestedCards.map((verb) => `<button class="starter-verb-link" type="button" data-starter-verb="${verb}">${escapeHTML(displayInfinitive(verb))}</button>`).join("")}
+        ${suggestedCards.map((verb) => `<button class="starter-verb-link" type="button" data-starter-verb="${verb}" lang="es">${escapeHTML(displayInfinitive(verb))}</button>`).join("")}
       </div>
     `;
     emptyCard.querySelectorAll("[data-starter-verb]").forEach((button) => button.addEventListener("click", () => {
@@ -10372,7 +10545,7 @@ function renderCards() {
         <span class="cards-study-progress-track" role="progressbar" aria-label="Точность: ${accuracy}%" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${accuracy}"><i style="width: ${accuracy}%"></i></span>
         <strong>${stats.attempts > 0 ? `${accuracy}%` : "—"}</strong>
       </div>
-      <button class="study-verb-quiz" type="button" data-quiz-verb="${verb}" aria-label="Проверить глагол ${escapeHTML(displayInfinitive(verb))}" title="Проверить 5 форм">▶</button>
+      <button class="study-verb-quiz" type="button" data-quiz-verb="${verb}" aria-label="Проверить глагол ${escapeHTML(displayInfinitive(verb))}" title="Проверить 5 форм"><span aria-hidden="true">▶</span> Проверить</button>
     </div>`);
     list.appendChild(row);
   });
@@ -10591,7 +10764,7 @@ function renderCardQuiz(content) {
     <div class="study-progress" role="progressbar" aria-label="Прогресс квиза" aria-valuemin="1" aria-valuemax="${state.cardQuiz.length}" aria-valuenow="${state.cardQuizIndex + 1}"><span style="width: ${progress}%"></span></div>
     <div class="study-face">
       <p class="eyebrow">${eyebrow}</p>
-      <h2>${escapeHTML(questionHeading)}</h2>
+      <h2 ${isMeaning ? `lang="es"` : ""}>${escapeHTML(questionHeading)}</h2>
       ${answerHTML}
     </div>
     <div class="study-actions">
@@ -10923,7 +11096,7 @@ function renderTenseExceptions(tenseId) {
 }
 
 function verbLink(verb) {
-  return `<button class="verb-link-button" type="button" data-open-verb="${verb}">${displayInfinitive(verb)}</button>`;
+  return `<button class="verb-link-button" type="button" data-open-verb="${verb}" lang="es">${displayInfinitive(verb)}</button>`;
 }
 
 function linkVerbExamples(text) {
@@ -10949,6 +11122,7 @@ function openTenseFromVerb(tenseId) {
   state.openMoreExamplesTense = null;
   syncActiveTab("tenses");
   render();
+  updateRouteHash(`tense-${tenseId}`);
   scrollToCard(`tense-${tenseId}`);
 }
 
@@ -10960,6 +11134,7 @@ function openTenseFromMood(tenseId, moodId) {
   state.openMoreExamplesTense = null;
   syncActiveTab("tenses");
   render();
+  updateRouteHash(`tense-${tenseId}`);
   scrollToCard(`tense-${tenseId}`);
 }
 
@@ -11123,6 +11298,10 @@ const VIEW_RENDERERS = {
 
 function render() {
   document.body.classList.toggle("dark", state.dark);
+  const themeToggle = $(SELECTORS.themeToggle);
+  const themeLabel = state.dark ? "Включить светлую тему" : "Включить тёмную тему";
+  themeToggle.setAttribute("aria-label", themeLabel);
+  themeToggle.title = themeLabel;
   syncActiveTab();
   (VIEW_RENDERERS[state.view] || renderVerbs)();
 }
@@ -11182,8 +11361,12 @@ $(SELECTORS.themeToggle).addEventListener("click", () => {
 });
 
 const floatingTopButton = $(SELECTORS.floatingTopButton);
+let footerInView = false;
 function updateFloatingTopButton() {
-  floatingTopButton.classList.toggle("is-visible", window.scrollY > 420);
+  const visible = window.scrollY > 420 && !footerInView;
+  floatingTopButton.classList.toggle("is-visible", visible);
+  floatingTopButton.setAttribute("aria-hidden", String(!visible));
+  floatingTopButton.tabIndex = visible ? 0 : -1;
 }
 
 floatingTopButton.addEventListener("click", () => {
@@ -11191,6 +11374,22 @@ floatingTopButton.addEventListener("click", () => {
 });
 
 window.addEventListener("scroll", updateFloatingTopButton, { passive: true });
+
+if ("IntersectionObserver" in window) {
+  const footerObserver = new IntersectionObserver((entries) => {
+    footerInView = entries.some((entry) => entry.isIntersecting);
+    updateFloatingTopButton();
+  }, { threshold: 0.05 });
+  footerObserver.observe(document.querySelector(".app-footer"));
+}
+
+window.addEventListener("hashchange", () => {
+  if (!applyRouteHash()) {
+    updateRouteHash("verbs", { replace: true });
+    resetVerbLanding();
+    render();
+  }
+});
 
 document.addEventListener("keydown", (e) => {
   const isInput = e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.isContentEditable;
@@ -11231,6 +11430,7 @@ document.addEventListener("keydown", (e) => {
       }
       state.selectedVerb = null;
       state.searchCursor = -1;
+      updateRouteHash("verbs");
       render();
       e.preventDefault();
     } else if (state.query) {
@@ -11268,7 +11468,12 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-render();
+if (!window.location.hash) updateRouteHash("verbs", { replace: true });
+if (!applyRouteHash()) {
+  updateRouteHash("verbs", { replace: true });
+  resetVerbLanding();
+  render();
+}
 updateFloatingTopButton();
 
     </script>

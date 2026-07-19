@@ -184,6 +184,14 @@ h3 {
   gap: 8px;
 }
 
+.search-status {
+  min-height: 18px;
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
 input[type="search"] {
   min-width: 0;
   height: 46px;
@@ -1126,6 +1134,40 @@ td.irregular {
   background: color-mix(in srgb, var(--accent-soft) 70%, var(--surface));
 }
 
+.verb-search-empty {
+  display: grid;
+  gap: 14px;
+}
+
+.search-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.search-suggestion-button {
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 7px 10px;
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.search-suggestion-button strong,
+.search-suggestion-button small {
+  display: block;
+}
+
+.search-suggestion-button small {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
 .best-match-action {
   display: flex;
   align-items: center;
@@ -1813,7 +1855,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.23 · обновлено: 19.07.2026 16:38</footer>
+      <footer class="app-footer">Версия MVP 0.24 · обновлено: 19.07.2026 16:47</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -6396,10 +6438,13 @@ function formsFor(verb) {
   };
 }
 
+const VERB_INFO_CACHE = new Map();
+
 function verbInfo(verb) {
+  if (VERB_INFO_CACHE.has(verb)) return VERB_INFO_CACHE.get(verb);
   const irregular = IRREGULARS[verb];
   const typeLabel = isReflexive(verb) ? `-${verbType(verb)} -se` : `-${verbType(verb)}`;
-  return {
+  const info = {
     infinitive: verb,
     displayInfinitive: displayInfinitive(verb),
     ru: translationFor(verb),
@@ -6411,6 +6456,8 @@ function verbInfo(verb) {
     irregular: Boolean(irregular),
     reflexive: isReflexive(verb)
   };
+  VERB_INFO_CACHE.set(verb, info);
+  return info;
 }
 
 function displayInfinitive(verb) {
@@ -6432,19 +6479,18 @@ function filteredVerbs() {
   if (!query) {
     return COMMON_VERB_SUGGESTIONS.filter((verb) => BASE_VERBS.includes(verb));
   }
-  return BASE_VERBS
-    .map((verb, index) => ({ verb, index, score: searchScore(verb, query) }))
-    .filter((item) => item.score < 100)
-    .sort((a, b) => a.score - b.score || a.index - b.index)
+  const matches = BASE_VERBS
+    .map((verb, index) => ({ verb, index, match: searchMatchFor(verb, query) }))
+    .filter((item) => item.match)
+    .sort((a, b) => a.match.score - b.match.score || a.index - b.index);
+  const strictMatches = matches.filter((item) => item.match.score < 20);
+  const visibleMatches = strictMatches.length > 0
+    ? (strictMatches[0].match.score <= 2
+      ? strictMatches.filter((item) => item.match.score === strictMatches[0].match.score)
+      : strictMatches)
+    : matches;
+  return visibleMatches
     .map((item) => item.verb);
-}
-
-function fuzzyMatch(query, target) {
-  let qi = 0;
-  for (let ti = 0; ti < target.length && qi < query.length; ti++) {
-    if (query[qi] === target[ti]) qi++;
-  }
-  return qi === query.length;
 }
 
 function levenshtein(a, b) {
@@ -6462,39 +6508,78 @@ function levenshtein(a, b) {
   return prev[n];
 }
 
-function searchScore(verb, query) {
+function searchMatchFor(verb, rawQuery) {
+  const query = normalize(rawQuery);
+  if (!query) return null;
   const info = verbInfo(verb);
   const infinitive = normalize(info.infinitive);
   const display = normalize(info.displayInfinitive);
   const ru = normalize(info.ru);
-  const forms = Object.values(info.forms).flat().map(normalize);
-  const isShortQuery = query.length < 3;
-  if (infinitive === query || display === query) return 0;
-  if (infinitive.startsWith(query) || display.startsWith(query)) return 1;
-  if (forms.some((form) => form === query)) return 2;
-  if (forms.some((form) => form.startsWith(query))) return 3;
-  if (wordStartsWith(ru, query)) return 4;
-  if (!isShortQuery && ru.includes(query)) return 5;
-  if (!isShortQuery && (infinitive.includes(query) || display.includes(query))) return 6;
-  if (!isShortQuery && forms.some((form) => form.includes(query))) return 7;
-  if (!isShortQuery && normalize([info.infinitive, info.displayInfinitive, info.ru, info.participle, info.gerund].join(" ")).includes(query)) return 8;
-  if (!isShortQuery && (fuzzyMatch(query, infinitive) || fuzzyMatch(query, display))) return 9;
-  if (!isShortQuery && fuzzyMatch(query, ru)) return 9;
-  if (!isShortQuery && forms.some((form) => fuzzyMatch(query, form))) return 9;
-  if (query.length >= 4 && levenshtein(query, infinitive) <= 2) return 10;
-  if (query.length >= 4 && levenshtein(query, display) <= 2) return 10;
-  return 100;
+  const ruWords = normalizedWords(ru);
+
+  if (infinitive === query || display === query) {
+    return { score: 0, reason: "Точное совпадение по инфинитиву" };
+  }
+
+  const exactForm = findFormMatch(info, query, "exact");
+  if (exactForm) {
+    return { score: 1, reason: formMatchReason(exactForm) };
+  }
+
+  if (ru === query) {
+    return { score: 2, reason: "Точное совпадение по русскому переводу" };
+  }
+
+  if (infinitive.startsWith(query) || display.startsWith(query)) {
+    return { score: 3, reason: "Инфинитив начинается с запроса" };
+  }
+
+  if (ruWords.some((word) => word === query || word.startsWith(query))) {
+    return { score: 4, reason: "Русский перевод начинается с запроса" };
+  }
+
+  if (query.length >= 3) {
+    const prefixForm = findFormMatch(info, query, "prefix");
+    if (prefixForm) return { score: 5, reason: formMatchReason(prefixForm) };
+    if (infinitive.includes(query) || display.includes(query)) {
+      return { score: 6, reason: "Запрос входит в инфинитив" };
+    }
+    if (ru.includes(query)) {
+      return { score: 7, reason: "Запрос входит в русский перевод" };
+    }
+  }
+
+  if (query.length >= 4) {
+    const partialForm = findFormMatch(info, query, "contains");
+    if (partialForm) return { score: 8, reason: formMatchReason(partialForm) };
+  }
+
+  if (query.length >= 4 && /^[a-z]+$/.test(query)) {
+    const distance = Math.min(levenshtein(query, infinitive), levenshtein(query, display));
+    const limit = query.length >= 5 ? 2 : 1;
+    if (distance <= limit) return { score: 20 + distance, reason: "Возможно, опечатка в инфинитиве" };
+  }
+
+  if (query.length >= 5 && /[а-яё]/.test(query)) {
+    const distance = Math.min(...ruWords.map((word) => levenshtein(query, word)));
+    if (distance <= 1) return { score: 23, reason: "Возможно, опечатка в переводе" };
+  }
+
+  return null;
 }
 
 function normalize(value) {
-  return value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  return String(value).trim().replace(/\s+/g, " ").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
-function wordStartsWith(value, query) {
+function normalizedWords(value) {
   return normalize(value)
     .split(/[\s,;/()]+/)
-    .filter(Boolean)
-    .some((word) => word.startsWith(query));
+    .filter(Boolean);
+}
+
+function formMatchReason(match) {
+  return `Найдено по форме: ${match.form} = ${match.person}, ${match.tense}`;
 }
 
 function saveCards() {
@@ -6790,20 +6875,22 @@ function renderVerbs() {
   searchPanel.innerHTML = `
     <label for="searchInput">Поиск по глаголу, форме или переводу</label>
     <div class="search-row">
-      <input id="searchInput" type="search" placeholder="Например: tener, tengo, ser, hecho, делать, идти, быть" value="${state.query}">
+      <input id="searchInput" type="search" placeholder="Например: tener, tengo, hecho, делать, идти" value="${escapeHTML(state.query)}" autocomplete="off" autocapitalize="none" spellcheck="false" enterkeyhint="search" aria-controls="verbSearchResults" aria-describedby="verbSearchStatus">
     </div>
+    <p class="search-status" id="verbSearchStatus" role="status" aria-live="polite"></p>
   `;
   const selectedPanel = document.createElement("div");
   selectedPanel.className = "selected-verb-panel";
   const results = document.createElement("div");
   results.className = "list-grid";
+  results.id = "verbSearchResults";
   content.appendChild(searchPanel);
 
   searchPanel.querySelector("#searchInput").addEventListener("input", (event) => {
     state.query = event.target.value;
     state.verbCardMode = "basic";
     state.searchCursor = -1;
-    if (!normalize(state.query)) state.selectedVerb = null;
+    state.selectedVerb = null;
     renderVerbResults(content, results, selectedPanel);
   });
   renderVerbResults(content, results, selectedPanel);
@@ -6815,19 +6902,28 @@ function renderVerbResults(content, results, selectedPanel) {
   selectedPanel.remove();
   results.remove();
   const verbs = filteredVerbs();
+  const query = normalize(state.query);
+  const status = document.getElementById("verbSearchStatus");
 
   if (verbs.length === 0) {
-    results.appendChild(infoCard("Ничего не найдено", "Проверь инфинитив. Попробуй без ударения: reir. Можно искать форму: fui, tengo, hecho."));
+    if (status) status.textContent = `По запросу «${state.query.trim()}» ничего не найдено.`;
+    results.appendChild(renderEmptyVerbSearch(state.query));
     content.appendChild(results);
     return;
   }
 
-  const isSearchMode = Boolean(normalize(state.query));
+  const isSearchMode = Boolean(query);
   const isDefaultSuggestionPage = !isSearchMode && !state.selectedVerb;
-  const isExactSelectedSearch = isSearchMode && state.selectedVerb && normalize(state.query) === normalize(state.selectedVerb);
+  const isExactSelectedSearch = isSearchMode && state.selectedVerb && query === normalize(state.selectedVerb);
 
-  if (isSearchMode && !verbs.includes(state.selectedVerb)) {
-    state.selectedVerb = verbs[0];
+  if (isSearchMode && state.selectedVerb && !verbs.includes(state.selectedVerb)) {
+    state.selectedVerb = null;
+  }
+
+  if (status) {
+    status.textContent = isSearchMode
+      ? `Найдено глаголов: ${verbs.length}. Enter откроет первое совпадение.`
+      : "Выбери частый глагол или начни вводить запрос.";
   }
 
   if (state.selectedVerb) {
@@ -6869,6 +6965,57 @@ function renderVerbResults(content, results, selectedPanel) {
     if (state.selectedVerb) content.appendChild(selectedPanel);
     content.appendChild(results);
   }
+}
+
+function searchSuggestions(rawQuery) {
+  const query = normalize(rawQuery);
+  if (query.length < 4) return COMMON_VERB_SUGGESTIONS.slice(0, 5);
+  const isRussian = /[а-яё]/.test(query);
+  const candidates = BASE_VERBS.map((verb, index) => {
+    const info = verbInfo(verb);
+    const targets = isRussian
+      ? normalizedWords(info.ru)
+      : [normalize(info.infinitive), normalize(info.displayInfinitive)];
+    const distance = Math.min(...targets.map((target) => levenshtein(query, target)));
+    return { verb, index, distance };
+  })
+    .filter((item) => item.distance <= 2)
+    .sort((a, b) => a.distance - b.distance || a.index - b.index)
+    .slice(0, 5)
+    .map((item) => item.verb);
+  return candidates.length > 0 ? candidates : COMMON_VERB_SUGGESTIONS.slice(0, 5);
+}
+
+function renderEmptyVerbSearch(rawQuery) {
+  const query = String(rawQuery).trim();
+  const suggestions = searchSuggestions(query);
+  const card = document.createElement("section");
+  card.className = "info-card verb-search-empty";
+  card.innerHTML = `
+    <div>
+      <h2>Ничего не найдено</h2>
+      <p class="muted">Нет совпадений для «${escapeHTML(query)}». Ищи испанский инфинитив, любую форму или русский перевод. Ударения можно не ставить.</p>
+    </div>
+    <div>
+      <h3>Попробуй эти глаголы</h3>
+      <div class="search-suggestions">
+        ${suggestions.map((verb) => {
+          const info = verbInfo(verb);
+          return `<button class="search-suggestion-button" type="button" data-verb-suggestion="${verb}"><strong>${escapeHTML(info.displayInfinitive)}</strong><small>${escapeHTML(info.ru)}</small></button>`;
+        }).join("")}
+      </div>
+    </div>
+  `;
+  card.querySelectorAll("[data-verb-suggestion]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.selectedVerb = button.dataset.verbSuggestion;
+      state.query = button.dataset.verbSuggestion;
+      state.verbCardMode = "basic";
+      renderVerbs();
+      scrollToCard("content");
+    });
+  });
+  return card;
 }
 
 function renderBestMatchCard(verb) {
@@ -6994,28 +7141,25 @@ function verbListBadges(info) {
 function searchMatchReason(info) {
   const query = normalize(state.query);
   if (!query) return "";
-  const formMatch = findFormMatch(info, query);
-  if (formMatch) {
-    return `Найдено по форме: ${formMatch.form} = ${formMatch.person}, ${formMatch.tense}`;
-  }
-  if (normalize(info.ru).includes(query)) return "Найдено по русскому переводу";
-  if (normalize(info.displayInfinitive).includes(query) || normalize(info.infinitive).includes(query)) return "Найдено по инфинитиву";
-  if (normalize(info.participle).includes(query)) return "Найдено по participio";
-  if (normalize(info.gerund).includes(query)) return "Найдено по gerundio";
-  if (fuzzyMatch(query, normalize(info.displayInfinitive)) || fuzzyMatch(query, normalize(info.infinitive))) return "Найдено по инфинитиву (нечёткий)";
-  if (fuzzyMatch(query, normalize(info.ru))) return "Найдено по переводу (нечёткий)";
-  return "";
+  return searchMatchFor(info.infinitive, query)?.reason || "";
 }
 
-function findFormMatch(info, query) {
+function findFormMatch(info, query, mode = "exact") {
   for (const tense of TENSES) {
     const forms = info.forms[tense.id] || [];
     const index = forms.findIndex((form) => {
       const n = normalize(form);
-      return n === query || n.startsWith(query) || fuzzyMatch(query, n);
+      if (!n || n === "-") return false;
+      if (mode === "prefix") return n.startsWith(query);
+      if (mode === "contains") return n.includes(query);
+      return n === query;
     });
     if (index >= 0) {
-      return { form: forms[index], person: PEOPLE[index] || "forma", tense: tense.name };
+      const nonPersonalLabels = ["infinitivo", "gerundio", "participio"];
+      const person = tense.id === "formas_no_personales"
+        ? (nonPersonalLabels[index] || "forma no personal")
+        : (PEOPLE[index] || "forma");
+      return { form: forms[index], person, tense: tense.name };
     }
   }
   return null;

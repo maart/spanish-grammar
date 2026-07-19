@@ -38,7 +38,7 @@ const sandbox = {
 // Execute the JS in the sandbox
 const fn = new Function(
   ...Object.keys(sandbox),
-  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById };"
+  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize };"
 );
 const api = fn(...Object.values(sandbox));
 
@@ -55,7 +55,7 @@ const {
   regularFuturePattern, regularCondicionalPattern,
   regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern,
   regularParticiplePattern, irregularIndefinidoStem,
-  isReflexive, baseVerb,
+  isReflexive, baseVerb, state, filteredVerbs,
 } = api;
 
 // ─── Reference data: known correct conjugations ─────────────────────────────
@@ -944,6 +944,42 @@ for (const verb of BASE_VERBS) {
   }
 }
 
+const SEARCH_CASES = [
+  { query: "tener", first: "tener", count: 1 },
+  { query: "tengo", first: "tener", count: 1 },
+  { query: "делать", first: "hacer", count: 1 },
+  { query: "hecho", first: "hacer", count: 1 },
+  { query: "покупать", first: "comprar", count: 1 },
+  { query: "reír", first: "reir", count: 1 },
+  { query: "tenre", first: "tener" },
+  { query: "sd", count: 0 },
+];
+
+for (const testCase of SEARCH_CASES) {
+  state.query = testCase.query;
+  const results = filteredVerbs();
+  if (testCase.first && results[0] !== testCase.first) {
+    issues.push({
+      verb: testCase.query,
+      tense: "search",
+      person: "first result",
+      expected: testCase.first,
+      actual: results[0] || "(none)",
+      severity: "high",
+    });
+  }
+  if (Number.isInteger(testCase.count) && results.length !== testCase.count) {
+    issues.push({
+      verb: testCase.query,
+      tense: "search",
+      person: "result count",
+      expected: String(testCase.count),
+      actual: String(results.length),
+      severity: "high",
+    });
+  }
+}
+
 function check(verb, tense, index, expected, actual, severity = "high") {
   if (expected === undefined || expected === null) return;
   if (actual === undefined || actual === null) {
@@ -1297,6 +1333,7 @@ console.log("=".repeat(72));
 console.log(`Total verbs checked: ${checkedVerbs.size}`);
 console.log(`Total reference checks: ${Object.keys(REFERENCE).length}`);
 console.log(`Translations complete: ${BASE_VERBS.length - issues.filter((issue) => issue.tense === "translation").length}/${BASE_VERBS.length}`);
+console.log(`Search cases checked: ${SEARCH_CASES.length}`);
 console.log(`Total issues found: ${issues.length}`);
 console.log(`  High severity:   ${highIssues.length}`);
 console.log(`  Medium severity: ${mediumIssues.length}`);

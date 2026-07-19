@@ -38,12 +38,13 @@ const sandbox = {
 // Execute the JS in the sandbox
 const fn = new Function(
   ...Object.keys(sandbox),
-  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, VERB_TENSE_GROUPS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize, generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer, cardAccuracy, isCardMastered, cardNeedsReview, cardsForFilter, studyCardCounts };"
+  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, CORE_FORMS_REVIEWED, VERB_TENSE_GROUPS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize, generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer, cardAccuracy, isCardMastered, cardNeedsReview, cardsForFilter, studyCardCounts };"
 );
 const api = fn(...Object.values(sandbox));
 
 const {
   IRREGULARS, TRANSLATIONS, BASE_VERBS, TENSES, PEOPLE, VERB_TENSE_GROUPS,
+  COMMON_VERB_SUGGESTIONS, CORE_FORMS_REVIEWED,
   verbType, stem, regularPresent, regularIndefinido, regularImperfecto,
   regularFuture, regularCondicional, regularSubjuntivoPresente,
   regularImperativoAfirmativo, participle, gerund,
@@ -846,15 +847,19 @@ const REFERENCE = {
 
   // === verbs with gerund irregularities ===
   leer: {
+    indefinido: ["leí", "leíste", "leyó", "leímos", "leísteis", "leyeron"],
     gerund: "leyendo",
   },
   creer: {
+    indefinido: ["creí", "creíste", "creyó", "creímos", "creísteis", "creyeron"],
     gerund: "creyendo",
   },
   poseer: {
+    indefinido: ["poseí", "poseíste", "poseyó", "poseímos", "poseísteis", "poseyeron"],
     gerund: "poseyendo",
   },
   proveer: {
+    indefinido: ["proveí", "proveíste", "proveyó", "proveímos", "proveísteis", "proveyeron"],
     gerund: "proveyendo",
   },
   oler: {
@@ -927,6 +932,58 @@ const PAST_SUBJUNCTIVE_REFERENCE = {
     futuro: ["oliere", "olieres", "oliere", "oliéremos", "oliereis", "olieren"],
   },
 };
+
+// RAE model audit for the frequent verbs that rely on generated patterns.
+// Values: present yo/tú, indefinido yo/él/ellos, subjuntivo yo, futuro yo,
+// participio and gerundio.
+const COMMON_PATTERN_REFERENCE = {
+  llegar: ["llego", "llegas", "llegué", "llegó", "llegaron", "llegue", "llegaré", "llegado", "llegando"],
+  seguir: ["sigo", "sigues", "seguí", "siguió", "siguieron", "siga", "seguiré", "seguido", "siguiendo"],
+  encontrar: ["encuentro", "encuentras", "encontré", "encontró", "encontraron", "encuentre", "encontraré", "encontrado", "encontrando"],
+  parecer: ["parezco", "pareces", "parecí", "pareció", "parecieron", "parezca", "pareceré", "parecido", "pareciendo"],
+  explicar: ["explico", "explicas", "expliqué", "explicó", "explicaron", "explique", "explicaré", "explicado", "explicando"],
+  contar: ["cuento", "cuentas", "conté", "contó", "contaron", "cuente", "contaré", "contado", "contando"],
+  creer: ["creo", "crees", "creí", "creyó", "creyeron", "crea", "creeré", "creído", "creyendo"],
+  realizar: ["realizo", "realizas", "realicé", "realizó", "realizaron", "realice", "realizaré", "realizado", "realizando"],
+  conocer: ["conozco", "conoces", "conocí", "conoció", "conocieron", "conozca", "conoceré", "conocido", "conociendo"],
+  mantener: ["mantengo", "mantienes", "mantuve", "mantuvo", "mantuvieron", "mantenga", "mantendré", "mantenido", "manteniendo"],
+  volver: ["vuelvo", "vuelves", "volví", "volvió", "volvieron", "vuelva", "volveré", "vuelto", "volviendo"],
+  mostrar: ["muestro", "muestras", "mostré", "mostró", "mostraron", "muestre", "mostraré", "mostrado", "mostrando"],
+  pensar: ["pienso", "piensas", "pensé", "pensó", "pensaron", "piense", "pensaré", "pensado", "pensando"],
+  convertir: ["convierto", "conviertes", "convertí", "convirtió", "convirtieron", "convierta", "convertiré", "convertido", "convirtiendo"],
+  ofrecer: ["ofrezco", "ofreces", "ofrecí", "ofreció", "ofrecieron", "ofrezca", "ofreceré", "ofrecido", "ofreciendo"],
+  empezar: ["empiezo", "empiezas", "empecé", "empezó", "empezaron", "empiece", "empezaré", "empezado", "empezando"],
+  recordar: ["recuerdo", "recuerdas", "recordé", "recordó", "recordaron", "recuerde", "recordaré", "recordado", "recordando"],
+  suponer: ["supongo", "supones", "supuse", "supuso", "supusieron", "suponga", "supondré", "supuesto", "suponiendo"],
+  conseguir: ["consigo", "consigues", "conseguí", "consiguió", "consiguieron", "consiga", "conseguiré", "conseguido", "consiguiendo"],
+  jugar: ["juego", "juegas", "jugué", "jugó", "jugaron", "juegue", "jugaré", "jugado", "jugando"],
+  utilizar: ["utilizo", "utilizas", "utilicé", "utilizó", "utilizaron", "utilice", "utilizaré", "utilizado", "utilizando"],
+  perder: ["pierdo", "pierdes", "perdí", "perdió", "perdieron", "pierda", "perderé", "perdido", "perdiendo"],
+  buscar: ["busco", "buscas", "busqué", "buscó", "buscaron", "busque", "buscaré", "buscado", "buscando"],
+  incluir: ["incluyo", "incluyes", "incluí", "incluyó", "incluyeron", "incluya", "incluiré", "incluido", "incluyendo"],
+  comenzar: ["comienzo", "comienzas", "comencé", "comenzó", "comenzaron", "comience", "comenzaré", "comenzado", "comenzando"],
+  escribir: ["escribo", "escribes", "escribí", "escribió", "escribieron", "escriba", "escribiré", "escrito", "escribiendo"],
+  abrir: ["abro", "abres", "abrí", "abrió", "abrieron", "abra", "abriré", "abierto", "abriendo"],
+  entender: ["entiendo", "entiendes", "entendí", "entendió", "entendieron", "entienda", "entenderé", "entendido", "entendiendo"],
+  reconocer: ["reconozco", "reconoces", "reconocí", "reconoció", "reconocieron", "reconozca", "reconoceré", "reconocido", "reconociendo"],
+  sentir: ["siento", "sientes", "sentí", "sintió", "sintieron", "sienta", "sentiré", "sentido", "sintiendo"],
+  destacar: ["destaco", "destacas", "destaqué", "destacó", "destacaron", "destaque", "destacaré", "destacado", "destacando"],
+  aparecer: ["aparezco", "apareces", "aparecí", "apareció", "aparecieron", "aparezca", "apareceré", "aparecido", "apareciendo"],
+  dirigir: ["dirijo", "diriges", "dirigí", "dirigió", "dirigieron", "dirija", "dirigiré", "dirigido", "dirigiendo"],
+  alcanzar: ["alcanzo", "alcanzas", "alcancé", "alcanzó", "alcanzaron", "alcance", "alcanzaré", "alcanzado", "alcanzando"],
+  publicar: ["publico", "publicas", "publiqué", "publicó", "publicaron", "publique", "publicaré", "publicado", "publicando"],
+  indicar: ["indico", "indicas", "indiqué", "indicó", "indicaron", "indique", "indicaré", "indicado", "indicando"],
+  establecer: ["establezco", "estableces", "establecí", "estableció", "establecieron", "establezca", "estableceré", "establecido", "estableciendo"],
+  obtener: ["obtengo", "obtienes", "obtuve", "obtuvo", "obtuvieron", "obtenga", "obtendré", "obtenido", "obteniendo"]
+};
+
+const COMMON_REGULAR_MODEL_VERBS = [
+  "deber", "pasar", "llevar", "dejar", "tratar", "quedar", "presentar", "permitir",
+  "considerar", "asegurar", "acabar", "llamar", "existir", "esperar", "tomar", "ganar",
+  "recibir", "señalar", "afirmar", "crear", "formar", "resultar", "añadir", "intentar",
+  "entrar", "lograr", "desarrollar", "evitar", "decidir", "cambiar", "necesitar", "sufrir",
+  "celebrar", "afectar", "ocurrir", "cumplir", "gustar", "ayudar", "participar", "superar"
+];
 
 // ─── Validation logic ───────────────────────────────────────────────────────
 const issues = [];
@@ -1162,6 +1219,81 @@ for (const [verb, refData] of Object.entries(REFERENCE)) {
   // Gerund
   if (refData.gerund) {
     checkScalar(verb, "gerundio", refData.gerund, info.gerund, "medium");
+  }
+}
+
+for (const [verb, expected] of Object.entries(COMMON_PATTERN_REFERENCE)) {
+  if (!BASE_VERBS.includes(verb)) continue;
+  checkedVerbs.add(verb);
+  const info = verbInfo(verb);
+  const [presentYo, presentTu, indefYo, indefEl, indefEllos, subjYo, futureYo, expectedParticiple, expectedGerund] = expected;
+  check(verb, "common_presente", 0, presentYo, info.forms.presente[0], "high");
+  check(verb, "common_presente", 1, presentTu, info.forms.presente[1], "high");
+  check(verb, "common_indefinido", 0, indefYo, info.forms.indefinido[0], "high");
+  check(verb, "common_indefinido", 2, indefEl, info.forms.indefinido[2], "high");
+  check(verb, "common_indefinido", 5, indefEllos, info.forms.indefinido[5], "high");
+  check(verb, "common_subjuntivo", 0, subjYo, info.forms.subjuntivo_presente[0], "high");
+  check(verb, "common_futuro", 0, futureYo, info.forms.futuro[0], "high");
+  checkScalar(verb, "common_participio", expectedParticiple, info.participle, "high");
+  checkScalar(verb, "common_gerundio", expectedGerund, info.gerund, "high");
+}
+
+const regularModelEndings = {
+  ar: {
+    presente: ["o", "as", "a", "amos", "áis", "an"],
+    indefinido: ["é", "aste", "ó", "amos", "asteis", "aron"],
+    imperfecto: ["aba", "abas", "aba", "ábamos", "abais", "aban"],
+    subjuntivo: ["e", "es", "e", "emos", "éis", "en"],
+    participio: "ado",
+    gerundio: "ando"
+  },
+  er: {
+    presente: ["o", "es", "e", "emos", "éis", "en"],
+    indefinido: ["í", "iste", "ió", "imos", "isteis", "ieron"],
+    imperfecto: ["ía", "ías", "ía", "íamos", "íais", "ían"],
+    subjuntivo: ["a", "as", "a", "amos", "áis", "an"],
+    participio: "ido",
+    gerundio: "iendo"
+  },
+  ir: {
+    presente: ["o", "es", "e", "imos", "ís", "en"],
+    indefinido: ["í", "iste", "ió", "imos", "isteis", "ieron"],
+    imperfecto: ["ía", "ías", "ía", "íamos", "íais", "ían"],
+    subjuntivo: ["a", "as", "a", "amos", "áis", "an"],
+    participio: "ido",
+    gerundio: "iendo"
+  }
+};
+const futureModelEndings = ["é", "ás", "á", "emos", "éis", "án"];
+const conditionalModelEndings = ["ía", "ías", "ía", "íamos", "íais", "ían"];
+
+for (const verb of COMMON_REGULAR_MODEL_VERBS) {
+  if (!BASE_VERBS.includes(verb)) continue;
+  checkedVerbs.add(verb);
+  const info = verbInfo(verb);
+  const type = verb.slice(-2);
+  const root = verb.slice(0, -2);
+  const model = regularModelEndings[type];
+  checkArray(verb, "common_regular_presente", model.presente.map((ending) => root + ending), info.forms.presente, "high");
+  checkArray(verb, "common_regular_indefinido", model.indefinido.map((ending) => root + ending), info.forms.indefinido, "high");
+  checkArray(verb, "common_regular_imperfecto", model.imperfecto.map((ending) => root + ending), info.forms.imperfecto, "high");
+  checkArray(verb, "common_regular_futuro", futureModelEndings.map((ending) => verb + ending), info.forms.futuro, "high");
+  checkArray(verb, "common_regular_condicional", conditionalModelEndings.map((ending) => verb + ending), info.forms.condicional, "high");
+  checkArray(verb, "common_regular_subjuntivo", model.subjuntivo.map((ending) => root + ending), info.forms.subjuntivo_presente, "high");
+  checkScalar(verb, "common_regular_participio", root + model.participio, info.participle, "high");
+  checkScalar(verb, "common_regular_gerundio", root + model.gerundio, info.gerund, "high");
+}
+
+for (const verb of COMMON_VERB_SUGGESTIONS) {
+  if (!CORE_FORMS_REVIEWED.has(baseVerb(verb))) {
+    issues.push({
+      verb,
+      tense: "review_status",
+      person: "-",
+      expected: "проверенный частый глагол",
+      actual: "рассчитано по правилу",
+      severity: "high"
+    });
   }
 }
 

@@ -2646,7 +2646,7 @@ select {
 
       <section id="content" class="content" aria-live="polite"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.46 · обновлено: 19.07.2026 21:54 CEST</span>
+        <span>Версия MVP 0.47 · обновлено: 19.07.2026 22:06 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -7291,6 +7291,7 @@ const COMMON_VERB_SUGGESTIONS = [
 ];
 
 const CORE_FORMS_REVIEWED = new Set([
+  ...COMMON_VERB_SUGGESTIONS,
   "ser", "estar", "ir", "haber", "tener", "hacer", "decir", "venir", "poder", "poner",
   "ver", "dar", "caber", "valer", "querer", "saber", "salir", "traer", "oir", "pedir",
   "repetir", "servir", "vestir", "dormir", "conducir", "traducir", "producir", "reducir",
@@ -7715,9 +7716,25 @@ function irregularIndefinido(verb) {
       : ["e", "iste", "o", "imos", "isteis", "ieron"];
     return endings.map((ending) => stem + ending);
   }
+  const vowelStem = vowelStemIndefinido(verb);
+  if (vowelStem) return vowelStem;
   const thirdPerson = thirdPersonStemChangeIndefinido(verb);
   if (thirdPerson) return thirdPerson;
   return null;
+}
+
+function vowelStemIndefinido(verb) {
+  const simpleVerb = baseVerb(verb);
+  if (!/(aer|eer|oir)$/.test(simpleVerb)) return null;
+  const root = stem(simpleVerb);
+  return [
+    root + "í",
+    root + "íste",
+    root + "yó",
+    root + "ímos",
+    root + "ísteis",
+    root + "yeron"
+  ];
 }
 
 function irregularIndefinidoStem(verb) {
@@ -8337,6 +8354,10 @@ function hasThirdPersonIndefinidoChange(verb) {
   return Boolean(thirdPersonStemChangeIndefinido(verb));
 }
 
+function hasVowelStemIndefinidoChange(verb) {
+  return Boolean(vowelStemIndefinido(verb));
+}
+
 function hasIndefinidoSpecialStem(verb) {
   return Boolean(IRREGULARS[verb]?.indefinido || irregularIndefinidoStem(verb));
 }
@@ -8360,6 +8381,7 @@ function verbExceptionLabels(verb) {
   if (hasStemChange(verb, "u", "ue")) labels.push("смена корня: u → ue");
   if (hasIndefinidoSpecialStem(verb)) labels.push("indefinido: особая основа");
   else if (hasThirdPersonIndefinidoChange(verb)) labels.push("indefinido: 3-е лицо меняет корень");
+  else if (hasVowelStemIndefinidoChange(verb)) labels.push("indefinido: í/y после гласной");
   else if (hasOrthographicIndefinidoChange(verb)) labels.push("indefinido: орфографическая замена");
   if (irregularFutureStem(verb)) labels.push("futuro/condicional: особая основа");
   if (hasSpecialSubjuntivo(verb)) labels.push("subjuntivo: особая форма");
@@ -10703,7 +10725,7 @@ function isExceptionFor(verb, key) {
     return Boolean(IRREGULARS[verb]?.participle || generatedParticiple(verb));
   }
   if (key === "indefinido") {
-    return Boolean(IRREGULARS[verb]?.indefinido || irregularIndefinidoStem(verb) || thirdPersonStemChangeIndefinido(verb) || orthographicIndefinido(verb));
+    return Boolean(IRREGULARS[verb]?.indefinido || irregularIndefinidoStem(verb) || vowelStemIndefinido(verb) || thirdPersonStemChangeIndefinido(verb) || orthographicIndefinido(verb));
   }
   if (key === "futuro" || key === "condicional") {
     return Boolean(irregularFutureStem(verb));
@@ -10850,6 +10872,7 @@ function exceptionPatternsFor(key) {
       { name: "tipo pedir", change: "у -ir меняется только 3-е лицо: e -> i", examples: "pedir -> pidió, pidieron; servir -> sirvió, sirvieron" },
       { name: "tipo dormir", change: "у -ir меняется только 3-е лицо: o -> u", examples: "dormir -> durmió, durmieron; morir -> murió, murieron" },
       { name: "-uir", change: "в 3-м лице появляется y", examples: "construir -> construyó, construyeron" },
+      { name: "основа на гласную", change: "í получает ударение, а в 3-м лице появляется y", examples: "creer -> creí, creyó, creyeron; caer -> caí, cayó, cayeron" },
       { name: "-car/-gar/-zar", change: "орфография в yo: c -> qu, g -> gu, z -> c", examples: "buscar -> busqué; llegar -> llegué; empezar -> empecé" }
     ],
     futuro: [

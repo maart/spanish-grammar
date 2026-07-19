@@ -2139,7 +2139,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.33 · обновлено: 19.07.2026 19:13</footer>
+      <footer class="app-footer">Версия MVP 0.34 · обновлено: 19.07.2026 19:25</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -5243,7 +5243,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    group: "Орфография и письмо",
+    group: "Произношение, орфография и письмо",
     subgroup: "Сокращения",
     title: "Abreviaturas: Sr., Ud., etc., a. C.",
     description: "Частые сокращения и аббревиатуры в испанском тексте.",
@@ -5932,7 +5932,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    group: "Орфография и письмо",
+    group: "Произношение, орфография и письмо",
     subgroup: "Ударение",
     title: "Agudas, llanas, esdrújulas: основные правила ударения",
     description: "Наличие tilde зависит от ударного слога и последней буквы слова: сначала определи тип слова, затем примени правило.",
@@ -5948,7 +5948,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    group: "Орфография и письмо",
+    group: "Произношение, орфография и письмо",
     subgroup: "Ударение",
     title: "Diptongo и hiato: tiene, país, María, oír",
     description: "Сочетание гласных может образовать один слог — diptongo — или два слога — hiato. Ударная закрытая гласная часто разрывает дифтонг.",
@@ -5964,7 +5964,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    group: "Орфография и письмо",
+    group: "Произношение, орфография и письмо",
     subgroup: "Диакритика",
     title: "Tilde diacrítica: tú/tu, él/el, sí/si, dé/de",
     description: "Диакритическое ударение различает короткие слова, которые пишутся одинаково, но выполняют разные грамматические функции.",
@@ -5983,7 +5983,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    group: "Орфография и письмо",
+    group: "Произношение, орфография и письмо",
     subgroup: "Вопросительные слова",
     title: "Qué/que, cómo/como, cuándo/cuando: когда нужна tilde",
     description: "Вопросительные и восклицательные слова получают tilde как в прямых, так и в косвенных вопросах; союзы и относительные слова пишутся без неё.",
@@ -6001,7 +6001,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    group: "Орфография и письмо",
+    group: "Произношение, орфография и письмо",
     subgroup: "Слитно или раздельно",
     title: "Por qué, porque, el porqué, por que",
     description: "Четыре написания различают вопрос, объяснение причины, существительное «причина» и сочетание предлога por с que.",
@@ -6018,7 +6018,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    group: "Орфография и письмо",
+    group: "Произношение, орфография и письмо",
     subgroup: "Пунктуация и регистр",
     title: "¿? ¡! Запятые, кавычки и прописные буквы",
     description: "Испанская пунктуация использует открывающие вопросительные и восклицательные знаки; регистр дней, месяцев, языков и национальностей отличается от русского и английского.",
@@ -6036,7 +6036,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    group: "Орфография и письмо",
+    group: "Произношение, орфография и письмо",
     subgroup: "Омонимы",
     title: "Hay/ahí/ay, a ver/haber, hecho/echo: частые омонимы",
     description: "Слова звучат одинаково или очень похоже, но относятся к разным частям речи и имеют разное написание.",
@@ -6108,18 +6108,20 @@ const USEFUL_TABLES = [
   {
     group: "Перифразы, неличные формы и модальность",
     subgroup: "Вероятность",
-    title: "Вероятность: quizá, a lo mejor, debe de, futuro",
-    description: "Испанский выражает предположение наречиями, subjuntivo, перифразой deber de и специальными значениями Futuro и Condicional.",
-    summary: "A lo mejor + indicativo; puede que + subjuntivo; debe de + infinitivo; Serán las ocho — вероятно, около восьми.",
+    title: "Предположение о настоящем и прошлом: quizá, debe de, futuro, condicional",
+    description: "Предположение можно отнести к настоящему, завершённому или более раннему прошлому с помощью наречий, Subjuntivo, deber de, Futuro и Condicional.",
+    summary: "Estará trabajando — догадка о настоящем; habrá llegado — о завершённом действии; serían las ocho — оценка момента в прошлом.",
     mistake: "Полезно различать обязанность Debe estudiar и предположение Debe de estar estudiando, но RAE признаёт пересечение обеих конструкций в реальном употреблении.",
     table: `<table><thead><tr><th>Модель</th><th>Наклонение</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
-      <tr><th>a lo mejor</th><td>indicativo</td><td>A lo mejor viene mañana.</td><td>Может быть, он придёт завтра.</td></tr>
-      <tr><th>igual, разговорное в Испании</th><td>indicativo</td><td>Igual está en casa.</td><td>Возможно, он дома.</td></tr>
-      <tr><th>quizá(s) / tal vez</th><td>indicativo или subjuntivo</td><td>Quizá viene / venga luego.</td><td>Возможно, он придёт позже.</td></tr>
-      <tr><th>puede que / es posible que</th><td>subjuntivo</td><td>Puede que lleguen tarde.</td><td>Возможно, они опоздают.</td></tr>
-      <tr><th>deber de + infinitivo</th><td>перифраза вероятности</td><td>Debe de estar cansado.</td><td>Должно быть, он устал.</td></tr>
-      <tr><th>Futuro de probabilidad</th><td>догадка о настоящем</td><td>Serán las ocho. Estará trabajando.</td><td>Наверное, около восьми. Вероятно, он работает.</td></tr>
-      <tr><th>Condicional de probabilidad</th><td>догадка о прошлом</td><td>Serían las ocho cuando llegó.</td><td>Было, вероятно, около восьми, когда он пришёл.</td></tr>
+      <tr><th>a lo mejor / igual</th><td>indicativo; igual разговорное в Испании</td><td>A lo mejor está en casa. Igual viene mañana.</td><td>Возможно, он дома. Может, он придёт завтра.</td></tr>
+      <tr><th>quizá(s) / tal vez</th><td>indicativo или subjuntivo по степени утверждения</td><td>Quizá está / esté trabajando.</td><td>Возможно, он работает.</td></tr>
+      <tr><th>puede que / es posible que</th><td>subjuntivo</td><td>Puede que hayan llegado.</td><td>Возможно, они уже приехали.</td></tr>
+      <tr><th>deber de + infinitivo</th><td>догадка о настоящем</td><td>Debe de estar cansado.</td><td>Должно быть, он устал.</td></tr>
+      <tr><th>deber de + infinitivo compuesto</th><td>догадка о завершённом действии</td><td>Debe de haber salido.</td><td>Должно быть, он ушёл.</td></tr>
+      <tr><th>Futuro Simple</th><td>догадка о настоящем</td><td>Serán las ocho. Estará trabajando.</td><td>Наверное, около восьми. Вероятно, он работает.</td></tr>
+      <tr><th>Futuro Compuesto</th><td>догадка о прошлом, связанном с настоящим</td><td>Habrá llegado ya.</td><td>Наверное, он уже приехал.</td></tr>
+      <tr><th>Condicional Simple</th><td>оценка или догадка из точки в прошлом</td><td>Serían las ocho cuando llegó.</td><td>Было, вероятно, около восьми, когда он пришёл.</td></tr>
+      <tr><th>Condicional Compuesto</th><td>догадка о действии, предшествующем прошлому моменту</td><td>Habría salido antes de que llamaras.</td><td>Вероятно, он ушёл до твоего звонка.</td></tr>
     </tbody></table>`
   },
 
@@ -6206,6 +6208,219 @@ const USEFUL_TABLES = [
       <tr><th>nada más + infinitivo</th><td>сразу после</td><td>Nada más entrar, encendió la luz.</td><td>Войдя, он сразу включил свет.</td></tr>
       <tr><th>de + infinitivo compuesto</th><td>нереальное условие в прошлом</td><td>De haberlo sabido, habría ido.</td><td>Если бы я это знал, я бы пошёл.</td></tr>
     </tbody></table>`
+  },
+
+  {
+    group: "Subjuntivo и сложное предложение",
+    subgroup: "Subjuntivo",
+    title: "Subjuntivo по смыслу: желание, эмоция, сомнение и оценка",
+    description: "Subjuntivo появляется не после любого que, а когда главное высказывание выражает влияние, реакцию, сомнение, отрицание, возможность или оценку зависимого события.",
+    summary: "Quiero que vengas; me alegra que estés aquí; no creo que sea verdad; es importante que descanses.",
+    mistake: "Creo que viene сообщает мнение как утверждение, а No creo que venga не утверждает факт. Само слово que наклонение не определяет.",
+    table: `<table><thead><tr><th>Смысл</th><th>Частые модели</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>желание и влияние</th><td>querer, pedir, aconsejar, prohibir que</td><td>Quiero que vengas. Te aconsejo que descanses.</td><td>Хочу, чтобы ты пришёл. Советую тебе отдохнуть.</td></tr>
+      <tr><th>эмоция и реакция</th><td>alegrarse, molestar, sorprender que</td><td>Me alegra que estés aquí.</td><td>Я рад, что ты здесь.</td></tr>
+      <tr><th>сомнение</th><td>dudar que, no estar seguro de que</td><td>Dudo que tengan tiempo.</td><td>Сомневаюсь, что у них есть время.</td></tr>
+      <tr><th>отрицание мнения</th><td>no creer, no pensar que</td><td>No creo que sea verdad.</td><td>Не думаю, что это правда.</td></tr>
+      <tr><th>возможность и оценка</th><td>es posible, importante, raro que</td><td>Es importante que descanses.</td><td>Важно, чтобы ты отдохнул.</td></tr>
+      <tr><th>утверждение факта</th><td>creer, saber, está claro que + indicativo</td><td>Sé que viene. Está claro que funciona.</td><td>Я знаю, что он придёт. Ясно, что это работает.</td></tr>
+      <tr><th>один субъект</th><td>обычно infinitivo без que</td><td>Quiero descansar.</td><td>Я хочу отдохнуть.</td></tr>
+      <tr><th>важный контраст</th><td>no dudo que обычно утверждает уверенность</td><td>No dudo que tiene razón.</td><td>Я не сомневаюсь, что он прав.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Глаголы и управление",
+    subgroup: "Imperativo",
+    title: "Imperativo: tú, usted, vosotros и ustedes",
+    description: "Утвердительный Imperativo имеет собственные формы, а отрицательный строится с Presente de Subjuntivo. Местоимения меняют позицию и иногда требуют tilde.",
+    summary: "Habla / no hables; hable / no hable; hablad / no habléis; hablen / no hablen. Утверждение: dímelo; отрицание: no me lo digas.",
+    mistake: "No habla и no hablad не являются отрицательным Imperativo: нужно no hables и no habléis.",
+    table: `<table><thead><tr><th>Лицо</th><th>Утвердительно</th><th>Отрицательно</th><th>Пример с местоимением</th></tr></thead><tbody>
+      <tr><th>tú</th><td>habla, come, vive</td><td>no hables, no comas, no vivas</td><td>Dímelo. / No me lo digas.</td></tr>
+      <tr><th>usted</th><td>hable, coma, viva</td><td>no hable, no coma, no viva</td><td>Dígamelo. / No me lo diga.</td></tr>
+      <tr><th>vosotros</th><td>hablad, comed, vivid</td><td>no habléis, no comáis, no viváis</td><td>Sentaos. / No os sentéis.</td></tr>
+      <tr><th>ustedes</th><td>hablen, coman, vivan</td><td>no hablen, no coman, no vivan</td><td>Díganmelo. / No me lo digan.</td></tr>
+      <tr><th>tú: 8 частых особых</th><td colspan="2">venir → ven; decir → di; salir → sal; hacer → haz; tener → ten; ir → ve; poner → pon; ser → sé</td><td>Hazlo hoy. — Сделай это сегодня.</td></tr>
+      <tr><th>утвердительная форма</th><td colspan="2">местоимения присоединяются справа</td><td>Compra + me + lo → Cómpramelo.</td></tr>
+      <tr><th>отрицательная форма</th><td colspan="2">местоимения ставятся перед глаголом</td><td>No me lo compres.</td></tr>
+      <tr><th>ударение</th><td colspan="2">после присоединения местоимений применяется обычное правило tilde</td><td>di → dime → dímelo; levanta → levántate</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Существительные и определители",
+    subgroup: "Сравнение",
+    title: "Сравнение: más, menos, tan, tanto; mejor, peor, mayor, menor",
+    description: "Сравнивать можно признак, количество или действие. Tan используется перед прилагательным и наречием, tanto согласуется с существительным или относится к глаголу.",
+    summary: "Más alto que; tanta agua como; trabaja tanto como yo; más de veinte personas; mejor, peor, mayor, menor.",
+    mistake: "Перед числом обычно más de: más de veinte euros. При сравнении двух величин используется que: gana más que yo.",
+    table: `<table><thead><tr><th>Сравнение</th><th>Схема</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>признак</th><td>más/menos + adj./adv. + que</td><td>Es más alto que yo. Habla menos rápido que Ana.</td><td>Он выше меня. Он говорит медленнее Аны.</td></tr>
+      <tr><th>количество</th><td>más/menos + sustantivo + que</td><td>Tengo menos tiempo que tú.</td><td>У меня меньше времени, чем у тебя.</td></tr>
+      <tr><th>равный признак</th><td>tan + adj./adv. + como</td><td>Es tan fácil como parece.</td><td>Это так же просто, как кажется.</td></tr>
+      <tr><th>равное количество</th><td>tanto/a/os/as + sustantivo + como</td><td>Tiene tantos libros como yo.</td><td>У него столько же книг, сколько у меня.</td></tr>
+      <tr><th>равное действие</th><td>verbo + tanto como</td><td>Trabaja tanto como tú.</td><td>Он работает столько же, сколько ты.</td></tr>
+      <tr><th>порог или число</th><td>más/menos de + число</td><td>Vinieron más de veinte personas.</td><td>Пришло больше двадцати человек.</td></tr>
+      <tr><th>особые формы</th><td>bueno → mejor; malo → peor</td><td>Este plan es mejor.</td><td>Этот план лучше.</td></tr>
+      <tr><th>возраст и положение</th><td>mayor / menor</td><td>Mi hermana es mayor que yo.</td><td>Моя сестра старше меня.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Существительные и определители",
+    subgroup: "Определители",
+    title: "Todo, cada, ambos, cualquiera и ninguno",
+    description: "Эти определители по-разному выражают целое, повторяемость, пару, свободный выбор и отсутствие. Их положение и согласование нельзя переносить с русского буквально.",
+    summary: "Todo el día, todos los días, cada día, ambos libros, cualquier persona, ninguno de ellos.",
+    mistake: "Todo día обычно неверно: todo el día означает весь день, todos los días — каждый день.",
+    table: `<table><thead><tr><th>Форма</th><th>Модель</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>todo/a + el/la</th><td>целый объект или период</td><td>Trabajé todo el día.</td><td>Я работал весь день.</td></tr>
+      <tr><th>todos/as + los/las</th><td>вся группа или регулярность</td><td>Estudio todos los días.</td><td>Я занимаюсь каждый день.</td></tr>
+      <tr><th>cada + ед. число</th><td>каждый элемент по отдельности</td><td>Cada alumno tiene una tarjeta.</td><td>У каждого ученика есть карточка.</td></tr>
+      <tr><th>cada + число + мн. число</th><td>интервал</td><td>El autobús pasa cada diez minutos.</td><td>Автобус ходит каждые десять минут.</td></tr>
+      <tr><th>ambos/ambas</th><td>оба; без артикля</td><td>Ambas opciones son válidas.</td><td>Оба варианта допустимы.</td></tr>
+      <tr><th>cualquier + sustantivo</th><td>любой перед существительным</td><td>Cualquier persona puede entrar.</td><td>Любой человек может войти.</td></tr>
+      <tr><th>cualquiera</th><td>самостоятельно или после существительного</td><td>Elige uno cualquiera.</td><td>Выбери любой.</td></tr>
+      <tr><th>algún / ningún</th><td>перед существительным м. р. ед. числа</td><td>¿Hay algún problema? No hay ningún problema.</td><td>Есть проблема? Никакой проблемы нет.</td></tr>
+      <tr><th>cada uno / ninguno de</th><td>de + определённая группа</td><td>Cada uno de ellos. Ninguno de mis amigos.</td><td>Каждый из них. Никто из моих друзей.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Синтаксис и порядок слов",
+    subgroup: "Безличность",
+    title: "Неопределённый деятель: uno, la gente, se и третье лицо множественного",
+    description: "Неопределённого или обобщённого деятеля можно представить разными способами. Выбор показывает, включён ли говорящий и существует ли конкретная, но неназванная группа.",
+    summary: "Uno aprende; la gente dice; se vive bien; llaman a la puerta; hay mucha gente.",
+    mistake: "La gente грамматически единственного числа: la gente piensa, не la gente piensan.",
+    table: `<table><thead><tr><th>Модель</th><th>Оттенок</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>uno/una + 3-е лицо ед.</th><td>обобщённый личный опыт</td><td>Con los años, uno aprende.</td><td>С годами человек учится.</td></tr>
+      <tr><th>la gente + ед. число</th><td>люди как коллектив</td><td>La gente aquí es amable.</td><td>Люди здесь приветливы.</td></tr>
+      <tr><th>todo el mundo + ед. число</th><td>все</td><td>Todo el mundo lo sabe.</td><td>Все это знают.</td></tr>
+      <tr><th>se + 3-е лицо ед.</th><td>безличное правило или обычай</td><td>En España se cena tarde.</td><td>В Испании ужинают поздно.</td></tr>
+      <tr><th>3-е лицо мн. без подлежащего</th><td>конкретные, но неназванные люди</td><td>Llaman a la puerta. Dicen que va a llover.</td><td>Стучат в дверь. Говорят, что будет дождь.</td></tr>
+      <tr><th>hay</th><td>наличие; безличная неизменяемая форма</td><td>Hay mucha gente fuera.</td><td>На улице много людей.</td></tr>
+      <tr><th>пассив с se</th><td>есть подлежащее и согласование</td><td>Se venden entradas.</td><td>Продаются билеты.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Subjuntivo и сложное предложение",
+    subgroup: "Обстоятельственные придаточные",
+    title: "Причина, цель, уступка и следствие: porque, para que, aunque",
+    description: "Смысл придаточного и отношение говорящего к информации определяют союз и наклонение: причина обычно утверждается, цель ещё должна быть достигнута, а уступка может быть фактической или предполагаемой.",
+    summary: "Porque + indicativo; para que + subjuntivo; aunque + indicativo для факта и + subjuntivo для гипотезы; de modo que выражает результат или цель.",
+    mistake: "Para que требует личной формы Subjuntivo: Te lo explico para que entiendas. При одном субъекте обычно para + infinitivo.",
+    table: `<table><thead><tr><th>Значение</th><th>Модель</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>причина</th><td>porque + indicativo</td><td>No fui porque estaba enfermo.</td><td>Я не пошёл, потому что был болен.</td></tr>
+      <tr><th>причина перед главным</th><td>como + indicativo</td><td>Como estaba enfermo, no fui.</td><td>Так как я был болен, я не пошёл.</td></tr>
+      <tr><th>цель, разные субъекты</th><td>para que + subjuntivo</td><td>Te lo explico para que lo entiendas.</td><td>Объясняю тебе, чтобы ты понял.</td></tr>
+      <tr><th>цель, один субъект</th><td>para + infinitivo</td><td>Estudio para aprender.</td><td>Я учусь, чтобы научиться.</td></tr>
+      <tr><th>известный факт</th><td>aunque + indicativo</td><td>Aunque llueve, voy a salir.</td><td>Хотя идёт дождь, я выйду.</td></tr>
+      <tr><th>гипотеза или неважное условие</th><td>aunque + subjuntivo</td><td>Aunque llueva, saldré.</td><td>Даже если пойдёт дождь, я выйду.</td></tr>
+      <tr><th>усиленная уступка</th><td>por mucho que + subjuntivo</td><td>Por mucho que estudies, necesitas descansar.</td><td>Как бы много ты ни учился, нужно отдыхать.</td></tr>
+      <tr><th>следствие</th><td>así que / de modo que + indicativo</td><td>Llovió, así que no salimos.</td><td>Шёл дождь, поэтому мы не вышли.</td></tr>
+      <tr><th>цель через способ</th><td>de modo que + subjuntivo</td><td>Habla de modo que todos puedan entenderte.</td><td>Говори так, чтобы все могли тебя понять.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Синтаксис и порядок слов",
+    subgroup: "Относительные предложения",
+    title: "Относительные предложения: смысл запятых",
+    description: "Оборот без запятых ограничивает круг объектов, а оборот в запятых добавляет пояснение ко всему уже определённому antecedente.",
+    summary: "Los alumnos que estudiaron aprobaron — только учившиеся; Los alumnos, que habían estudiado, aprobaron — сообщается, что все они учились.",
+    mistake: "Запятые здесь меняют смысл, поэтому их нельзя ставить только по длине оборота или по паузе русского перевода.",
+    table: `<table><thead><tr><th>Тип</th><th>Пунктуация</th><th>Пример</th><th>Смысл</th></tr></thead><tbody>
+      <tr><th>especificativa</th><td>без запятых</td><td>Los alumnos que estudiaron aprobaron.</td><td>Сдали те ученики, которые учились.</td></tr>
+      <tr><th>explicativa</th><td>между запятыми</td><td>Los alumnos, que habían estudiado, aprobaron.</td><td>Ученики, которые до этого занимались, сдали; группа уже определена целиком.</td></tr>
+      <tr><th>конкретизация предмета</th><td>без запятых</td><td>El libro que está en la mesa es mío.</td><td>Моя именно та книга, которая лежит на столе.</td></tr>
+      <tr><th>добавочная информация</th><td>с запятыми</td><td>Mi coche, que tiene diez años, funciona bien.</td><td>О моей уже известной машине добавляется пояснение.</td></tr>
+      <tr><th>имя собственное</th><td>пояснение обычно в запятых</td><td>Ana, que vive en Vigo, viene mañana.</td><td>Ана, живущая в Виго, приедет завтра.</td></tr>
+      <tr><th>предлог + relativo</th><td>предлог входит в оборот</td><td>La persona con la que hablé.</td><td>Человек, с которым я говорил.</td></tr>
+      <tr><th>cuyo/a/os/as</th><td>согласуется с обладаемым</td><td>La autora cuya novela leí.</td><td>Писательница, чей роман я прочитал.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Глаголы и управление",
+    subgroup: "Causativos и восприятие",
+    title: "Hacer, dejar, ver и oír + infinitivo",
+    description: "После глаголов побуждения, разрешения и восприятия infinitivo называет второе действие, а местоимение показывает его исполнителя.",
+    summary: "Lo hice entrar; le hice escribir una carta; la dejé pasar; lo vi salir; le oí cantar una canción.",
+    mistake: "Местоимение ставится перед спрягаемым глаголом: Lo hice entrar, не Hice lo entrar.",
+    table: `<table><thead><tr><th>Конструкция</th><th>Роль исполнителя</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>hacer + inf. непереходный</th><td>обычно lo/la/los/las</td><td>La hice salir.</td><td>Я заставил её выйти.</td></tr>
+      <tr><th>hacer + inf. с объектом</th><td>часто le/les</td><td>Le hice escribir una carta.</td><td>Я заставил его/её написать письмо.</td></tr>
+      <tr><th>dejar + infinitivo</th><td>разрешить; местоимение перед dejar</td><td>La dejé entrar. Le dejé usar el coche.</td><td>Я позволил ей войти. Я разрешил ему/ей воспользоваться машиной.</td></tr>
+      <tr><th>ver + infinitivo</th><td>наблюдать действие целиком</td><td>Lo vi salir de casa.</td><td>Я видел, как он вышел из дома.</td></tr>
+      <tr><th>oír + infinitivo</th><td>слышать действие</td><td>La oí cantar.</td><td>Я слышал, как она пела.</td></tr>
+      <tr><th>второй глагол переходный</th><td>возможен дательный исполнитель</td><td>Le oí cantar una canción.</td><td>Я слышал, как он/она пел(а) песню.</td></tr>
+      <tr><th>названный исполнитель</th><td>a + persona</td><td>Vi a Marta cruzar la calle.</td><td>Я видел, как Марта переходила улицу.</td></tr>
+      <tr><th>положение местоимения</th><td>перед спрягаемым глаголом</td><td>Nos hicieron esperar. No me dejaron hablar.</td><td>Нас заставили ждать. Мне не дали говорить.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Числа, время и даты",
+    subgroup: "Числа в быту",
+    title: "Деньги, дроби, проценты, температура, телефоны и адреса",
+    description: "В испанском Испании десятичные дроби пишутся с запятой, символы отделяются пробелом, а длинные числа в телефонах и адресах группируются для чтения.",
+    summary: "3,5 — tres coma cinco; 12,50 € — doce euros con cincuenta; 25 % — veinticinco por ciento; 20 °C — veinte grados.",
+    mistake: "Точку и запятую не следует использовать для разделения тысяч: нормативно 12 500. Для десятичной части допустимы точка и запятая; в Испании привычна запятая.",
+    table: `<table><thead><tr><th>Ситуация</th><th>Запись</th><th>Как сказать</th><th>Примечание</th></tr></thead><tbody>
+      <tr><th>десятичная дробь</th><td>3,5</td><td>tres coma cinco</td><td>Десятичный знак — запятая.</td></tr>
+      <tr><th>крупное число</th><td>12 500</td><td>doce mil quinientos</td><td>Разряды разделяются пробелом; 1500 обычно пишется без разделителя.</td></tr>
+      <tr><th>деньги</th><td>12,50 €</td><td>doce euros con cincuenta</td><td>Символ ставится после суммы через пробел.</td></tr>
+      <tr><th>процент</th><td>25 %</td><td>veinticinco por ciento</td><td>Между числом и символом ставится пробел.</td></tr>
+      <tr><th>температура</th><td>20 °C</td><td>veinte grados</td><td>Hace veinte grados.</td></tr>
+      <tr><th>телефон Испании</th><td>612 345 678</td><td>seis uno dos, tres cuatro cinco, seis siete ocho</td><td>Можно читать по цифрам или удобными группами.</td></tr>
+      <tr><th>адрес</th><td>calle de Alcalá, 25, 3.º B</td><td>calle de Alcalá, veinticinco, tercero B</td><td>Сначала улица, затем номер, этаж и дверь.</td></tr>
+      <tr><th>год</th><td>2026</td><td>dos mil veintiséis</td><td>Годы читаются как обычные количественные числа.</td></tr>
+      <tr><th>порядок после 10</th><td>capítulo 11</td><td>capítulo once / undécimo capítulo</td><td>В названиях часто используют количественное число.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Произношение, орфография и письмо",
+    subgroup: "Произношение",
+    title: "Как читать b/v, c/z, g/j, h, r/rr и связанные слова",
+    description: "Базовые соответствия букв и звуков для стандартного испанского Испании помогают читать незнакомые слова и понимать беглую речь.",
+    summary: "b и v звучат одинаково; ce/ci и z обычно дают /θ/; ge/gi и j — /x/; h не читается; pero и perro различаются силой r.",
+    mistake: "Буква v в испанском не произносится как русское «в»: baca и vaca начинаются одним испанским звуком /b/.",
+    table: `<table><thead><tr><th>Буквы</th><th>Чтение в Испании</th><th>Пример</th><th>Подсказка</th></tr></thead><tbody>
+      <tr><th>b / v</th><td>один фонемный ряд /b/</td><td>bien, vino</td><td>Не противопоставляются как русские «б» и «в».</td></tr>
+      <tr><th>c + e/i; z</th><td>обычно /θ/ в центральной и северной Испании</td><td>cena, cine, zapato</td><td>Похоже на th в английском think.</td></tr>
+      <tr><th>c + a/o/u; qu</th><td>/k/</td><td>casa, cosa, queso</td><td>В que/qui буква u обычно не читается.</td></tr>
+      <tr><th>g + e/i; j</th><td>/x/</td><td>gente, girar, jamón</td><td>Сильный заднеязычный звук.</td></tr>
+      <tr><th>g + a/o/u; gu</th><td>/g/</td><td>gato, goma, guerra</td><td>В gue/gui u не читается; в güe/güi читается.</td></tr>
+      <tr><th>h</th><td>не произносится</td><td>hola, ahora</td><td>Не добавляй звук «х».</td></tr>
+      <tr><th>r / rr</th><td>одиночный удар / сильная вибрация</td><td>pero / perro; caro / carro</td><td>В начале слова r произносится сильно: rojo.</td></tr>
+      <tr><th>ll / y</th><td>у большинства говорящих совпадают</td><td>llave, yo</td><td>Точная реализация зависит от региона.</td></tr>
+      <tr><th>гласные</th><td>чёткие a, e, i, o, u</td><td>casa, mesa, vino</td><td>Без сильного сокращения безударных гласных.</td></tr>
+      <tr><th>связь слов</th><td>соседние гласные легко объединяются</td><td>vivo en Madrid</td><td>В беглой речи границы слов слышны слабее.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Живой испанский",
+    subgroup: "Переписка",
+    title: "Письма и сообщения: обращение, просьба и завершение",
+    description: "Нейтральная и формальная переписка в Испании использует устойчивые формулы и двоеточие после отдельной строки обращения.",
+    summary: "Estimado señor López:; Me pongo en contacto con usted para…; Le agradecería que…; Quedo a la espera de su respuesta; Un saludo.",
+    mistake: "В формальном испанском обращение обычно закрывается двоеточием, а не английской запятой: Estimada señora García:",
+    table: `<table><thead><tr><th>Функция</th><th>Нейтрально</th><th>Формально</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>обращение</th><td>Hola, Marta:</td><td>Estimado señor López: / Estimada señora García:</td><td>Здравствуйте, Марта / Уважаемый господин Лопес.</td></tr>
+      <tr><th>начало</th><td>Te escribo porque…</td><td>Me pongo en contacto con usted para…</td><td>Пишу тебе, потому что… / Обращаюсь к Вам, чтобы…</td></tr>
+      <tr><th>просьба</th><td>¿Podrías enviármelo?</td><td>Le agradecería que me lo enviara.</td><td>Не мог бы ты это прислать? / Буду признателен, если Вы это пришлёте.</td></tr>
+      <tr><th>вложение</th><td>Te mando el documento.</td><td>Adjunto el documento solicitado.</td><td>Отправляю документ / Прилагаю запрошенный документ.</td></tr>
+      <tr><th>уточнение</th><td>Avísame si necesitas algo.</td><td>No dude en ponerse en contacto conmigo.</td><td>Дай знать, если что-то нужно / Обращайтесь ко мне при необходимости.</td></tr>
+      <tr><th>ожидание ответа</th><td>Quedo pendiente de tu respuesta.</td><td>Quedo a la espera de su respuesta.</td><td>Жду твоего / Вашего ответа.</td></tr>
+      <tr><th>благодарность</th><td>Gracias de antemano.</td><td>Le agradezco de antemano su ayuda.</td><td>Заранее спасибо / Заранее благодарю Вас за помощь.</td></tr>
+      <tr><th>завершение</th><td>Un abrazo, / Un saludo,</td><td>Atentamente, / Reciba un cordial saludo,</td><td>Обнимаю / С уважением.</td></tr>
+      <tr><th>подпись</th><td colspan="2">Имя пишется на следующей строке без повторного приветствия.</td><td>Un saludo,<br>Ana</td></tr>
+    </tbody></table>`
   }
 ];
 const TABLE_GROUPS = [
@@ -6246,8 +6461,8 @@ const TABLE_GROUPS = [
     description: "Приставки, суффиксы, уменьшительные формы и ложные друзья переводчика."
   },
   {
-    title: "Орфография и письмо",
-    description: "Ударения, трудные написания, пунктуация, регистр и сокращения."
+    title: "Произношение, орфография и письмо",
+    description: "Чтение букв и сочетаний, ударения, трудные написания, пунктуация, регистр и сокращения."
   },
   {
     title: "Живой испанский",
@@ -6270,7 +6485,7 @@ const TABLE_FILTERS = [
   { id: "syntax", label: "Синтаксис" },
   { id: "adverbs", label: "Наречия и связки" },
   { id: "word_formation", label: "Словообразование" },
-  { id: "orthography", label: "Орфография" },
+  { id: "orthography", label: "Произношение и письмо" },
   { id: "colloquial", label: "Живой испанский" },
   { id: "time", label: "Дата и время" }
 ];
@@ -6285,7 +6500,7 @@ const TABLE_FILTER_GROUPS = {
   syntax: ["Синтаксис и порядок слов"],
   adverbs: ["Наречия, предлоги и связки"],
   word_formation: ["Словообразование и лексика"],
-  orthography: ["Орфография и письмо"],
+  orthography: ["Произношение, орфография и письмо"],
   colloquial: ["Живой испанский"],
   time: ["Числа, время и даты"],
 };
@@ -8278,7 +8493,7 @@ function renderTables() {
         <a href="https://www.rae.es/gram%C3%A1tica-b%C3%A1sica" target="_blank" rel="noreferrer">RAE: Nueva gramática básica</a>
         <a href="https://www.rae.es/dpd/" target="_blank" rel="noreferrer">RAE: Diccionario panhispánico de dudas</a>
         <a href="https://www.rae.es/ortograf%C3%ADa/" target="_blank" rel="noreferrer">RAE: Ortografía</a>
-        <a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/" target="_blank" rel="noreferrer">Instituto Cervantes: Biblioteca ELE</a>
+        <a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/indice.htm" target="_blank" rel="noreferrer">Instituto Cervantes: Plan curricular</a>
       </div>
     </details>
     <div class="table-filter-controls">

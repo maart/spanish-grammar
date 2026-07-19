@@ -1807,7 +1807,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.20 · обновлено: 23.05.2026 10:53</footer>
+      <footer class="app-footer">Версия MVP 0.21 · обновлено: 19.07.2026 16:14</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -4515,6 +4515,38 @@ const MOODS = [
     `
   },
   {
+    id: "imperativo",
+    title: "Imperativo",
+    ru: "повелительное наклонение",
+    description: "Императив используется для команд, просьб, инструкций и запретов. Отрицательный императив строится через формы субхунтива.",
+    tags: ["команда", "просьба", "запрет"],
+    when: "Используется, когда говорящий прямо побуждает адресата что-то сделать или не делать.",
+    signals: "Контекст команды, инструкции, рецепта, просьбы или запрета: abre, escucha, dime, no vayas.",
+    remember: "Если команда с no, почти всегда думай о subjuntivo: habla -> no hables, ven -> no vengas, di -> no digas.",
+    tenses: "Imperativo afirmativo и imperativo negativo.",
+    tenseIds: ["imperativo_afirmativo", "imperativo_negativo"],
+    triggerGroups: [
+      ["tú afirmativo", "часто как 3-е лицо presente: habla, come, vive"],
+      ["usted / ustedes", "через presente de subjuntivo: hable, hablen"],
+      ["vosotros", "infinitivo без -r + d: hablad, comed, vivid"],
+      ["отрицание", "no + subjuntivo: no hables, no comáis, no digan"],
+      ["местоимения", "утвердительно приклеиваются, отрицательно стоят перед глаголом: dímelo / no me lo digas"]
+    ],
+    confusions: [
+      ["Habla más despacio.", "No hables tan rápido.", "утвердительная команда / запрет через subjuntivo"],
+      ["Dime la verdad.", "No me digas eso.", "местоимение после утвердительной формы / перед отрицательной"],
+      ["Ven aquí.", "No vengas tarde.", "особая форма imperativo / отрицание через subjuntivo"]
+    ],
+    table: `<table><thead><tr><th>Тип</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><td>утвердительный</td><td>Habla más despacio.</td><td>Говори медленнее.</td></tr>
+      <tr><td>отрицательный</td><td>No hables tan rápido.</td><td>Не говори так быстро.</td></tr>
+      <tr><td>нерегулярный</td><td>Ven aquí.</td><td>Иди сюда.</td></tr>
+      <tr><td>просьба</td><td>Dime la verdad, por favor.</td><td>Скажи мне правду, пожалуйста.</td></tr>
+      <tr><td>инструкция</td><td>Mezcla los ingredientes.</td><td>Смешай ингредиенты.</td></tr>
+      <tr><td>запрет</td><td>No os preocupéis.</td><td>Не беспокойтесь.</td></tr>
+    </tbody></table>`
+  },
+  {
     id: "condicional",
     title: "Condicional: условные формы",
     ru: "вежливость, гипотеза и результат условия",
@@ -6553,7 +6585,6 @@ function renderMoods() {
       state.moodQuizRevealed = false;
       state.showMoodConfusion = false;
       state.showSubjuntivoMoreTriggers = false;
-      state.showSubjuntivoMoreExamples = false;
       state.showImperativoIrregulars = false;
       state.showImperativoPronouns = false;
       state.showImperativoMoreExamples = false;

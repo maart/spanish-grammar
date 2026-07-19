@@ -2646,7 +2646,7 @@ select {
 
       <section id="content" class="content" aria-live="polite"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.42 · обновлено: 19.07.2026 21:05 CEST</span>
+        <span>Версия MVP 0.43 · обновлено: 19.07.2026 21:22 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -4291,17 +4291,21 @@ const HABER_FORMS = {
   subjFuturo: ["hubiere", "hubieres", "hubiere", "hubiéremos", "hubiereis", "hubieren"]
 };
 
+const HABER_FORM_ALTERNATIVES = {
+  subjImperfecto: ["hubiese", "hubieses", "hubiese", "hubiésemos", "hubieseis", "hubiesen"]
+};
+
 const TENSES = [
   {
     id: "presente",
     name: "Presente de Indicativo",
     mood: "Indicativo",
     ru: "настоящее время",
-    use: "Факты, привычки, действия сейчас и ближайшее будущее в разговорной речи.",
+    use: "Факты, состояния, привычки и действия в настоящем; также запланированное или назначенное будущее.",
     markers: "ahora, hoy, siempre, normalmente, cada día, los lunes",
     signals: [
       ["Привычки и регулярность", "siempre, normalmente, a menudo, cada día, todos los días, los lunes, cada verano"],
-      ["Сейчас и текущий период", "ahora, en este momento, hoy, actualmente, estos días, últimamente"],
+      ["Сейчас и текущий период", "ahora, hoy, actualmente, estos días; для действия прямо в процессе часто точнее estar + gerundio: Ahora estoy leyendo."],
       ["Факты и общие истины", "ser, estar, tener, vivir, trabajar; El agua hierve. Madrid está en España."],
       ["Будущее по расписанию/плану", "mañana, esta noche, el lunes, luego: Mañana salgo para Madrid."]
     ],
@@ -4309,20 +4313,22 @@ const TENSES = [
       ar: ["o", "as", "a", "amos", "áis", "an"],
       er: ["o", "es", "e", "emos", "éis", "en"],
       ir: ["o", "es", "e", "imos", "ís", "en"]
-    }
+    },
+    formula: "основа infinitivo + окончания"
   },
   {
     id: "perfecto",
     name: "Pretérito Perfecto Compuesto de Indicativo",
     mood: "Indicativo",
     ru: "прошедшее, связанное с настоящим",
-    use: "Действие произошло в периоде, который говорящий ощущает как незавершенный.",
+    use: "Прошлое событие в периоде, продолжающемся до настоящего, либо опыт или результат, актуальный сейчас.",
     markers: "hoy, esta semana, este mes, ya, todavía no, alguna vez",
     signals: [
       ["Незавершенный период", "hoy, esta mañana, esta tarde, esta semana, este mes, este año, este fin de semana"],
       ["Опыт до настоящего", "alguna vez, nunca, ya, todavía no, aún no, varias veces"],
       ["Недавность и результат", "últimamente, recientemente, hace poco; результат важен сейчас: He perdido las llaves."],
-      ["Для Испании", "В Испании часто: Esta mañana he visto a Ana; если период уже закрыт, чаще Indefinido."]
+      ["Продолжающаяся ситуация", "He vivido aquí desde 2020. Период начался в прошлом и включает настоящее."],
+      ["Для Испании", "В большей части Испании часто: Esta mañana he visto a Ana, если говорящий включает утро в текущий период; для закрытого периода чаще Perfecto Simple."]
     ],
     formula: "he/has/ha... + participio"
   },
@@ -4331,11 +4337,12 @@ const TENSES = [
     name: "Pretérito Perfecto Simple (Indefinido)",
     mood: "Indicativo",
     ru: "завершенное прошедшее",
-    use: "Завершенное действие в конкретный момент прошлого.",
+    use: "Завершенное или ограниченное событие в прошлом, помещенное в период, не включающий момент речи.",
     markers: "ayer, anoche, el lunes pasado, en 2020, hace dos días",
     signals: [
       ["Закрытый момент", "ayer, anoche, anteayer, el lunes pasado, la semana pasada, en 2020, hace dos días"],
       ["Закрытый период", "el año pasado, aquel día, durante tres años, если период воспринимается как завершенный"],
+      ["Ограниченная длительность", "Viví allí durante tres años. Длительность указана целиком и имеет границы."],
       ["Последовательность событий", "Llegué, vi a Ana y salimos. Indefinido двигает сюжет вперед."],
       ["Граница действия", "empezó, terminó, nació, murió, llegó, salió, entró, se fue"]
     ],
@@ -4343,26 +4350,29 @@ const TENSES = [
       ar: ["é", "aste", "ó", "amos", "asteis", "aron"],
       er: ["í", "iste", "ió", "imos", "isteis", "ieron"],
       ir: ["í", "iste", "ió", "imos", "isteis", "ieron"]
-    }
+    },
+    formula: "основа infinitivo + окончания"
   },
   {
     id: "imperfecto",
     name: "Pretérito Imperfecto de Indicativo",
     mood: "Indicativo",
     ru: "описательное прошедшее",
-    use: "Фон, привычки в прошлом, длительные или повторяющиеся действия.",
+    use: "Ситуация в развитии без указания ее начала или конца: фон, состояние, привычка или одновременность в прошлом.",
     markers: "antes, de niño, cuando era pequeño, siempre, mientras",
     signals: [
       ["Описание фона", "era, estaba, había, hacía; Era tarde, hacía frío, la casa estaba vacía."],
       ["Привычки в прошлом", "antes, de niño, cuando era pequeño, normalmente, todos los días, cada verano"],
-      ["Длительность без границы", "mientras, durante; Mientras estudiaba, escuchaba música."],
-      ["Фон для события", "Imperfecto описывает сцену, Indefinido называет событие: Dormía cuando llamó."]
+      ["Одновременность и процесс", "mientras, en ese momento; Mientras estudiaba, escuchaba música."],
+      ["Возраст, время, погода, состояния", "Tenía veinte años. Eran las ocho. Hacía frío. No sabía la respuesta."],
+      ["Фон для события", "Imperfecto описывает сцену, Perfecto Simple называет завершенное событие: Dormía cuando llamó."]
     ],
     endings: {
       ar: ["aba", "abas", "aba", "ábamos", "abais", "aban"],
       er: ["ía", "ías", "ía", "íamos", "íais", "ían"],
       ir: ["ía", "ías", "ía", "íamos", "íais", "ían"]
-    }
+    },
+    formula: "основа infinitivo + -aba/-ía"
   },
   {
     id: "pluscuamperfecto",
@@ -4388,9 +4398,9 @@ const TENSES = [
     markers: "apenas, en cuanto, tan pronto como, luego que",
     signals: [
       ["Книжный стиль", "В современной живой речи почти не используется, но встречается в литературе."],
-      ["Союзы немедленности", "apenas, en cuanto, tan pronto como, luego que, así que"],
+      ["Союзы немедленности", "apenas, en cuanto, tan pronto como, luego que"],
       ["Смысл", "Действие завершилось непосредственно перед другим прошлым действием."],
-      ["Современная замена", "Обычно заменяется Pluscuamperfecto или Indefinido: En cuanto terminó, salió."]
+      ["Современная замена", "Обычно заменяется Perfecto Simple; для обычной, не обязательно непосредственной предшествующей ситуации — Pluscuamperfecto: En cuanto terminó, salió."]
     ],
     formula: "hube/hubiste... + participio"
   },
@@ -4407,7 +4417,8 @@ const TENSES = [
       ["Предположение о настоящем", "Estará en casa. Tendrá unos treinta años."],
       ["Разговорная альтернатива", "ir a + infinitivo часто естественнее для личных планов: Voy a estudiar."]
     ],
-    endings: { all: ["é", "ás", "á", "emos", "éis", "án"] }
+    endings: { all: ["é", "ás", "á", "emos", "éis", "án"] },
+    formula: "infinitivo + окончания futuro"
   },
   {
     id: "futuro_perfecto",
@@ -4415,10 +4426,11 @@ const TENSES = [
     mood: "Indicativo",
     ru: "будущее совершенное",
     use: "Действие будет завершено к моменту в будущем; также предположение о прошлом.",
-    markers: "para entonces, para mañana, antes de que, ya, probablemente",
+    markers: "para entonces, para mañana, para cuando, antes de las ocho, ya",
     signals: [
-      ["Завершение к будущей точке", "para entonces, para mañana, antes de las ocho, cuando llegues"],
+      ["Завершение к будущей точке", "para entonces, para mañana, antes de las ocho, para cuando llegues"],
       ["Предположение о прошлом", "Habrá salido. - Он, наверное, уже вышел."],
+      ["В придаточной части", "После cuando с будущим значением нужен subjuntivo: Te llamaré cuando haya terminado."],
       ["Форма", "habré, habrás, habrá, habremos, habréis, habrán + participio"],
       ["Проверка", "Есть будущая точка, и к ней действие уже будет закончено."]
     ],
@@ -4427,29 +4439,34 @@ const TENSES = [
   {
     id: "condicional",
     name: "Condicional Simple",
-    mood: "Condicional",
-    ru: "условное наклонение",
-    use: "Вежливые просьбы, гипотезы и действие при условии.",
-    markers: "si pudiera, me gustaría, podría, debería, yo que tú",
+    mood: "Indicativo",
+    ru: "условное время; будущее в прошедшем",
+    use: "Событие после точки в прошлом, гипотеза, вежливая просьба, совет или предположение о прошлом.",
+    markers: "dijo que, prometió que, si pudiera, me gustaría, podría, debería",
     signals: [
+      ["Будущее из прошлого", "Dijo que volvería al día siguiente. Prometió que llamaría."],
       ["Вежливость", "¿Podrías ayudarme? Querría reservar una mesa. Me gustaría..."],
       ["Гипотеза", "Yo iría, pero no tengo tiempo. Sería mejor esperar."],
       ["Совет", "Deberías descansar. Yo que tú, hablaría con ella."],
-      ["Условие", "Часто рядом с si + imperfecto de subjuntivo: Si pudiera, viajaría."]
+      ["Предположение о прошлом", "Serían las diez. Tendría unos veinte años. = вероятно, было / ему было"],
+      ["Условие", "В нормативной речи: si + imperfecto de subjuntivo, затем condicional: Si pudiera, viajaría. Не *si podría."]
     ],
-    endings: { all: ["ía", "ías", "ía", "íamos", "íais", "ían"] }
+    endings: { all: ["ía", "ías", "ía", "íamos", "íais", "ían"] },
+    formula: "infinitivo + окончания condicional"
   },
   {
     id: "condicional_compuesto",
     name: "Condicional Compuesto",
-    mood: "Condicional",
-    ru: "условное совершенное",
-    use: "Гипотетическое действие в прошлом или мягкое предположение о прошлом.",
-    markers: "habría..., si hubiera..., me habría gustado, debería haber",
+    mood: "Indicativo",
+    ru: "условное совершенное; завершенность в будущем из прошлого",
+    use: "Действие, которое должно было завершиться после прошлой точки; нереальное прошлое или предположение о более раннем событии.",
+    markers: "dijo que habría..., si hubiera..., me habría gustado, debería haber",
     signals: [
+      ["Будущее из прошлого", "Dijo que para el viernes habría terminado."],
       ["Нереальное прошлое", "Habría ido, pero estaba enfermo. Действие не произошло."],
       ["Условная конструкция", "si hubiera tenido tiempo, habría viajado"],
       ["Сожаление/оценка", "Me habría gustado verte. Deberías haber llamado."],
+      ["Предположение о прошлом", "Habrían salido antes del amanecer. = вероятно, вышли"],
       ["Форма", "habría, habrías, habría, habríamos, habríais, habrían + participio"]
     ],
     formula: "habría/habrías... + participio"
@@ -4459,30 +4476,34 @@ const TENSES = [
     name: "Presente de Subjuntivo",
     mood: "Subjuntivo",
     ru: "сослагательное настоящее",
-    use: "Желание, сомнение, эмоция, оценка или необходимость в придаточной части.",
+    use: "Желание, сомнение, эмоция, оценка, цель или еще не реализованная ситуация в настоящем и будущем.",
     markers: "quiero que, espero que, no creo que, es posible que, para que",
     signals: [
       ["Желание и просьба", "quiero que, espero que, prefiero que, te pido que"],
       ["Сомнение и отрицание", "no creo que, dudo que, no estoy seguro de que, es posible que"],
       ["Оценка и эмоция", "es importante que, me alegra que, es raro que, es una pena que"],
-      ["Цель и будущее после союзов", "para que, a fin de que, antes de que; cuando в значении будущего: Cuando vengas..."]
+      ["Самостоятельные конструкции", "ojalá, quizá(s), tal vez: Ojalá venga. Quizá sea verdad."],
+      ["Цель и будущее после союзов", "para que, a fin de que, antes de que; cuando в значении будущего: Cuando vengas..."],
+      ["Неопределенный объект", "Busco a alguien que sepa japonés. Объект не установлен или его существование не утверждается."]
     ],
     endings: {
       ar: ["e", "es", "e", "emos", "éis", "en"],
       er: ["a", "as", "a", "amos", "áis", "an"],
       ir: ["a", "as", "a", "amos", "áis", "an"]
-    }
+    },
+    formula: "основа yo presente + обратные окончания"
   },
   {
     id: "subjuntivo_perfecto",
-    name: "Pretérito Perfecto de Subjuntivo",
+    name: "Pretérito Perfecto Compuesto de Subjuntivo",
     mood: "Subjuntivo",
     ru: "сослагательное совершенное",
-    use: "Сомнение, эмоция или оценка относительно уже завершенного действия.",
+    use: "Завершенное действие в прошлом либо действие, которое должно завершиться до будущей точки, в контексте subjuntivo.",
     markers: "no creo que haya..., me alegra que hayas..., es posible que ya haya",
     signals: [
       ["Subjuntivo + завершенность", "No creo que haya terminado. Puede que ya hayan salido."],
       ["Эмоция/оценка о факте", "Me alegra que hayas venido. Es raro que no haya llamado."],
+      ["Завершенность в будущем", "Te llamaré cuando haya terminado. Опорная точка находится в будущем."],
       ["Маркеры завершенности", "ya, todavía no, aún no, alguna vez, nunca в зависимой части"],
       ["Форма", "haya, hayas, haya, hayamos, hayáis, hayan + participio"]
     ],
@@ -4493,19 +4514,28 @@ const TENSES = [
     name: "Imperfecto de Subjuntivo",
     mood: "Subjuntivo",
     ru: "сослагательное прошедшее",
-    use: "Гипотетические, желаемые или сомнительные действия в прошлом и после si.",
+    use: "Гипотеза о настоящем или будущем, а также действие, зависимое от прошедшей точки отсчета.",
     markers: "si tuviera, quisiera, quería que, era posible que, como si",
     signals: [
       ["После si", "si tuviera, si pudiera, si fuera; условие обычно нереальное или маловероятное"],
       ["Согласование в прошлом", "Quería que vinieras. Dudaba que fuera verdad."],
       ["Вежливые формы", "Quisiera hablar con usted. Me gustaría que me ayudara."],
-      ["Сравнение/гипотеза", "como si, aunque, quizá: Habla como si supiera todo."]
+      ["Сравнение", "После como si: Habla como si supiera todo."],
+      ["Две нормативные серии", "Формы на -ra и -se равноправны в большинстве контекстов: tuviera / tuviese, fuera / fuese."]
     ],
     endings: {
       ar: ["ara", "aras", "ara", "áramos", "arais", "aran"],
       er: ["iera", "ieras", "iera", "iéramos", "ierais", "ieran"],
       ir: ["iera", "ieras", "iera", "iéramos", "ierais", "ieran"]
-    }
+    },
+    endingVariants: [
+      ["-ar · форма -ra", ["ara", "aras", "ara", "áramos", "arais", "aran"]],
+      ["-ar · форма -se", ["ase", "ases", "ase", "ásemos", "aseis", "asen"]],
+      ["-er/-ir · форма -ra", ["iera", "ieras", "iera", "iéramos", "ierais", "ieran"]],
+      ["-er/-ir · форма -se", ["iese", "ieses", "iese", "iésemos", "ieseis", "iesen"]]
+    ],
+    formula: "ellos indefinido без -ron + -ra/-se",
+    formationNote: "Основа берется из формы ellos Pretérito Perfecto Simple без -ron: tuvieron -> tuvie- -> tuviera / tuviese."
   },
   {
     id: "subjuntivo_pluscuamperfecto",
@@ -4516,11 +4546,11 @@ const TENSES = [
     markers: "si hubiera..., ojalá hubiera..., no creía que hubiera",
     signals: [
       ["Нереальное прошлое", "Si hubiera sabido, habría venido. Условие не выполнилось."],
-      ["Сожаление", "Ojalá hubiera estudiado más. Me habría gustado que vinieras."],
+      ["Сожаление", "Ojalá hubiera estudiado más. Me habría gustado que hubieras venido."],
       ["Согласование в прошлом", "No creía que hubieras terminado. Dudaba que hubieran llegado."],
-      ["Форма", "hubiera, hubieras, hubiera, hubiéramos, hubierais, hubieran + participio"]
+      ["Две нормативные серии", "hubiera / hubiese, hubieras / hubieses... + participio"]
     ],
-    formula: "hubiera/hubieras... + participio"
+    formula: "hubiera/hubiese... + participio"
   },
   {
     id: "subjuntivo_futuro",
@@ -4531,7 +4561,7 @@ const TENSES = [
     markers: "quien fuere, cuando fuere, donde procediere, si hubiere",
     signals: [
       ["Юридический стиль", "quien fuere, cuando procediere, si hubiere lugar"],
-      ["Современная речь", "Почти всегда заменяется presente de subjuntivo."],
+      ["Современная речь", "Заменяется presente de subjuntivo или indicativo по типу конструкции: quien fuere -> quien sea; si hubiere lugar -> si hay lugar."],
       ["Где встретишь", "Законы, договоры, формальные документы."],
       ["Практика", "Для разговора достаточно узнавать, активно употреблять редко нужно."]
     ],
@@ -4539,11 +4569,13 @@ const TENSES = [
       ar: ["are", "ares", "are", "áremos", "areis", "aren"],
       er: ["iere", "ieres", "iere", "iéremos", "iereis", "ieren"],
       ir: ["iere", "ieres", "iere", "iéremos", "iereis", "ieren"]
-    }
+    },
+    formula: "ellos indefinido без -ron + -re",
+    formationNote: "Основа та же, что у Imperfecto de Subjuntivo: tuvieron -> tuvie- -> tuviere."
   },
   {
     id: "subjuntivo_futuro_perfecto",
-    name: "Futuro Perfecto de Subjuntivo",
+    name: "Futuro Compuesto de Subjuntivo (Futuro Perfecto)",
     mood: "Subjuntivo",
     ru: "будущее совершенное сослагательное",
     use: "Очень редкая книжная/юридическая форма для будущего завершенного действия.",
@@ -4551,7 +4583,7 @@ const TENSES = [
     signals: [
       ["Юридическая завершенность", "cuando hubiere cumplido, si hubiere terminado"],
       ["Форма", "hubiere, hubieres, hubiere, hubiéremos, hubiereis, hubieren + participio"],
-      ["Современная замена", "Чаще используют pretérito perfecto de subjuntivo: cuando haya terminado."],
+      ["Современная замена", "Чаще используют perfecto de subjuntivo или indicativo по конструкции: cuando haya terminado; si ha incumplido."],
       ["Практика", "Нужно в основном для узнавания в текстах."]
     ],
     formula: "hubiere/hubieres... + participio"
@@ -4561,15 +4593,16 @@ const TENSES = [
     name: "Imperativo afirmativo",
     mood: "Imperativo",
     ru: "утвердительное повелительное",
-    use: "Прямая команда, просьба или инструкция.",
+    use: "Команда, просьба, совет, приглашение или инструкция; собственные формы есть у 2-го и 3-го лица.",
     markers: "haz, habla, ven, dime, por favor, ahora",
     signals: [
       ["Команда", "Ven aquí. Abre la puerta. Escucha. Hazlo ahora."],
       ["Инструкция", "Mezcla los ingredientes. Pulse el botón. Gire a la derecha."],
       ["Просьба", "Dime la verdad, por favor. Ayúdame un momento."],
-      ["Форма", "У tú и vosotros есть собственные утвердительные формы."]
+      ["Местоимения", "Присоединяются после формы: dime, díselo, sentaos; ударение иногда требует tilde."],
+      ["Форма", "У tú и vosotros есть собственные утвердительные формы; usted/ustedes и побуждение nosotros используют subjuntivo."]
     ],
-    formula: "формы tú, usted, nosotros, vosotros, ustedes"
+    formula: "tú, usted, vosotros, ustedes; nosotros — побуждение"
   },
   {
     id: "imperativo_negativo",
@@ -4582,6 +4615,7 @@ const TENSES = [
       ["Запрет", "No fumes. No entres. No lo toques."],
       ["Просьба", "No te preocupes. No me llames tarde. No se lo diga."],
       ["Форма", "no + presente de subjuntivo"],
+      ["Местоимения", "Ставятся перед глаголом: no lo hagas, no se lo diga, no os vayáis."],
       ["Важно", "У отрицательного imperativo нет формы вроде *no habla* для tú."]
     ],
     formula: "no + presente de subjuntivo"
@@ -4591,12 +4625,13 @@ const TENSES = [
     name: "Formas no personales",
     mood: "Formas no personales",
     ru: "неличные формы",
-    use: "Infinitivo, gerundio и participio используются в конструкциях, составных временах и перифразах.",
+    use: "Infinitivo, gerundio и participio не выражают лицо; используются самостоятельно, в перифразах и составных конструкциях.",
     markers: "infinitivo, gerundio, participio, estar + gerundio, haber + participio",
     signals: [
       ["Infinitivo", "после querer, poder, deber, tener que, ir a: quiero estudiar, tengo que salir"],
       ["Gerundio", "estar/seguir/llevar + gerundio: estoy leyendo, sigue lloviendo"],
       ["Participio", "составные времена: he visto; пассив/прилагательное: fue escrito, está cerrado"],
+      ["Составные неличные формы", "haber hablado, habiendo hablado выражают предшествование."],
       ["Важно", "Неличные формы не имеют лица; participio меняется как прилагательное, но не в составных временах."]
     ],
     formula: "hablar, hablando, hablado"
@@ -4632,13 +4667,13 @@ const COMPOUND_TENSE_AUX = {
 
 const TENSE_GROUPS = [
   {
-    title: "Indicativo: факты и реальные действия",
-    description: "Настоящее, прошедшее и будущее, которые говорящий подает как факт.",
+    title: "Indicativo: настоящее, прошедшее и будущее",
+    description: "Формы, которыми говорящий оформляет сообщение как утверждение; сюда входят также прогнозы и предположения.",
     tenseIds: ["presente", "perfecto", "indefinido", "imperfecto", "pluscuamperfecto", "preterito_anterior", "futuro", "futuro_perfecto"]
   },
   {
-    title: "Condicional: условность и вежливость",
-    description: "Формы для гипотез, советов, вежливых просьб и нереальных сценариев.",
+    title: "Indicativo: condicional и будущее из прошлого",
+    description: "В академической классификации condicional относится к Indicativo: это будущее относительно прошлого, а также форма гипотезы и вежливости.",
     tenseIds: ["condicional", "condicional_compuesto"]
   },
   {
@@ -4692,11 +4727,11 @@ const TENSE_NAV_LABELS = {
   condicional: "Condicional Simple",
   condicional_compuesto: "Condicional Compuesto",
   subjuntivo_presente: "Presente de Subjuntivo",
-  subjuntivo_perfecto: "Perfecto de Subjuntivo",
+  subjuntivo_perfecto: "Perfecto Compuesto de Subjuntivo",
   subjuntivo_imperfecto: "Imperfecto de Subjuntivo",
   subjuntivo_pluscuamperfecto: "Pluscuamperfecto de Subjuntivo",
   subjuntivo_futuro: "Futuro de Subjuntivo",
-  subjuntivo_futuro_perfecto: "Futuro Perfecto de Subjuntivo",
+  subjuntivo_futuro_perfecto: "Futuro Compuesto de Subjuntivo",
   imperativo_afirmativo: "Imperativo afirmativo",
   imperativo_negativo: "Imperativo negativo",
   formas_no_personales: "Formas no personales"
@@ -4729,17 +4764,17 @@ const TENSE_EXAMPLES = {
   preterito_anterior: [["Apenas hubo terminado, salió.", "Как только он закончил, он вышел."], ["En cuanto hube llegado, empezó la reunión.", "Как только я пришел, началась встреча."]],
   futuro: [["Mañana te llamaré.", "Завтра я тебе позвоню."], ["Estará en casa.", "Наверное, он дома."]],
   futuro_perfecto: [["Para mañana habré terminado.", "К завтрашнему дню я закончу."], ["Habrá salido ya.", "Наверное, он уже вышел."]],
-  condicional: [["Me gustaría reservar una mesa.", "Я бы хотел забронировать столик."], ["Si pudiera, viajaría más.", "Если бы я мог, я бы больше путешествовал."]],
-  condicional_compuesto: [["Habría ido, pero estaba enfermo.", "Я бы пошел, но был болен."], ["Me habría gustado verte.", "Мне хотелось бы увидеть тебя."]],
+  condicional: [["Dijo que volvería al día siguiente.", "Он сказал, что вернется на следующий день."], ["Si pudiera, viajaría más.", "Если бы я мог, я бы больше путешествовал."], ["Serían las diez.", "Было, вероятно, часов десять."]],
+  condicional_compuesto: [["Dijo que para el viernes habría terminado.", "Он сказал, что к пятнице уже закончит."], ["Si hubiera podido, habría ido.", "Если бы я тогда смог, я бы пошел."], ["Habrían salido de madrugada.", "Вероятно, они вышли на рассвете."]],
   subjuntivo_presente: [["Quiero que vengas.", "Я хочу, чтобы ты пришел."], ["No creo que sea fácil.", "Не думаю, что это легко."]],
-  subjuntivo_perfecto: [["Me alegra que hayas venido.", "Я рад, что ты пришел."], ["No creo que haya terminado.", "Не думаю, что он закончил."]],
-  subjuntivo_imperfecto: [["Quería que vinieras.", "Я хотел, чтобы ты пришел."], ["Si tuviera tiempo, iría.", "Если бы у меня было время, я бы пошел."]],
-  subjuntivo_pluscuamperfecto: [["Ojalá hubiera estudiado más.", "Вот бы я учился больше."], ["Si hubieras llamado, habría ido.", "Если бы ты позвонил, я бы пошел."]],
+  subjuntivo_perfecto: [["Me alegra que hayas venido.", "Я рад, что ты пришел."], ["No creo que haya terminado.", "Не думаю, что он закончил."], ["Te llamaré cuando haya terminado.", "Я позвоню тебе, когда закончу."]],
+  subjuntivo_imperfecto: [["Quería que vinieras.", "Я хотел, чтобы ты пришел."], ["Si tuviera tiempo, iría.", "Если бы у меня было время, я бы пошел."], ["Quisiera hablar con usted.", "Я хотел бы поговорить с Вами."]],
+  subjuntivo_pluscuamperfecto: [["Ojalá hubiera estudiado más.", "Вот бы я больше занимался."], ["Si hubieras llamado, habría ido.", "Если бы ты позвонил, я бы пошел."], ["No creía que hubiesen llegado.", "Я не думал, что они приехали."]],
   subjuntivo_futuro: [["Sea quien fuere, no abras.", "Кто бы это ни был, не открывай."], ["Haga lo que hiciere, responderá.", "Что бы он ни сделал, он ответит."]],
   subjuntivo_futuro_perfecto: [["Cuando hubiere terminado, se archivará.", "Когда будет завершено, это будет передано в архив."], ["Si hubiere incumplido, será sancionado.", "Если он нарушит, его накажут."]],
   imperativo_afirmativo: [["Ven aquí.", "Иди сюда."], ["Dime la verdad.", "Скажи мне правду."]],
   imperativo_negativo: [["No hables tan rápido.", "Не говори так быстро."], ["No lo hagas.", "Не делай этого."]],
-  formas_no_personales: [["Quiero estudiar.", "Я хочу учиться."], ["Estoy leyendo.", "Я читаю сейчас."]]
+  formas_no_personales: [["Quiero estudiar.", "Я хочу учиться."], ["Estoy leyendo.", "Я читаю сейчас."], ["Después de haber comido, salimos.", "Поев, мы вышли."]]
 };
 
 const USEFUL_TABLES = [
@@ -8740,6 +8775,16 @@ function renderTenses() {
     html: `
     <h2>Все времена</h2>
     <p class="muted">Времена сгруппированы по смыслу. Начинай с базовых и частых, а редкие книжные формы используй как справку.</p>
+    <p class="muted">Для полноты системы здесь также показаны Imperativo и formas no personales: строго говоря, это не времена, а повелительное наклонение и неличные формы глагола.</p>
+    <p class="muted"><strong>Важно:</strong> слова-маркеры — это подсказки, а не автоматическое правило. Сначала определи точку отсчета, завершенность действия и отношение говорящего к сообщению.</p>
+    <details class="table-sources">
+      <summary>Нормативные источники раздела</summary>
+      <div class="table-source-links">
+        <a href="https://www.rae.es/buen-uso-espa%C3%B1ol/conjugaci%C3%B3n-espa%C3%B1ola" target="_blank" rel="noreferrer">RAE: Conjugación española</a>
+        <a href="https://www.rae.es/gtg/tiempo" target="_blank" rel="noreferrer">RAE: время и система форм</a>
+        <a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/niveles/02_gramatica_inventario_b1-b2.htm" target="_blank" rel="noreferrer">Instituto Cervantes: B1–B2</a>
+      </div>
+    </details>
     <div class="filter-tabs" aria-label="Фильтр времен">
       ${Object.entries(TENSE_FILTERS).map(([key, filter]) => `
         <button class="small-button ${state.tenseFilter === key ? "is-active" : ""}" type="button" data-tense-filter="${key}">
@@ -8928,6 +8973,7 @@ function formationTable(tense) {
     return `<div class="table-wrap"><table><thead><tr><th>Форма</th><th>Схема</th><th>Пример</th></tr></thead><tbody>
       <tr><td>tú</td><td>обычно 3-е лицо presente</td><td>habla, come, vive</td></tr>
       <tr><td>usted</td><td>${formatFormula("presente de subjuntivo")}</td><td>hable, coma, viva</td></tr>
+      <tr><td>nosotros</td><td>${formatFormula("presente de subjuntivo")} с побудительным значением</td><td>hablemos, comamos, vivamos</td></tr>
       <tr><td>vosotros</td><td>${grammarSlot("infinitivo")} без -r + d</td><td>hablad, comed, vivid</td></tr>
       <tr><td>ustedes</td><td>${formatFormula("presente de subjuntivo")}</td><td>hablen, coman, vivan</td></tr>
     </tbody></table></div>`;
@@ -8936,6 +8982,7 @@ function formationTable(tense) {
     return `<div class="table-wrap"><table><thead><tr><th>Форма</th><th>Схема</th><th>Пример</th></tr></thead><tbody>
       <tr><td>tú</td><td>no + ${grammarSlot("subjuntivo")}</td><td>no hables</td></tr>
       <tr><td>usted</td><td>no + ${grammarSlot("subjuntivo")}</td><td>no hable</td></tr>
+      <tr><td>nosotros</td><td>no + ${grammarSlot("subjuntivo")}</td><td>no hablemos</td></tr>
       <tr><td>vosotros</td><td>no + ${grammarSlot("subjuntivo")}</td><td>no habléis</td></tr>
       <tr><td>ustedes</td><td>no + ${grammarSlot("subjuntivo")}</td><td>no hablen</td></tr>
     </tbody></table></div>`;
@@ -8945,22 +8992,34 @@ function formationTable(tense) {
       <tr><td>Infinitivo</td><td>hablar</td><td>comer</td><td>vivir</td></tr>
       <tr><td>Gerundio</td><td>-ando</td><td>-iendo</td><td>-iendo</td></tr>
       <tr><td>Participio</td><td>-ado</td><td>-ido</td><td>-ido</td></tr>
+      <tr><td>Infinitivo compuesto</td><td colspan="3">haber + ${grammarSlot("participio")}: haber hablado</td></tr>
+      <tr><td>Gerundio compuesto</td><td colspan="3">habiendo + ${grammarSlot("participio")}: habiendo hablado</td></tr>
     </tbody></table></div>`;
   }
   return `<p class="muted">Схема образования будет добавлена.</p>`;
 }
 
 function compoundPatternTable(auxKey) {
+  const alternatives = HABER_FORM_ALTERNATIVES[auxKey];
   return `<div class="table-wrap"><table><thead><tr><th>Лицо</th><th>Схема</th></tr></thead><tbody>
-    ${PEOPLE.map((person, index) => `<tr><th>${person}</th><td>${HABER_FORMS[auxKey][index]} + ${grammarSlot("participio")}</td></tr>`).join("")}
+    ${PEOPLE.map((person, index) => {
+      const auxiliary = alternatives
+        ? `${HABER_FORMS[auxKey][index]} / ${alternatives[index]}`
+        : HABER_FORMS[auxKey][index];
+      return `<tr><th>${person}</th><td>${auxiliary} + ${grammarSlot("participio")}</td></tr>`;
+    }).join("")}
   </tbody></table></div>`;
 }
 
 function endingsTable(tense) {
-  const rows = Object.entries(tense.endings).map(([type, endings]) => {
-    return `<tr><th>${type === "all" ? grammarSlot("infinitivo") : `-${type}`}</th>${endings.map((ending) => `<td>${formatEnding(ending)}</td>`).join("")}</tr>`;
+  const endingRows = tense.endingVariants || Object.entries(tense.endings);
+  const rows = endingRows.map(([type, endings]) => {
+    const label = tense.endingVariants
+      ? type
+      : (type === "all" ? grammarSlot("infinitivo") : `-${type}`);
+    return `<tr><th>${label}</th>${endings.map((ending) => `<td>${formatEnding(ending)}</td>`).join("")}</tr>`;
   }).join("");
-  return `<div class="table-wrap"><table><thead><tr><th>Тип</th>${PEOPLE.map((person) => `<th>${person}</th>`).join("")}</tr></thead><tbody>${rows}</tbody></table></div>`;
+  return `${tense.formationNote ? `<p class="muted">${tense.formationNote}</p>` : ""}<div class="table-wrap"><table><thead><tr><th>Тип</th>${PEOPLE.map((person) => `<th>${person}</th>`).join("")}</tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
 function formatEnding(ending) {
@@ -10753,6 +10812,17 @@ function exceptionPatternsFor(key) {
       { name: "e -> i", change: "у -ir меняется корень во всех формах", examples: "pedir -> pida, pidamos; seguir -> siga, sigamos" },
       { name: "-car/-gar/-zar", change: "орфография перед e", examples: "buscar -> busque; llegar -> llegue; empezar -> empiece" },
       { name: "-uir", change: "появляется y во всех формах", examples: "construir -> construya, construyamos" }
+    ],
+    subjuntivo_imperfecto: [
+      { name: "основа из ellos Indefinido", change: "убрать -ron и добавить окончания -ra или -se", examples: "tener -> tuvieron -> tuviera/tuviese; estar -> estuvieron -> estuviera/estuviese" },
+      { name: "основа на j", change: "сохраняется основа ellos без -ron", examples: "decir -> dijeron -> dijera/dijese; traer -> trajeron -> trajera/trajese" },
+      { name: "изменение у -ir", change: "сохраняется изменение 3-го лица Indefinido", examples: "pedir -> pidieron -> pidiera/pidiese; dormir -> durmieron -> durmiera/durmiese" },
+      { name: "ser и ir", change: "оба строятся от fueron", examples: "ser -> fuera/fuese; ir -> fuera/fuese" }
+    ],
+    subjuntivo_futuro: [
+      { name: "основа из ellos Indefinido", change: "убрать -ron и добавить -re, -res, -re...", examples: "tener -> tuvieron -> tuviere; hacer -> hicieron -> hiciere" },
+      { name: "основа на j", change: "сохраняется основа ellos без -ron", examples: "decir -> dijeron -> dijere; traer -> trajeron -> trajere" },
+      { name: "ser и ir", change: "оба строятся от fueron", examples: "ser -> fuere; ir -> fuere" }
     ],
     participio: [
       { name: "производные от abrir/cubrir", change: "-brir -> -bierto", examples: "abrir -> abierto; cubrir -> cubierto; descubrir -> descubierto" },

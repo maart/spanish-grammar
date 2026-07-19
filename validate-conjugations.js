@@ -43,7 +43,7 @@ const fn = new Function(
 const api = fn(...Object.values(sandbox));
 
 const {
-  IRREGULARS, BASE_VERBS, TENSES, PEOPLE,
+  IRREGULARS, TRANSLATIONS, BASE_VERBS, TENSES, PEOPLE,
   verbType, stem, regularPresent, regularIndefinido, regularImperfecto,
   regularFuture, regularCondicional, regularSubjuntivoPresente,
   regularImperativoAfirmativo, participle, gerund,
@@ -930,6 +930,20 @@ const PAST_SUBJUNCTIVE_REFERENCE = {
 const issues = [];
 let totalChecked = 0;
 
+for (const verb of BASE_VERBS) {
+  const translation = IRREGULARS[verb]?.ru || TRANSLATIONS[verb];
+  if (!translation || translation.trim() === "") {
+    issues.push({
+      verb,
+      tense: "translation",
+      person: "-",
+      expected: "прямой русский перевод",
+      actual: translation || "(missing)",
+      severity: "high",
+    });
+  }
+}
+
 function check(verb, tense, index, expected, actual, severity = "high") {
   if (expected === undefined || expected === null) return;
   if (actual === undefined || actual === null) {
@@ -1282,6 +1296,7 @@ console.log("SPANISH GRAMMAR CONJUGATION VALIDATION REPORT");
 console.log("=".repeat(72));
 console.log(`Total verbs checked: ${checkedVerbs.size}`);
 console.log(`Total reference checks: ${Object.keys(REFERENCE).length}`);
+console.log(`Translations complete: ${BASE_VERBS.length - issues.filter((issue) => issue.tense === "translation").length}/${BASE_VERBS.length}`);
 console.log(`Total issues found: ${issues.length}`);
 console.log(`  High severity:   ${highIssues.length}`);
 console.log(`  Medium severity: ${mediumIssues.length}`);

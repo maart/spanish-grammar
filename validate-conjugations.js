@@ -38,7 +38,7 @@ const sandbox = {
 // Execute the JS in the sandbox
 const fn = new Function(
   ...Object.keys(sandbox),
-  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize };"
+  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize, generateInfinitiveQuestions, generateConjugationQuestions, checkAnswer };"
 );
 const api = fn(...Object.values(sandbox));
 
@@ -56,6 +56,7 @@ const {
   regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern,
   regularParticiplePattern, irregularIndefinidoStem,
   isReflexive, baseVerb, state, filteredVerbs,
+  generateInfinitiveQuestions, generateConjugationQuestions, checkAnswer,
 } = api;
 
 // ─── Reference data: known correct conjugations ─────────────────────────────
@@ -980,6 +981,43 @@ for (const testCase of SEARCH_CASES) {
   }
 }
 
+const QUIZ_CASES = [
+  {
+    label: "infinitive count",
+    actual: () => generateInfinitiveQuestions(["tener", "hacer"], 2).length,
+    expected: 2,
+  },
+  {
+    label: "single conjugation form",
+    actual: () => generateConjugationQuestions(["tener"], ["presente"], [0], 0)[0]?.answer,
+    expected: "tengo",
+  },
+  {
+    label: "imperative skips yo",
+    actual: () => generateConjugationQuestions(["hacer"], ["imperativo_afirmativo"], [0, 1], 0).map((q) => q.answer).join(","),
+    expected: "haz",
+  },
+  {
+    label: "answer comparison ignores case",
+    actual: () => checkAnswer("TENGO", { type: "conjugation", verb: "tener", tense: "presente", person: 0, answer: "tengo" }),
+    expected: true,
+  },
+];
+
+for (const testCase of QUIZ_CASES) {
+  const actual = testCase.actual();
+  if (actual !== testCase.expected) {
+    issues.push({
+      verb: testCase.label,
+      tense: "quiz",
+      person: "-",
+      expected: String(testCase.expected),
+      actual: String(actual),
+      severity: "high",
+    });
+  }
+}
+
 function check(verb, tense, index, expected, actual, severity = "high") {
   if (expected === undefined || expected === null) return;
   if (actual === undefined || actual === null) {
@@ -1334,6 +1372,7 @@ console.log(`Total verbs checked: ${checkedVerbs.size}`);
 console.log(`Total reference checks: ${Object.keys(REFERENCE).length}`);
 console.log(`Translations complete: ${BASE_VERBS.length - issues.filter((issue) => issue.tense === "translation").length}/${BASE_VERBS.length}`);
 console.log(`Search cases checked: ${SEARCH_CASES.length}`);
+console.log(`Quiz cases checked: ${QUIZ_CASES.length}`);
 console.log(`Total issues found: ${issues.length}`);
 console.log(`  High severity:   ${highIssues.length}`);
 console.log(`  Medium severity: ${mediumIssues.length}`);

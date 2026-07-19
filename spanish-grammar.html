@@ -274,6 +274,12 @@ input[type="search"] {
   gap: 12px;
 }
 
+.recent-clear-button {
+  flex: 0 0 auto;
+  padding-inline: 8px;
+  font-size: 12px;
+}
+
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -2640,7 +2646,7 @@ select {
 
       <section id="content" class="content" aria-live="polite"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.41 · обновлено: 19.07.2026 20:48 CEST</span>
+        <span>Версия MVP 0.42 · обновлено: 19.07.2026 21:05 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -8456,11 +8462,19 @@ function renderVerbResults(content, results, selectedPanel) {
       const recentCard = document.createElement("section");
       recentCard.className = "info-card verb-list-card";
       recentCard.innerHTML = `
-        <div class="card-head"><div><h2>Недавно открытые</h2><p class="muted">Быстрый возврат к последним карточкам.</p></div></div>
+        <div class="card-head">
+          <div><h2>Недавно открытые</h2><p class="muted">Быстрый возврат к последним карточкам.</p></div>
+          <button class="small-button recent-clear-button" type="button" data-clear-recent>Очистить</button>
+        </div>
         <div class="verb-list is-suggestions"></div>
       `;
       const recentList = recentCard.querySelector(".verb-list");
       recentVerbs.forEach((verb) => recentList.appendChild(renderVerbListItem(verb, { showBadges: false })));
+      recentCard.querySelector("[data-clear-recent]").addEventListener("click", () => {
+        state.recentVerbs = [];
+        localStorage.removeItem("msg:recentVerbs");
+        renderVerbs();
+      });
       results.appendChild(recentCard);
     }
   }

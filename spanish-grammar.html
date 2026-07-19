@@ -110,6 +110,16 @@ input {
   gap: 10px;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.print-button {
+  white-space: nowrap;
+}
+
 .brand-kicker {
   margin-bottom: 0;
   color: var(--muted);
@@ -697,6 +707,25 @@ input[type="search"] {
   margin-bottom: 0;
 }
 
+.mood-chooser-question {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+
+.mood-chooser-question > strong {
+  font-size: 17px;
+}
+
+.mood-chooser-path {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
 .choice-grid,
 .mood-trigger-groups,
 .confusion-grid {
@@ -978,6 +1007,27 @@ th {
 td.irregular {
   color: var(--accent);
   font-weight: 900;
+}
+
+.irregular-form-link {
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  font-weight: inherit;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+}
+
+.irregular-form-link:hover,
+.irregular-form-link:focus-visible {
+  color: var(--accent-2);
+  text-decoration-style: solid;
 }
 
 .compact-exceptions {
@@ -2428,6 +2478,10 @@ select {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .header-actions .print-button {
+    display: none;
+  }
+
   .mood-tabs .small-button {
     min-height: 78px;
   }
@@ -2671,6 +2725,11 @@ select {
     display: none !important;
   }
 
+  .topbar,
+  .content {
+    max-width: none;
+  }
+
   .content > *,
   .list-grid > article,
   .list-grid > section,
@@ -2707,6 +2766,10 @@ select {
     font-weight: 900;
     text-decoration: underline;
   }
+
+  .irregular-form-link {
+    text-decoration: none;
+  }
 }
 
     </style>
@@ -2725,7 +2788,10 @@ select {
             <span>офлайн</span>
           </div>
         </div>
-        <button class="icon-button" id="themeToggle" type="button" aria-label="Переключить тему" title="Тема">◐</button>
+        <div class="header-actions">
+          <button class="small-button print-button" id="printButton" type="button" title="Распечатать текущий раздел">Печать</button>
+          <button class="icon-button" id="themeToggle" type="button" aria-label="Переключить тему" title="Тема">◐</button>
+        </div>
       </header>
 
       <nav class="tabs" aria-label="Разделы">
@@ -2738,7 +2804,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.54 · обновлено: 19.07.2026 23:43 CEST</span>
+        <span>Версия MVP 0.55 · обновлено: 20.07.2026 00:04 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -7721,6 +7787,7 @@ const state = {
     ? localStorage.getItem("msg:selectedMood")
     : "indicativo",
   showMoodChooser: false,
+  moodChooserStep: "start",
   showMoodConfusion: false,
   showMoodAdvanced: false,
   showSubjuntivoMoreTriggers: false,
@@ -7864,6 +7931,7 @@ const SELECTORS = {
   shell: ".app-shell",
   tabs: ".tab",
   homeTitle: "#homeTitle",
+  printButton: "#printButton",
   themeToggle: "#themeToggle",
   floatingTopButton: "#floatingTopButton",
   verbTemplate: "#verbTemplate"
@@ -9024,15 +9092,22 @@ function conjugationTable(info, tenseIds = MAIN_VERB_TENSE_IDS) {
     const forms = info.forms[tense.id];
     row.innerHTML = `<th><button class="verb-link-button" type="button" data-open-tense="${tense.id}">${verbTenseLabel(tense)}</button></th>${forms.map((form, index) => {
       const cls = isIrregularForm(info.infinitive, tense.id, form, index) ? " class=\"irregular\"" : "";
-      return `<td${cls} lang="es">${form}</td>`;
+      const formMarkup = cls
+        ? `<button class="irregular-form-link" type="button" data-open-exception="${tense.id}" title="Показать правило и исключения">${form}</button>`
+        : form;
+      return `<td${cls} lang="es">${formMarkup}</td>`;
     }).join("")}`;
     body.appendChild(row);
   });
   table.appendChild(body);
   table.addEventListener("click", (event) => {
     const button = event.target.closest("[data-open-tense]");
-    if (!button) return;
-    openTenseFromVerb(button.dataset.openTense);
+    if (button) {
+      openTenseFromVerb(button.dataset.openTense);
+      return;
+    }
+    const exceptionButton = event.target.closest("[data-open-exception]");
+    if (exceptionButton) openExceptionFromVerb(exceptionButton.dataset.openException);
   });
   return table;
 }
@@ -9180,9 +9255,15 @@ function renderVerbResults(content, results, selectedPanel) {
     state.selectedVerb = null;
   }
 
+  const matchedForm = isSearchMode && verbs.length > 0
+    ? findFormMatch(verbInfo(verbs[0]), query, "exact")
+    : null;
+
   if (status) {
     status.textContent = state.selectedVerb
       ? `Открыт глагол ${displayInfinitive(state.selectedVerb)}.`
+      : matchedForm
+        ? `Форма «${state.query.trim()}»: ${displayInfinitive(verbs[0])} · ${matchedForm.person}, ${matchedForm.tense}. Enter откроет карточку.`
       : isSearchMode
         ? `Найдено глаголов: ${verbs.length}. Enter откроет первое совпадение.`
         : "";
@@ -9224,7 +9305,7 @@ function renderVerbResults(content, results, selectedPanel) {
     <div class="card-head">
       <div>
         <h2>${state.query ? `Найдено: ${verbs.length}` : "100 самых частых глаголов"}</h2>
-        <p class="muted">${state.query ? "Выбери глагол, чтобы открыть карточку с основными временами." : "Рейтинг по письменной прессе Испании. Кликни по глаголу или найди другой через поиск."}</p>
+        <p class="muted">${state.query ? (matchedForm ? `Введенная форма относится к ${displayInfinitive(verbs[0])}: ${matchedForm.person}, ${matchedForm.tense}.` : "Выбери глагол, чтобы открыть карточку с основными временами.") : "Рейтинг по письменной прессе Испании. Кликни по глаголу или найди другой через поиск."}</p>
       </div>
     </div>
     <div class="verb-list" ${isDefaultSuggestionPage ? `id="commonVerbList"` : ""}></div>
@@ -10172,8 +10253,15 @@ function renderMoods() {
       selectMood(button.dataset.mood || button.dataset.chooseMood);
     });
   });
+  selector.querySelectorAll("[data-chooser-step]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.moodChooserStep = button.dataset.chooserStep;
+      renderMoods();
+    });
+  });
   selector.querySelector("[data-toggle-mood-chooser]").addEventListener("click", () => {
     state.showMoodChooser = !state.showMoodChooser;
+    if (state.showMoodChooser) state.moodChooserStep = "start";
     renderMoods();
   });
 
@@ -10259,6 +10347,7 @@ function selectMood(moodId, { updateRoute = true } = {}) {
 
 function resetMoodDetailState() {
   state.showMoodChooser = false;
+  state.moodChooserStep = "start";
   state.showMoodConfusion = false;
   state.showMoodAdvanced = false;
   state.showSubjuntivoMoreTriggers = false;
@@ -10268,27 +10357,54 @@ function resetMoodDetailState() {
 }
 
 function moodChooserMarkup() {
+  const steps = {
+    start: {
+      path: "Шаг 1 из 3",
+      question: "Вы сообщаете факт, уверенность или известную информацию?",
+      choices: [
+        ["Да, сообщаю", "Indicativo: Sé que viene.", "indicativo"],
+        ["Нет или не уверен", "Нужно уточнить цель высказывания", "relation"]
+      ]
+    },
+    relation: {
+      path: "Шаг 2 из 3",
+      question: "Вы прямо побуждаете адресата сделать что-то?",
+      choices: [
+        ["Да", "Imperativo: Ven aquí.", "imperativo"],
+        ["Нет", "Продолжить выбор", "subjuntivo"]
+      ]
+    },
+    subjuntivo: {
+      path: "Шаг 3 из 3",
+      question: "Есть желание, оценка, сомнение, эмоция, необходимость или неизвестный объект?",
+      choices: [
+        ["Да", "Subjuntivo: Quiero que venga.", "subjuntivo"],
+        ["Нет, это гипотеза или будущее из прошлого", "Condicional: Dijo que volvería.", "condicional"],
+        ["Нет, это утверждение", "Вернитесь к Indicativo", "indicativo"]
+      ]
+    }
+  };
+  const step = steps[state.moodChooserStep] || steps.start;
   return `
     <div class="mood-chooser-block" id="moodChooser">
       <h2>Что выбрать?</h2>
-      <div class="choice-grid">
-        <button class="choice-card" type="button" data-choose-mood="indicativo"><strong>Сообщаю или утверждаю</strong><span>Indicativo: Sé que viene.</span></button>
-        <button class="choice-card" type="button" data-choose-mood="subjuntivo"><strong>Выражаю отношение</strong><span>Subjuntivo: Quiero que venga.</span></button>
-        <button class="choice-card" type="button" data-choose-mood="imperativo"><strong>Побуждаю</strong><span>Imperativo: Ven aquí.</span></button>
-        <button class="choice-card" type="button" data-choose-mood="condicional"><strong>Гипотеза или будущее из прошлого</strong><span>Condicional: Dijo que volvería.</span></button>
+      <div class="mood-chooser-question">
+        <span class="mood-chooser-path">${step.path}</span>
+        <strong>${step.question}</strong>
+        <div class="choice-grid">
+          ${step.choices.map(([title, example, target]) => `<button class="choice-card" type="button" ${MOODS.some((mood) => mood.id === target) ? `data-choose-mood="${target}"` : `data-chooser-step="${target}"`}><strong>${title}</strong><span>${example}</span></button>`).join("")}
+        </div>
       </div>
+      ${state.moodChooserStep !== "start" ? `<button class="small-button" type="button" data-chooser-step="start">Начать сначала</button>` : ""}
       <h3>Indicativo vs Subjuntivo</h3>
-      <p class="muted">Выбор зависит не только от истинности события, но и от управляющего слова, типа придаточного и коммуникативной задачи.</p>
+      <p class="muted">Indicativo сообщает содержание как факт или уверенность. Subjuntivo показывает отношение, оценку, волю, сомнение либо неустановленный объект.</p>
       <div class="table-wrap">
-        <table>
-          <thead><tr><th>Indicativo</th><th>Subjuntivo</th><th>Разница</th></tr></thead>
-          <tbody>
-            <tr><td>Creo que viene.</td><td>No creo que venga.</td><td>утверждаю мнение / отрицаю уверенность</td></tr>
-            <tr><td>Es verdad que trabaja.</td><td>Es importante que trabaje.</td><td>сообщаю факт / оцениваю необходимость</td></tr>
-            <tr><td>Sé que estás aquí.</td><td>Me alegra que estés aquí.</td><td>сообщаю знание / эмоционально оцениваю тот же факт</td></tr>
-            <tr><td>Busco el libro que está aquí.</td><td>Busco un libro que sea fácil.</td><td>конкретный объект / желаемое качество</td></tr>
-          </tbody>
-        </table>
+        <table><thead><tr><th>Indicativo</th><th>Subjuntivo</th><th>Разница</th></tr></thead><tbody>
+          <tr><td>Creo que viene.</td><td>No creo que venga.</td><td>утверждаю мнение / отрицаю уверенность</td></tr>
+          <tr><td>Es verdad que trabaja.</td><td>Es importante que trabaje.</td><td>сообщаю факт / оцениваю необходимость</td></tr>
+          <tr><td>Sé que está aquí.</td><td>Me alegra que esté aquí.</td><td>сообщаю знание / выражаю эмоцию</td></tr>
+          <tr><td>Busco el libro que está aquí.</td><td>Busco un libro que sea fácil.</td><td>конкретный объект / желаемое свойство</td></tr>
+        </tbody></table>
       </div>
     </div>
   `;
@@ -11481,6 +11597,19 @@ function openTenseFromVerb(tenseId) {
   scrollToCard(`tense-${tenseId}`);
 }
 
+function openExceptionFromVerb(tenseId) {
+  if (!tenseById(tenseId)) return;
+  state.view = "tenses";
+  state.focusedTense = tenseId;
+  state.returnMood = null;
+  state.openMoreExamplesTense = null;
+  state.openExceptionTense = tenseId;
+  syncActiveTab("tenses");
+  render();
+  updateRouteHash(`tense-${tenseId}`);
+  scrollToCard(`tense-${tenseId}`);
+}
+
 function openTenseFromMood(tenseId, moodId) {
   if (!tenseById(tenseId) || !MOODS.some((mood) => mood.id === moodId)) return;
   state.view = "tenses";
@@ -11713,6 +11842,10 @@ $(SELECTORS.themeToggle).addEventListener("click", () => {
   state.dark = !state.dark;
   localStorage.setItem("msg:theme", state.dark ? "dark" : "light");
   render();
+});
+
+$(SELECTORS.printButton).addEventListener("click", () => {
+  window.print();
 });
 
 const floatingTopButton = $(SELECTORS.floatingTopButton);

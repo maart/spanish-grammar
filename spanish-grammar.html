@@ -1402,6 +1402,7 @@ td.irregular {
   margin-bottom: 0;
   font-size: 38px;
   line-height: 1.1;
+  overflow-wrap: anywhere;
 }
 
 .study-answer {
@@ -1453,6 +1454,168 @@ td.irregular {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface-2);
+}
+
+.cards-dashboard {
+  display: grid;
+  gap: 14px;
+}
+
+.cards-dashboard-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.cards-dashboard-head h2,
+.cards-dashboard-head p {
+  margin: 0;
+}
+
+.cards-dashboard-actions,
+.quiz-presets,
+.cards-list-toolbar,
+.quiz-result-links,
+.quiz-config-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.cards-resume {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--accent-2) 50%, var(--line));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent-2) 8%, var(--surface));
+}
+
+.cards-resume p {
+  margin: 0;
+}
+
+.quiz-config-heading {
+  justify-content: space-between;
+}
+
+.quiz-config-heading h3 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.quiz-preset-button {
+  min-height: 38px;
+}
+
+.quiz-config-fieldset {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+.quiz-config-fieldset legend {
+  margin-bottom: 8px;
+  padding: 0;
+}
+
+.quiz-config-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.quiz-config-help {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.cards-list-toolbar {
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.cards-list-toolbar input,
+.cards-list-toolbar select {
+  min-height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 11px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.cards-list-toolbar input {
+  flex: 1 1 220px;
+}
+
+.cards-list-toolbar select {
+  flex: 0 1 210px;
+}
+
+.cards-list-summary {
+  margin: 0 0 10px;
+}
+
+.cards-study-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 12px 10px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.cards-study-meta span {
+  border-radius: 999px;
+  padding: 3px 7px;
+  background: var(--surface-2);
+}
+
+.cards-undo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--danger) 35%, var(--line));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--danger) 7%, var(--surface));
+}
+
+.cards-undo p {
+  margin: 0;
+}
+
+.quiz-feedback.is-almost {
+  color: #8a5a00;
+  background: color-mix(in srgb, #e6a700 15%, transparent);
+}
+
+.quiz-input.is-almost {
+  border-color: #d59400;
+  box-shadow: 0 0 0 3px color-mix(in srgb, #d59400 20%, transparent);
+}
+
+.quiz-result-links {
+  margin-top: 8px;
+}
+
+.quiz-result-links .small-button {
+  padding: 5px 8px;
+  font-size: 12px;
 }
 
 .quiz-config-section {
@@ -2019,6 +2182,36 @@ select {
   .quiz-answer-comparison {
     grid-template-columns: 1fr;
   }
+
+  .cards-dashboard-head,
+  .cards-resume,
+  .cards-undo {
+    align-items: stretch;
+  }
+
+  .cards-dashboard-actions,
+  .quiz-presets,
+  .cards-list-toolbar {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .cards-dashboard-actions .small-button,
+  .quiz-presets .small-button,
+  .cards-list-toolbar input,
+  .cards-list-toolbar select {
+    width: 100%;
+  }
+
+  .study-face {
+    min-height: 240px;
+    padding: 22px 14px;
+  }
+
+  .study-face h2 {
+    font-size: 28px;
+  }
 }
 
 .table-related {
@@ -2139,7 +2332,7 @@ select {
       </nav>
 
       <section id="content" class="content" aria-live="polite"></section>
-      <footer class="app-footer">Версия MVP 0.34 · обновлено: 19.07.2026 19:25</footer>
+      <footer class="app-footer">Версия MVP 0.35 · обновлено: 19.07.2026 19:42</footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" title="Наверх">↑</button>
 
@@ -6677,6 +6870,12 @@ const state = {
     persons: [0, 1, 2, 3, 4, 5],
     count: 5
   })),
+  showQuizSettings: false,
+  cardsQuery: "",
+  cardsSort: localStorage.getItem("msg:cardsSort") || "recent",
+  cardStats: JSON.parse(localStorage.getItem("msg:cardStats") || "{}"),
+  savedQuizSession: JSON.parse(localStorage.getItem("msg:quizSession") || "null"),
+  cardUndo: null,
   cardQuiz: [],
   cardQuizIndex: 0,
   cardQuizInput: "",
@@ -7576,6 +7775,7 @@ function resetVerbLanding() {
 }
 
 function setView(view) {
+  if (view !== "cards") clearQuizHotkeys();
   if (view === "verbs") {
     resetVerbLanding();
   } else {
@@ -9080,15 +9280,27 @@ const QUIZ_TENSES = [
   { id: "perfecto", name: "Perfecto" },
   { id: "indefinido", name: "Indefinido" },
   { id: "imperfecto", name: "Imperfecto" },
+  { id: "pluscuamperfecto", name: "Pluscuamperfecto" },
   { id: "futuro", name: "Futuro" },
+  { id: "futuro_perfecto", name: "Futuro Perfecto" },
   { id: "condicional", name: "Condicional" },
+  { id: "condicional_compuesto", name: "Condicional Compuesto" },
   { id: "subjuntivo_presente", name: "Subj. Presente" },
+  { id: "subjuntivo_perfecto", name: "Subj. Perfecto" },
   { id: "subjuntivo_imperfecto", name: "Subj. Imperfecto" },
-  { id: "imperativo_afirmativo", name: "Imperativo" }
+  { id: "subjuntivo_pluscuamperfecto", name: "Subj. Pluscuamperfecto" },
+  { id: "imperativo_afirmativo", name: "Imperativo afirmativo" },
+  { id: "imperativo_negativo", name: "Imperativo negativo" }
 ];
 
 const QUIZ_COUNTS = [3, 5, 10, 20, 0];
 const QUIZ_CHARACTERS = ["á", "é", "í", "ó", "ú", "ü", "ñ"];
+const BASIC_QUIZ_TENSES = ["presente", "perfecto", "indefinido", "imperfecto", "futuro"];
+const QUIZ_TYPE_LABELS = {
+  infinitive: "Русский → испанский",
+  meaning: "Испанский → русский",
+  conjugation: "Спряжение"
+};
 let activeQuizKeydownCleanup = null;
 
 function clearQuizHotkeys() {
@@ -9105,7 +9317,7 @@ function bindQuizHotkeys(handler) {
 function selectedQuizPersons() {
   const persons = Array.isArray(state.quizConfig.persons) ? state.quizConfig.persons : [];
   const valid = [...new Set(persons.filter((index) => Number.isInteger(index) && index >= 0 && index < PEOPLE.length))];
-  return valid.length > 0 ? valid.sort((a, b) => a - b) : PEOPLE.map((_, index) => index);
+  return valid.sort((a, b) => a - b);
 }
 
 function saveQuizConfig() {
@@ -9120,6 +9332,32 @@ function getTenseName(id) {
   return QUIZ_TENSES.find((t) => t.id === id)?.name || id;
 }
 
+function quizAnswerKey(value, stripAccents = false) {
+  const normalized = String(value)
+    .trim()
+    .replace(/\s+/g, " ")
+    .toLowerCase()
+    .normalize(stripAccents ? "NFD" : "NFC");
+  return stripAccents ? normalized.replace(/[\u0300-\u036f]/g, "") : normalized;
+}
+
+function translationAnswers(translation) {
+  const full = String(translation).trim();
+  const alternatives = full
+    .replace(/\([^)]*\)/g, "")
+    .split(/[,;/]|\s+или\s+/i)
+    .map((item) => item.trim())
+    .filter((item) => item.length > 1);
+  return [...new Set([full, ...alternatives])];
+}
+
+function infinitiveAnswers(verb, cards) {
+  const translation = quizAnswerKey(translationFor(verb), true);
+  return cards
+    .filter((candidate) => quizAnswerKey(translationFor(candidate), true) === translation)
+    .map(displayInfinitive);
+}
+
 function generateInfinitiveQuestions(cards, count) {
   const shuffled = shuffle([...cards]);
   const selected = count > 0 ? shuffled.slice(0, count) : shuffled;
@@ -9127,28 +9365,42 @@ function generateInfinitiveQuestions(cards, count) {
     type: "infinitive",
     verb,
     question: translationFor(verb),
-    answer: displayInfinitive(verb)
+    answer: displayInfinitive(verb),
+    acceptedAnswers: infinitiveAnswers(verb, cards)
   }));
 }
 
+function generateMeaningQuestions(cards, count) {
+  const shuffled = shuffle([...cards]);
+  const selected = count > 0 ? shuffled.slice(0, count) : shuffled;
+  return selected.map((verb) => ({
+    type: "meaning",
+    verb,
+    question: displayInfinitive(verb),
+    answer: translationFor(verb),
+    acceptedAnswers: translationAnswers(translationFor(verb))
+  }));
+}
+
+function quizFormsFor(verb, tense) {
+  if (!isReflexive(verb) || tense.startsWith("imperativo_")) return formsFor(verb)[tense];
+  const pronouns = ["me", "te", "se", "nos", "os", "se"];
+  const forms = formsFor(baseVerb(verb))[tense];
+  return forms?.map((form, index) => form === "-" ? form : `${pronouns[index]} ${form}`);
+}
+
 function generateConjugationQuestions(cards, tenses, persons, count) {
-  const questions = [];
-  const tenseList = tenses.length > 0 ? tenses : getAllTenseIds();
-  const personList = Array.isArray(persons) && persons.length > 0
-    ? persons
-    : PEOPLE.map((_, index) => index);
-
-  for (const verb of cards) {
-    const forms = formsFor(verb);
+  const tenseList = tenses.filter((id) => getAllTenseIds().includes(id));
+  const personList = Array.isArray(persons) ? persons : [];
+  const buckets = shuffle(cards).map((verb) => {
+    const questions = [];
     for (const tense of tenseList) {
-      const tenseForms = forms[tense];
+      const tenseForms = quizFormsFor(verb, tense);
       if (!tenseForms) continue;
-
       for (const personIdx of personList) {
         if (personIdx >= tenseForms.length) continue;
         const form = tenseForms[personIdx];
         if (form === "-") continue;
-
         questions.push({
           type: "conjugation",
           verb,
@@ -9159,25 +9411,83 @@ function generateConjugationQuestions(cards, tenses, persons, count) {
         });
       }
     }
-  }
+    return { verb, questions: shuffle(questions) };
+  }).filter((bucket) => bucket.questions.length > 0);
 
-  const shuffled = shuffle(questions);
-  return count > 0 ? shuffled.slice(0, count) : shuffled;
+  const result = [];
+  while (buckets.some((bucket) => bucket.questions.length > 0) && (count === 0 || result.length < count)) {
+    const round = shuffle(buckets.filter((bucket) => bucket.questions.length > 0));
+    if (result.length > 0 && round.length > 1 && round[0].verb === result.at(-1).verb) {
+      [round[0], round[1]] = [round[1], round[0]];
+    }
+    for (const bucket of round) {
+      if (count > 0 && result.length >= count) break;
+      result.push(bucket.questions.pop());
+    }
+  }
+  return result;
 }
 
-function checkAnswer(userInput, question) {
-  const normalized = userInput.trim().toLowerCase().normalize("NFC");
-  const correct = question.answer.toLowerCase().normalize("NFC");
-  if (normalized === correct) return true;
-
+function evaluateAnswer(userInput, question) {
+  const candidates = question.acceptedAnswers?.length ? question.acceptedAnswers : [question.answer];
+  const exact = quizAnswerKey(userInput);
+  if (candidates.some((answer) => exact === quizAnswerKey(answer))) {
+    return { status: "correct", message: "Верно!" };
+  }
+  const accentless = quizAnswerKey(userInput, true);
+  if (accentless && candidates.some((answer) => accentless === quizAnswerKey(answer, true))) {
+    return { status: "almost", message: "Почти верно: проверь ударение или диакритический знак." };
+  }
   if (question.type === "conjugation" && question.verb.endsWith("se")) {
     const base = question.verb.slice(0, -2);
-    const baseForms = formsFor(base);
-    const baseForm = baseForms[question.tense]?.[question.person];
-    if (baseForm && normalized === baseForm.toLowerCase().normalize("NFC")) return true;
+    const baseAnswer = formsFor(base)[question.tense]?.[question.person];
+    if (baseAnswer && accentless === quizAnswerKey(baseAnswer, true)) {
+      return { status: "almost", message: "Почти верно: у возвратного глагола нужно местоимение." };
+    }
   }
+  return { status: "wrong", message: "Ответ пока неверный." };
+}
 
-  return false;
+function cardStatsFor(verb) {
+  return state.cardStats[verb] || { attempts: 0, correct: 0, mistakes: 0, streak: 0, lastReviewed: null };
+}
+
+function cardDifficulty(verb) {
+  const stats = cardStatsFor(verb);
+  if (stats.attempts === 0) return verbInfo(verb).irregular ? 1 : 0;
+  return stats.mistakes * 3 + (stats.attempts - stats.correct) - stats.streak * 0.25;
+}
+
+function saveCardStats() {
+  localStorage.setItem("msg:cardStats", JSON.stringify(state.cardStats));
+}
+
+function difficultStudyCards() {
+  const reviewed = state.cards.filter((verb) => cardStatsFor(verb).mistakes > 0);
+  const source = reviewed.length > 0 ? reviewed : state.cards.filter((verb) => verbInfo(verb).irregular);
+  return [...(source.length > 0 ? source : state.cards)].sort((a, b) => cardDifficulty(b) - cardDifficulty(a));
+}
+
+function visibleStudyCards() {
+  const query = normalize(state.cardsQuery);
+  const filtered = state.cards.filter((verb) => {
+    if (!query) return true;
+    return normalize(displayInfinitive(verb)).includes(query) || normalize(translationFor(verb)).includes(query);
+  });
+  if (state.cardsSort === "alphabetical") {
+    return filtered.sort((a, b) => displayInfinitive(a).localeCompare(displayInfinitive(b), "es"));
+  }
+  if (state.cardsSort === "difficult") {
+    return filtered.sort((a, b) => cardDifficulty(b) - cardDifficulty(a));
+  }
+  if (state.cardsSort === "irregular") {
+    return filtered.sort((a, b) => Number(verbInfo(b).irregular) - Number(verbInfo(a).irregular) || displayInfinitive(a).localeCompare(displayInfinitive(b), "es"));
+  }
+  return filtered.sort((a, b) => state.cards.indexOf(b) - state.cards.indexOf(a));
+}
+
+function hasSavedQuizSession() {
+  return Boolean(state.savedQuizSession?.cardQuiz?.length);
 }
 
 function renderCards() {
@@ -9186,163 +9496,308 @@ function renderCards() {
     renderCardQuiz(content);
     return;
   }
+
+  const cfg = state.quizConfig;
+  if (!QUIZ_TYPE_LABELS[cfg.type]) cfg.type = "infinitive";
+  if (!Array.isArray(cfg.tenses)) cfg.tenses = ["presente"];
+  if (!Array.isArray(cfg.persons)) cfg.persons = PEOPLE.map((_, index) => index);
+  cfg.persons = selectedQuizPersons();
+  const quickCount = Math.min(5, state.cards.length);
+  const canStartCustom = cfg.type !== "conjugation" || (cfg.tenses.length > 0 && cfg.persons.length > 0);
+
+  const tenseButtons = QUIZ_TENSES.map((tense) => {
+    const pressed = cfg.tenses.includes(tense.id);
+    return `<button class="small-button ${pressed ? "is-active" : ""}" type="button" data-tense="${tense.id}" aria-pressed="${pressed}">${tense.name}</button>`;
+  }).join("");
+  const personButtons = PEOPLE.map((person, index) => {
+    const pressed = cfg.persons.includes(index);
+    return `<button class="small-button ${pressed ? "is-active" : ""}" type="button" data-person="${index}" aria-pressed="${pressed}">${person}</button>`;
+  }).join("");
+  const countButtons = QUIZ_COUNTS.map((count) => {
+    const pressed = cfg.count === count;
+    return `<button class="small-button ${pressed ? "is-active" : ""}" type="button" data-count="${count}" aria-pressed="${pressed}">${count === 0 ? "Все вопросы" : count}</button>`;
+  }).join("");
+  const typeButtons = Object.entries(QUIZ_TYPE_LABELS).map(([type, label]) => {
+    const pressed = cfg.type === type;
+    return `<button class="small-button ${pressed ? "is-active" : ""}" type="button" data-quiz-type="${type}" aria-pressed="${pressed}">${label}</button>`;
+  }).join("");
+
   const header = document.createElement("section");
-  header.className = "info-card";
+  header.className = "info-card cards-dashboard";
   header.innerHTML = `
-    <div class="card-head">
+    <div class="cards-dashboard-head">
       <div>
         <h2>Избранное</h2>
-        <p class="muted">Глаголов в изучении: ${state.cards.length}</p>
+        <p class="muted">${state.cards.length} ${state.cards.length === 1 ? "глагол" : "глаголов"} для повторения</p>
       </div>
+      ${state.cards.length > 0 ? `<div class="cards-dashboard-actions">
+        <button class="small-button primary" type="button" data-preset="quick">Начать: ${quickCount} вопросов</button>
+        <button class="small-button" type="button" data-toggle-quiz-settings aria-expanded="${state.showQuizSettings}">${state.showQuizSettings ? "Скрыть настройки" : "Настроить квиз"}</button>
+      </div>` : ""}
     </div>
+    <p class="muted">Глаголы, выбранные для повторения. Результаты сохраняются только на этом устройстве.</p>
+    ${hasSavedQuizSession() ? `<div class="cards-resume" role="status">
+      <p><strong>Есть незавершенный квиз.</strong> Вопрос ${Math.min(state.savedQuizSession.cardQuizIndex + 1, state.savedQuizSession.cardQuiz.length)} из ${state.savedQuizSession.cardQuiz.length}.</p>
+      <div class="cards-dashboard-actions">
+        <button class="small-button primary" type="button" data-resume-quiz>Продолжить</button>
+        <button class="small-button" type="button" data-discard-quiz>Начать заново</button>
+      </div>
+    </div>` : ""}
+    ${state.cards.length > 0 ? `<div class="quiz-presets" aria-label="Готовые режимы">
+      <button class="small-button quiz-preset-button" type="button" data-preset="quick"><strong>Быстрая 5</strong>&nbsp; перевод</button>
+      <button class="small-button quiz-preset-button" type="button" data-preset="basic"><strong>Основные времена</strong>&nbsp; 10 форм</button>
+      <button class="small-button quiz-preset-button" type="button" data-preset="difficult"><strong>Нужно повторить</strong>&nbsp; сложные</button>
+    </div>` : ""}
+    ${state.showQuizSettings && state.cards.length > 0 ? `<div class="quiz-config">
+      <div class="quiz-config-heading"><h3>Настройки квиза</h3><span class="muted">Количество означает число вопросов</span></div>
+      <fieldset class="quiz-config-fieldset">
+        <legend class="quiz-config-label">Направление проверки</legend>
+        <div class="quiz-config-options">${typeButtons}</div>
+      </fieldset>
+      ${cfg.type === "conjugation" ? `<fieldset class="quiz-config-fieldset">
+        <legend class="quiz-config-label">Времена</legend>
+        <div class="quiz-config-tools">
+          <button class="small-button" type="button" data-tense-action="basic">Основные</button>
+          <button class="small-button" type="button" data-tense-action="all">Выбрать все</button>
+          <button class="small-button" type="button" data-tense-action="clear">Очистить</button>
+        </div>
+        <div class="quiz-config-options">${tenseButtons}</div>
+        ${cfg.tenses.length === 0 ? `<p class="quiz-config-help">Выбери хотя бы одно время.</p>` : ""}
+      </fieldset>
+      <fieldset class="quiz-config-fieldset">
+        <legend class="quiz-config-label">Лица</legend>
+        <div class="quiz-config-tools">
+          <button class="small-button" type="button" data-person-action="all">Выбрать все</button>
+          <button class="small-button" type="button" data-person-action="clear">Очистить</button>
+        </div>
+        <div class="quiz-config-options">${personButtons}</div>
+        ${cfg.persons.length === 0 ? `<p class="quiz-config-help">Выбери хотя бы одно лицо.</p>` : ""}
+      </fieldset>` : ""}
+      <fieldset class="quiz-config-fieldset">
+        <legend class="quiz-config-label">Количество вопросов</legend>
+        <div class="quiz-config-options">${countButtons}</div>
+      </fieldset>
+      <button class="small-button primary" type="button" id="startCardQuiz" ${canStartCustom ? "" : "disabled"}>Начать квиз</button>
+    </div>` : ""}
   `;
   content.appendChild(header);
+
+  header.querySelectorAll("[data-preset]").forEach((button) => button.addEventListener("click", () => startQuizPreset(button.dataset.preset)));
+  header.querySelector("[data-toggle-quiz-settings]")?.addEventListener("click", () => {
+    state.showQuizSettings = !state.showQuizSettings;
+    renderCards();
+  });
+  header.querySelector("[data-resume-quiz]")?.addEventListener("click", resumeCardQuiz);
+  header.querySelector("[data-discard-quiz]")?.addEventListener("click", () => {
+    clearSavedQuizSession();
+    renderCards();
+  });
+  header.querySelectorAll("[data-quiz-type]").forEach((button) => button.addEventListener("click", () => {
+    state.quizConfig.type = button.dataset.quizType;
+    saveQuizConfig();
+    renderCards();
+  }));
+  header.querySelectorAll("[data-tense]").forEach((button) => button.addEventListener("click", () => {
+    const id = button.dataset.tense;
+    state.quizConfig.tenses = state.quizConfig.tenses.includes(id)
+      ? state.quizConfig.tenses.filter((tense) => tense !== id)
+      : [...state.quizConfig.tenses, id];
+    saveQuizConfig();
+    renderCards();
+  }));
+  header.querySelectorAll("[data-person]").forEach((button) => button.addEventListener("click", () => {
+    const person = Number(button.dataset.person);
+    state.quizConfig.persons = state.quizConfig.persons.includes(person)
+      ? state.quizConfig.persons.filter((index) => index !== person)
+      : [...state.quizConfig.persons, person].sort((a, b) => a - b);
+    saveQuizConfig();
+    renderCards();
+  }));
+  header.querySelectorAll("[data-count]").forEach((button) => button.addEventListener("click", () => {
+    state.quizConfig.count = Number(button.dataset.count);
+    saveQuizConfig();
+    renderCards();
+  }));
+  header.querySelectorAll("[data-tense-action]").forEach((button) => button.addEventListener("click", () => {
+    const action = button.dataset.tenseAction;
+    state.quizConfig.tenses = action === "all" ? getAllTenseIds() : action === "basic" ? [...BASIC_QUIZ_TENSES] : [];
+    saveQuizConfig();
+    renderCards();
+  }));
+  header.querySelectorAll("[data-person-action]").forEach((button) => button.addEventListener("click", () => {
+    state.quizConfig.persons = button.dataset.personAction === "all" ? PEOPLE.map((_, index) => index) : [];
+    saveQuizConfig();
+    renderCards();
+  }));
+  header.querySelector("#startCardQuiz")?.addEventListener("click", () => startCardQuiz());
 
   if (state.cards.length === 0) {
     const emptyCard = document.createElement("section");
     emptyCard.className = "info-card verb-list-card";
-    const suggestedCards = COMMON_VERB_SUGGESTIONS
-      .filter((verb) => BASE_VERBS.includes(verb))
-      .slice(0, 5);
+    const suggestedCards = COMMON_VERB_SUGGESTIONS.filter((verb) => BASE_VERBS.includes(verb)).slice(0, 5);
     emptyCard.innerHTML = `
       <h2>Избранное пока пусто</h2>
-      <p class="muted">Нажми ☆ во вкладке "Глаголы", чтобы добавить глагол в изучение. Для старта можно выбрать один из частых глаголов ниже.</p>
+      <p class="muted">Нажми ☆ во вкладке «Глаголы» или добавь базовый набор для первой проверки.</p>
+      <button class="small-button primary" type="button" data-add-starter>Добавить 5 базовых глаголов</button>
       <div class="verb-list is-suggestions"></div>
     `;
     const list = emptyCard.querySelector(".verb-list");
-    suggestedCards.forEach((verb) => list.appendChild(renderVerbListItem(verb, { showBadges: true })));
+    suggestedCards.forEach((verb) => list.appendChild(renderVerbListItem(verb, { showBadges: false })));
+    emptyCard.querySelector("[data-add-starter]").addEventListener("click", () => {
+      state.cards = [...new Set([...state.cards, ...suggestedCards])];
+      saveCards();
+      renderCards();
+    });
     content.appendChild(emptyCard);
     return;
   }
 
-  const configCard = document.createElement("section");
-  configCard.className = "info-card";
-  const cfg = state.quizConfig;
-  cfg.persons = selectedQuizPersons();
-  if (cfg.type === "conjugation" && cfg.tenses.length === 0) cfg.tenses = ["presente"];
-  const tenseButtons = QUIZ_TENSES.map((t) => {
-    const active = cfg.tenses.includes(t.id) ? "is-active" : "";
-    return `<button class="small-button ${active}" type="button" data-tense="${t.id}" aria-pressed="${cfg.tenses.includes(t.id)}">${t.name}</button>`;
-  }).join("");
-  const personButtons = PEOPLE.map((person, index) => {
-    const active = cfg.persons.includes(index) ? "is-active" : "";
-    return `<button class="small-button ${active}" type="button" data-person="${index}" aria-pressed="${cfg.persons.includes(index)}">${person}</button>`;
-  }).join("");
-  const countButtons = QUIZ_COUNTS.map((c) => {
-    const active = cfg.count === c ? "is-active" : "";
-    const label = c === 0 ? "Все" : String(c);
-    return `<button class="small-button ${active}" type="button" data-count="${c}">${label}</button>`;
-  }).join("");
-  configCard.innerHTML = `
-    <h2>Настройки квиза</h2>
-    <div class="quiz-config">
-      <div class="quiz-config-section">
-        <span class="quiz-config-label">Тип</span>
-        <div class="quiz-config-options">
-          <button class="small-button ${cfg.type === "infinitive" ? "is-active" : ""}" type="button" data-quiz-type="infinitive">Инфинитивы</button>
-          <button class="small-button ${cfg.type === "conjugation" ? "is-active" : ""}" type="button" data-quiz-type="conjugation">Спряжение</button>
-        </div>
-      </div>
-      <div class="quiz-config-section" id="tenseSelector" style="display: ${cfg.type === "conjugation" ? "block" : "none"}">
-        <span class="quiz-config-label">Времена</span>
-        <div class="quiz-config-options" id="tenseOptions">
-          ${tenseButtons}
-        </div>
-        <span class="quiz-config-label">Лица</span>
-        <div class="quiz-config-options" id="personOptions">
-          ${personButtons}
-        </div>
-      </div>
-      <div class="quiz-config-section">
-        <span class="quiz-config-label">Количество</span>
-        <div class="quiz-config-options">
-          ${countButtons}
-        </div>
-      </div>
-      <button class="small-button primary" type="button" id="startCardQuiz" ${state.cards.length === 0 ? "disabled" : ""}>Проверить себя</button>
-    </div>
-  `;
-  content.appendChild(configCard);
-
-  configCard.querySelectorAll("[data-quiz-type]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      state.quizConfig.type = btn.dataset.quizType;
-      if (state.quizConfig.type === "infinitive") {
-        state.quizConfig.tenses = [];
-      } else if (state.quizConfig.tenses.length === 0) {
-        state.quizConfig.tenses = ["presente"];
-      }
-      saveQuizConfig();
-      renderCards();
-    });
-  });
-
-  configCard.querySelectorAll("[data-tense]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const id = btn.dataset.tense;
-      const idx = state.quizConfig.tenses.indexOf(id);
-      if (idx >= 0) {
-        if (state.quizConfig.tenses.length === 1) return;
-        state.quizConfig.tenses.splice(idx, 1);
-      } else {
-        state.quizConfig.tenses.push(id);
-      }
-      saveQuizConfig();
-      renderCards();
-    });
-  });
-
-  configCard.querySelectorAll("[data-person]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const person = Number(btn.dataset.person);
-      const index = state.quizConfig.persons.indexOf(person);
-      if (index >= 0) {
-        if (state.quizConfig.persons.length === 1) return;
-        state.quizConfig.persons.splice(index, 1);
-      } else {
-        state.quizConfig.persons.push(person);
-        state.quizConfig.persons.sort((a, b) => a - b);
-      }
-      saveQuizConfig();
-      renderCards();
-    });
-  });
-
-  configCard.querySelectorAll("[data-count]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      state.quizConfig.count = parseInt(btn.dataset.count, 10);
-      saveQuizConfig();
-      renderCards();
-    });
-  });
-
-  configCard.querySelector("#startCardQuiz").addEventListener("click", () => startCardQuiz());
-
   const listCard = document.createElement("section");
   listCard.className = "info-card verb-list-card";
+  const visibleCards = visibleStudyCards();
   listCard.innerHTML = `
     <h2>Глаголы к изучению</h2>
-    <p class="muted">Клик по глаголу откроет его карточку во вкладке "Глаголы".</p>
+    <p class="muted">Клик по глаголу откроет его карточку. Спряжения здесь не показываются.</p>
+    <div class="cards-list-toolbar">
+      <input id="cardsSearch" type="search" aria-label="Поиск в избранном" placeholder="Найти глагол или перевод" value="${escapeHTML(state.cardsQuery)}">
+      <select id="cardsSort" aria-label="Сортировка избранного">
+        <option value="recent" ${state.cardsSort === "recent" ? "selected" : ""}>Сначала добавленные недавно</option>
+        <option value="alphabetical" ${state.cardsSort === "alphabetical" ? "selected" : ""}>По алфавиту</option>
+        <option value="difficult" ${state.cardsSort === "difficult" ? "selected" : ""}>Сначала сложные</option>
+        <option value="irregular" ${state.cardsSort === "irregular" ? "selected" : ""}>Сначала неправильные</option>
+      </select>
+    </div>
+    <p class="muted cards-list-summary">Показано: ${visibleCards.length} из ${state.cards.length}</p>
     <div class="verb-list is-suggestions"></div>
   `;
   const list = listCard.querySelector(".verb-list");
-  state.cards.forEach((verb) => list.appendChild(renderVerbListItem(verb)));
+  visibleCards.forEach((verb) => {
+    const stats = cardStatsFor(verb);
+    const accuracy = stats.attempts > 0 ? Math.round((stats.correct / stats.attempts) * 100) : null;
+    const row = renderVerbListItem(verb, { showBadges: false });
+    row.insertAdjacentHTML("beforeend", `<div class="cards-study-meta">
+      <span>${verbInfo(verb).irregular ? "неправильный" : "правильный"}</span>
+      <span>${accuracy === null ? "еще не проверялся" : `точность ${accuracy}%`}</span>
+      ${stats.mistakes > 0 ? `<span>ошибок: ${stats.mistakes}</span>` : ""}
+    </div>`);
+    list.appendChild(row);
+  });
+  if (visibleCards.length === 0) list.innerHTML = `<p class="muted">В избранном нет совпадений с этим запросом.</p>`;
+  listCard.querySelector("#cardsSearch").addEventListener("input", (event) => {
+    state.cardsQuery = event.target.value;
+    renderCards();
+    requestAnimationFrame(() => {
+      const input = document.getElementById("cardsSearch");
+      input?.focus();
+      input?.setSelectionRange(input.value.length, input.value.length);
+    });
+  });
+  listCard.querySelector("#cardsSort").addEventListener("change", (event) => {
+    state.cardsSort = event.target.value;
+    localStorage.setItem("msg:cardsSort", state.cardsSort);
+    renderCards();
+  });
   content.appendChild(listCard);
 }
 
-function startCardQuiz(mode = "new") {
+function saveQuizSession() {
+  if (state.cardQuiz.length === 0) return;
+  const session = {
+    cardQuiz: state.cardQuiz,
+    cardQuizIndex: state.cardQuizIndex,
+    cardQuizInput: state.cardQuizInput,
+    cardQuizAnswered: state.cardQuizAnswered,
+    cardQuizCorrect: state.cardQuizCorrect,
+    cardQuizTotal: state.cardQuizTotal,
+    cardQuizAttempts: state.cardQuizAttempts,
+    cardQuizSnapshot: state.cardQuizSnapshot,
+    cardQuizAllVerbs: state.cardQuizAllVerbs,
+    savedAt: new Date().toISOString()
+  };
+  state.savedQuizSession = session;
+  localStorage.setItem("msg:quizSession", JSON.stringify(session));
+}
+
+function clearSavedQuizSession() {
+  state.savedQuizSession = null;
+  localStorage.removeItem("msg:quizSession");
+}
+
+function resumeCardQuiz() {
+  const session = state.savedQuizSession;
+  if (!session?.cardQuiz?.length) return;
+  state.cardQuiz = session.cardQuiz.filter((question) => state.cards.includes(question.verb));
+  if (state.cardQuiz.length === 0) {
+    clearSavedQuizSession();
+    renderCards();
+    return;
+  }
+  state.cardQuizIndex = Math.min(Number(session.cardQuizIndex) || 0, state.cardQuiz.length);
+  state.cardQuizInput = session.cardQuizInput || "";
+  state.cardQuizAnswered = Boolean(session.cardQuizAnswered);
+  state.cardQuizCorrect = Number(session.cardQuizCorrect) || 0;
+  state.cardQuizTotal = Number(session.cardQuizTotal) || 0;
+  state.cardQuizAttempts = Array.isArray(session.cardQuizAttempts) ? session.cardQuizAttempts : [];
+  state.cardQuizSnapshot = Array.isArray(session.cardQuizSnapshot) ? session.cardQuizSnapshot : [...state.cardQuiz];
+  state.cardQuizAllVerbs = [...new Set(state.cardQuiz.map((question) => question.verb))];
+  renderCards();
+}
+
+function recordCardAttempt(question, result) {
+  const previous = cardStatsFor(question.verb);
+  const correct = result.status === "correct";
+  state.cardStats[question.verb] = {
+    attempts: previous.attempts + 1,
+    correct: previous.correct + (correct ? 1 : 0),
+    mistakes: previous.mistakes + (correct ? 0 : 1),
+    streak: correct ? previous.streak + 1 : 0,
+    lastReviewed: new Date().toISOString()
+  };
+  saveCardStats();
+}
+
+function startQuizPreset(preset) {
+  if (preset === "quick") {
+    state.quizConfig = { ...state.quizConfig, type: "infinitive", count: 5 };
+    saveQuizConfig();
+    startCardQuiz("new", { cards: state.cards });
+    return;
+  }
+  if (preset === "basic") {
+    state.quizConfig = {
+      ...state.quizConfig,
+      type: "conjugation",
+      count: 10,
+      tenses: [...BASIC_QUIZ_TENSES],
+      persons: PEOPLE.map((_, index) => index)
+    };
+    saveQuizConfig();
+    startCardQuiz("new", { cards: state.cards });
+    return;
+  }
+  const difficult = difficultStudyCards();
+  state.quizConfig = { ...state.quizConfig, type: "conjugation", count: 10, tenses: [...BASIC_QUIZ_TENSES] };
+  if (selectedQuizPersons().length === 0) state.quizConfig.persons = PEOPLE.map((_, index) => index);
+  saveQuizConfig();
+  startCardQuiz("new", { cards: difficult });
+}
+
+function startCardQuiz(mode = "new", options = {}) {
   const cfg = state.quizConfig;
+  const sourceCards = Array.isArray(options.cards) && options.cards.length > 0 ? options.cards : state.cards;
   let questions;
   if (mode === "mistakes") {
     questions = state.cardQuizAttempts
-      .filter((attempt) => !attempt.correct)
+      .filter((attempt) => !attempt.correct && state.cards.includes(attempt.question.verb))
       .map((attempt) => ({ ...attempt.question }));
   } else if (mode === "same" && state.cardQuizSnapshot.length > 0) {
-    questions = state.cardQuizSnapshot.map((q) => ({ ...q }));
+    questions = state.cardQuizSnapshot.filter((question) => state.cards.includes(question.verb)).map((q) => ({ ...q }));
   } else if (cfg.type === "conjugation") {
-    questions = generateConjugationQuestions(state.cards, cfg.tenses, selectedQuizPersons(), cfg.count);
+    questions = generateConjugationQuestions(sourceCards, cfg.tenses, selectedQuizPersons(), cfg.count);
+  } else if (cfg.type === "meaning") {
+    questions = generateMeaningQuestions(sourceCards, cfg.count);
   } else {
-    questions = generateInfinitiveQuestions(state.cards, cfg.count);
+    questions = generateInfinitiveQuestions(sourceCards, cfg.count);
   }
   if (questions.length === 0) return;
   state.cardQuiz = questions;
@@ -9354,6 +9809,8 @@ function startCardQuiz(mode = "new") {
   state.cardQuizCorrect = 0;
   state.cardQuizTotal = 0;
   state.cardQuizAttempts = [];
+  state.cardUndo = null;
+  saveQuizSession();
   renderCards();
 }
 
@@ -9368,41 +9825,46 @@ function renderCardQuiz(content) {
   card.className = "info-card study-card";
   const progress = Math.round(((state.cardQuizIndex + 1) / state.cardQuiz.length) * 100);
   const isConjugation = question.type === "conjugation";
-  const eyebrow = isConjugation ? "Проспрягай" : "Переведи на испанский";
-  const placeholder = isConjugation ? "Введи форму..." : "Введи инфинитив...";
+  const isMeaning = question.type === "meaning";
+  const eyebrow = isConjugation ? "Проспрягай" : isMeaning ? "Переведи на русский" : "Переведи на испанский";
+  const placeholder = isConjugation ? "Введи форму..." : isMeaning ? "Введи перевод..." : "Введи инфинитив...";
+  const questionHeading = isConjugation ? question.question : isMeaning ? question.question : info.ru;
 
   let answerHTML;
   if (state.cardQuizAnswered) {
-    const isCorrect = checkAnswer(state.cardQuizInput, question);
+    const result = evaluateAnswer(state.cardQuizInput, question);
+    const isCorrect = result.status === "correct";
     const enteredAnswer = state.cardQuizInput
       ? escapeHTML(state.cardQuizInput)
       : "Ответ не указан";
     answerHTML = `
-      <input class="quiz-input ${isCorrect ? "is-correct" : "is-wrong"}" type="text" value="${enteredAnswer}" readonly>
-      ${!isCorrect ? `<div class="quiz-feedback is-wrong" role="status">Правильный ответ: <strong>${escapeHTML(question.answer)}</strong></div>` : `<div class="quiz-feedback is-correct" role="status">Верно!</div>`}
+      <input class="quiz-input is-${result.status}" type="text" value="${enteredAnswer}" readonly aria-label="Данный ответ">
+      <div class="quiz-feedback is-${result.status}" role="status">
+        ${escapeHTML(result.message)}${!isCorrect ? `<br>Правильный ответ: <strong>${escapeHTML(question.answer)}</strong>` : ""}
+      </div>
     `;
   } else {
     answerHTML = `
       <input class="quiz-input" id="quizAnswerInput" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="Ответ" placeholder="${placeholder}" value="${escapeHTML(state.cardQuizInput)}">
-      <div class="quiz-character-row" aria-label="Испанские символы">
+      ${!isMeaning ? `<div class="quiz-character-row" aria-label="Испанские символы">
         ${QUIZ_CHARACTERS.map((character) => `<button class="quiz-character-button" type="button" data-quiz-character="${character}" aria-label="Вставить ${character}">${character}</button>`).join("")}
-      </div>
+      </div>` : ""}
     `;
   }
 
   card.innerHTML = `
     <div class="study-card-top">
       <span>Вопрос ${state.cardQuizIndex + 1} из ${state.cardQuiz.length}</span>
-      <div class="quiz-stats">
-        <span>✓ <strong>${state.cardQuizCorrect}</strong></span>
-        <span>✗ <strong>${state.cardQuizTotal - state.cardQuizCorrect}</strong></span>
+      <div class="quiz-stats" aria-label="Текущий результат">
+        <span aria-label="Правильных ответов: ${state.cardQuizCorrect}">✓ <strong>${state.cardQuizCorrect}</strong></span>
+        <span aria-label="Ошибок: ${state.cardQuizTotal - state.cardQuizCorrect}">✗ <strong>${state.cardQuizTotal - state.cardQuizCorrect}</strong></span>
       </div>
       <button class="small-button" type="button" data-stop>Закончить</button>
     </div>
     <div class="study-progress" role="progressbar" aria-label="Прогресс квиза" aria-valuemin="1" aria-valuemax="${state.cardQuiz.length}" aria-valuenow="${state.cardQuizIndex + 1}"><span style="width: ${progress}%"></span></div>
     <div class="study-face">
       <p class="eyebrow">${eyebrow}</p>
-      <h2>${isConjugation ? question.question : info.ru}</h2>
+      <h2>${escapeHTML(questionHeading)}</h2>
       ${answerHTML}
     </div>
     <div class="study-actions">
@@ -9420,6 +9882,10 @@ function renderCardQuiz(content) {
   const input = card.querySelector("#quizAnswerInput");
   if (input) {
     input.focus();
+    input.addEventListener("input", () => {
+      state.cardQuizInput = input.value;
+      saveQuizSession();
+    });
     input.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         e.preventDefault();
@@ -9439,7 +9905,8 @@ function renderCardQuiz(content) {
   const handleCheckAnswer = (skip = false) => {
     const val = skip ? "" : input?.value || "";
     if (!skip && !val.trim()) return;
-    const isCorrect = !skip && checkAnswer(val, question);
+    const result = skip ? { status: "wrong", message: "Ответ не указан." } : evaluateAnswer(val, question);
+    const isCorrect = result.status === "correct";
     state.cardQuizInput = val;
     state.cardQuizAnswered = true;
     state.cardQuizTotal += 1;
@@ -9449,8 +9916,11 @@ function renderCardQuiz(content) {
     state.cardQuizAttempts.push({
       question: { ...question },
       userAnswer: val.trim(),
-      correct: isCorrect
+      correct: isCorrect,
+      status: result.status
     });
+    recordCardAttempt(question, result);
+    saveQuizSession();
     renderCards();
   };
 
@@ -9458,6 +9928,7 @@ function renderCardQuiz(content) {
     state.cardQuizIndex += 1;
     state.cardQuizInput = "";
     state.cardQuizAnswered = false;
+    saveQuizSession();
     if (state.cardQuizIndex >= state.cardQuiz.length) {
       renderCards();
       return;
@@ -9485,10 +9956,12 @@ function renderCardQuiz(content) {
   };
 
   bindQuizHotkeys(handleGlobalKeydown);
+  if (state.cardQuizAnswered) requestAnimationFrame(() => card.querySelector("#nextQuestion")?.focus());
 }
 
 function quizQuestionLabel(question) {
   if (question.type === "infinitive") return `${question.question} → инфинитив`;
+  if (question.type === "meaning") return `${question.question} → перевод`;
   return `${displayInfinitive(question.verb)} · ${getTenseName(question.tense)} · ${PEOPLE[question.person]}`;
 }
 
@@ -9506,7 +9979,7 @@ function renderCardQuizResults(content) {
     const wasWrong = wrongVerbs.has(verb);
     return `<div class="quiz-wrong-row ${wasWrong ? "is-wrong" : ""}">
       <span><strong>${displayInfinitive(verb)}</strong> — ${info.ru}${wasWrong ? " <span class=\"quiz-wrong-badge\">✗</span>" : ""}</span>
-      <button class="small-button danger" type="button" data-remove="${verb}">Убрать</button>
+      ${state.cards.includes(verb) ? `<button class="small-button danger" type="button" data-remove="${verb}">Убрать из избранного</button>` : `<span class="muted">Убран</span>`}
     </div>`;
   }).join("");
   const allHTML = `<div class="quiz-wrong-list quiz-verb-list"><h3>Глаголы из квиза (${allVerbs.length})</h3>${rows}</div>`;
@@ -9519,6 +9992,10 @@ function renderCardQuizResults(content) {
           <div class="quiz-answer-comparison">
             <span>Твой ответ<strong>${attempt.userAnswer ? escapeHTML(attempt.userAnswer) : "Нет ответа"}</strong></span>
             <span>Правильно<strong>${escapeHTML(attempt.question.answer)}</strong></span>
+          </div>
+          <div class="quiz-result-links">
+            <button class="small-button" type="button" data-result-verb="${attempt.question.verb}">Открыть глагол</button>
+            ${attempt.question.tense ? `<button class="small-button" type="button" data-result-tense="${attempt.question.tense}">Посмотреть время</button>` : ""}
           </div>
         </div>
       `).join("")}
@@ -9535,6 +10012,7 @@ function renderCardQuizResults(content) {
       <p class="muted">${pct}% правильных ответов</p>
     </div>
     ${mistakesHTML}
+    ${state.cardUndo ? `<div class="cards-undo" role="status"><p><strong>${displayInfinitive(state.cardUndo.verb)}</strong> убран из избранного.</p><button class="small-button" type="button" data-undo-remove>Отменить</button></div>` : ""}
     ${allHTML}
     <div class="study-actions">
       ${wrongAttempts.length > 0 ? `<button class="small-button primary" type="button" id="retryMistakes">Повторить ошибки (${wrongAttempts.length})</button>` : ""}
@@ -9546,16 +10024,30 @@ function renderCardQuizResults(content) {
   card.querySelectorAll("[data-remove]").forEach((btn) => {
     btn.addEventListener("click", () => {
       const verb = btn.dataset.remove;
+      const index = state.cards.indexOf(verb);
+      state.cardUndo = { verb, index };
       state.cards = state.cards.filter((item) => item !== verb);
       saveCards();
-      btn.closest(".quiz-wrong-row").remove();
-      const remaining = card.querySelectorAll("[data-remove]").length;
-      if (remaining === 0) {
-        const list = card.querySelector(".quiz-verb-list");
-        if (list) list.remove();
-      }
+      renderCards();
     });
   });
+  card.querySelector("[data-undo-remove]")?.addEventListener("click", () => {
+    const { verb, index } = state.cardUndo;
+    const restored = [...state.cards];
+    restored.splice(Math.max(0, Math.min(index, restored.length)), 0, verb);
+    state.cards = [...new Set(restored)];
+    state.cardUndo = null;
+    saveCards();
+    renderCards();
+  });
+  card.querySelectorAll("[data-result-verb]").forEach((button) => button.addEventListener("click", () => {
+    clearQuizHotkeys();
+    openVerbFromReference(button.dataset.resultVerb);
+  }));
+  card.querySelectorAll("[data-result-tense]").forEach((button) => button.addEventListener("click", () => {
+    clearQuizHotkeys();
+    openTenseFromVerb(button.dataset.resultTense);
+  }));
   card.querySelector("#retryMistakes")?.addEventListener("click", () => startCardQuiz("mistakes"));
   card.querySelector("#restartQuiz")?.addEventListener("click", () => startCardQuiz("same"));
   card.querySelector("#backToCards")?.addEventListener("click", stopCardQuiz);
@@ -9578,6 +10070,7 @@ function renderCardQuizResults(content) {
 
 function stopCardQuiz() {
   clearQuizHotkeys();
+  clearSavedQuizSession();
   state.cardQuiz = [];
   state.cardQuizIndex = 0;
   state.cardQuizInput = "";
@@ -9587,6 +10080,7 @@ function stopCardQuiz() {
   state.cardQuizAttempts = [];
   state.cardQuizSnapshot = [];
   state.cardQuizAllVerbs = [];
+  state.cardUndo = null;
   renderCards();
 }
 

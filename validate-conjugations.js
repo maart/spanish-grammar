@@ -1046,7 +1046,6 @@ const learningPlanScaffold = [
   ["B2", 'id: "b2"'],
   ["C1", 'id: "c1"'],
   ["C2", 'id: "c2"'],
-  ["next step", "data-learning-next"],
   ["calm layout", "learning-plan-section"],
 ];
 for (const [part, expected] of learningPlanScaffold) {
@@ -1062,7 +1061,7 @@ for (const [part, expected] of learningPlanScaffold) {
   }
 }
 
-const forbiddenLearningPlanFragments = ["data-learning-resource", "function learningResourceFor", "learning-item-actions"];
+const forbiddenLearningPlanFragments = ["data-learning-resource", "function learningResourceFor", "learning-item-actions", "data-learning-next", "learning-next-step"];
 for (const fragment of forbiddenLearningPlanFragments) {
   if (html.includes(fragment)) {
     issues.push({

@@ -584,21 +584,6 @@ input[type="search"] {
   color: var(--on-accent);
 }
 
-.learning-next-step {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  margin: 16px 0;
-  padding: 14px 0;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-}
-
-.learning-next-step p {
-  margin: 0;
-}
-
 .learning-plan-summary {
   display: grid;
   gap: 8px;
@@ -2926,7 +2911,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.60 · обновлено: 25.07.2026 17:21 CEST</span>
+        <span>Версия MVP 0.61 · обновлено: 25.07.2026 17:28 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -10990,12 +10975,6 @@ function renderLearningPlan() {
   const allItems = sections.flatMap(([section, items]) => (items || []).map((item) => ({ section, item })));
   const doneCount = allItems.filter((_, index) => state.learningProgress[`${level.id}:${index}`]).length;
   const progress = allItems.length ? Math.round(doneCount / allItems.length * 100) : 0;
-  const nextItemIndex = allItems.findIndex((_, index) => !state.learningProgress[`${level.id}:${index}`]);
-  const nextItem = nextItemIndex >= 0 ? allItems[nextItemIndex] : null;
-  const nextKey = nextItem ? `${level.id}:${nextItemIndex}` : null;
-  const nextStep = nextItem
-    ? `<section class="learning-next-step"><div><p><strong>Следующий шаг</strong></p><p class="muted">${nextItem.section}: ${nextItem.item}</p></div><button class="small-button" type="button" data-learning-next="${nextKey}">Отметить выполненным</button></section>`
-    : `<section class="learning-next-step"><div><p><strong>Уровень ${level.label} закрыт.</strong></p><p class="muted">Перейдите к следующему уровню, когда будете готовы.</p></div></section>`;
   let itemIndex = 0;
   const list = (title, items = []) => {
     if (!items.length) return "";
@@ -11010,14 +10989,12 @@ function renderLearningPlan() {
     <div class="card-head"><div><h2>План обучения</h2><p class="muted">Практическая карта испанского по CEFR. A0 — внутренняя подготовительная ступень; A1–C2 — официальные уровни.</p></div></div>
     <div class="learning-level-tabs" aria-label="Выбор уровня">${levelButtons}</div>
     <section class="learning-plan-summary" aria-live="polite"><p><strong>${level.label} · ${level.title}</strong></p><p>${level.description}</p><p><strong>Прогресс: ${doneCount} из ${allItems.length} · ${progress}%</strong></p><progress max="100" value="${progress}" aria-label="Прогресс уровня ${level.label}"></progress><p><button class="small-button" type="button" data-reset-learning>Сбросить прогресс уровня</button></p></section>
-    ${nextStep}
     ${sections.map(([title, items]) => list(title, items)).join("")}
     <p class="muted learning-plan-sources">Основа: <a href="https://www.coe.int/en/web/common-european-framework-reference-languages/companion-volume" target="_blank" rel="noopener">CEFR Companion Volume</a> и <a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/default.htm" target="_blank" rel="noopener">Plan Curricular del Instituto Cervantes</a>. Списки являются практической адаптацией для самостоятельного обучения, а не официальным экзаменационным силлабусом.</p>
   `;
   content.appendChild(header);
   bindClickAll(header, "[data-learning-level]", (event) => { state.learningLevel = event.currentTarget.dataset.learningLevel; localStorage.setItem("msg:learningLevel", state.learningLevel); renderLearningPlan(); });
   bindClickAll(header, "[data-learning-item]", (event) => { const key = event.currentTarget.dataset.learningItem; state.learningProgress[key] = event.currentTarget.checked; localStorage.setItem("msg:learningProgress", JSON.stringify(state.learningProgress)); renderLearningPlan(); });
-  bindClickAll(header, "[data-learning-next]", (event) => { const key = event.currentTarget.dataset.learningNext; state.learningProgress[key] = true; localStorage.setItem("msg:learningProgress", JSON.stringify(state.learningProgress)); renderLearningPlan(); });
   bindClickAll(header, "[data-reset-learning]", () => { Object.keys(state.learningProgress).filter((key) => key.startsWith(`${level.id}:`)).forEach((key) => delete state.learningProgress[key]); localStorage.setItem("msg:learningProgress", JSON.stringify(state.learningProgress)); renderLearningPlan(); });
 }
 

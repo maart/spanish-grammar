@@ -634,6 +634,44 @@ input[type="search"] {
   margin-top: 3px;
 }
 
+.learning-item-detail {
+  margin: 6px 0 0 26px;
+}
+
+.learning-item-detail summary {
+  width: fit-content;
+  cursor: pointer;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.learning-item-detail-body {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-left: 2px solid var(--line);
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.learning-item-detail-body p {
+  margin: 0;
+}
+
+.learning-item-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.learning-item-links .small-button {
+  min-width: 0;
+  padding-inline: 8px;
+  font-size: 12px;
+}
+
 .table-filter-controls {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2911,7 +2949,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.61 · обновлено: 25.07.2026 17:28 CEST</span>
+        <span>Версия MVP 0.62 · обновлено: 25.07.2026 17:35 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -7954,6 +7992,7 @@ const state = {
     ? localStorage.getItem("msg:learningLevel")
     : "a0",
   learningProgress: JSON.parse(localStorage.getItem("msg:learningProgress") || "{}"),
+  learningDetails: JSON.parse(localStorage.getItem("msg:learningDetails") || "{}"),
   query: "",
   selectedVerb: null,
   previousVerbQuery: null,
@@ -10959,6 +10998,62 @@ function hasSavedQuizSession() {
   return Boolean(state.savedQuizSession?.cardQuiz?.length);
 }
 
+function learningTableResource(titlePart, label) {
+  const table = INDEXED_TABLES.find((item) => item.title.includes(titlePart));
+  return table ? { href: `#table-${table.index}`, label } : null;
+}
+
+function learningItemDetails(level, section, item) {
+  const text = item.toLocaleLowerCase("es-ES");
+  const links = [];
+  const add = (resource) => {
+    if (resource && !links.some((link) => link.href === resource.href)) links.push(resource);
+  };
+  const tense = (id, label) => add(tenseById(id) ? { href: `#tense-${id}`, label } : null);
+  const mood = (id, label) => add(MOODS.some((entry) => entry.id === id) ? { href: `#mood-${id}`, label } : null);
+  const verb = (id, label) => add(BASE_VERBS.includes(id) ? { href: `#verb-${id}`, label } : null);
+  const table = (titlePart, label) => add(learningTableResource(titlePart, label));
+
+  if (text.includes("presente")) tense("presente", "Presente");
+  if (text.includes("perfecto")) tense("perfecto", "Pretérito perfecto");
+  if (text.includes("indefinido")) tense("indefinido", "Pretérito indefinido");
+  if (text.includes("imperfecto")) tense("imperfecto", "Pretérito imperfecto");
+  if (text.includes("futuro")) tense("futuro", "Futuro simple");
+  if (text.includes("condicional")) mood("condicional", "Condicional");
+  if (text.includes("subjuntivo")) mood("subjuntivo", "Subjuntivo");
+  if (text.includes("imperativo")) mood("imperativo", "Imperativo");
+  if (text.includes("ser, estar")) table("Ser/estar: сущность или состояние", "Шпаргалка ser / estar");
+  if (text.includes("артикл") || text.includes("род и число")) table("Артикли: el/la/los/las и un/una", "Артикли");
+  if (text.includes("возвратн")) table("Me/te/se: возвратные местоимения", "Возвратные местоимения");
+  if (text.includes("прямые/косвенные")) table("Прямые и косвенные объекты", "Прямые и косвенные дополнения");
+  if (text.includes("притяжательн")) table("Mi/mío, tu/tuyo", "Притяжательные");
+  if (text.includes("указательн")) table("Указательные: este/ese/aquel", "Указательные");
+  if (text.includes("сравнен") || text.includes("превосходн")) table("Прилагательные: согласование, позиция, сравнение", "Сравнение прилагательных");
+  if (text.includes("вопрос") || text.includes("дорогу")) table("Вопросительные: qué, quién, cuál, cómo", "Вопросительные слова");
+  if (text.includes("hay")) verb("haber", "Глагол haber");
+  if (text.includes("llamarse")) verb("llamar", "Глагол llamar(se)");
+  if (text.includes("ir a + infinitivo")) verb("ir", "Глагол ir");
+  if (text.includes("заказать") || text.includes("покупк")) verb("pedir", "Глагол pedir");
+  if (text.includes("врача") || text.includes("здоров")) verb("tener", "Глагол tener");
+  if (text.includes("написать") || text.includes("письмо")) verb("escribir", "Глагол escribir");
+
+  const guidance = {
+    "Что нужно уметь": "Это практическая цель. Не отмечайте её после чтения правила: выполните действие вслух или письменно без подсказки.",
+    "Грамматика": "Разберите правило на двух-трёх своих примерах и составьте ещё пять коротких фраз с новой конструкцией.",
+    "Темы и лексика": "Соберите личный минимальный словарь по теме и употребите новые слова хотя бы в трёх собственных фразах.",
+    "Практические ситуации": "Сыграйте ситуацию целиком: сначала медленно с опорой, затем повторите её без русского текста.",
+    "Чек-лист уровня": "Отмечайте пункт только если можете выполнить его самостоятельно в незнакомом, но похожем контексте."
+  }[section];
+  const task = {
+    "Что нужно уметь": `Мини-проверка: выполните задачу «${item}» в течение минуты.`,
+    "Грамматика": `Мини-проверка: объясните себе правило из пункта «${item}» и дайте пять примеров.`,
+    "Темы и лексика": `Мини-проверка: подготовьте 10–15 слов по теме «${item}» и составьте три фразы о себе.`,
+    "Практические ситуации": `Мини-проверка: разыграйте сценарий «${item}» в роли говорящего и собеседника.`,
+    "Чек-лист уровня": `Самопроверка: подтвердите утверждение «${item}» конкретным примером речи или текста.`
+  }[section];
+  return { guidance, task, links };
+}
+
 function renderLearningPlan() {
   const content = clearContent();
   const level = LEARNING_LEVELS.find((item) => item.id === state.learningLevel) || LEARNING_LEVELS[0];
@@ -10981,7 +11076,16 @@ function renderLearningPlan() {
     const sectionStart = itemIndex;
     const sectionDone = items.filter((_, index) => state.learningProgress[`${level.id}:${sectionStart + index}`]).length;
     itemIndex += items.length;
-    return `<section class="learning-plan-section"><div class="learning-plan-section-head"><h3>${title}</h3><span>${sectionDone}/${items.length}</span></div><ul class="learning-plan-list">${items.map((item, index) => { const key = `${level.id}:${sectionStart + index}`; const checked = Boolean(state.learningProgress[key]); return `<li class="learning-plan-item"><label><input type="checkbox" data-learning-item="${key}" ${checked ? "checked" : ""}> <span>${item}</span></label></li>`; }).join("")}</ul></section>`;
+    const itemMarkup = items.map((item, index) => {
+      const key = `${level.id}:${sectionStart + index}`;
+      const checked = Boolean(state.learningProgress[key]);
+      const detail = learningItemDetails(level, title, item);
+      const links = detail.links.length
+        ? `<div class="learning-item-links">${detail.links.map((link) => `<a class="small-button" href="${link.href}">${link.label}</a>`).join("")}</div>`
+        : `<p>Точной карточки для этого пункта пока нет; используйте мини-проверку ниже.</p>`;
+      return `<li class="learning-plan-item"><label><input type="checkbox" data-learning-item="${key}" ${checked ? "checked" : ""}> <span>${item}</span></label><details class="learning-item-detail" data-learning-detail="${key}" ${state.learningDetails[key] ? "open" : ""}><summary>Подробнее</summary><div class="learning-item-detail-body"><p>${detail.guidance}</p><p>${detail.task}</p>${links}</div></details></li>`;
+    }).join("");
+    return `<section class="learning-plan-section"><div class="learning-plan-section-head"><h3>${title}</h3><span>${sectionDone}/${items.length}</span></div><ul class="learning-plan-list">${itemMarkup}</ul></section>`;
   };
   const header = document.createElement("section");
   header.className = "info-card";
@@ -10995,6 +11099,7 @@ function renderLearningPlan() {
   content.appendChild(header);
   bindClickAll(header, "[data-learning-level]", (event) => { state.learningLevel = event.currentTarget.dataset.learningLevel; localStorage.setItem("msg:learningLevel", state.learningLevel); renderLearningPlan(); });
   bindClickAll(header, "[data-learning-item]", (event) => { const key = event.currentTarget.dataset.learningItem; state.learningProgress[key] = event.currentTarget.checked; localStorage.setItem("msg:learningProgress", JSON.stringify(state.learningProgress)); renderLearningPlan(); });
+  $all("[data-learning-detail]", header).forEach((detail) => detail.addEventListener("toggle", () => { const key = detail.dataset.learningDetail; if (detail.open) state.learningDetails[key] = true; else delete state.learningDetails[key]; localStorage.setItem("msg:learningDetails", JSON.stringify(state.learningDetails)); }));
   bindClickAll(header, "[data-reset-learning]", () => { Object.keys(state.learningProgress).filter((key) => key.startsWith(`${level.id}:`)).forEach((key) => delete state.learningProgress[key]); localStorage.setItem("msg:learningProgress", JSON.stringify(state.learningProgress)); renderLearningPlan(); });
 }
 

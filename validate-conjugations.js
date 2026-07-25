@@ -1047,6 +1047,9 @@ const learningPlanScaffold = [
   ["C1", 'id: "c1"'],
   ["C2", 'id: "c2"'],
   ["calm layout", "learning-plan-section"],
+  ["item details", "learning-item-detail"],
+  ["detail generator", "function learningItemDetails"],
+  ["saved detail state", "data-learning-detail"],
 ];
 for (const [part, expected] of learningPlanScaffold) {
   if (!html.includes(expected)) {

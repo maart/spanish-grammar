@@ -10938,8 +10938,13 @@ function renderLearningPlan() {
   const allItems = sections.flatMap(([, items]) => items || []);
   const doneCount = allItems.filter((_, index) => state.learningProgress[`${level.id}:${index}`]).length;
   const progress = allItems.length ? Math.round(doneCount / allItems.length * 100) : 0;
+  const sectionLinks = {
+    "Грамматика": `<a class="small-button" href="#tenses">Открыть времена</a> <a class="small-button" href="#moods">Открыть наклонения</a>`,
+    "Темы и лексика": `<a class="small-button" href="#tables">Открыть шпаргалки</a>`,
+    "Практические ситуации": `<a class="small-button" href="#verbs">Открыть глаголы</a>`
+  };
   let itemIndex = 0;
-  const list = (title, items = []) => items.length ? `<section class="learning-plan-status"><h3>${title}</h3><ul>${items.map((item) => { const key = `${level.id}:${itemIndex}`; const checked = Boolean(state.learningProgress[key]); itemIndex += 1; return `<li><label><input type="checkbox" data-learning-item="${key}" ${checked ? "checked" : ""}> <span>${item}</span></label></li>`; }).join("")}</ul></section>` : "";
+  const list = (title, items = []) => items.length ? `<section class="learning-plan-status"><div class="card-head"><h3>${title}</h3>${sectionLinks[title] || ""}</div><ul>${items.map((item) => { const key = `${level.id}:${itemIndex}`; const checked = Boolean(state.learningProgress[key]); itemIndex += 1; return `<li><label><input type="checkbox" data-learning-item="${key}" ${checked ? "checked" : ""}> <span>${item}</span></label></li>`; }).join("")}</ul></section>` : "";
   const header = document.createElement("section");
   header.className = "info-card";
   header.innerHTML = `

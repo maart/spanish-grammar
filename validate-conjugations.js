@@ -1047,8 +1047,7 @@ const learningPlanScaffold = [
   ["C1", 'id: "c1"'],
   ["C2", 'id: "c2"'],
   ["next step", "data-learning-next"],
-  ["resource resolver", "function learningResourceFor"],
-  ["item resource link", "data-learning-resource"],
+  ["calm layout", "learning-plan-section"],
 ];
 for (const [part, expected] of learningPlanScaffold) {
   if (!html.includes(expected)) {
@@ -1058,6 +1057,20 @@ for (const [part, expected] of learningPlanScaffold) {
       person: "-",
       expected,
       actual: "(missing)",
+      severity: "high",
+    });
+  }
+}
+
+const forbiddenLearningPlanFragments = ["data-learning-resource", "function learningResourceFor", "learning-item-actions"];
+for (const fragment of forbiddenLearningPlanFragments) {
+  if (html.includes(fragment)) {
+    issues.push({
+      verb: "learning plan",
+      tense: "irrelevant resource link",
+      person: "-",
+      expected: "no generic links in learning-plan items",
+      actual: fragment,
       severity: "high",
     });
   }

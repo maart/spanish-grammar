@@ -7916,6 +7916,7 @@ const state = {
   learningLevel: LEARNING_LEVELS.some((level) => level.id === localStorage.getItem("msg:learningLevel"))
     ? localStorage.getItem("msg:learningLevel")
     : "a0",
+  learningProgress: JSON.parse(localStorage.getItem("msg:learningProgress") || "{}"),
   query: "",
   selectedVerb: null,
   previousVerbQuery: null,
@@ -10926,28 +10927,32 @@ function renderLearningPlan() {
   const level = LEARNING_LEVELS.find((item) => item.id === state.learningLevel) || LEARNING_LEVELS[0];
   const levelButtons = LEARNING_LEVELS.map((item) => {
     const selected = item.id === level.id;
-    return `<button class="small-button ${selected ? "is-active" : ""}" type="button" data-learning-level="${item.id}" aria-pressed="${selected}">${item.label}</button>`;
+    const total = [item.can, item.grammar, item.topics, item.practice, item.checklist].reduce((sum, list) => sum + (list?.length || 0), 0);
+    const done = Object.keys(state.learningProgress).filter((key) => key.startsWith(`${item.id}:`) && state.learningProgress[key]).length;
+    return `<button class="small-button ${selected ? "is-active" : ""}" type="button" data-learning-level="${item.id}" aria-pressed="${selected}">${item.label}${total ? ` · ${done}/${total}` : ""}</button>`;
   }).join("");
-  const list = (title, items = []) => items.length ? `<section class="learning-plan-status"><h3>${title}</h3><ul>${items.map((item) => `<li>${item}</li>`).join("")}</ul></section>` : "";
+  const sections = [
+    ["Что нужно уметь", level.can], ["Грамматика", level.grammar], ["Темы и лексика", level.topics],
+    ["Практические ситуации", level.practice], ["Чек-лист уровня", level.checklist]
+  ];
+  const allItems = sections.flatMap(([, items]) => items || []);
+  const doneCount = allItems.filter((_, index) => state.learningProgress[`${level.id}:${index}`]).length;
+  const progress = allItems.length ? Math.round(doneCount / allItems.length * 100) : 0;
+  let itemIndex = 0;
+  const list = (title, items = []) => items.length ? `<section class="learning-plan-status"><h3>${title}</h3><ul>${items.map((item) => { const key = `${level.id}:${itemIndex}`; const checked = Boolean(state.learningProgress[key]); itemIndex += 1; return `<li><label><input type="checkbox" data-learning-item="${key}" ${checked ? "checked" : ""}> <span>${item}</span></label></li>`; }).join("")}</ul></section>` : "";
   const header = document.createElement("section");
   header.className = "info-card";
   header.innerHTML = `
     <div class="card-head"><div><h2>План обучения</h2><p class="muted">Практическая карта испанского по CEFR. A0 — внутренняя подготовительная ступень; A1–C2 — официальные уровни.</p></div></div>
     <div class="learning-level-tabs" aria-label="Выбор уровня">${levelButtons}</div>
-    <section class="learning-plan-status" aria-live="polite"><p><strong>${level.label} · ${level.title}</strong></p><p>${level.description}</p></section>
-    ${list("Что нужно уметь", level.can)}
-    ${list("Грамматика", level.grammar)}
-    ${list("Темы и лексика", level.topics)}
-    ${list("Практические ситуации", level.practice)}
-    ${list("Чек-лист уровня", level.checklist)}
-    <p class="muted learning-plan-sources">Основа: <a href="https://www.coe.int/en/web/common-european-framework-reference-languages" target="_blank" rel="noopener">CEFR Companion Volume</a> и <a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/" target="_blank" rel="noopener">Plan Curricular del Instituto Cervantes</a>. Списки являются практической адаптацией для самостоятельного обучения, а не официальным экзаменационным силлабусом.</p>
+    <section class="learning-plan-status" aria-live="polite"><p><strong>${level.label} · ${level.title}</strong></p><p>${level.description}</p><p><strong>Прогресс: ${doneCount} из ${allItems.length} · ${progress}%</strong></p><progress max="100" value="${progress}" aria-label="Прогресс уровня ${level.label}"></progress><p><button class="small-button" type="button" data-reset-learning>Сбросить прогресс уровня</button></p></section>
+    ${sections.map(([title, items]) => list(title, items)).join("")}
+    <p class="muted learning-plan-sources">Основа: <a href="https://www.coe.int/en/web/common-european-framework-reference-languages/companion-volume" target="_blank" rel="noopener">CEFR Companion Volume</a> и <a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/default.htm" target="_blank" rel="noopener">Plan Curricular del Instituto Cervantes</a>. Списки являются практической адаптацией для самостоятельного обучения, а не официальным экзаменационным силлабусом.</p>
   `;
   content.appendChild(header);
-  bindClickAll(header, "[data-learning-level]", (event) => {
-    state.learningLevel = event.currentTarget.dataset.learningLevel;
-    localStorage.setItem("msg:learningLevel", state.learningLevel);
-    renderLearningPlan();
-  });
+  bindClickAll(header, "[data-learning-level]", (event) => { state.learningLevel = event.currentTarget.dataset.learningLevel; localStorage.setItem("msg:learningLevel", state.learningLevel); renderLearningPlan(); });
+  bindClickAll(header, "[data-learning-item]", (event) => { const key = event.currentTarget.dataset.learningItem; state.learningProgress[key] = event.currentTarget.checked; localStorage.setItem("msg:learningProgress", JSON.stringify(state.learningProgress)); renderLearningPlan(); });
+  bindClickAll(header, "[data-reset-learning]", () => { Object.keys(state.learningProgress).filter((key) => key.startsWith(`${level.id}:`)).forEach((key) => delete state.learningProgress[key]); localStorage.setItem("msg:learningProgress", JSON.stringify(state.learningProgress)); renderLearningPlan(); });
 }
 
 function renderCards() {

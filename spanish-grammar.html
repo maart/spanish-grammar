@@ -2949,7 +2949,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.62 · обновлено: 25.07.2026 17:35 CEST</span>
+        <span>Версия MVP 0.63 · обновлено: 25.07.2026 17:44 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -10998,6 +10998,54 @@ function hasSavedQuizSession() {
   return Boolean(state.savedQuizSession?.cardQuiz?.length);
 }
 
+const LEARNING_DETAIL_PATTERNS = [
+  {
+    terms: ["perfecto", "indefinido", "imperfecto"],
+    guidance: "Работайте с временной линией: Perfecto связывает опыт с настоящим, Indefinido завершает событие, Imperfecto задаёт фон, привычку или описание.",
+    task: "Напишите три пары фраз: сначала фон через Imperfecto, затем завершённое событие через Indefinido; отдельно добавьте недавний опыт через Perfecto."
+  },
+  {
+    terms: ["subjuntivo"],
+    guidance: "Сначала ищите не форму глагола, а триггер: желание, оценку, сомнение, эмоцию, цель или ещё не наступившее событие.",
+    task: "Составьте по одному предложению с querer que, me alegra que, es importante que и cuando + будущее действие."
+  },
+  {
+    terms: ["condicional", "условн"],
+    guidance: "Различайте реальное условие (si + presente, futuro) и гипотетическое (si + imperfecto de subjuntivo, condicional); после si Condicional не ставится.",
+    task: "Сравните: Si tengo tiempo, iré и Si tuviera tiempo, iría; затем придумайте два своих примера."
+  },
+  {
+    terms: ["местоимени", "возвратн"],
+    guidance: "Сначала назовите функцию формы: дополнение, возвратность, притяжательность или указание. Не учите все местоимения одним списком.",
+    task: "Составьте четыре пары: veo a Marta → la veo; doy el libro a Juan → se lo doy; me levanto; esta casa es mía."
+  },
+  {
+    terms: ["союз", "связк", "придаточ", "aunque", "porque", "cuando"],
+    guidance: "Связки задают логику текста: причина, условие, уступка, время или следствие. Выбирайте их по смыслу, а не как взаимозаменяемые слова.",
+    task: "Соедините пять коротких фраз с porque, aunque, cuando, si и por eso; проверьте, меняется ли наклонение."
+  },
+  {
+    terms: ["ser, estar", "hay и estar"],
+    guidance: "Разделите три задачи: ser для идентификации и характеристики, estar для состояния и места, hay для существования нового или неопределённого объекта.",
+    task: "Опишите комнату пятью фразами: что в ней есть, где предметы находятся и какими они являются."
+  },
+  {
+    terms: ["заказать", "покупк", "кафе", "услуг"],
+    guidance: "Для бытовой задачи подготовьте не отдельные слова, а готовые ходы: просьба, уточнение, количество, цена, вежливое завершение.",
+    task: "Разыграйте диалог из шести реплик: попросите товар, уточните цену, задайте вопрос и поблагодарите."
+  },
+  {
+    terms: ["написать", "письмо", "отзыв", "рассказ"],
+    guidance: "Сначала выберите структуру: цель текста, порядок событий, связки и финальная фраза. Только затем проверяйте грамматику.",
+    task: "Напишите 80–100 слов: начало с контекстом, два события со связками и короткое заключение."
+  },
+  {
+    terms: ["здоров", "врача"],
+    guidance: "В медицинской ситуации важнее понятность: назовите проблему, её длительность, интенсивность и нужную помощь простыми фразами.",
+    task: "Составьте мини-диалог пациента и врача: симптом, когда начался, что болит и один уточняющий вопрос."
+  }
+];
+
 function learningTableResource(titlePart, label) {
   const table = INDEXED_TABLES.find((item) => item.title.includes(titlePart));
   return table ? { href: `#table-${table.index}`, label } : null;
@@ -11030,6 +11078,13 @@ function learningItemDetails(level, section, item) {
   if (text.includes("указательн")) table("Указательные: este/ese/aquel", "Указательные");
   if (text.includes("сравнен") || text.includes("превосходн")) table("Прилагательные: согласование, позиция, сравнение", "Сравнение прилагательных");
   if (text.includes("вопрос") || text.includes("дорогу")) table("Вопросительные: qué, quién, cuál, cómo", "Вопросительные слова");
+  if (text.includes("союз") || text.includes("связк") || text.includes("придаточ") || text.includes("aunque") || text.includes("porque") || text.includes("cuando")) table("Conectores: все связки", "Связки текста");
+  if (text.includes("косвенная речь")) table("Concordancia de tiempos: полная таблица", "Согласование времён");
+  if (text.includes("пассив") || text.includes("безличн")) table("Voz pasiva: ser + participio", "Пассив и безличные конструкции");
+  if (text.includes("заказать") || text.includes("покупк") || text.includes("кафе")) table("Pedir/preguntar: просить или спрашивать", "Просьбы и вопросы");
+  if (text.includes("дорогу") || text.includes("направлен")) table("Ir/venir/llevar/traer: идти, приходить, нести", "Глаголы движения");
+  if (text.includes("здоров") || text.includes("врача")) table("Tener + sustantivo: tener hambre", "Полезные выражения с tener");
+  if (text.includes("даты") || text.includes("простое время")) table("La hora y la fecha: время, дни, месяцы", "Время и дата");
   if (text.includes("hay")) verb("haber", "Глагол haber");
   if (text.includes("llamarse")) verb("llamar", "Глагол llamar(se)");
   if (text.includes("ir a + infinitivo")) verb("ir", "Глагол ir");
@@ -11037,21 +11092,22 @@ function learningItemDetails(level, section, item) {
   if (text.includes("врача") || text.includes("здоров")) verb("tener", "Глагол tener");
   if (text.includes("написать") || text.includes("письмо")) verb("escribir", "Глагол escribir");
 
-  const guidance = {
+  const pattern = LEARNING_DETAIL_PATTERNS.find((entry) => entry.terms.some((term) => text.includes(term)));
+  const genericGuidance = {
     "Что нужно уметь": "Это практическая цель. Не отмечайте её после чтения правила: выполните действие вслух или письменно без подсказки.",
     "Грамматика": "Разберите правило на двух-трёх своих примерах и составьте ещё пять коротких фраз с новой конструкцией.",
     "Темы и лексика": "Соберите личный минимальный словарь по теме и употребите новые слова хотя бы в трёх собственных фразах.",
     "Практические ситуации": "Сыграйте ситуацию целиком: сначала медленно с опорой, затем повторите её без русского текста.",
     "Чек-лист уровня": "Отмечайте пункт только если можете выполнить его самостоятельно в незнакомом, но похожем контексте."
   }[section];
-  const task = {
+  const genericTask = {
     "Что нужно уметь": `Мини-проверка: выполните задачу «${item}» в течение минуты.`,
     "Грамматика": `Мини-проверка: объясните себе правило из пункта «${item}» и дайте пять примеров.`,
     "Темы и лексика": `Мини-проверка: подготовьте 10–15 слов по теме «${item}» и составьте три фразы о себе.`,
     "Практические ситуации": `Мини-проверка: разыграйте сценарий «${item}» в роли говорящего и собеседника.`,
     "Чек-лист уровня": `Самопроверка: подтвердите утверждение «${item}» конкретным примером речи или текста.`
   }[section];
-  return { guidance, task, links };
+  return { guidance: pattern?.guidance || genericGuidance, task: pattern?.task || genericTask, links };
 }
 
 function renderLearningPlan() {

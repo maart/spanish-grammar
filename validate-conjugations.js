@@ -1050,6 +1050,9 @@ const learningPlanScaffold = [
   ["item details", "learning-item-detail"],
   ["detail generator", "function learningItemDetails"],
   ["saved detail state", "data-learning-detail"],
+  ["themed detail patterns", "const LEARNING_DETAIL_PATTERNS"],
+  ["connector resource", "Conectores: все связки"],
+  ["functional verb resource", "Pedir/preguntar: просить или спрашивать"],
 ];
 for (const [part, expected] of learningPlanScaffold) {
   if (!html.includes(expected)) {

@@ -597,6 +597,49 @@ input[type="search"] {
   margin: 0;
 }
 
+.learning-next-step {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--accent-2) 48%, var(--line));
+  background: color-mix(in srgb, var(--success-soft) 58%, var(--surface));
+}
+
+.learning-plan-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.learning-plan-item:last-child {
+  border-bottom: 0;
+}
+
+.learning-plan-item label {
+  display: flex;
+  gap: 8px;
+  min-width: 0;
+}
+
+.learning-plan-item input {
+  flex: 0 0 auto;
+  margin-top: 3px;
+}
+
+.learning-item-actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.learning-item-actions .small-button {
+  min-width: 0;
+  padding-inline: 8px;
+  font-size: 12px;
+}
+
 .table-filter-controls {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2874,7 +2917,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.58 · обновлено: 25.07.2026 17:04 CEST</span>
+        <span>Версия MVP 0.59 · обновлено: 25.07.2026 17:13 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -10922,6 +10965,22 @@ function hasSavedQuizSession() {
   return Boolean(state.savedQuizSession?.cardQuiz?.length);
 }
 
+function learningResourceFor(section, item) {
+  const text = item.toLowerCase();
+  if (section === "Грамматика") {
+    if (text.includes("subjuntivo")) return { href: "#mood-subjuntivo", label: "Открыть Subjuntivo" };
+    if (text.includes("imperativo")) return { href: "#mood-imperativo", label: "Открыть Imperativo" };
+    if (text.includes("condicional")) return { href: "#mood-condicional", label: "Открыть Condicional" };
+    if (text.includes("ser, estar")) return { href: "#verb-ser", label: "Открыть ser" };
+    const tenseTerms = ["perfecto", "indefinido", "imperfecto", "futuro"].filter((term) => text.includes(term));
+    if (tenseTerms.length === 1) return { href: `#tense-${tenseTerms[0]}`, label: `Открыть ${tenseTerms[0]}` };
+    return { href: "#tenses", label: "Открыть времена" };
+  }
+  if (section === "Темы и лексика") return { href: "#tables", label: "Открыть шпаргалки" };
+  if (section === "Практические ситуации") return { href: "#verbs", label: "Открыть глаголы" };
+  return { href: "#cards", label: "Проверить себя" };
+}
+
 function renderLearningPlan() {
   const content = clearContent();
   const level = LEARNING_LEVELS.find((item) => item.id === state.learningLevel) || LEARNING_LEVELS[0];
@@ -10935,28 +10994,32 @@ function renderLearningPlan() {
     ["Что нужно уметь", level.can], ["Грамматика", level.grammar], ["Темы и лексика", level.topics],
     ["Практические ситуации", level.practice], ["Чек-лист уровня", level.checklist]
   ];
-  const allItems = sections.flatMap(([, items]) => items || []);
+  const allItems = sections.flatMap(([section, items]) => (items || []).map((item) => ({ section, item })));
   const doneCount = allItems.filter((_, index) => state.learningProgress[`${level.id}:${index}`]).length;
   const progress = allItems.length ? Math.round(doneCount / allItems.length * 100) : 0;
-  const sectionLinks = {
-    "Грамматика": `<a class="small-button" href="#tenses">Открыть времена</a> <a class="small-button" href="#moods">Открыть наклонения</a>`,
-    "Темы и лексика": `<a class="small-button" href="#tables">Открыть шпаргалки</a>`,
-    "Практические ситуации": `<a class="small-button" href="#verbs">Открыть глаголы</a>`
-  };
+  const nextItemIndex = allItems.findIndex((_, index) => !state.learningProgress[`${level.id}:${index}`]);
+  const nextItem = nextItemIndex >= 0 ? allItems[nextItemIndex] : null;
+  const nextKey = nextItem ? `${level.id}:${nextItemIndex}` : null;
+  const nextResource = nextItem ? learningResourceFor(nextItem.section, nextItem.item) : null;
+  const nextStep = nextItem
+    ? `<section class="learning-plan-status learning-next-step"><p><strong>Следующий шаг</strong></p><p><strong>${nextItem.section}:</strong> ${nextItem.item}</p><div class="learning-item-actions"><a class="small-button primary" data-learning-resource="${nextKey}" href="${nextResource.href}">${nextResource.label}</a><button class="small-button" type="button" data-learning-next="${nextKey}">Отметить выполненным</button></div></section>`
+    : `<section class="learning-plan-status learning-next-step"><p><strong>Уровень ${level.label} закрыт.</strong></p><p>Можно перейти к следующему уровню или повторить сложные темы через квизы.</p><a class="small-button primary" href="#cards">Открыть самопроверку</a></section>`;
   let itemIndex = 0;
-  const list = (title, items = []) => items.length ? `<section class="learning-plan-status"><div class="card-head"><h3>${title}</h3>${sectionLinks[title] || ""}</div><ul>${items.map((item) => { const key = `${level.id}:${itemIndex}`; const checked = Boolean(state.learningProgress[key]); itemIndex += 1; return `<li><label><input type="checkbox" data-learning-item="${key}" ${checked ? "checked" : ""}> <span>${item}</span></label></li>`; }).join("")}</ul></section>` : "";
+  const list = (title, items = []) => items.length ? `<section class="learning-plan-status"><div class="card-head"><h3>${title}</h3></div><ul>${items.map((item) => { const key = `${level.id}:${itemIndex}`; const checked = Boolean(state.learningProgress[key]); const resource = learningResourceFor(title, item); itemIndex += 1; return `<li class="learning-plan-item"><label><input type="checkbox" data-learning-item="${key}" ${checked ? "checked" : ""}> <span>${item}</span></label><div class="learning-item-actions"><a class="small-button" data-learning-resource="${key}" href="${resource.href}">${resource.label}</a></div></li>`; }).join("")}</ul></section>` : "";
   const header = document.createElement("section");
   header.className = "info-card";
   header.innerHTML = `
     <div class="card-head"><div><h2>План обучения</h2><p class="muted">Практическая карта испанского по CEFR. A0 — внутренняя подготовительная ступень; A1–C2 — официальные уровни.</p></div></div>
     <div class="learning-level-tabs" aria-label="Выбор уровня">${levelButtons}</div>
     <section class="learning-plan-status" aria-live="polite"><p><strong>${level.label} · ${level.title}</strong></p><p>${level.description}</p><p><strong>Прогресс: ${doneCount} из ${allItems.length} · ${progress}%</strong></p><progress max="100" value="${progress}" aria-label="Прогресс уровня ${level.label}"></progress><p><button class="small-button" type="button" data-reset-learning>Сбросить прогресс уровня</button></p></section>
+    ${nextStep}
     ${sections.map(([title, items]) => list(title, items)).join("")}
     <p class="muted learning-plan-sources">Основа: <a href="https://www.coe.int/en/web/common-european-framework-reference-languages/companion-volume" target="_blank" rel="noopener">CEFR Companion Volume</a> и <a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/default.htm" target="_blank" rel="noopener">Plan Curricular del Instituto Cervantes</a>. Списки являются практической адаптацией для самостоятельного обучения, а не официальным экзаменационным силлабусом.</p>
   `;
   content.appendChild(header);
   bindClickAll(header, "[data-learning-level]", (event) => { state.learningLevel = event.currentTarget.dataset.learningLevel; localStorage.setItem("msg:learningLevel", state.learningLevel); renderLearningPlan(); });
   bindClickAll(header, "[data-learning-item]", (event) => { const key = event.currentTarget.dataset.learningItem; state.learningProgress[key] = event.currentTarget.checked; localStorage.setItem("msg:learningProgress", JSON.stringify(state.learningProgress)); renderLearningPlan(); });
+  bindClickAll(header, "[data-learning-next]", (event) => { const key = event.currentTarget.dataset.learningNext; state.learningProgress[key] = true; localStorage.setItem("msg:learningProgress", JSON.stringify(state.learningProgress)); renderLearningPlan(); });
   bindClickAll(header, "[data-reset-learning]", () => { Object.keys(state.learningProgress).filter((key) => key.startsWith(`${level.id}:`)).forEach((key) => delete state.learningProgress[key]); localStorage.setItem("msg:learningProgress", JSON.stringify(state.learningProgress)); renderLearningPlan(); });
 }
 

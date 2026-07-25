@@ -1046,6 +1046,9 @@ const learningPlanScaffold = [
   ["B2", 'id: "b2"'],
   ["C1", 'id: "c1"'],
   ["C2", 'id: "c2"'],
+  ["next step", "data-learning-next"],
+  ["resource resolver", "function learningResourceFor"],
+  ["item resource link", "data-learning-resource"],
 ];
 for (const [part, expected] of learningPlanScaffold) {
   if (!html.includes(expected)) {

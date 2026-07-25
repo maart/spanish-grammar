@@ -1037,7 +1037,7 @@ const issues = [];
 const learningPlanScaffold = [
   ["navigation", 'data-view="learning-plan"'],
   ["renderer", "function renderLearningPlan()"],
-  ["view renderer", "learningPlan: renderLearningPlan"],
+  ["view renderer", '"learning-plan": renderLearningPlan'],
   ["levels", "const LEARNING_LEVELS = ["],
   ["A0", 'id: "a0"'],
   ["A1", 'id: "a1"'],

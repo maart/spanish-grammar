@@ -1032,6 +1032,34 @@ const ACCENTED_MODEL_REFERENCE = {
 
 // ─── Validation logic ───────────────────────────────────────────────────────
 const issues = [];
+
+// Learning-plan tab scaffold: stage 1 must expose a tab, all CEFR levels and a renderer.
+const learningPlanScaffold = [
+  ["navigation", 'data-view="learning-plan"'],
+  ["renderer", "function renderLearningPlan()"],
+  ["view renderer", "learningPlan: renderLearningPlan"],
+  ["levels", "const LEARNING_LEVELS = ["],
+  ["A0", 'id: "a0"'],
+  ["A1", 'id: "a1"'],
+  ["A2", 'id: "a2"'],
+  ["B1", 'id: "b1"'],
+  ["B2", 'id: "b2"'],
+  ["C1", 'id: "c1"'],
+  ["C2", 'id: "c2"'],
+];
+for (const [part, expected] of learningPlanScaffold) {
+  if (!html.includes(expected)) {
+    issues.push({
+      verb: "learning plan",
+      tense: part,
+      person: "-",
+      expected,
+      actual: "(missing)",
+      severity: "high",
+    });
+  }
+}
+
 let totalChecked = 0;
 
 for (const verb of BASE_VERBS) {

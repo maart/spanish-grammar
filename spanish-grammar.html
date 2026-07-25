@@ -232,7 +232,7 @@ input[type="search"] {
   top: 8px;
   z-index: 15;
   display: grid;
-  grid-template-columns: repeat(5, minmax(72px, 1fr));
+  grid-template-columns: repeat(6, minmax(72px, 1fr));
   gap: 6px;
   margin: 12px 0 0;
   padding: 8px 0 6px;
@@ -569,6 +569,32 @@ input[type="search"] {
   border-color: var(--accent);
   background: var(--accent);
   color: var(--on-accent);
+}
+
+.learning-level-tabs {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+  margin: 16px 0;
+}
+
+.learning-level-tabs .small-button.is-active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.learning-plan-status {
+  display: grid;
+  gap: 6px;
+  padding: 14px;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+
+.learning-plan-status p {
+  margin: 0;
 }
 
 .table-filter-controls {
@@ -2342,7 +2368,7 @@ select {
     position: fixed;
     inset: auto 10px max(8px, env(safe-area-inset-bottom));
     z-index: 30;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     gap: 3px;
     width: auto;
     margin: 0;
@@ -2410,6 +2436,10 @@ select {
 
   .filter-tabs {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .learning-level-tabs {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .table-catalog-links {
@@ -2838,12 +2868,13 @@ select {
         <button class="tab" data-view="tenses" type="button" aria-label="Времена"><span class="tab-label-full">Времена</span><span class="tab-label-mobile">Времена</span></button>
         <button class="tab" data-view="moods" type="button" aria-label="Наклонения"><span class="tab-label-full">Наклонения</span><span class="tab-label-mobile">Наклон.</span></button>
         <button class="tab" data-view="tables" type="button" aria-label="Шпаргалки"><span class="tab-label-full">Шпаргалки</span><span class="tab-label-mobile">Шпаргалки</span></button>
+        <button class="tab" data-view="learning-plan" type="button" aria-label="План обучения"><span class="tab-label-full">План обучения</span><span class="tab-label-mobile">План</span></button>
         <button class="tab" data-view="cards" type="button" aria-label="Избранное"><span class="tab-label-full">Избранное</span><span class="tab-label-mobile">Избранное</span></button>
       </nav>
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.56 · обновлено: 20.07.2026 00:12 CEST</span>
+        <span>Версия MVP 0.57 · обновлено: 25.07.2026 14:31 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -7814,8 +7845,56 @@ const MOODS = [
   }
 ];
 
+const LEARNING_LEVELS = [
+  {
+    id: "a0",
+    label: "A0",
+    title: "Старт с нуля",
+    description: "Подготовительный этап для тех, кто ещё не изучал испанский. A0 — внутренняя ступень проекта до официального уровня A1."
+  },
+  {
+    id: "a1",
+    label: "A1",
+    title: "Базовое общение",
+    description: "Первые бытовые ситуации: представиться, рассказать о себе, спросить и понять простую информацию."
+  },
+  {
+    id: "a2",
+    label: "A2",
+    title: "Повседневная самостоятельность",
+    description: "Общение в знакомых ситуациях: покупки, поездки, работа, здоровье, планы и недавние события."
+  },
+  {
+    id: "b1",
+    label: "B1",
+    title: "Уверенное самостоятельное общение",
+    description: "Умение объяснять мнение, рассказывать о событиях и справляться с большинством ситуаций в поездке и быту."
+  },
+  {
+    id: "b2",
+    label: "B2",
+    title: "Свободное взаимодействие",
+    description: "Более точная и гибкая речь для обсуждений, работы, учёбы и сложных повседневных тем."
+  },
+  {
+    id: "c1",
+    label: "C1",
+    title: "Продвинутое владение",
+    description: "Связная, точная и уместная речь в сложных ситуациях, включая профессиональное и академическое общение."
+  },
+  {
+    id: "c2",
+    label: "C2",
+    title: "Очень высокий уровень владения",
+    description: "Гибкое и точное использование испанского с пониманием сложных текстов, регистров и стилистических оттенков."
+  }
+];
+
 const state = {
   view: "verbs",
+  learningLevel: LEARNING_LEVELS.some((level) => level.id === localStorage.getItem("msg:learningLevel"))
+    ? localStorage.getItem("msg:learningLevel")
+    : "a0",
   query: "",
   selectedVerb: null,
   previousVerbQuery: null,
@@ -8051,7 +8130,7 @@ function applyRouteHash() {
     route = "";
   }
 
-  const views = ["verbs", "tenses", "moods", "tables", "cards"];
+  const views = ["verbs", "tenses", "moods", "tables", "learning-plan", "cards"];
   if (!route || route === "verbs") {
     resetVerbLanding();
   } else if (views.includes(route)) {
@@ -10821,6 +10900,39 @@ function hasSavedQuizSession() {
   return Boolean(state.savedQuizSession?.cardQuiz?.length);
 }
 
+function renderLearningPlan() {
+  const content = clearContent();
+  const level = LEARNING_LEVELS.find((item) => item.id === state.learningLevel) || LEARNING_LEVELS[0];
+  const levelButtons = LEARNING_LEVELS.map((item) => {
+    const selected = item.id === level.id;
+    return `<button class="small-button ${selected ? "is-active" : ""}" type="button" data-learning-level="${item.id}" aria-pressed="${selected}">${item.label}</button>`;
+  }).join("");
+
+  const header = document.createElement("section");
+  header.className = "info-card";
+  header.innerHTML = `
+    <div class="card-head">
+      <div>
+        <h2>План обучения</h2>
+        <p class="muted">Маршрут по уровням от A0 до C2. Полное содержание будет добавлено на следующем этапе.</p>
+      </div>
+    </div>
+    <div class="learning-level-tabs" aria-label="Выбор уровня">${levelButtons}</div>
+    <section class="learning-plan-status" aria-live="polite">
+      <p><strong>${level.label} · ${level.title}</strong></p>
+      <p>${level.description}</p>
+      <p class="muted">Далее здесь появятся цели, навыки, обязательная грамматика, лексические темы и чек-лист перехода к следующему уровню.</p>
+    </section>
+  `;
+  content.appendChild(header);
+
+  bindClickAll(header, "[data-learning-level]", (event) => {
+    state.learningLevel = event.currentTarget.dataset.learningLevel;
+    localStorage.setItem("msg:learningLevel", state.learningLevel);
+    renderLearningPlan();
+  });
+}
+
 function renderCards() {
   const content = clearContent();
   if (state.cardQuiz.length > 0) {
@@ -11816,6 +11928,7 @@ const VIEW_RENDERERS = {
   tenses: renderTenses,
   tables: renderTables,
   moods: renderMoods,
+  learningPlan: renderLearningPlan,
   cards: renderCards
 };
 
@@ -11937,8 +12050,8 @@ document.addEventListener("keydown", (e) => {
     return;
   }
 
-  if (!isInput && /^[1-5]$/.test(e.key)) {
-    const views = ["verbs", "tenses", "moods", "tables", "cards"];
+  if (!isInput && /^[1-6]$/.test(e.key)) {
+    const views = ["verbs", "tenses", "moods", "tables", "learning-plan", "cards"];
     setView(views[parseInt(e.key) - 1]);
     e.preventDefault();
     return;

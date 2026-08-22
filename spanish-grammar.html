@@ -3349,7 +3349,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.75 · обновлено: 22.08.2026 14:39 CEST</span>
+        <span>Версия MVP 0.76 · обновлено: 22.08.2026 14:42 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -11116,12 +11116,6 @@ function renderTables() {
           ${TABLE_FILTERS.map((filter) => `<option value="${filter.id}" ${state.tableFilter === filter.id ? "selected" : ""}>${filter.label} · ${countFilteredTables(filter.id)}</option>`).join("")}
         </select>
       </label>
-      <label class="table-filter-control">
-        <span>Рекомендуемый уровень</span>
-        <select data-table-level aria-label="Рекомендуемый уровень шпаргалок">
-          ${TABLE_LEVELS.map((level) => `<option value="${level.id}" ${state.tableLevel === level.id ? "selected" : ""}>${level.label} · ${countFilteredTables(state.tableFilter, level.id, state.tableLevelCumulative)}</option>`).join("")}
-        </select>
-      </label>
       ${subgroups.length > 1 ? `
         <label class="table-filter-control">
           <span>Тема</span>
@@ -11131,6 +11125,12 @@ function renderTables() {
           </select>
         </label>
       ` : ""}
+      <label class="table-filter-control">
+        <span>Рекомендуемый уровень</span>
+        <select data-table-level aria-label="Рекомендуемый уровень шпаргалок">
+          ${TABLE_LEVELS.map((level) => `<option value="${level.id}" ${state.tableLevel === level.id ? "selected" : ""}>${level.label} · ${countFilteredTables(state.tableFilter, level.id, state.tableLevelCumulative)}</option>`).join("")}
+        </select>
+      </label>
       ${cumulativeDisabled ? "" : `
         <label class="table-level-mode" title="В накопительном режиме показываются темы выбранного и всех предыдущих уровней">
           <input type="checkbox" data-table-level-cumulative ${state.tableLevelCumulative ? "checked" : ""}>
@@ -11328,12 +11328,12 @@ function tableLevelMeta(levelId) {
 
 function tableLevelBadge(item) {
   const level = tableLevelMeta(item.minLevel);
-  return `<span class="table-level-badge" title="Рекомендуется начиная с уровня ${level.badge}">с ${level.badge}</span>`;
+  return `<span class="table-level-badge" title="Рекомендуется начиная с уровня ${level.badge}">${level.badge}</span>`;
 }
 
 function tableLevelButton(item) {
   const level = tableLevelMeta(item.minLevel);
-  return `<button class="table-level-badge table-context-level" type="button" data-table-context-level title="Показать шпаргалки уровня ${level.badge}" aria-label="Показать шпаргалки уровня ${level.badge}">с ${level.badge}</button>`;
+  return `<button class="table-level-badge table-context-level" type="button" data-table-context-level title="Показать шпаргалки уровня ${level.badge}" aria-label="Показать шпаргалки уровня ${level.badge}">${level.badge}</button>`;
 }
 
 function tableFilterIdForGroup(groupTitle) {

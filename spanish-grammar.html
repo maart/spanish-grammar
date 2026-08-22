@@ -594,6 +594,21 @@ input[type="search"] {
   margin: 0;
 }
 
+.learning-level-resources {
+  display: grid;
+  gap: 8px;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+}
+
+.learning-level-resources p {
+  margin: 0;
+}
+
+.learning-level-resources .learning-item-links {
+  margin-top: 2px;
+}
+
 .learning-plan-section {
   padding: 16px 0;
   border-top: 1px solid var(--line);
@@ -2998,7 +3013,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.66 · обновлено: 22.08.2026 12:10 CEST</span>
+        <span>Версия MVP 0.67 · обновлено: 22.08.2026 12:16 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -11339,7 +11354,8 @@ const A1_LEARNING_DETAILS = {
       "Места: calle, plaza, estación, parada, banco, farmacia, supermercado, museo.",
       "Транспорт: ir andando, en metro, en autobús, en tren; в Испании нейтрально coger el metro/el autobús.",
       "Положение: al lado de, cerca de, lejos de, delante de, detrás de, entre.",
-      "Направление: sigue todo recto, gira a la derecha/izquierda, cruza la calle."
+      "Направление: sigue todo recto, gira a la derecha/izquierda, cruza la calle.",
+      "Перед el предлоги сокращаются: a + el → al, de + el → del: voy al centro, al lado del banco."
     ],
     examples: [["¿Dónde está la estación?", "Где вокзал?"], ["Está al lado del banco.", "Он рядом с банком."], ["Sigue todo recto.", "Идите всё время прямо."], ["Voy en metro al centro.", "Я еду в центр на метро."]],
     task: "Нарисуйте простой маршрут из трёх поворотов и объясните его вслух, затем назовите транспорт до центра."
@@ -11405,7 +11421,7 @@ const A1_LEARNING_DETAILS = {
       "Подходящие темы: семья, дом, работа/учёба, еда, город, свободное время.",
       "Минимальная структура: приветствие → 2–3 обмена вопросами и ответами → завершение.",
       "Допустимы паузы, повторения и помощь собеседника, если основной смысл остаётся понятным.",
-      "Полезные реакции: Ah, sí. Qué bien. Yo también. ¿Y tú?"
+      "Полезные реакции: Ah, sí. Qué bien. Yo también. Yo tampoco. ¿Y tú?; vale и pues помогают естественно принять ответ или продолжить реплику."
     ],
     examples: [["¿Qué haces en tu tiempo libre?", "Что ты делаешь в свободное время?"], ["Me gusta caminar. ¿Y a ti?", "Мне нравится гулять. А тебе?"], ["Yo también. Voy al parque los domingos.", "Мне тоже. По воскресеньям я хожу в парк."]],
     task: "Поговорите две минуты на знакомую тему. Отметьте пункт, если задали минимум два вопроса и разговор не остановился после первого ответа."
@@ -11437,6 +11453,78 @@ const A1_LEARNING_DETAILS = {
 const LEARNING_LEVEL_DETAILS = {
   a0: A0_LEARNING_DETAILS,
   a1: A1_LEARNING_DETAILS
+};
+
+const LEARNING_LEVEL_RESOURCES = {
+  a0: [
+    ["Как читать b/v, c/z, g/j, h, r/rr", "Правила чтения"],
+    ["Agudas, llanas, esdrújulas", "Ударение"],
+    ["Артикли: el/la/los/las", "Артикли"],
+    ["Род существительных", "Род"],
+    ["Множественное число", "Множественное число"],
+    ["Личные местоимения", "Личные местоимения"],
+    ["Ser/estar: сущность", "Ser / estar"],
+    ["Hay / Está / Se encuentra", "Hay / está"],
+    ["Числительные: количественные", "Числа"],
+    ["La hora y la fecha", "Время и дата"],
+    ["Вопросительные: qué", "Вопросительные слова"]
+  ],
+  a1: [
+    ["Irregularidades: частые модели в Presente", "Presente: модели"],
+    ["Вопросы: образование", "Вопросы"],
+    ["Прямые и косвенные объекты", "Объектные местоимения"],
+    ["Возвратные глаголы: обычный", "Возвратные глаголы"],
+    ["Mi/mío, tu/tuyo", "Притяжательные"],
+    ["Указательные: este/ese/aquel", "Указательные"],
+    ["Todo, mucho, poco", "Количество"],
+    ["Gustar и похожие глаголы", "Gustar"],
+    ["Futuro: ir a + infinitivo", "Ir a + infinitivo"],
+    ["Preposiciones de lugar", "Место"],
+    ["Погода: hacer, estar", "Погода"],
+    ["Вежливые просьбы в Испании", "Вежливые просьбы"],
+    ["Письма и сообщения", "Сообщения"]
+  ]
+};
+
+const LEARNING_ITEM_RESOURCES = {
+  a0: {
+    "прочитать и произнести основные испанские звуки": [["Как читать b/v, c/z, g/j, h, r/rr", "Правила чтения"], ["Diptongo и hiato", "Гласные рядом"]],
+    "поздороваться, попрощаться, представиться и назвать страну/язык": [["Tú vs Usted vs Vosotros", "Tú / usted / vosotros"], ["Gentilicios", "Страны и национальности"]],
+    "понять числа 0–20, дни недели и простое время": [["Числительные: количественные", "Числа"], ["La hora y la fecha", "Время и календарь"]],
+    "алфавит, ударение и базовые правила чтения": [["Как читать b/v, c/z, g/j, h, r/rr", "Правила чтения"], ["Agudas, llanas, esdrújulas", "Ударение"], ["¿? ¡! Запятые", "Знаки и регистр"]],
+    "род и число существительных; артикли el/la, un/una": [["Артикли: el/la/los/las", "Артикли"], ["Род существительных", "Род"], ["Множественное число", "Множественное число"]],
+    "личные местоимения и базовый порядок слов": [["Личные местоимения", "Личные местоимения"], ["Yo, tú, él: когда подлежащее", "Когда называть подлежащее"], ["Вопросы: образование", "Как задать вопрос"]],
+    "ser, estar, tener, hay, llamarse в настоящем времени": [["Ser/estar: сущность", "Ser / estar"], ["Hay / Está / Se encuentra", "Hay / está"], ["Tener + sustantivo", "Выражения с tener"]],
+    "имя, возраст, происхождение и языки": [["Возраст и длительность", "Возраст"], ["Gentilicios", "Национальности"], ["Деньги, дроби, проценты", "Телефоны и адреса"]],
+    "семья и базовые личные данные": [["Mi/mío, tu/tuyo", "Притяжательные"], ["Личные местоимения", "Личные местоимения"]],
+    "числа, даты, время и классные команды": [["La hora y la fecha", "Время, дни и месяцы"], ["Числительные: количественные", "Числа"], ["¿? ¡! Запятые", "Письмо и знаки"]],
+    "представиться в 4–5 фразах": [["Tú vs Usted vs Vosotros", "Обращение"], ["Gentilicios", "Национальности"], ["Ser/estar: сущность", "Ser / estar"]],
+    "задать и понять имя, страну и профессию": [["Вопросительные: qué", "Вопросительные слова"], ["Tú vs Usted vs Vosotros", "Tú / usted"]],
+    "прочитать короткое расписание или ценник": [["La hora y la fecha", "Расписание"], ["Деньги, дроби, проценты", "Цены и деньги"]],
+    "Я читаю простые слова по правилам испанского": [["Как читать b/v, c/z, g/j, h, r/rr", "Правила чтения"], ["Agudas, llanas, esdrújulas", "Ударение"]],
+    "Я могу кратко рассказать о себе": [["Личные местоимения", "Личные местоимения"], ["Ser/estar: сущность", "Ser / estar"], ["Возраст и длительность", "Возраст"]],
+    "Я понимаю базовые вопросы и инструкции": [["Вопросительные: qué", "Вопросительные слова"], ["Tú vs Usted vs Vosotros", "Формы обращения"]]
+  },
+  a1: {
+    "понять и использовать знакомые повседневные выражения": [["Вежливые просьбы в Испании", "Вежливые просьбы"], ["Tú vs Usted vs Vosotros", "Формы обращения"], ["Вопросы: образование", "Вопросы"]],
+    "представить себя и другого человека": [["Персональная a", "Личная a"], ["Gentilicios", "Национальности"], ["Yo, tú, él: когда подлежащее", "Подлежащее"]],
+    "задавать и отвечать на простые вопросы о личных данных и окружении": [["Вопросительные: qué", "Вопросительные слова"], ["Вопросы: образование", "Как задать вопрос"], ["Hay / Está / Se encuentra", "Hay / está"]],
+    "presente de indicativo: регулярные глаголы и частотные неправильные формы": [["Irregularidades: частые модели в Presente", "Модели Presente"], ["Yo, tú, él: когда подлежащее", "Подлежащее"]],
+    "вопросы, отрицание, hay и estar; согласование существительных и прилагательных": [["Вопросы: образование", "Вопросы"], ["Hay / Está / Se encuentra", "Hay / está"], ["Прилагательные: согласование", "Согласование прилагательных"]],
+    "притяжательные, указательные и количественные слова": [["Mi/mío, tu/tuyo", "Притяжательные"], ["Указательные: este/ese/aquel", "Указательные"], ["Todo, mucho, poco", "Количество"], ["Muy/mucho", "Muy / mucho"]],
+    "ir a + infinitivo для ближайших планов; базовые местоимения": [["Futuro: ir a + infinitivo", "Ir a + infinitivo"], ["Прямые и косвенные объекты", "Объектные местоимения"], ["Местоимения при инфинитиве", "Местоимение + инфинитив"]],
+    "дом, семья, распорядок дня": [["Hay / Está / Se encuentra", "Hay / está"], ["Mi/mío, tu/tuyo", "Притяжательные"], ["Siempre, nunca, a veces", "Частотность"], ["Возвратные глаголы: обычный", "Возвратные глаголы"]],
+    "еда, покупки, кафе и цены": [["En un bar", "В баре и кафе"], ["Pedir/preguntar", "Pedir / preguntar"], ["Деньги, дроби, проценты", "Цены и деньги"], ["Вежливые просьбы в Испании", "Вежливые просьбы"]],
+    "город, транспорт, направления": [["Транспорт и маршруты", "Транспорт и маршруты"], ["Preposiciones de lugar", "Предлоги места"], ["Ir/venir/llevar/traer", "Глаголы движения"], ["Контракции al / del", "Al / del"]],
+    "работа/учёба, погода и свободное время": [["Погода: hacer, estar", "Погода"], ["Gustar и похожие глаголы", "Gustar"], ["Siempre, nunca, a veces", "Частотность"]],
+    "заказать еду и купить нужный товар": [["En un bar", "В баре и кафе"], ["Вежливые просьбы в Испании", "Вежливые просьбы"], ["Pedir/preguntar", "Pedir / preguntar"], ["Деньги, дроби, проценты", "Оплата и цены"]],
+    "спросить дорогу и понять простой ответ": [["Транспорт и маршруты", "Транспорт и маршруты"], ["Preposiciones de lugar", "Предлоги места"], ["Ir/venir/llevar/traer", "Глаголы движения"], ["Вопросы: образование", "Вопросы"]],
+    "написать короткое сообщение или анкету": [["Teléfono y WhatsApp", "Телефон и WhatsApp"], ["Письма и сообщения", "Письма и сообщения"], ["Abreviaturas", "Сокращения"], ["¿? ¡! Запятые", "Знаки и регистр"]],
+    "описать обычный день": [["Siempre, nunca, a veces", "Частотность"], ["Возвратные глаголы: обычный", "Возвратные глаголы"], ["La hora y la fecha", "Время"]],
+    "Я поддерживаю короткий разговор на знакомую тему": [["Tú vs Usted vs Vosotros", "Формы обращения"], ["También/tampoco", "También / tampoco"], ["Muletillas", "Разговорные связки"]],
+    "Я понимаю медленную чёткую речь и короткие тексты": [["Вопросительные: qué", "Вопросительные слова"], ["La hora y la fecha", "Время и дата"], ["Деньги, дроби, проценты", "Числа в быту"]],
+    "Я могу написать простое сообщение о себе или планах": [["Письма и сообщения", "Письма и сообщения"], ["Futuro: ir a + infinitivo", "Планы с ir a"], ["Как договориться о встрече", "Договориться о встрече"], ["¿? ¡! Запятые", "Знаки и регистр"]]
+  }
 };
 
 const LEARNING_DETAIL_PATTERNS = [
@@ -11490,6 +11578,14 @@ const LEARNING_DETAIL_PATTERNS = [
 function learningTableResource(titlePart, label) {
   const table = INDEXED_TABLES.find((item) => item.title.includes(titlePart));
   return table ? { href: `#table-${table.index}`, label } : null;
+}
+
+function learningLevelResourcesMarkup(levelId) {
+  const links = (LEARNING_LEVEL_RESOURCES[levelId] || [])
+    .map(([titlePart, label]) => learningTableResource(titlePart, label))
+    .filter(Boolean);
+  if (!links.length) return "";
+  return `<section class="learning-level-resources" aria-label="Шпаргалки уровня"><p><strong>Шпаргалки уровня</strong></p><p class="muted">Короткая подборка опорных таблиц. Остальные ссылки находятся рядом с соответствующими пунктами плана.</p><div class="learning-item-links">${links.map((link) => `<a class="small-button" href="${link.href}">${link.label}</a>`).join("")}</div></section>`;
 }
 
 function learningDetailMarkup(detail) {
@@ -11564,6 +11660,8 @@ function learningItemDetails(level, section, item) {
   if (text.includes("врача") || text.includes("здоров")) verb("tener", "Глагол tener");
   if (text.includes("написать") || text.includes("письмо")) verb("escribir", "Глагол escribir");
 
+  (LEARNING_ITEM_RESOURCES[level.id]?.[item] || []).forEach(([titlePart, label]) => table(titlePart, label));
+
   const pattern = LEARNING_DETAIL_PATTERNS.find((entry) => entry.terms.some((term) => text.includes(term)));
   const genericGuidance = {
     "Что нужно уметь": "Это практическая цель. Не отмечайте её после чтения правила: выполните действие вслух или письменно без подсказки.",
@@ -11628,6 +11726,7 @@ function renderLearningPlan() {
     <div class="card-head"><div><h2>План обучения</h2><p class="muted">Практическая карта испанского по CEFR. A0 — внутренняя подготовительная ступень; A1–C2 — официальные уровни.</p></div></div>
     <div class="learning-level-tabs" aria-label="Выбор уровня">${levelButtons}</div>
     <section class="learning-plan-summary" aria-live="polite"><p><strong>${level.label} · ${level.title}</strong></p><p>${level.description}</p><p><strong>Прогресс: ${doneCount} из ${allItems.length} · ${progress}%</strong></p><progress max="100" value="${progress}" aria-label="Прогресс уровня ${level.label}"></progress><p><button class="small-button" type="button" data-reset-learning>Сбросить прогресс уровня</button></p></section>
+    ${learningLevelResourcesMarkup(level.id)}
     ${sections.map(([title, items]) => list(title, items)).join("")}
     <p class="muted learning-plan-sources">Основа: <a href="https://www.coe.int/en/web/common-european-framework-reference-languages/companion-volume" target="_blank" rel="noopener">CEFR Companion Volume</a> и <a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/default.htm" target="_blank" rel="noopener">Plan Curricular del Instituto Cervantes</a>. A0 опирается на коммуникативные дескрипторы Pre-A1 и начальное содержание A1; блок A1 соотнесён с официальными дескрипторами и инвентарями функций, грамматики и лексических тем A1. Списки являются практической адаптацией для самостоятельного обучения, а не официальным экзаменационным силлабусом.</p>
   `;

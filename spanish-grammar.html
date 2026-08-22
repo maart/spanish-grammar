@@ -2750,6 +2750,13 @@ td.irregular {
   font-weight: 800;
 }
 
+.common-verbs-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
 .verb-list.is-suggestions .verb-pick {
   min-height: 52px;
 }
@@ -3327,7 +3334,7 @@ select {
           </div>
           <p class="brand-kicker">Глаголы, времена, наклонения и шпаргалки в одном HTML-файле</p>
           <div class="brand-stats" aria-label="Кратко о справочнике">
-            <span>1999 глаголов</span>
+            <span>2000 глаголов</span>
             <span>квиз</span>
             <span>офлайн</span>
           </div>
@@ -3349,7 +3356,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.77 · обновлено: 22.08.2026 14:59 CEST</span>
+        <span>Версия MVP 0.78 · обновлено: 22.08.2026 15:02 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -4808,6 +4815,10 @@ Object.assign(TRANSLATIONS, {
   recolocar: "переставлять, повторно трудоустраивать"
 });
 
+Object.assign(TRANSLATIONS, {
+  disculparse: "извиняться"
+});
+
 const RAW_VERBS = `
 ser estar haber tener hacer decir ir ver dar saber
 querer poder poner venir salir traer caer oir valer caber
@@ -4835,7 +4846,7 @@ castigar rogar juzgar gozar lanzar alcanzar avanzar rechazar tropezar cazar
 abrazar actualizar autorizar canalizar finalizar garantizar memorizar visualizar ahorrar alquilar
 arreglar bañar besar cocinar cenar desayunar dibujar descansar ducharse entrenar
 fumar ganar gastar gritar guardar invitar lavar llorar nadar olvidar
-peinarse preparar quemar regalar reparar reservar robar saltar terminar viajar
+peinarse preparar disculparse quemar regalar reparar reservar robar saltar terminar viajar
 visitar votar bailar cantar celebrar cortar cuidar doblar durar entrar
 firmar formar gustar importar intentar levantar llenar mandar matar montar
 notar ocupar ordenar parar prestar quitar sentar tirar tratar asustar
@@ -8924,7 +8935,7 @@ const state = {
   selectedVerb: null,
   previousVerbQuery: null,
   recentVerbs: JSON.parse(localStorage.getItem("msg:recentVerbs") || "[]"),
-  showAllCommonVerbs: false,
+  commonVerbLimit: 20,
   verbCardMode: "basic",
   selectedMood: ["indicativo", "subjuntivo", "imperativo", "condicional"].includes(localStorage.getItem("msg:selectedMood"))
     ? localStorage.getItem("msg:selectedMood")
@@ -10524,23 +10535,29 @@ function renderVerbResults(content, results, selectedPanel) {
   }
 
   const commonVerbs = COMMON_VERB_SUGGESTIONS.filter((verb) => BASE_VERBS.includes(verb));
-  const visibleCommonVerbs = state.showAllCommonVerbs ? commonVerbs : commonVerbs.slice(0, 20);
+  const showingAllVerbs = state.commonVerbLimit === "all";
+  const visibleCommonVerbs = showingAllVerbs
+    ? BASE_VERBS
+    : commonVerbs.slice(0, state.commonVerbLimit);
   const listCard = document.createElement("section");
   listCard.className = "info-card verb-list-card";
   listCard.innerHTML = `
     <div class="card-head">
       <div>
-        <h2>${state.query ? `Найдено: ${verbs.length}` : "100 самых частых глаголов"}</h2>
+        <h2>${state.query ? `Найдено: ${verbs.length}` : showingAllVerbs ? "Все глаголы" : "Частые глаголы"}</h2>
         <p class="muted">${state.query ? (matchedForm ? `Введенная форма относится к ${displayInfinitive(verbs[0])}: ${matchedForm.person}, ${matchedForm.tense}.` : "Выбери глагол, чтобы открыть карточку с основными временами.") : "Рейтинг по письменной прессе Испании. Кликни по глаголу или найди другой через поиск."}</p>
       </div>
     </div>
     <div class="verb-list" ${isDefaultSuggestionPage ? `id="commonVerbList"` : ""}></div>
     ${isDefaultSuggestionPage ? `
       <div class="common-verbs-footer">
-        <p class="muted">Показано ${visibleCommonVerbs.length} из ${commonVerbs.length}</p>
-        <button class="small-button" type="button" data-toggle-common-verbs aria-expanded="${state.showAllCommonVerbs}" aria-controls="commonVerbList">
-          ${state.showAllCommonVerbs ? "Свернуть до 20" : `Показать остальные ${Math.max(0, commonVerbs.length - visibleCommonVerbs.length)}`}
-        </button>
+        <p class="muted">${showingAllVerbs ? `Показано ${visibleCommonVerbs.length} глаголов` : `Показано ${visibleCommonVerbs.length} из ${commonVerbs.length} частых`}</p>
+        <div class="common-verbs-actions">
+          ${state.commonVerbLimit === 20 ? `<button class="small-button" type="button" data-common-limit="all" aria-controls="commonVerbList">Показать все глаголы</button>` : ""}
+          ${state.commonVerbLimit === 100 ? `<button class="small-button" type="button" data-common-limit="all" aria-controls="commonVerbList">Показать все глаголы</button>` : ""}
+          ${state.commonVerbLimit === "all" ? `<button class="small-button" type="button" data-common-limit="100" aria-controls="commonVerbList">Свернуть до 100</button>` : ""}
+          ${state.commonVerbLimit !== 20 ? `<button class="small-button" type="button" data-common-limit="20" aria-controls="commonVerbList">Свернуть до 20</button>` : ""}
+        </div>
       </div>
     ` : ""}
     ${isDefaultSuggestionPage ? `
@@ -10559,10 +10576,12 @@ function renderVerbResults(content, results, selectedPanel) {
   if (isDefaultSuggestionPage) {
     list.classList.add("is-suggestions");
     visibleCommonVerbs.forEach((verb) => list.appendChild(renderVerbListItem(verb, { showBadges: true })));
-    listCard.querySelector("[data-toggle-common-verbs]")?.addEventListener("click", () => {
-      state.showAllCommonVerbs = !state.showAllCommonVerbs;
-      renderVerbs();
-      if (!state.showAllCommonVerbs) requestAnimationFrame(() => scrollToCard("commonVerbList"));
+    listCard.querySelectorAll("[data-common-limit]").forEach((button) => {
+      button.addEventListener("click", () => {
+        state.commonVerbLimit = button.dataset.commonLimit === "all" ? "all" : Number(button.dataset.commonLimit);
+        renderVerbs();
+        if (state.commonVerbLimit !== "all") requestAnimationFrame(() => scrollToCard("commonVerbList"));
+      });
     });
   } else {
     verbs.forEach((verb, index) => list.appendChild(renderVerbListItem(verb, { isBestMatch: isSearchMode && index === 0 })));

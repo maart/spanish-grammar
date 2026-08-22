@@ -2998,7 +2998,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.64 · обновлено: 22.08.2026 11:57 CEST</span>
+        <span>Версия MVP 0.65 · обновлено: 22.08.2026 12:06 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -11223,6 +11223,212 @@ const A0_LEARNING_DETAILS = {
   }
 };
 
+const A1_LEARNING_DETAILS = {
+  "понять и использовать знакомые повседневные выражения": {
+    guidance: "На A1 важны короткие готовые выражения для конкретной потребности: получить предмет, узнать цену или место, попросить повторить и вежливо завершить разговор.",
+    points: [
+      "Просьба: Quiero…, Quisiera… или Un café, por favor. На этом уровне достаточно устойчивой вежливой формулы.",
+      "Информация: ¿Cuánto cuesta? ¿Dónde está…? ¿A qué hora…?",
+      "Стратегии понимания: No entiendo. ¿Puede repetir? Más despacio, por favor.",
+      "Социальные формулы: gracias, de nada, perdón, lo siento, por favor."
+    ],
+    examples: [["Quiero un café, por favor.", "Я хочу кофе, пожалуйста."], ["¿Cuánto cuesta?", "Сколько это стоит?"], ["¿Dónde está el baño?", "Где туалет?"], ["Más despacio, por favor.", "Помедленнее, пожалуйста."]],
+    task: "Разыграйте три мини-ситуации: закажите напиток, спросите цену и попросите повторить непонятную фразу."
+  },
+  "представить себя и другого человека": {
+    guidance: "Представление другого человека строится почти так же, как рассказ о себе: имя, связь с вами, происхождение или место, занятие и одна характеристика.",
+    points: [
+      "О себе: Me llamo…, Soy de…, Vivo en…, Trabajo en… / Estudio…",
+      "О другом: Este es Carlos / Esta es Ana. Se llama…, Es…, Vive…, Trabaja…",
+      "Перед человеком обычно ставится личное a после presentar: Te presento a Ana.",
+      "Реакция: Encantado/a, Mucho gusto, Hola, ¿qué tal?"
+    ],
+    examples: [["Esta es mi amiga Laura.", "Это моя подруга Лаура."], ["Es de Sevilla y vive en Madrid.", "Она из Севильи и живёт в Мадриде."], ["Trabaja en un hospital.", "Она работает в больнице."], ["Te presento a mi hermano.", "Познакомься с моим братом."]],
+    task: "Представьте себя в четырёх фразах, затем представьте знакомого, заменив формы первого лица на третье."
+  },
+  "задавать и отвечать на простые вопросы о личных данных и окружении": {
+    guidance: "Учите вопрос вместе с типом ответа: quién — человек, dónde — место, qué — предмет или занятие, cuánto — количество, cómo — имя или характеристика.",
+    points: [
+      "Личные данные: ¿Cómo te llamas? ¿De dónde eres? ¿Dónde vives? ¿A qué te dedicas?",
+      "Окружение: ¿Quién es? ¿Qué es esto? ¿Dónde está la farmacia? ¿Hay un supermercado cerca?",
+      "Вопросительные слова несут письменное ударение: qué, quién, cómo, dónde, cuánto.",
+      "После ответа добавьте встречный вопрос: ¿Y tú? / ¿Y usted?"
+    ],
+    examples: [["¿Dónde vives? — Vivo en Toledo.", "Где ты живёшь? — Я живу в Толедо."], ["¿Quién es? — Es mi profesor.", "Кто это? — Это мой преподаватель."], ["¿Hay un banco cerca? — Sí, hay uno aquí.", "Рядом есть банк? — Да, один есть здесь."], ["¿A qué te dedicas? — Soy arquitecta.", "Чем ты занимаешься? — Я архитектор."]],
+    task: "Составьте диалог из шести реплик: три разных вопросительных слова, три ответа и один встречный вопрос."
+  },
+  "presente de indicativo: регулярные глаголы и частотные неправильные формы": {
+    guidance: "Сначала автоматизируйте окончания трёх спряжений, затем добавляйте частотные неправильные глаголы группами, а не одним длинным списком.",
+    points: [
+      "-ar: -o, -as, -a, -amos, -áis, -an; -er: -o, -es, -e, -emos, -éis, -en; -ir: -o, -es, -e, -imos, -ís, -en.",
+      "Полностью или сильно особые: ser, estar, ir, haber. Частая особая форма yo: tengo, hago, pongo, salgo.",
+      "Изменение корня обычно не затрагивает nosotros/vosotros: querer → quiero, quieres, quiere, queremos, queréis, quieren.",
+      "Подлежащее обычно опускается: Trabajo en casa. Vivimos en Madrid."
+    ],
+    examples: [["Trabajo de lunes a viernes.", "Я работаю с понедельника по пятницу."], ["Vivimos cerca del centro.", "Мы живём рядом с центром."], ["Quiero aprender español.", "Я хочу выучить испанский."], ["Tengo clase hoy.", "У меня сегодня занятие."]],
+    task: "Проспрягайте hablar, comer и vivir, затем составьте по одной личной фразе с tener, ir, hacer и querer."
+  },
+  "вопросы, отрицание, hay и estar; согласование существительных и прилагательных": {
+    guidance: "Этот блок объединяет четыре механизма простой фразы: вопрос, отрицание, существование предмета, его местоположение и согласование описания.",
+    points: [
+      "Вопрос обозначается ¿…? и часто сохраняет обычный порядок: ¿Ana vive aquí? С вопросительным словом: ¿Dónde vive Ana?",
+      "no ставится перед спрягаемым глаголом: No trabajo hoy. No hay leche.",
+      "hay вводит существующий, часто новый объект: Hay una mesa. estar показывает место конкретного объекта: La mesa está aquí.",
+      "Прилагательное согласуется в роде и числе: un piso pequeño, una casa pequeña, unos pisos pequeños."
+    ],
+    examples: [["¿Hay una farmacia cerca?", "Рядом есть аптека?"], ["La farmacia está en esta calle.", "Аптека находится на этой улице."], ["No está abierta.", "Она не открыта."], ["Las tiendas son pequeñas.", "Магазины маленькие."]],
+    task: "Опишите комнату четырьмя фразами с hay, укажите место двух предметов с estar, затем задайте вопрос и сделайте одно отрицание."
+  },
+  "притяжательные, указательные и количественные слова": {
+    guidance: "Эти определители помогают быстро уточнить, чей предмет, какой именно предмет и сколько его. Учите их внутри именной группы.",
+    points: [
+      "Перед существительным: mi/mis, tu/tus, su/sus, nuestro/a/os/as, vuestro/a/os/as. Артикль перед ними не ставится: mi casa.",
+      "Расстояние: este/esta/estos/estas — здесь; ese… — у собеседника или там; aquel… — далеко.",
+      "Количество: mucho, poco, demasiado согласуются с существительным; bastante меняется только по числу.",
+      "muy усиливает прилагательное или наречие, mucho относится к существительному или глаголу: muy caro, mucho dinero, trabajo mucho."
+    ],
+    examples: [["Esta es mi casa.", "Это мой дом."], ["¿Cuánto cuesta ese libro?", "Сколько стоит та книга?"], ["Tenemos muchas cosas.", "У нас много вещей."], ["Hay bastante espacio.", "Здесь достаточно места."]],
+    task: "Выберите пять предметов вокруг и опишите их, используя mi/tu, este/ese/aquel и два разных слова количества."
+  },
+  "ir a + infinitivo для ближайших планов; базовые местоимения": {
+    guidance: "Ближайшее намерение выражается формой ir + a + infinitivo. Местоимения помогают не повторять уже названных людей и предметы.",
+    points: [
+      "ir: voy, vas, va, vamos, vais, van. Схема не меняется: Voy a estudiar. Vamos a salir.",
+      "me, te, nos, os могут обозначать возвратность или объект: Me levanto. Te llamo mañana.",
+      "lo/la/los/las заменяют прямой объект: Compro el libro → Lo compro.",
+      "Перед спрягаемым глаголом: Lo voy a comprar; с инфинитивом можно Voy a comprarlo."
+    ],
+    examples: [["Voy a estudiar esta tarde.", "Я собираюсь заниматься сегодня днём."], ["Vamos a visitar el museo.", "Мы собираемся посетить музей."], ["¿Compras la camisa? — Sí, la compro.", "Ты покупаешь рубашку? — Да, покупаю её."], ["Te llamo mañana.", "Я позвоню тебе завтра."]],
+    task: "Составьте три ближайших плана с ir a и замените выделенный предмет местоимением: compro el libro, veo a Ana, necesito las entradas."
+  },
+  "дом, семья, распорядок дня": {
+    guidance: "Для темы достаточно трёх моделей: описать, что есть дома; назвать членов семьи; перечислить ежедневные действия со временем и частотностью.",
+    points: [
+      "Дом: piso, casa, salón, dormitorio, cocina, baño; hay для состава, estar для расположения.",
+      "Семья: padres, madre, padre, hermano/a, hijo/a, pareja; mi/mis и su/sus.",
+      "Распорядок: levantarse, desayunar, trabajar/estudiar, comer, volver, cenar, acostarse.",
+      "Частота: siempre, normalmente, a veces, nunca; время: a las ocho, por la mañana."
+    ],
+    examples: [["En mi piso hay dos dormitorios.", "В моей квартире две спальни."], ["Vivo con mis padres.", "Я живу с родителями."], ["Me levanto a las siete.", "Я встаю в семь."], ["Normalmente ceno en casa.", "Обычно я ужинаю дома."]],
+    task: "Опишите дом двумя фразами, семью двумя фразами и обычный день четырьмя действиями по порядку."
+  },
+  "еда, покупки, кафе и цены": {
+    guidance: "Учите лексику как сценарий обслуживания: привлечь внимание, назвать товар или блюдо, уточнить количество и цену, оплатить и поблагодарить.",
+    points: [
+      "Еда: agua, café, pan, carne, pescado, fruta, verdura; приёмы пищи: desayuno, comida, cena.",
+      "Количество: un kilo de, medio kilo de, una botella de, un café con leche.",
+      "Покупка: Quiero…, ¿Tiene…?, ¿Cuánto cuesta?, ¿Puedo pagar con tarjeta?",
+      "В кафе Испании уместны Quería… или Para mí…; счёт: La cuenta, por favor."
+    ],
+    examples: [["Quería un café con leche.", "Я бы хотел кофе с молоком."], ["Deme medio kilo de tomates.", "Дайте мне полкило помидоров."], ["¿Cuánto cuesta esta camisa?", "Сколько стоит эта рубашка?"], ["La cuenta, por favor.", "Счёт, пожалуйста."]],
+    task: "Составьте диалог из восьми реплик: заказ или товар, количество, цена, уточнение способа оплаты и завершение."
+  },
+  "город, транспорт, направления": {
+    guidance: "Для ориентации в городе нужны названия мест, вопрос с dónde, простые предлоги расположения и команды движения.",
+    points: [
+      "Места: calle, plaza, estación, parada, banco, farmacia, supermercado, museo.",
+      "Транспорт: ir andando, en metro, en autobús, en tren; в Испании нейтрально coger el metro/el autobús.",
+      "Положение: al lado de, cerca de, lejos de, delante de, detrás de, entre.",
+      "Направление: sigue todo recto, gira a la derecha/izquierda, cruza la calle."
+    ],
+    examples: [["¿Dónde está la estación?", "Где вокзал?"], ["Está al lado del banco.", "Он рядом с банком."], ["Sigue todo recto.", "Идите всё время прямо."], ["Voy en metro al centro.", "Я еду в центр на метро."]],
+    task: "Нарисуйте простой маршрут из трёх поворотов и объясните его вслух, затем назовите транспорт до центра."
+  },
+  "работа/учёба, погода и свободное время": {
+    guidance: "Три темы объединяет настоящее время: где и когда вы работаете или учитесь, какая сегодня погода и что вы обычно делаете для отдыха.",
+    points: [
+      "Работа: trabajar en, trabajar de, ser + profesión; учёба: estudiar, tener clase, aprender.",
+      "Погода: hace frío/calor/sol/viento, está nublado, llueve, nieva, hay niebla.",
+      "Досуг: leer, ver una película, escuchar música, ir al cine, hacer deporte, quedar con amigos.",
+      "Вкусы: Me gusta + единственное/инфинитив; Me gustan + множественное."
+    ],
+    examples: [["Trabajo en una oficina.", "Я работаю в офисе."], ["Hoy hace frío y está nublado.", "Сегодня холодно и облачно."], ["Me gusta leer.", "Мне нравится читать."], ["Los sábados voy al cine.", "По субботам я хожу в кино."]],
+    task: "Скажите две фразы о работе или учёбе, опишите сегодняшнюю погоду и назовите три занятия в свободное время."
+  },
+  "заказать еду и купить нужный товар": {
+    guidance: "Успешная ситуация A1 — это не идеальная грамматика, а понятная последовательность: запрос → количество или вариант → цена → оплата → завершение.",
+    points: [
+      "В кафе: Para mí…, Quería…, ¿Tiene…?, Sin…, La cuenta, por favor.",
+      "В магазине: Busco…, Quiero…, ¿Tiene otra talla/color?, ¿Cuánto cuesta?",
+      "Количество и уточнение можно показать жестом и словом: este, esa, uno, dos, medio kilo.",
+      "Если не поняли ответ: ¿Puede repetir? Más despacio, por favor."
+    ],
+    examples: [["Para mí, el menú del día.", "Мне комплексный обед."], ["Quería una botella de agua sin gas.", "Я хотел бы бутылку воды без газа."], ["¿Tiene esta camiseta en azul?", "У вас есть эта футболка синего цвета?"], ["Pago con tarjeta.", "Я плачу картой."]],
+    task: "Разыграйте два диалога по шесть реплик: заказ в кафе и покупку одежды или продуктов."
+  },
+  "спросить дорогу и понять простой ответ": {
+    guidance: "Сначала назовите цель маршрута, затем слушайте опорные слова движения, стороны и расстояния. Не нужно понимать каждое служебное слово.",
+    points: [
+      "Начало: Perdone, ¿dónde está…? / ¿Hay … cerca? / ¿Cómo voy a…?",
+      "Ключи ответа: recto, derecha, izquierda, primera/segunda calle, cerca, lejos.",
+      "Полезные ориентиры: al lado de, enfrente de, detrás de, entre.",
+      "Проверка понимания: ¿A la derecha? ¿La segunda calle?"
+    ],
+    examples: [["¿Cómo voy a la Plaza Mayor?", "Как пройти к Пласа-Майор?"], ["Sigue recto y gira a la izquierda.", "Идите прямо и поверните налево."], ["Está enfrente del museo.", "Это напротив музея."], ["¿Está lejos?", "Это далеко?"]],
+    task: "Попросите маршрут, повторите два ключевых шага собеседнику и объясните обратный путь."
+  },
+  "написать короткое сообщение или анкету": {
+    guidance: "На A1 письменный текст состоит из знакомых формул и коротких предложений. В анкете важна точность данных, в сообщении — цель и понятное завершение.",
+    points: [
+      "Анкета: nombre, apellidos, nacionalidad, fecha de nacimiento, dirección, teléfono, correo electrónico.",
+      "Сообщение: приветствие, одна причина, ключевые данные времени/места, вопрос или просьба, прощание.",
+      "Дни недели, месяцы, языки и национальности пишутся со строчной буквы.",
+      "В прямом вопросе нужны оба знака: ¿Quedamos a las seis?"
+    ],
+    examples: [["Hola, Marta:", "Привет, Марта!"], ["Hoy no tengo clase.", "Сегодня у меня нет занятия."], ["¿Quedamos mañana a las seis?", "Встретимся завтра в шесть?"], ["Un saludo, Alex", "С наилучшими пожеланиями, Алекс."]],
+    task: "Заполните вымышленную анкету и напишите сообщение знакомому из 25–40 слов с датой, временем и вопросом."
+  },
+  "описать обычный день": {
+    guidance: "Рассказ об обычном дне строится в Presente и движется по времени суток. Связки primero, después, luego и por la noche делают список действий текстом.",
+    points: [
+      "Начните с времени подъёма, затем добавьте утро, работу/учёбу, вечер и сон.",
+      "Возвратные действия требуют me/te/se: me levanto, me ducho, me acuesto.",
+      "Для времени: a las siete; для части дня: por la mañana/tarde/noche.",
+      "Частотность: normalmente, siempre, a veces, nunca."
+    ],
+    examples: [["Me levanto a las siete.", "Я встаю в семь."], ["Después desayuno y voy al trabajo.", "Потом я завтракаю и иду на работу."], ["Por la tarde estudio español.", "Днём я изучаю испанский."], ["Normalmente me acuesto a las once.", "Обычно я ложусь в одиннадцать."]],
+    task: "Расскажите о своём дне в 6–8 фразах, используя минимум две связки, два времени и одно наречие частотности."
+  },
+  "Я поддерживаю короткий разговор на знакомую тему": {
+    guidance: "Пункт выполнен, если вы не только отвечаете, но и задаёте встречный вопрос, реагируете стандартной фразой и можете попросить повторить.",
+    points: [
+      "Подходящие темы: семья, дом, работа/учёба, еда, город, свободное время.",
+      "Минимальная структура: приветствие → 2–3 обмена вопросами и ответами → завершение.",
+      "Допустимы паузы, повторения и помощь собеседника, если основной смысл остаётся понятным.",
+      "Полезные реакции: Ah, sí. Qué bien. Yo también. ¿Y tú?"
+    ],
+    examples: [["¿Qué haces en tu tiempo libre?", "Что ты делаешь в свободное время?"], ["Me gusta caminar. ¿Y a ti?", "Мне нравится гулять. А тебе?"], ["Yo también. Voy al parque los domingos.", "Мне тоже. По воскресеньям я хожу в парк."]],
+    task: "Поговорите две минуты на знакомую тему. Отметьте пункт, если задали минимум два вопроса и разговор не остановился после первого ответа."
+  },
+  "Я понимаю медленную чёткую речь и короткие тексты": {
+    guidance: "На A1 понимание означает извлечь тему и конкретные данные из предсказуемого сообщения, а не перевести каждое слово.",
+    points: [
+      "В речи ищите имена, места, числа, время и знакомые глаголы; нормальны повтор и медленный темп.",
+      "В тексте используйте формат: заголовок, цена, время, адрес и изображения заранее подсказывают тему.",
+      "Подходящие материалы: короткое объявление, меню, расписание, сообщение, простое описание человека или места.",
+      "После чтения или прослушивания ответьте: кто/что, где, когда и сколько."
+    ],
+    examples: [["El museo abre a las diez.", "Музей открывается в десять."], ["La entrada cuesta ocho euros.", "Вход стоит восемь евро."], ["Marta vive cerca de la estación.", "Марта живёт рядом со станцией."]],
+    task: "Возьмите короткое объявление или запись до 30 секунд и найдите минимум три конкретных факта без дословного перевода."
+  },
+  "Я могу написать простое сообщение о себе или планах": {
+    guidance: "Готовый текст A1 — это несколько простых, логично расположенных предложений с понятной целью и базовыми формулами начала и конца.",
+    points: [
+      "О себе используйте Presente: vivo, trabajo, estudio, me gusta.",
+      "О ближайшем плане используйте ir a + infinitivo: voy a visitar, vamos a quedar.",
+      "Свяжите фразы с y, pero, porque; достаточно одного союза каждого нужного типа.",
+      "Проверьте согласование, форму глагола, вопросительные знаки и написание даты/времени."
+    ],
+    examples: [["Vivo en Alicante y trabajo en casa.", "Я живу в Аликанте и работаю дома."], ["Este fin de semana voy a visitar Madrid.", "На этих выходных я собираюсь посетить Мадрид."], ["¿Quieres tomar un café el sábado?", "Хочешь выпить кофе в субботу?"], ["Hasta pronto.", "До скорого."]],
+    task: "Напишите 40–60 слов о себе и одном ближайшем плане. Добавьте вопрос адресату и перечитайте текст по чек-листу."
+  }
+};
+
+const LEARNING_LEVEL_DETAILS = {
+  a0: A0_LEARNING_DETAILS,
+  a1: A1_LEARNING_DETAILS
+};
+
 const LEARNING_DETAIL_PATTERNS = [
   {
     terms: ["perfecto", "indefinido", "imperfecto"],
@@ -11289,7 +11495,7 @@ function learningDetailMarkup(detail) {
 
 function learningItemDetails(level, section, item) {
   const text = item.toLocaleLowerCase("es-ES");
-  const levelDetail = level.id === "a0" ? A0_LEARNING_DETAILS[item] : null;
+  const levelDetail = LEARNING_LEVEL_DETAILS[level.id]?.[item] || null;
   const links = [];
   const add = (resource) => {
     if (resource && !links.some((link) => link.href === resource.href)) links.push(resource);
@@ -11317,6 +11523,7 @@ function learningItemDetails(level, section, item) {
   if (text.includes("время") || text.includes("даты") || text.includes("расписание")) table("La hora y la fecha", "Время и дата");
   if (text.includes("возвратн")) table("Me/te/se: возвратные местоимения", "Возвратные местоимения");
   if (text.includes("личные местоимения")) table("Личные местоимения: полная таблица", "Личные местоимения");
+  if (text.includes("базовые местоимения")) table("Прямые и косвенные объекты", "Объектные местоимения");
   if (text.includes("прямые/косвенные")) table("Прямые и косвенные объекты", "Прямые и косвенные дополнения");
   if (text.includes("притяжательн")) table("Mi/mío, tu/tuyo", "Притяжательные");
   if (text.includes("указательн")) table("Указательные: este/ese/aquel", "Указательные");
@@ -11328,6 +11535,12 @@ function learningItemDetails(level, section, item) {
   if (text.includes("заказать") || text.includes("покупк") || text.includes("кафе")) table("Pedir/preguntar: просить или спрашивать", "Просьбы и вопросы");
   if (text.includes("дорогу") || text.includes("направлен")) table("Ir/venir/llevar/traer: идти, приходить, нести", "Глаголы движения");
   if (text.includes("здоров") || text.includes("врача")) table("Tener + sustantivo: tener hambre", "Полезные выражения с tener");
+  if (text.includes("погода")) table("Погода: hacer, estar, hay, llover", "Погода");
+  if (text.includes("свободное время")) table("Gustar и похожие глаголы", "Gustar");
+  if (text.includes("распорядок") || text.includes("обычный день")) {
+    table("Siempre, nunca, a veces", "Частотность");
+    table("Me/te/se: возвратные местоимения", "Возвратные глаголы");
+  }
   if (text.includes("даты") || text.includes("простое время")) table("La hora y la fecha: время, дни, месяцы", "Время и дата");
   if (text.includes("возраст")) table("Возраст и длительность", "Возраст с tener");
   if (text.includes("hay")) verb("haber", "Глагол haber");
@@ -11336,6 +11549,7 @@ function learningItemDetails(level, section, item) {
   if (text.includes("професси") || text.includes("происхождени")) verb("ser", "Глагол ser");
   if (text.includes("семья") || text.includes("возраст")) verb("tener", "Глагол tener");
   if (text.includes("ir a + infinitivo")) verb("ir", "Глагол ir");
+  if (text.includes("план")) verb("ir", "Глагол ir");
   if (text.includes("заказать") || text.includes("покупк")) verb("pedir", "Глагол pedir");
   if (text.includes("врача") || text.includes("здоров")) verb("tener", "Глагол tener");
   if (text.includes("написать") || text.includes("письмо")) verb("escribir", "Глагол escribir");
@@ -11405,7 +11619,7 @@ function renderLearningPlan() {
     <div class="learning-level-tabs" aria-label="Выбор уровня">${levelButtons}</div>
     <section class="learning-plan-summary" aria-live="polite"><p><strong>${level.label} · ${level.title}</strong></p><p>${level.description}</p><p><strong>Прогресс: ${doneCount} из ${allItems.length} · ${progress}%</strong></p><progress max="100" value="${progress}" aria-label="Прогресс уровня ${level.label}"></progress><p><button class="small-button" type="button" data-reset-learning>Сбросить прогресс уровня</button></p></section>
     ${sections.map(([title, items]) => list(title, items)).join("")}
-    <p class="muted learning-plan-sources">Основа: <a href="https://www.coe.int/en/web/common-european-framework-reference-languages/companion-volume" target="_blank" rel="noopener">CEFR Companion Volume</a> и <a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/default.htm" target="_blank" rel="noopener">Plan Curricular del Instituto Cervantes</a>. A0 опирается на коммуникативные дескрипторы Pre-A1 и начальное содержание A1: личные данные, приветствия, числа, цены, даты, дни недели и простые инструкции. Списки являются практической адаптацией для самостоятельного обучения, а не официальным экзаменационным силлабусом.</p>
+    <p class="muted learning-plan-sources">Основа: <a href="https://www.coe.int/en/web/common-european-framework-reference-languages/companion-volume" target="_blank" rel="noopener">CEFR Companion Volume</a> и <a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/default.htm" target="_blank" rel="noopener">Plan Curricular del Instituto Cervantes</a>. A0 опирается на коммуникативные дескрипторы Pre-A1 и начальное содержание A1; блок A1 соотнесён с официальными дескрипторами и инвентарями функций, грамматики и лексических тем A1. Списки являются практической адаптацией для самостоятельного обучения, а не официальным экзаменационным силлабусом.</p>
   `;
   content.appendChild(header);
   bindClickAll(header, "[data-learning-level]", (event) => { state.learningLevel = event.currentTarget.dataset.learningLevel; localStorage.setItem("msg:learningLevel", state.learningLevel); renderLearningPlan(); });

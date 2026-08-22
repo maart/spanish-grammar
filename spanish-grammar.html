@@ -663,6 +663,10 @@ input[type="search"] {
   color: var(--on-accent);
 }
 
+.learning-level-tabs [role="tab"] {
+  min-width: 0;
+}
+
 .learning-plan-summary {
   display: grid;
   gap: 8px;
@@ -717,6 +721,31 @@ input[type="search"] {
   padding: 12px 0 2px;
 }
 
+.learning-plan-filter-bar {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 2px;
+  padding: 10px 0 2px;
+  border-top: 1px solid var(--line);
+}
+
+.learning-plan-filter-bar p {
+  margin: 0;
+}
+
+.learning-plan-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.learning-plan-filters .small-button.is-active {
+  border-color: var(--accent-2);
+  background: color-mix(in srgb, var(--accent-2) 14%, var(--surface));
+  color: var(--accent-2);
+  font-weight: 900;
+}
+
 .learning-plan-section {
   padding: 16px 0;
   border-top: 1px solid var(--line);
@@ -731,6 +760,16 @@ input[type="search"] {
 
 .learning-plan-section-head h3 {
   margin: 0;
+}
+
+.learning-plan-section-head > div {
+  min-width: 0;
+}
+
+.learning-section-dependency {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 12px;
 }
 
 .learning-plan-section-head span {
@@ -768,7 +807,7 @@ input[type="search"] {
 
 .learning-item-main {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) minmax(132px, auto);
+  grid-template-columns: auto minmax(0, 1fr) minmax(210px, 240px);
   align-items: center;
   gap: 10px;
 }
@@ -810,12 +849,52 @@ input[type="search"] {
   font-size: 12px;
 }
 
-.learning-status-select {
-  width: auto;
-  min-width: 132px;
-  height: 38px;
-  padding-inline: 9px;
-  font-size: 13px;
+.learning-status-control {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  min-width: 0;
+}
+
+.learning-status-control .small-button {
+  min-width: 0;
+  min-height: 38px;
+  padding: 5px 6px;
+  font-size: 12px;
+  line-height: 1.1;
+  white-space: normal;
+}
+
+.learning-status-control .small-button.is-active {
+  border-width: 2px;
+  background: var(--surface-2);
+  color: var(--text);
+  font-weight: 900;
+  box-shadow: inset 0 0 0 1px var(--text);
+}
+
+.learning-status-control .small-button[data-learning-value="learning"].is-active {
+  border-color: var(--accent-2);
+  box-shadow: inset 0 0 0 1px var(--accent-2);
+}
+
+.learning-status-control .small-button[data-learning-value="done"].is-active {
+  border-color: var(--success);
+  box-shadow: inset 0 0 0 1px var(--success);
+}
+
+.learning-item-resources {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-left: 20px;
+}
+
+.learning-item-resources-label {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
 }
 
 .learning-item-detail {
@@ -3198,7 +3277,7 @@ select {
     grid-template-columns: auto minmax(0, 1fr);
   }
 
-  .learning-status-select {
+  .learning-status-control {
     grid-column: 2;
     width: 100%;
   }
@@ -3484,7 +3563,7 @@ select {
     align-items: start;
   }
 
-  .learning-status-select {
+  .learning-status-control {
     grid-column: 2;
     width: 100%;
   }
@@ -3714,7 +3793,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.84 · обновлено: 22.08.2026 17:16 CEST</span>
+        <span>Версия MVP 0.85 · обновлено: 22.08.2026 17:47 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -9453,6 +9532,7 @@ const state = {
     : "a0",
   learningProgress: readStoredJSON("msg:learningProgress", {}),
   learningDetails: readStoredJSON("msg:learningDetails", {}),
+  learningFilter: appStorage.get("msg:learningFilter") || "all",
   query: "",
   selectedVerb: null,
   previousVerbQuery: null,
@@ -14374,6 +14454,15 @@ const LEARNING_STATUS_LABELS = {
   done: "Освоено"
 };
 
+const LEARNING_FILTERS = [
+  ["all", "Все пункты"],
+  ["can", "Цели"],
+  ["grammar", "Грамматика"],
+  ["topics", "Лексика"],
+  ["practice", "Ситуации"],
+  ["checklist", "Чек-лист"]
+];
+
 function learningStatusFor(key) {
   const stored = state.learningProgress[key];
   if (stored === true || stored === "done") return "done";
@@ -14383,19 +14472,29 @@ function learningStatusFor(key) {
 
 function learningStatusSelect(key, item) {
   const status = learningStatusFor(key);
-  return `<select class="learning-status-select" data-learning-status="${key}" aria-label="Статус: ${escapeHTML(item)}">
-    ${Object.entries(LEARNING_STATUS_LABELS).map(([value, label]) => `<option value="${value}" ${status === value ? "selected" : ""}>${label}</option>`).join("")}
-  </select>`;
+  return `<div class="learning-status-control" role="group" aria-label="Статус: ${escapeHTML(item)}">${Object.entries(LEARNING_STATUS_LABELS).map(([value, label]) => `<button class="small-button ${status === value ? "is-active" : ""}" type="button" data-learning-status="${key}" data-learning-value="${value}" aria-pressed="${status === value}">${label}</button>`).join("")}</div>`;
 }
 
-function learningDetailSummary(section) {
+function learningDetailSummary(section, item) {
+  const shortItem = item.length > 48 ? `${item.slice(0, 45)}…` : item;
+  const prefix = {
+    "Что нужно уметь": "Как проверить",
+    "Грамматика": "Правило",
+    "Темы и лексика": "Лексика",
+    "Практические ситуации": "Сценарий",
+    "Чек-лист уровня": "Проверка"
+  }[section] || "Подробности";
+  return `${prefix}: ${escapeHTML(shortItem)}`;
+}
+
+function learningSectionDependency(sectionId) {
   return {
-    "Что нужно уметь": "Цель и самопроверка",
-    "Грамматика": "Правило и примеры",
-    "Темы и лексика": "Лексика и контекст",
-    "Практические ситуации": "Сценарий и фразы",
-    "Чек-лист уровня": "Критерии готовности"
-  }[section] || "Что знать и проверить";
+    can: "Стартовый раздел: проходи пункты сверху вниз.",
+    grammar: "Опора: цели и базовое чтение из предыдущего раздела.",
+    topics: "Опора: используй правила из блока «Грамматика».",
+    practice: "Опора: собери фразы из тем и лексики.",
+    checklist: "Финал: проверь после остальных блоков."
+  }[sectionId] || "Продолжай после предыдущего раздела.";
 }
 
 function learningOutcome(section, item) {
@@ -14413,36 +14512,41 @@ function renderLearningPlan() {
     const selected = item.id === level.id;
     const total = [item.can, item.grammar, item.topics, item.practice, item.checklist].reduce((sum, list) => sum + (list?.length || 0), 0);
     const done = Object.keys(state.learningProgress).filter((key) => key.startsWith(`${item.id}:`) && learningStatusFor(key) === "done").length;
-    return `<button class="small-button ${selected ? "is-active" : ""}" type="button" data-learning-level="${item.id}" aria-pressed="${selected}">${item.label}${total ? ` · ${done}/${total}` : ""}</button>`;
+    return `<button class="small-button ${selected ? "is-active" : ""}" id="learning-level-${item.id}" role="tab" tabindex="${selected ? "0" : "-1"}" type="button" data-learning-level="${item.id}" aria-selected="${selected}" aria-controls="learning-plan-panel">${item.label}${total ? ` · ${done}/${total}` : ""}</button>`;
   }).join("");
   const sections = [
-    ["Что нужно уметь", level.can], ["Грамматика", level.grammar], ["Темы и лексика", level.topics],
-    ["Практические ситуации", level.practice], ["Чек-лист уровня", level.checklist]
+    ["can", "Что нужно уметь", level.can], ["grammar", "Грамматика", level.grammar], ["topics", "Темы и лексика", level.topics],
+    ["practice", "Практические ситуации", level.practice], ["checklist", "Чек-лист уровня", level.checklist]
   ];
-  const allItems = sections.flatMap(([section, items]) => (items || []).map((item) => ({ section, item })));
+  const activeLearningFilter = LEARNING_FILTERS.some(([id]) => id === state.learningFilter) ? state.learningFilter : "all";
+  const allItems = sections.flatMap(([sectionId, section, items]) => (items || []).map((item) => ({ sectionId, section, item })));
   const nextIndex = allItems.findIndex((_, index) => learningStatusFor(`${level.id}:${index}`) !== "done");
   const nextItem = nextIndex >= 0 ? allItems[nextIndex] : null;
   const nextKey = nextItem ? `${level.id}:${nextIndex}` : "";
   const doneCount = allItems.filter((_, index) => learningStatusFor(`${level.id}:${index}`) === "done").length;
   const learningCount = allItems.filter((_, index) => learningStatusFor(`${level.id}:${index}`) === "learning").length;
   const progress = allItems.length ? Math.round(doneCount / allItems.length * 100) : 0;
+  const filteredItemCount = allItems.filter(({ sectionId }) => activeLearningFilter === "all" || activeLearningFilter === sectionId).length;
+  const filterButtons = LEARNING_FILTERS.map(([id, label]) => `<button class="small-button ${activeLearningFilter === id ? "is-active" : ""}" type="button" data-learning-filter="${id}" aria-pressed="${activeLearningFilter === id}">${label}</button>`).join("");
   let itemIndex = 0;
-  const list = (title, items = []) => {
+  const list = (sectionId, title, items = []) => {
     if (!items.length) return "";
     const sectionStart = itemIndex;
     const sectionDone = items.filter((_, index) => learningStatusFor(`${level.id}:${sectionStart + index}`) === "done").length;
     itemIndex += items.length;
-    const itemMarkup = items.map((item, index) => {
+    const visibleItems = items.map((item, index) => ({ item, index })).filter(() => activeLearningFilter === "all" || activeLearningFilter === sectionId);
+    if (!visibleItems.length) return "";
+    const itemMarkup = visibleItems.map(({ item, index }) => {
       const key = `${level.id}:${sectionStart + index}`;
       const status = learningStatusFor(key);
       const detail = learningItemDetails(level, title, item);
-      const links = detail.links.length
-        ? `<div class="learning-item-links">${detail.links.map((link) => `<a class="small-button" href="${link.href}">${link.label}</a>`).join("")}</div>`
-        : `<p>Точной карточки для этого пункта пока нет; используйте мини-проверку ниже.</p>`;
+      const resourceLinks = detail.links.length
+        ? `<div class="learning-item-resources" aria-label="Шпаргалки по теме"><span class="learning-item-resources-label">Шпаргалки:</span><div class="learning-item-links">${detail.links.map((link) => `<a class="small-button" href="${link.href}">${link.label}</a>`).join("")}</div></div>`
+        : "";
       const globalIndex = sectionStart + index;
-      return `<li class="learning-plan-item ${globalIndex === nextIndex ? "is-next" : ""}" data-learning-step="${key}"><div class="learning-item-main"><span class="learning-item-status-dot is-${status}" aria-hidden="true"></span><span class="learning-item-title"><small class="learning-step-number">Шаг ${globalIndex + 1}</small><span>${item}</span></span>${learningStatusSelect(key, item)}</div><p class="learning-item-outcome">${learningOutcome(title, item)}</p><details class="learning-item-detail" data-learning-detail="${key}" ${state.learningDetails[key] ? "open" : ""}><summary>${learningDetailSummary(title)}</summary><div class="learning-item-detail-body">${learningDetailMarkup(detail)}${links}</div></details></li>`;
+      return `<li class="learning-plan-item ${globalIndex === nextIndex ? "is-next" : ""}" data-learning-step="${key}"><div class="learning-item-main"><span class="learning-item-status-dot is-${status}" aria-hidden="true"></span><span class="learning-item-title"><small class="learning-step-number">Шаг ${globalIndex + 1}</small><span>${item}</span></span>${learningStatusSelect(key, item)}</div><p class="learning-item-outcome">${learningOutcome(title, item)}</p>${resourceLinks}<details class="learning-item-detail" data-learning-detail="${key}" ${state.learningDetails[key] ? "open" : ""}><summary>${learningDetailSummary(title, item)}</summary><div class="learning-item-detail-body">${learningDetailMarkup(detail)}</div></details></li>`;
     }).join("");
-    return `<section class="learning-plan-section"><div class="learning-plan-section-head"><h3>${title}</h3><span>${sectionDone}/${items.length}</span></div><ul class="learning-plan-list">${itemMarkup}</ul></section>`;
+    return `<section class="learning-plan-section" data-learning-section="${sectionId}"><div class="learning-plan-section-head"><div><h3>${title}</h3><p class="learning-section-dependency">${learningSectionDependency(sectionId)}</p></div><span>${sectionDone}/${items.length}</span></div><ul class="learning-plan-list">${itemMarkup}</ul></section>`;
   };
   const header = document.createElement("section");
   header.className = "info-card";
@@ -14451,23 +14555,40 @@ function renderLearningPlan() {
     : `<div class="learning-next-step"><div><p><strong>Уровень завершён</strong></p><small>Все пункты отмечены как освоенные.</small></div></div>`;
   header.innerHTML = `
     <div class="card-head"><div><h2>План обучения</h2><p class="muted">Практическая карта испанского по CEFR. A0 — внутренняя подготовительная ступень; A1–C2 — официальные уровни.</p></div></div>
-    <div class="learning-level-tabs" aria-label="Выбор уровня">${levelButtons}</div>
-    <section class="learning-plan-summary" aria-live="polite"><p><strong>${level.label} · ${level.title}</strong></p><p>${level.description}</p><p><strong>Освоено: ${doneCount} из ${allItems.length} · ${progress}%</strong>${learningCount ? ` · В процессе: ${learningCount}` : ""}</p><progress max="100" value="${progress}" aria-label="Освоено на уровне ${level.label}"></progress><p><button class="small-button" type="button" data-reset-learning>Сбросить прогресс ${level.label}</button></p>${nextStepMarkup}</section>
-    <div class="learning-plan-tools" aria-label="Управление подробностями"><button class="small-button" type="button" data-learning-details-action="open">Развернуть подробности</button><button class="small-button" type="button" data-learning-details-action="close">Свернуть подробности</button></div>
-    ${learningLevelResourcesMarkup(level.id)}
-    ${sections.map(([title, items]) => list(title, items)).join("")}
-    <p class="muted learning-plan-sources">Основа: <a href="https://www.coe.int/en/web/common-european-framework-reference-languages/companion-volume" target="_blank" rel="noopener">CEFR Companion Volume</a> и <a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/default.htm" target="_blank" rel="noopener">Plan Curricular del Instituto Cervantes</a>. A0 опирается на коммуникативные дескрипторы Pre-A1 и начальное содержание A1; планы A1–C2 соотнесены с официальными дескрипторами и инвентарями функций, грамматики, прагматики и учебных тем соответствующих уровней. Списки являются практической адаптацией для самостоятельного обучения, а не официальным экзаменационным силлабусом.</p>
+    <div class="learning-level-tabs" role="tablist" aria-label="Выбор уровня">${levelButtons}</div>
+    <div id="learning-plan-panel" role="tabpanel" tabindex="-1" aria-labelledby="learning-level-${level.id}">
+      <section class="learning-plan-summary" aria-live="polite"><p><strong>${level.label} · ${level.title}</strong></p><p>${level.description}</p><p><strong>Освоено: ${doneCount} из ${allItems.length} · ${progress}%</strong>${learningCount ? ` · В процессе: ${learningCount}` : ""}</p><progress max="100" value="${progress}" aria-label="Освоено на уровне ${level.label}"></progress><p><button class="small-button" type="button" data-reset-learning>Сбросить прогресс ${level.label}</button></p>${nextStepMarkup}</section>
+      <div class="learning-plan-filter-bar"><p><strong>Показывать пункты</strong> <span class="muted">${filteredItemCount} из ${allItems.length}</span></p><div class="learning-plan-filters" role="group" aria-label="Фильтр по типу пункта">${filterButtons}</div></div>
+      <div class="learning-plan-tools" aria-label="Управление подробностями"><button class="small-button" type="button" data-learning-details-action="open">Развернуть подробности</button><button class="small-button" type="button" data-learning-details-action="close">Свернуть подробности</button></div>
+      ${learningLevelResourcesMarkup(level.id)}
+      ${sections.map(([sectionId, title, items]) => list(sectionId, title, items)).join("")}
+      <p class="muted learning-plan-sources">Основа: <a href="https://www.coe.int/en/web/common-european-framework-reference-languages/companion-volume" target="_blank" rel="noopener">CEFR Companion Volume</a> и <a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/default.htm" target="_blank" rel="noopener">Plan Curricular del Instituto Cervantes</a>. A0 опирается на коммуникативные дескрипторы Pre-A1 и начальное содержание A1; планы A1–C2 соотнесены с официальными дескрипторами и инвентарями функций, грамматики, прагматики и учебных тем соответствующих уровней. Списки являются практической адаптацией для самостоятельного обучения, а не официальным экзаменационным силлабусом.</p>
+    </div>
   `;
   content.appendChild(header);
   bindClickAll(header, "[data-learning-level]", (event) => { state.learningLevel = event.currentTarget.dataset.learningLevel; appStorage.set("msg:learningLevel", state.learningLevel); renderLearningPlan(); });
-  $all("[data-learning-status]", header).forEach((select) => select.addEventListener("change", (event) => {
+  $all("[data-learning-level]", header).forEach((button, index, buttons) => button.addEventListener("keydown", (event) => {
+    const direction = event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : event.key === "Home" ? -Infinity : event.key === "End" ? Infinity : 0;
+    if (!direction) return;
+    event.preventDefault();
+    const nextIndex = direction === -Infinity ? 0 : direction === Infinity ? buttons.length - 1 : (index + direction + buttons.length) % buttons.length;
+    buttons[nextIndex].focus();
+  }));
+  $all("[data-learning-status]", header).forEach((button) => button.addEventListener("click", (event) => {
     const key = event.currentTarget.dataset.learningStatus;
-    const status = event.currentTarget.value;
+    const status = event.currentTarget.dataset.learningValue;
+    const scrollY = window.scrollY;
     if (status === "todo") delete state.learningProgress[key];
     else state.learningProgress[key] = status;
     appStorage.set("msg:learningProgress", JSON.stringify(state.learningProgress));
     renderLearningPlan();
+    requestAnimationFrame(() => {
+      window.scrollTo(0, scrollY);
+      const target = $all("[data-learning-step]").find((item) => item.dataset.learningStep === key);
+      target?.querySelector(`[data-learning-status][data-learning-value="${status}"]`)?.focus({ preventScroll: true });
+    });
   }));
+  bindClickAll(header, "[data-learning-filter]", (event) => { state.learningFilter = event.currentTarget.dataset.learningFilter; appStorage.set("msg:learningFilter", state.learningFilter); renderLearningPlan(); requestAnimationFrame(() => $all("[data-learning-filter]").find((button) => button.dataset.learningFilter === state.learningFilter)?.focus({ preventScroll: true })); });
   $all("[data-learning-detail]", header).forEach((detail) => detail.addEventListener("toggle", () => { const key = detail.dataset.learningDetail; if (detail.open) state.learningDetails[key] = true; else delete state.learningDetails[key]; appStorage.set("msg:learningDetails", JSON.stringify(state.learningDetails)); }));
   bindClickAll(header, "[data-learning-details-action]", (event) => {
     const shouldOpen = event.currentTarget.dataset.learningDetailsAction === "open";
@@ -14481,14 +14602,25 @@ function renderLearningPlan() {
   });
   header.querySelector("[data-open-learning-item]")?.addEventListener("click", (event) => {
     const key = event.currentTarget.dataset.openLearningItem;
-    const target = $all("[data-learning-step]", header).find((item) => item.dataset.learningStep === key);
-    const detail = target?.querySelector("[data-learning-detail]");
-    if (detail) {
-      detail.open = true;
-      state.learningDetails[key] = true;
-      appStorage.set("msg:learningDetails", JSON.stringify(state.learningDetails));
+    const openTarget = () => {
+      const target = $all("[data-learning-step]").find((item) => item.dataset.learningStep === key);
+      const detail = target?.querySelector("[data-learning-detail]");
+      if (detail) {
+        detail.open = true;
+        state.learningDetails[key] = true;
+        appStorage.set("msg:learningDetails", JSON.stringify(state.learningDetails));
+      }
+      target?.scrollIntoView({ behavior: "smooth", block: "center" });
+      detail?.querySelector("summary")?.focus({ preventScroll: true });
+    };
+    if (!$all("[data-learning-step]", header).some((item) => item.dataset.learningStep === key)) {
+      state.learningFilter = "all";
+      appStorage.set("msg:learningFilter", state.learningFilter);
+      renderLearningPlan();
+      requestAnimationFrame(openTarget);
+      return;
     }
-    target?.scrollIntoView({ behavior: "smooth", block: "center" });
+    openTarget();
   });
   bindClickAll(header, "[data-reset-learning]", () => {
     if (!window.confirm(`Сбросить прогресс уровня ${level.label}? Все статусы этого уровня будут удалены.`)) return;

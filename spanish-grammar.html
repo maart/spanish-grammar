@@ -688,6 +688,35 @@ input[type="search"] {
   margin-top: 2px;
 }
 
+.learning-resource-groups {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.learning-resource-group {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+
+.learning-resource-group > strong {
+  color: var(--text);
+  font-size: 13px;
+}
+
+.learning-plan-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 0 2px;
+}
+
 .learning-plan-section {
   padding: 16px 0;
   border-top: 1px solid var(--line);
@@ -716,6 +745,20 @@ input[type="search"] {
   margin: 12px 0 0;
   padding: 0;
   list-style: none;
+}
+
+.learning-plan-item {
+  display: grid;
+  gap: 6px;
+  padding: 9px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+}
+
+.learning-plan-item.is-next {
+  border: 1px solid color-mix(in srgb, var(--accent-2) 48%, var(--line));
+  border-radius: 8px;
+  padding: 10px;
+  background: color-mix(in srgb, var(--accent-2) 7%, var(--surface));
 }
 
 .learning-plan-item label {
@@ -752,6 +795,21 @@ input[type="search"] {
   min-width: 0;
 }
 
+.learning-step-number {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.learning-item-outcome {
+  margin: 0 0 0 20px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
 .learning-status-select {
   width: auto;
   min-width: 132px;
@@ -770,6 +828,36 @@ input[type="search"] {
   color: var(--accent);
   font-size: 13px;
   font-weight: 800;
+}
+
+.learning-next-step {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 4px;
+  padding: 11px 12px;
+  border: 1px solid color-mix(in srgb, var(--accent-2) 50%, var(--line));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent-2) 9%, var(--surface));
+}
+
+.learning-next-step p {
+  margin: 0;
+}
+
+.learning-next-step strong,
+.learning-next-step small {
+  display: block;
+}
+
+.learning-next-step strong {
+  color: var(--accent-2);
+}
+
+.learning-next-step small {
+  margin-top: 2px;
+  color: var(--muted);
 }
 
 .learning-item-detail-body {
@@ -3102,6 +3190,28 @@ select {
     gap: 2px;
   }
 
+  .learning-resource-groups {
+    grid-template-columns: 1fr;
+  }
+
+  .learning-item-main {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .learning-status-select {
+    grid-column: 2;
+    width: 100%;
+  }
+
+  .learning-next-step {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .learning-next-step .small-button {
+    width: 100%;
+  }
+
   .table-catalog-links {
     grid-template-columns: 1fr;
   }
@@ -3604,7 +3714,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.83 · обновлено: 22.08.2026 16:50 CEST</span>
+        <span>Версия MVP 0.84 · обновлено: 22.08.2026 17:16 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -14143,7 +14253,12 @@ function learningLevelResourcesMarkup(levelId) {
     .map(([titlePart, label]) => learningTableResource(titlePart, label))
     .filter(Boolean);
   if (!links.length) return "";
-  return `<section class="learning-level-resources" aria-label="Шпаргалки уровня"><p><strong>Шпаргалки уровня</strong></p><p class="muted">Короткая подборка опорных таблиц. Остальные ссылки находятся рядом с соответствующими пунктами плана.</p><div class="learning-item-links">${links.map((link) => `<a class="small-button" href="${link.href}">${link.label}</a>`).join("")}</div></section>`;
+  const groups = [
+    ["Начать сейчас", links.slice(0, 4)],
+    ["Закрепить", links.slice(4, 8)],
+    ["Расширить", links.slice(8)]
+  ].filter(([, items]) => items.length > 0);
+  return `<section class="learning-level-resources" aria-label="Шпаргалки уровня"><p><strong>Шпаргалки уровня</strong></p><p class="muted">Сначала открой опорные материалы для текущего этапа, затем переходи к следующим.</p><div class="learning-resource-groups">${groups.map(([title, items]) => `<div class="learning-resource-group"><strong>${title}</strong><div class="learning-item-links">${items.map((link) => `<a class="small-button" href="${link.href}">${link.label}</a>`).join("")}</div></div>`).join("")}</div></section>`;
 }
 
 function learningDetailMarkup(detail) {
@@ -14273,6 +14388,24 @@ function learningStatusSelect(key, item) {
   </select>`;
 }
 
+function learningDetailSummary(section) {
+  return {
+    "Что нужно уметь": "Цель и самопроверка",
+    "Грамматика": "Правило и примеры",
+    "Темы и лексика": "Лексика и контекст",
+    "Практические ситуации": "Сценарий и фразы",
+    "Чек-лист уровня": "Критерии готовности"
+  }[section] || "Что знать и проверить";
+}
+
+function learningOutcome(section, item) {
+  if (section === "Что нужно уметь") return `Результат: ${item.charAt(0).toUpperCase()}${item.slice(1)} без подсказки.`;
+  if (section === "Грамматика") return "Результат: объясняю правило и строю несколько собственных фраз.";
+  if (section === "Темы и лексика") return "Результат: использую тему в коротком рассказе о себе или окружении.";
+  if (section === "Практические ситуации") return "Результат: разыгрываю ситуацию без русского текста.";
+  return "Результат: подтверждаю пункт самостоятельным примером речи или текста.";
+}
+
 function renderLearningPlan() {
   const content = clearContent();
   const level = LEARNING_LEVELS.find((item) => item.id === state.learningLevel) || LEARNING_LEVELS[0];
@@ -14287,6 +14420,9 @@ function renderLearningPlan() {
     ["Практические ситуации", level.practice], ["Чек-лист уровня", level.checklist]
   ];
   const allItems = sections.flatMap(([section, items]) => (items || []).map((item) => ({ section, item })));
+  const nextIndex = allItems.findIndex((_, index) => learningStatusFor(`${level.id}:${index}`) !== "done");
+  const nextItem = nextIndex >= 0 ? allItems[nextIndex] : null;
+  const nextKey = nextItem ? `${level.id}:${nextIndex}` : "";
   const doneCount = allItems.filter((_, index) => learningStatusFor(`${level.id}:${index}`) === "done").length;
   const learningCount = allItems.filter((_, index) => learningStatusFor(`${level.id}:${index}`) === "learning").length;
   const progress = allItems.length ? Math.round(doneCount / allItems.length * 100) : 0;
@@ -14303,16 +14439,21 @@ function renderLearningPlan() {
       const links = detail.links.length
         ? `<div class="learning-item-links">${detail.links.map((link) => `<a class="small-button" href="${link.href}">${link.label}</a>`).join("")}</div>`
         : `<p>Точной карточки для этого пункта пока нет; используйте мини-проверку ниже.</p>`;
-      return `<li class="learning-plan-item"><div class="learning-item-main"><span class="learning-item-status-dot is-${status}" aria-hidden="true"></span><span class="learning-item-title">${item}</span>${learningStatusSelect(key, item)}</div><details class="learning-item-detail" data-learning-detail="${key}" ${state.learningDetails[key] ? "open" : ""}><summary>Подробнее</summary><div class="learning-item-detail-body">${learningDetailMarkup(detail)}${links}</div></details></li>`;
+      const globalIndex = sectionStart + index;
+      return `<li class="learning-plan-item ${globalIndex === nextIndex ? "is-next" : ""}" data-learning-step="${key}"><div class="learning-item-main"><span class="learning-item-status-dot is-${status}" aria-hidden="true"></span><span class="learning-item-title"><small class="learning-step-number">Шаг ${globalIndex + 1}</small><span>${item}</span></span>${learningStatusSelect(key, item)}</div><p class="learning-item-outcome">${learningOutcome(title, item)}</p><details class="learning-item-detail" data-learning-detail="${key}" ${state.learningDetails[key] ? "open" : ""}><summary>${learningDetailSummary(title)}</summary><div class="learning-item-detail-body">${learningDetailMarkup(detail)}${links}</div></details></li>`;
     }).join("");
     return `<section class="learning-plan-section"><div class="learning-plan-section-head"><h3>${title}</h3><span>${sectionDone}/${items.length}</span></div><ul class="learning-plan-list">${itemMarkup}</ul></section>`;
   };
   const header = document.createElement("section");
   header.className = "info-card";
+  const nextStepMarkup = nextItem
+    ? `<div class="learning-next-step"><div><p><strong>Следующий пункт · шаг ${nextIndex + 1}</strong></p><small>${nextItem.item}</small></div><button class="small-button primary" type="button" data-open-learning-item="${nextKey}">Открыть пункт</button></div>`
+    : `<div class="learning-next-step"><div><p><strong>Уровень завершён</strong></p><small>Все пункты отмечены как освоенные.</small></div></div>`;
   header.innerHTML = `
     <div class="card-head"><div><h2>План обучения</h2><p class="muted">Практическая карта испанского по CEFR. A0 — внутренняя подготовительная ступень; A1–C2 — официальные уровни.</p></div></div>
     <div class="learning-level-tabs" aria-label="Выбор уровня">${levelButtons}</div>
-    <section class="learning-plan-summary" aria-live="polite"><p><strong>${level.label} · ${level.title}</strong></p><p>${level.description}</p><p><strong>Освоено: ${doneCount} из ${allItems.length} · ${progress}%</strong>${learningCount ? ` · В процессе: ${learningCount}` : ""}</p><progress max="100" value="${progress}" aria-label="Освоено на уровне ${level.label}"></progress><p><button class="small-button" type="button" data-reset-learning>Сбросить прогресс уровня</button></p></section>
+    <section class="learning-plan-summary" aria-live="polite"><p><strong>${level.label} · ${level.title}</strong></p><p>${level.description}</p><p><strong>Освоено: ${doneCount} из ${allItems.length} · ${progress}%</strong>${learningCount ? ` · В процессе: ${learningCount}` : ""}</p><progress max="100" value="${progress}" aria-label="Освоено на уровне ${level.label}"></progress><p><button class="small-button" type="button" data-reset-learning>Сбросить прогресс ${level.label}</button></p>${nextStepMarkup}</section>
+    <div class="learning-plan-tools" aria-label="Управление подробностями"><button class="small-button" type="button" data-learning-details-action="open">Развернуть подробности</button><button class="small-button" type="button" data-learning-details-action="close">Свернуть подробности</button></div>
     ${learningLevelResourcesMarkup(level.id)}
     ${sections.map(([title, items]) => list(title, items)).join("")}
     <p class="muted learning-plan-sources">Основа: <a href="https://www.coe.int/en/web/common-european-framework-reference-languages/companion-volume" target="_blank" rel="noopener">CEFR Companion Volume</a> и <a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/default.htm" target="_blank" rel="noopener">Plan Curricular del Instituto Cervantes</a>. A0 опирается на коммуникативные дескрипторы Pre-A1 и начальное содержание A1; планы A1–C2 соотнесены с официальными дескрипторами и инвентарями функций, грамматики, прагматики и учебных тем соответствующих уровней. Списки являются практической адаптацией для самостоятельного обучения, а не официальным экзаменационным силлабусом.</p>
@@ -14328,7 +14469,33 @@ function renderLearningPlan() {
     renderLearningPlan();
   }));
   $all("[data-learning-detail]", header).forEach((detail) => detail.addEventListener("toggle", () => { const key = detail.dataset.learningDetail; if (detail.open) state.learningDetails[key] = true; else delete state.learningDetails[key]; appStorage.set("msg:learningDetails", JSON.stringify(state.learningDetails)); }));
-  bindClickAll(header, "[data-reset-learning]", () => { Object.keys(state.learningProgress).filter((key) => key.startsWith(`${level.id}:`)).forEach((key) => delete state.learningProgress[key]); appStorage.set("msg:learningProgress", JSON.stringify(state.learningProgress)); renderLearningPlan(); });
+  bindClickAll(header, "[data-learning-details-action]", (event) => {
+    const shouldOpen = event.currentTarget.dataset.learningDetailsAction === "open";
+    $all("[data-learning-detail]", header).forEach((detail) => {
+      detail.open = shouldOpen;
+      const key = detail.dataset.learningDetail;
+      if (shouldOpen) state.learningDetails[key] = true;
+      else delete state.learningDetails[key];
+    });
+    appStorage.set("msg:learningDetails", JSON.stringify(state.learningDetails));
+  });
+  header.querySelector("[data-open-learning-item]")?.addEventListener("click", (event) => {
+    const key = event.currentTarget.dataset.openLearningItem;
+    const target = $all("[data-learning-step]", header).find((item) => item.dataset.learningStep === key);
+    const detail = target?.querySelector("[data-learning-detail]");
+    if (detail) {
+      detail.open = true;
+      state.learningDetails[key] = true;
+      appStorage.set("msg:learningDetails", JSON.stringify(state.learningDetails));
+    }
+    target?.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+  bindClickAll(header, "[data-reset-learning]", () => {
+    if (!window.confirm(`Сбросить прогресс уровня ${level.label}? Все статусы этого уровня будут удалены.`)) return;
+    Object.keys(state.learningProgress).filter((key) => key.startsWith(`${level.id}:`)).forEach((key) => delete state.learningProgress[key]);
+    appStorage.set("msg:learningProgress", JSON.stringify(state.learningProgress));
+    renderLearningPlan();
+  });
 }
 
 function renderCards() {

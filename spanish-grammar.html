@@ -3304,7 +3304,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.73 · обновлено: 22.08.2026 14:26 CEST</span>
+        <span>Версия MVP 0.74 · обновлено: 22.08.2026 14:35 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -7256,16 +7256,25 @@ const USEFUL_TABLES = [
     group: "Произношение, орфография и письмо",
     subgroup: "Ударение",
     title: "Agudas, llanas, esdrújulas: основные правила ударения",
-    description: "Наличие tilde зависит от ударного слога и последней буквы слова: сначала определи тип слова, затем примени правило.",
-    summary: "Agudas получают tilde перед гласной, n или s; llanas — во всех остальных окончаниях; esdrújulas и sobresdrújulas — всегда.",
-    mistake: "Окончание слова само по себе не гарантирует tilde: canción с ударением на последнем слоге, но joven без tilde с ударением на предпоследнем.",
-    table: `<table><thead><tr><th>Тип</th><th>Ударение</th><th>Когда ставится tilde</th><th>Примеры</th></tr></thead><tbody>
-      <tr><th>aguda</th><td>последний слог</td><td>если слово оканчивается на гласную, n или s</td><td>café, canción, además; но reloj</td></tr>
-      <tr><th>llana</th><td>предпоследний слог</td><td>если окончание не гласная, не n и не s</td><td>árbol, lápiz, fácil; но casa, joven</td></tr>
-      <tr><th>esdrújula</th><td>третий слог с конца</td><td>всегда</td><td>música, teléfono, médico</td></tr>
-      <tr><th>sobresdrújula</th><td>раньше третьего с конца</td><td>всегда</td><td>dígamelo, explícaselo</td></tr>
-      <tr><th>односложные</th><td>один слог</td><td>обычно без tilde; исключение — диакритика</td><td>fue, dio, vi; но tú, él, sé</td></tr>
-    </tbody></table>`
+    description: "Сначала выучи два стандартных места ударения в словах без tilde. Затем сравни их с реальным произношением: если ударение стоит не там, где ожидается, его отмечают tilde.",
+    summary: "Без tilde: окончание на гласную, n или s обычно даёт ударение на предпоследний слог; другое окончание — на последний. Tilde показывает отклонение от этого ожидания. Esdrújulas всегда пишутся с tilde.",
+    mistake: "Последняя буква не отвечает на вопрос о tilde сама по себе. Сначала найди реально ударный слог, затем сравни его с ожидаемым местом ударения.",
+    related: [91, 92],
+    table: `<p><strong>Шаг 1. Как прочитать обычное слово без tilde</strong></p>
+    <p class="muted">Жирным выделен ударный слог. Это две отправные модели, с которыми сравниваются остальные слова.</p>
+    <table><thead><tr><th>Чем заканчивается слово</th><th>Ожидаемое ударение</th><th>Примеры без tilde</th></tr></thead><tbody>
+      <tr><th>гласная, n или s</th><td>предпоследний слог</td><td><span><strong>ca</strong>-sa, <strong>jo</strong>-ven, e-<strong>xa</strong>-men</span></td></tr>
+      <tr><th>другая согласная, включая y</th><td>последний слог</td><td><span>re-<strong>loj</strong>, ciu-<strong>dad</strong>, pa-<strong>pel</strong>, con-<strong>voy</strong></span></td></tr>
+    </tbody></table>
+    <p><strong>Шаг 2. Если реальное ударение не совпадает с этой моделью, появляется tilde</strong></p>
+    <table><thead><tr><th>Название</th><th>Где ударение</th><th>Когда нужна tilde</th><th>Сравни</th></tr></thead><tbody>
+      <tr><th>aguda</th><td>последний слог</td><td>если слово заканчивается на гласную, n или s</td><td><span>ca-<strong>fé</strong>, can-<strong>ción</strong>, com-<strong>pás</strong>; но re-<strong>loj</strong></span></td></tr>
+      <tr><th>llana или grave</th><td>предпоследний слог</td><td>если слово заканчивается не на гласную, n или s</td><td><span><strong>ár</strong>-bol, <strong>lá</strong>-piz, <strong>fá</strong>-cil; но <strong>ca</strong>-sa</span></td></tr>
+      <tr><th>esdrújula</th><td>третий слог с конца</td><td>всегда</td><td><span><strong>mú</strong>-si-ca, te-<strong>lé</strong>-fo-no, <strong>mé</strong>-di-co</span></td></tr>
+      <tr><th>sobresdrújula</th><td>раньше третьего слога с конца</td><td>всегда</td><td><span><strong>dí</strong>-ga-me-lo, ex-<strong>plí</strong>-ca-se-lo</span></td></tr>
+    </tbody></table>
+    <p><strong>Шаг 3. Проверь себя</strong>: <span lang="es">canción</span> — aguda и заканчивается на n, поэтому нужна tilde; <span lang="es">joven</span> — llana и заканчивается на n, поэтому tilde не нужна.</p>
+    <p class="muted">Односложные слова обычно пишутся без tilde: fue, dio, vi. Формы tú, él, sé получают отдельную диакритическую tilde, чтобы отличаться от tu, el, se.</p>`
   },
 
   {

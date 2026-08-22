@@ -3459,7 +3459,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.80 · обновлено: 22.08.2026 15:20 CEST</span>
+        <span>Версия MVP 0.81 · обновлено: 22.08.2026 15:25 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -5715,11 +5715,13 @@ const TENSE_EXAMPLES = {
     ["Todos los lunes voy al gimnasio.", "Каждый понедельник я хожу в спортзал.", "привычка"],
     ["El agua hierve a cien grados.", "Вода кипит при ста градусах.", "общий факт"],
     ["Mañana salgo temprano.", "Завтра я выезжаю рано.", "запланированное будущее"],
-    ["Ahora no puedo hablar.", "Сейчас я не могу говорить.", "текущее состояние"]
+    ["Ahora no puedo hablar.", "Сейчас я не могу говорить.", "текущее состояние"],
+    ["Vivo en Madrid desde 2022.", "Я живу в Мадриде с 2022 года.", "состояние, начавшееся в прошлом и продолжающееся сейчас"]
   ],
   perfecto: [
     ["Hoy he comido tarde.", "Сегодня я поел поздно.", "текущий период"],
     ["Esta semana hemos visto a Ana dos veces.", "На этой неделе мы дважды видели Ану.", "незавершенный период"],
+    ["Este año he viajado mucho.", "В этом году я много путешествовал.", "незавершенный период"],
     ["He perdido las llaves y no puedo entrar.", "Я потерял ключи и не могу войти.", "результат сейчас"],
     ["¿Has estado alguna vez en Asturias?", "Ты когда-нибудь был в Астурии?", "жизненный опыт"],
     ["Todavía no han llegado.", "Они еще не приехали.", "ожидаемый результат"],
@@ -5728,6 +5730,7 @@ const TENSE_EXAMPLES = {
   indefinido: [
     ["Ayer comí tarde.", "Вчера я поел поздно.", "закрытый момент"],
     ["Llegué, cené y me acosté.", "Я пришел, поужинал и лег спать.", "цепочка событий"],
+    ["El año pasado viajé mucho.", "В прошлом году я много путешествовал.", "завершенный период"],
     ["Viví en Sevilla durante tres años.", "Я прожил в Севилье три года.", "завершенная длительность"],
     ["Cervantes murió en 1616.", "Сервантес умер в 1616 году.", "исторический факт"],
     ["De repente sonó el teléfono.", "Вдруг зазвонил телефон.", "событие в повествовании"]
@@ -5738,11 +5741,13 @@ const TENSE_EXAMPLES = {
     ["Hacía frío y la calle estaba vacía.", "Было холодно, и улица была пустой.", "описание фона"],
     ["Dormía cuando llamó Ana.", "Я спал, когда позвонила Ана.", "процесс и событие"],
     ["Mientras Ana cocinaba, yo ponía la mesa.", "Пока Ана готовила, я накрывал на стол.", "одновременность"],
+    ["Cuando vivía en Sevilla, iba andando al trabajo.", "Когда я жил в Севилье, я ходил на работу пешком.", "повторяющееся действие в прошлом"],
     ["Quería pedirte un favor.", "Я хотел попросить тебя об одолжении.", "смягчение просьбы"]
   ],
   pluscuamperfecto: [
     ["Cuando llegué, Ana ya había salido.", "Когда я пришел, Ана уже ушла.", "прошлое до прошлого"],
     ["A las ocho ya habían cerrado la tienda.", "К восьми магазин уже закрыли.", "результат к прошлой точке"],
+    ["Cuando empezó la película, ya habíamos comprado las entradas.", "Когда начался фильм, мы уже купили билеты.", "действие до другой точки в прошлом"],
     ["Nunca lo había visto antes.", "Я никогда не видел этого раньше.", "опыт до прошлого момента"],
     ["Estaba cansada porque no había dormido bien.", "Она устала, потому что плохо спала.", "причина прошлого состояния"],
     ["Dijo que había perdido el tren.", "Он сказал, что опоздал на поезд.", "предшествование в рассказе"]
@@ -5757,15 +5762,16 @@ const TENSE_EXAMPLES = {
     ["Mañana te llamaré.", "Завтра я тебе позвоню.", "будущее действие"],
     ["Te ayudaré, te lo prometo.", "Я помогу тебе, обещаю.", "обещание"],
     ["Lloverá por la tarde.", "Во второй половине дня будет дождь.", "прогноз"],
-    ["Estará en casa.", "Наверное, он дома.", "предположение о настоящем"],
+    ["No está en casa; estará en el trabajo.", "Его нет дома; вероятно, он на работе.", "предположение о настоящем"],
     ["Me llamarás en cuanto llegues.", "Позвони мне, как только приедешь.", "распоряжение"],
+    ["Harás lo que te diga.", "Ты сделаешь то, что я тебе скажу.", "приказ или требование"],
     ["Será muy práctico, pero es demasiado caro.", "Возможно, это очень практично, но слишком дорого.", "уступительное предположение"]
   ],
   futuro_perfecto: [
     ["Para mañana habré terminado.", "К завтрашнему дню я закончу.", "завершение к сроку"],
     ["Cuando llegues, ya habremos cenado.", "Когда ты придешь, мы уже поужинаем.", "до будущего события"],
     ["Dentro de un año habrán construido el puente.", "Через год мост уже построят.", "будущий результат"],
-    ["Habrá salido ya.", "Наверное, он уже вышел.", "предположение о прошлом"],
+    ["No está en casa; habrá salido ya.", "Его нет дома; вероятно, он уже вышел.", "предположение о завершенном действии"],
     ["¿Habrá recibido mi mensaje?", "Интересно, получил ли он мое сообщение?", "неуверенность о прошлом"]
   ],
   condicional: [
@@ -5773,7 +5779,8 @@ const TENSE_EXAMPLES = {
     ["Si pudiera, viajaría más.", "Если бы я мог, я бы больше путешествовал.", "нереальная гипотеза"],
     ["¿Podrías ayudarme?", "Не мог бы ты мне помочь?", "вежливая просьба"],
     ["Yo que tú, descansaría.", "На твоем месте я бы отдохнул.", "совет"],
-    ["Serían las diez.", "Было, вероятно, часов десять.", "предположение о прошлом"]
+    ["Serían las diez.", "Было, вероятно, часов десять.", "предположение о прошлом"],
+    ["En 1990 tendría unos veinte años.", "В 1990 году ему, вероятно, было около двадцати лет.", "предположение о возрасте в прошлом"]
   ],
   condicional_compuesto: [
     ["Dijo que para el viernes habría terminado.", "Он сказал, что к пятнице уже закончит.", "завершенность в будущем из прошлого"],
@@ -5789,6 +5796,7 @@ const TENSE_EXAMPLES = {
     ["Te lo explico para que lo entiendas.", "Я объясняю это, чтобы ты понял.", "цель"],
     ["Te llamaré cuando llegue.", "Я позвоню тебе, когда приеду.", "будущее после cuando"],
     ["Busco a alguien que sepa japonés.", "Я ищу кого-нибудь, кто знает японский.", "неопределенный объект"],
+    ["Es posible que llueva mañana.", "Возможно, завтра будет дождь.", "возможность"],
     ["Ojalá haga buen tiempo.", "Надеюсь, погода будет хорошей.", "пожелание"]
   ],
   subjuntivo_perfecto: [
@@ -5796,6 +5804,7 @@ const TENSE_EXAMPLES = {
     ["No creo que haya terminado.", "Не думаю, что он закончил.", "сомнение о прошлом"],
     ["Puede que hayan perdido el tren.", "Возможно, они опоздали на поезд.", "вероятность"],
     ["Es raro que no haya llamado todavía.", "Странно, что он до сих пор не позвонил.", "оценка результата"],
+    ["No creo que haya entendido la pregunta.", "Не думаю, что он понял вопрос.", "сомнение о завершенном действии"],
     ["Te llamaré cuando haya terminado.", "Я позвоню тебе, когда закончу.", "завершение до будущей точки"]
   ],
   subjuntivo_imperfecto: [

@@ -23,6 +23,7 @@
   --accent-soft: #fde7e1;
   --success: #1f7a4d;
   --success-soft: #dff4e9;
+  --warning: #b8860b;
   --danger: #b9362e;
   --danger-soft: #fde2dc;
   --page-width: 980px;
@@ -43,6 +44,7 @@ body.dark {
   --accent-soft: #402621;
   --success: #71d39b;
   --success-soft: #193325;
+  --warning: #f1c232;
   --danger: #ff8a78;
   --danger-soft: #3d201c;
   --shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
@@ -821,8 +823,8 @@ input[type="search"] {
 }
 
 .learning-item-status-dot.is-learning {
-  border-color: var(--accent-2);
-  background: var(--accent-2);
+  border-color: var(--warning);
+  background: var(--warning);
 }
 
 .learning-item-status-dot.is-done {
@@ -889,6 +891,7 @@ input[type="search"] {
   flex-wrap: wrap;
   gap: 6px;
   margin-left: 20px;
+  margin-bottom: -6px;
 }
 
 .learning-item-resources-label {
@@ -898,7 +901,7 @@ input[type="search"] {
 }
 
 .learning-item-detail {
-  margin: 6px 0 0 26px;
+  margin: 0 0 0 26px;
 }
 
 .learning-item-detail summary {
@@ -3793,7 +3796,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.85 · обновлено: 22.08.2026 17:47 CEST</span>
+        <span>Версия MVP 0.86 · обновлено: 22.08.2026 17:53 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>

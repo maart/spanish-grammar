@@ -3013,7 +3013,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.68 · обновлено: 22.08.2026 12:32 CEST</span>
+        <span>Версия MVP 0.69 · обновлено: 22.08.2026 12:46 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -7735,6 +7735,415 @@ const USEFUL_TABLES = [
       <tr><th>платформа</th><td>¿De qué andén sale? / ¿En qué vía?</td><td>С какой платформы отправляется?</td><td>andén и vía зависят от системы.</td></tr>
       <tr><th>абонемент</th><td>Tengo un abono transporte.</td><td>У меня есть транспортный абонемент.</td><td>В Мадриде: abono transporte.</td></tr>
     </tbody></table>`
+  },
+
+  {
+    group: "Существительные и определители",
+    subgroup: "Прилагательное или наречие",
+    title: "Bueno / bien, malo / mal: признак предмета или действия",
+    description: "Bueno и malo — прилагательные и согласуются с существительным; bien и mal — наречия и характеризуют действие, состояние или результат.",
+    summary: "Es un buen libro; El libro está bien; Cocina bien; Huele mal.",
+    mistake: "Перед существительным bueno и malo сокращаются только в мужском единственном числе: un buen día, un mal resultado, но una buena idea.",
+    table: `<table><thead><tr><th>Форма</th><th>Функция</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>bueno/a/os/as</th><td>прилагательное: какой?</td><td>Es una buena solución.</td><td>Это хорошее решение.</td></tr>
+      <tr><th>buen</th><td>перед м. р., ед. ч.</td><td>Ha sido un buen día.</td><td>Это был хороший день.</td></tr>
+      <tr><th>bien</th><td>наречие: как?</td><td>Habla bien español.</td><td>Он хорошо говорит по-испански.</td></tr>
+      <tr><th>estar bien</th><td>состояние или оценка</td><td>La propuesta está bien.</td><td>Предложение хорошее / подходит.</td></tr>
+      <tr><th>malo/a/os/as</th><td>прилагательное</td><td>Hace mal tiempo.</td><td>Стоит плохая погода.</td></tr>
+      <tr><th>mal</th><td>наречие или краткая форма</td><td>Duerme mal. Es un mal ejemplo.</td><td>Он плохо спит. Это плохой пример.</td></tr>
+      <tr><th>ser bueno / estar bueno</th><td>качество / состояние, вкус</td><td>Es buen médico. La sopa está buena.</td><td>Он хороший врач. Суп вкусный.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Перифразы, неличные формы и модальность",
+    subgroup: "Привычки и тенденции",
+    title: "Soler, acostumbrarse a и tender a: привычка или тенденция",
+    description: "Soler + infinitivo обозначает обычное действие, acostumbrarse a — приобретённую привычку, tender a — общую тенденцию.",
+    summary: "Suelo desayunar pronto; Estoy acostumbrado a madrugar; Tiende a preocuparse demasiado.",
+    mistake: "Soler уже содержит значение регулярности: Suelo ir los domingos естественно, а Suelo ir siempre часто избыточно.",
+    table: `<table><thead><tr><th>Конструкция</th><th>Смысл</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>soler + infinitivo</th><td>обычно делать</td><td>Suelo trabajar desde casa.</td><td>Я обычно работаю из дома.</td></tr>
+      <tr><th>solía + infinitivo</th><td>привычка в прошлом</td><td>De niño solía leer por la noche.</td><td>В детстве я обычно читал по вечерам.</td></tr>
+      <tr><th>estar acostumbrado/a a</th><td>быть привыкшим</td><td>Estoy acostumbrada al ruido.</td><td>Я привыкла к шуму.</td></tr>
+      <tr><th>acostumbrarse a</th><td>привыкнуть</td><td>Me he acostumbrado a madrugar.</td><td>Я привык рано вставать.</td></tr>
+      <tr><th>tender a + infinitivo</th><td>иметь тенденцию</td><td>La gente tiende a simplificar.</td><td>Люди склонны упрощать.</td></tr>
+      <tr><th>cada vez más/menos</th><td>нарастающая тенденция</td><td>Cada vez usamos menos efectivo.</td><td>Мы используем всё меньше наличных.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Перифразы, неличные формы и модальность",
+    subgroup: "Действие в процессе",
+    title: "Presente или estar / seguir + gerundio",
+    description: "Presente называет факт, привычку или запланированное действие; estar + gerundio выделяет процесс, seguir + gerundio — его продолжение.",
+    summary: "Trabajo en casa — вообще; Estoy trabajando — прямо сейчас; Sigo trabajando — всё ещё продолжаю.",
+    mistake: "Испанский не требует estar + gerundio для любого действия «сейчас»: ¿Qué haces? и Te escucho часто естественнее буквального прогрессива.",
+    table: `<table><thead><tr><th>Форма</th><th>Фокус</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>Presente</th><td>факт или привычка</td><td>Trabajo en una editorial.</td><td>Я работаю в издательстве.</td></tr>
+      <tr><th>Presente</th><td>действие в текущем разговоре</td><td>Te escucho.</td><td>Я тебя слушаю.</td></tr>
+      <tr><th>estar + gerundio</th><td>процесс в данный период</td><td>Estoy preparando un examen.</td><td>Я сейчас готовлюсь к экзамену.</td></tr>
+      <tr><th>seguir + gerundio</th><td>продолжение</td><td>Sigue lloviendo.</td><td>Дождь всё ещё идёт.</td></tr>
+      <tr><th>llevar + tiempo + gerundio</th><td>длительность до сейчас</td><td>Llevo dos años estudiando español.</td><td>Я учу испанский два года.</td></tr>
+      <tr><th>andar + gerundio</th><td>повторяемый процесс, разговорно</td><td>Anda buscando piso.</td><td>Он всё ищет квартиру.</td></tr>
+      <tr><th>не состояние</th><td colspan="3">Обычно не говорят *Estoy sabiendo / *Estoy queriendo в обычном значении: Sé la respuesta; Quiero ir.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Глаголы и управление",
+    subgroup: "Речь и сообщение",
+    title: "Decir, contar, hablar и preguntar: сказать, рассказать, поговорить, спросить",
+    description: "Эти глаголы различаются типом сообщения и управлением: decir algo a alguien, contar una historia, hablar de algo, preguntar por algo.",
+    summary: "Me dijo la verdad; Me contó lo ocurrido; Hablamos del viaje; Pregunté por Ana.",
+    mistake: "Preguntar — «спрашивать», pedir — «просить»: Le pregunté la hora, но Le pedí ayuda.",
+    table: `<table><thead><tr><th>Глагол</th><th>Модель</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>decir</th><td>decir algo a alguien</td><td>Le dije la verdad a Marta.</td><td>Я сказал Марте правду.</td></tr>
+      <tr><th>decir que</th><td>сообщить содержание</td><td>Dijo que llegaría tarde.</td><td>Он сказал, что опоздает.</td></tr>
+      <tr><th>contar</th><td>рассказать событие</td><td>Nos contó una historia.</td><td>Он рассказал нам историю.</td></tr>
+      <tr><th>contar con</th><td>рассчитывать / располагать</td><td>Contamos con tu ayuda.</td><td>Мы рассчитываем на твою помощь.</td></tr>
+      <tr><th>hablar</th><td>hablar con/de/sobre</td><td>Hablé con ella del contrato.</td><td>Я поговорил с ней о договоре.</td></tr>
+      <tr><th>preguntar</th><td>preguntar algo / por alguien</td><td>Pregunté cuánto costaba.</td><td>Я спросил, сколько это стоит.</td></tr>
+      <tr><th>preguntarle a alguien</th><td>адресат через le + a</td><td>Le pregunté a Ana.</td><td>Я спросил Ану.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Глаголы и управление",
+    subgroup: "Состояние и восприятие",
+    title: "Sentir, sentirse и sentar: чувствовать, чувствовать себя, усаживать",
+    description: "Sentir принимает объект или придаточное, sentirse описывает состояние субъекта, sentar означает усаживать или подходить/вредить.",
+    summary: "Siento dolor; Me siento mejor; Siéntate; El café me sienta mal.",
+    mistake: "Me siento bien — «я хорошо себя чувствую»; siento bien без me обычно означает «я хорошо ощущаю/слышу» и требует контекста или объекта.",
+    table: `<table><thead><tr><th>Форма</th><th>Смысл</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>sentir + nombre</th><td>чувствовать</td><td>Siento un dolor fuerte.</td><td>Я чувствую сильную боль.</td></tr>
+      <tr><th>sentir que + indicativo</th><td>замечать, ощущать факт</td><td>Siento que algo ha cambiado.</td><td>Я чувствую, что что-то изменилось.</td></tr>
+      <tr><th>sentir que + subjuntivo</th><td>сожалеть</td><td>Siento que no puedas venir.</td><td>Мне жаль, что ты не можешь прийти.</td></tr>
+      <tr><th>sentirse + adjetivo</th><td>чувствовать себя</td><td>Me siento cansada.</td><td>Я чувствую себя уставшей.</td></tr>
+      <tr><th>sentarse</th><td>садиться</td><td>Siéntate aquí.</td><td>Садись здесь.</td></tr>
+      <tr><th>sentar bien/mal</th><td>подходить, хорошо/плохо влиять</td><td>El queso me sienta mal.</td><td>Мне плохо от сыра.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Subjuntivo и сложное предложение",
+    subgroup: "Мнение и достоверность",
+    title: "Creo que / No creo que: мнение, уверенность и наклонение",
+    description: "Утверждаемое мнение и уверенность обычно требуют Indicativo; отрицание, сомнение и оценка часто переводят содержание в Subjuntivo.",
+    summary: "Creo que viene; No creo que venga; Es evidente que funciona; Es posible que funcione.",
+    mistake: "В норме Испании No sé si te gusta обычно использует Indicativo после si; не переносите автоматически модель No creo que te guste.",
+    table: `<table><thead><tr><th>Смысл</th><th>Конструкция</th><th>Пример</th><th>Наклонение</th></tr></thead><tbody>
+      <tr><th>мнение утверждается</th><td>creo/pienso que</td><td>Creo que tiene razón.</td><td>Indicativo</td></tr>
+      <tr><th>мнение отрицается</th><td>no creo/no pienso que</td><td>No creo que tenga razón.</td><td>Subjuntivo</td></tr>
+      <tr><th>уверенность</th><td>sé / está claro que</td><td>Está claro que funciona.</td><td>Indicativo</td></tr>
+      <tr><th>сомнение</th><td>dudo que</td><td>Dudo que funcione.</td><td>Subjuntivo</td></tr>
+      <tr><th>вероятность</th><td>es posible/probable que</td><td>Es probable que llueva.</td><td>Subjuntivo</td></tr>
+      <tr><th>оценка</th><td>es bueno/importante que</td><td>Es importante que vengas.</td><td>Subjuntivo</td></tr>
+      <tr><th>косвенный вопрос</th><td>no sé si</td><td>No sé si viene.</td><td>В Испании обычно Indicativo</td></tr>
+      <tr><th>смена позиции</th><td>¿No crees que…?</td><td>¿No crees que es demasiado tarde?</td><td>Часто Indicativo: ожидается подтверждение</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Subjuntivo и сложное предложение",
+    subgroup: "Цель и обстоятельства",
+    title: "Para que, antes de que, sin que: когда нужен Subjuntivo",
+    description: "После para que, antes de que и sin que личная форма обычно стоит в Subjuntivo; при одном субъекте чаще используется предлог + infinitivo.",
+    summary: "Te llamo para que vengas; Sal antes de que llueva; Se fue sin que nadie lo viera.",
+    mistake: "Сравнивайте субъектов: Antes de salir cerré la puerta, но Antes de que salieras cerré la puerta.",
+    table: `<table><thead><tr><th>Связка</th><th>Смысл</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>para + infinitivo</th><td>цель, один субъект</td><td>Estudio para aprender.</td><td>Я учусь, чтобы научиться.</td></tr>
+      <tr><th>para que + subj.</th><td>цель, разные субъекты</td><td>Te lo explico para que lo entiendas.</td><td>Я объясняю это, чтобы ты понял.</td></tr>
+      <tr><th>antes de + infinitivo</th><td>до своего действия</td><td>Llámame antes de salir.</td><td>Позвони мне перед выходом.</td></tr>
+      <tr><th>antes de que + subj.</th><td>до чужого действия</td><td>Llámame antes de que salgas.</td><td>Позвони мне до того, как выйдешь.</td></tr>
+      <tr><th>sin + infinitivo</th><td>не совершая</td><td>Se fue sin despedirse.</td><td>Он ушёл, не попрощавшись.</td></tr>
+      <tr><th>sin que + subj.</th><td>без того, чтобы другой…</td><td>Se fue sin que lo viéramos.</td><td>Он ушёл так, что мы его не увидели.</td></tr>
+      <tr><th>después de que</th><td>после факта</td><td>Salimos después de que terminó la reunión.</td><td>Мы вышли после окончания встречи.</td></tr>
+      <tr><th>con tal de que</th><td>при условии</td><td>Iré con tal de que vengas tú.</td><td>Я пойду при условии, что ты тоже пойдёшь.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Subjuntivo и сложное предложение",
+    subgroup: "Уступка",
+    title: "Aunque, a pesar de que и por mucho que: факт или допущение",
+    description: "Indicativo представляет препятствие как сообщаемый факт; Subjuntivo — как допущение, неизвестное обстоятельство или несущественное условие.",
+    summary: "Aunque llueve, salgo — дождь идёт; Aunque llueva, saldré — даже если пойдёт дождь.",
+    mistake: "Subjuntivo после aunque не означает автоматически будущее: выбор показывает, утверждает ли говорящий факт в данном контексте.",
+    table: `<table><thead><tr><th>Конструкция</th><th>Статус информации</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>aunque + indicativo</th><td>известный или утверждаемый факт</td><td>Aunque está cansado, sigue trabajando.</td><td>Хотя он устал, он продолжает работать.</td></tr>
+      <tr><th>aunque + subjuntivo</th><td>допущение или неважность</td><td>Aunque esté cansado, seguirá trabajando.</td><td>Даже если он устал, он продолжит работать.</td></tr>
+      <tr><th>a pesar de + nombre</th><td>несмотря на обстоятельство</td><td>A pesar del frío, salimos.</td><td>Несмотря на холод, мы вышли.</td></tr>
+      <tr><th>a pesar de que</th><td>факт или допущение</td><td>A pesar de que era tarde, llamó.</td><td>Несмотря на то что было поздно, он позвонил.</td></tr>
+      <tr><th>por mucho que + subj.</th><td>сколько бы ни</td><td>Por mucho que insistas, no iré.</td><td>Сколько бы ты ни настаивал, я не пойду.</td></tr>
+      <tr><th>por muy + adj. + que</th><td>каким бы ни</td><td>Por muy caro que sea, lo necesita.</td><td>Каким бы дорогим это ни было, ему это нужно.</td></tr>
+      <tr><th>si bien</th><td>формальная уступка</td><td>Es útil, si bien resulta caro.</td><td>Это полезно, хотя и дорого.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Subjuntivo и сложное предложение",
+    subgroup: "Самостоятельные формулы",
+    title: "Que te vaya bien, sea como sea: Subjuntivo без явного триггера",
+    description: "Subjuntivo может самостоятельно выражать пожелание, побуждение, уступительную неопределённость или повтор чужого приказа.",
+    summary: "Que descanses; Que pase el siguiente; Venga quien venga; Sea como sea.",
+    mistake: "Это устойчивые коммуникативные модели, а не свободная замена Indicativo: сначала определите функцию всей формулы.",
+    table: `<table><thead><tr><th>Функция</th><th>Модель</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>пожелание</th><td>que + subjuntivo</td><td>Que te mejores.</td><td>Поправляйся.</td></tr>
+      <tr><th>приглашение/распоряжение</th><td>que + subjuntivo</td><td>Que pase el siguiente.</td><td>Пусть войдёт следующий.</td></tr>
+      <tr><th>повтор приказа</th><td>que + subjuntivo</td><td>¡Que te calles!</td><td>Я сказал, замолчи!</td></tr>
+      <tr><th>неважно кто</th><td>venga quien venga</td><td>Venga quien venga, no abras.</td><td>Кто бы ни пришёл, не открывай.</td></tr>
+      <tr><th>неважно как</th><td>sea como sea</td><td>Sea como sea, hay que decidir.</td><td>Как бы то ни было, нужно решить.</td></tr>
+      <tr><th>альтернатива</th><td>quiera o no quiera</td><td>Quiera o no quiera, tendrá que ir.</td><td>Хочет он того или нет, ему придётся пойти.</td></tr>
+      <tr><th>формальная уступка</th><td>sea cual sea</td><td>Sea cual sea el motivo, avísame.</td><td>Какова бы ни была причина, сообщи мне.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Синтаксис и порядок слов",
+    subgroup: "Цитирование и косвенная речь",
+    title: "Глаголы передачи речи: afirmar, señalar, admitir, negar, pedir",
+    description: "Точный глагол показывает не только содержание цитаты, но и действие говорящего: утверждение, уточнение, признание, отрицание, просьбу или упрёк.",
+    summary: "Afirmó que vendría; Admitió que se había equivocado; Negó que fuera cierto; Pidió que esperáramos.",
+    mistake: "Не все глаголы речи ведут себя как decir: afirmar que обычно вводит Indicativo, pedir que и negar que обычно требуют Subjuntivo.",
+    table: `<table><thead><tr><th>Функция</th><th>Глаголы</th><th>Пример</th><th>Наклонение</th></tr></thead><tbody>
+      <tr><th>утверждать</th><td>afirmar, asegurar, sostener</td><td>Sostuvo que los datos eran fiables.</td><td>Indicativo</td></tr>
+      <tr><th>указывать</th><td>señalar, indicar, explicar</td><td>Señaló que faltaban recursos.</td><td>Indicativo</td></tr>
+      <tr><th>признавать</th><td>admitir, reconocer</td><td>Admitió que se había equivocado.</td><td>Indicativo: сообщает факт</td></tr>
+      <tr><th>отрицать</th><td>negar</td><td>Negó que hubiera recibido el aviso.</td><td>Обычно Subjuntivo</td></tr>
+      <tr><th>предполагать</th><td>sugerir, insinuar</td><td>Insinuó que alguien lo sabía.</td><td>Indicativo: передача намёка</td></tr>
+      <tr><th>просить/советовать</th><td>pedir, rogar, aconsejar</td><td>Pidió que esperáramos fuera.</td><td>Subjuntivo</td></tr>
+      <tr><th>упрекать</th><td>reprochar</td><td>Le reprochó que llegara tarde.</td><td>Обычно Subjuntivo</td></tr>
+      <tr><th>источник</th><td>según / de acuerdo con</td><td>Según el informe, la demanda cayó.</td><td>Нейтральная атрибуция</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Наречия, предлоги и связки",
+    subgroup: "Организация речи",
+    title: "Reformular, corregir y matizar: переформулировать и уточнить",
+    description: "Маркеры reformulación помогают сказать точнее, исправить себя, привести пример или ограничить слишком широкое утверждение.",
+    summary: "Es decir; Dicho de otro modo; Mejor dicho; Más concretamente; Al menos en este caso.",
+    mistake: "O sea нейтрально-разговорное и очень частое, но в формальном тексте обычно уместнее es decir или dicho de otro modo.",
+    table: `<table><thead><tr><th>Задача</th><th>Маркер</th><th>Пример</th><th>Перевод</th></tr></thead><tbody>
+      <tr><th>объяснить иначе</th><td>es decir / o sea</td><td>No es obligatorio, es decir, puedes elegir.</td><td>Это не обязательно, то есть можно выбрать.</td></tr>
+      <tr><th>переформулировать</th><td>dicho de otro modo</td><td>Dicho de otro modo, falta financiación.</td><td>Иными словами, не хватает финансирования.</td></tr>
+      <tr><th>исправиться</th><td>mejor dicho</td><td>Llegó tarde; mejor dicho, no llegó.</td><td>Он опоздал; точнее, вообще не пришёл.</td></tr>
+      <tr><th>уточнить</th><td>más concretamente</td><td>Afecta al sur, más concretamente a Cádiz.</td><td>Это затрагивает юг, точнее Кадис.</td></tr>
+      <tr><th>привести пример</th><td>por ejemplo / en concreto</td><td>Hay varias opciones; por ejemplo, el tren.</td><td>Есть несколько вариантов, например поезд.</td></tr>
+      <tr><th>ограничить</th><td>al menos / por lo menos</td><td>Es útil, al menos en este contexto.</td><td>Это полезно, по крайней мере здесь.</td></tr>
+      <tr><th>резюмировать</th><td>en suma / en pocas palabras</td><td>En pocas palabras, no compensa.</td><td>Короче говоря, это невыгодно.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Наречия, предлоги и связки",
+    subgroup: "Аргументация",
+    title: "Как построить аргумент: тезис, основание, возражение и вывод",
+    description: "Связный аргумент обозначает позицию, обосновывает её, учитывает сильное возражение и формулирует вывод без механического списка коннекторов.",
+    summary: "A mi juicio…; Esto se debe a…; Es cierto que…, pero…; Por tanto…",
+    mistake: "Sin embargo и por tanto не являются украшением: первый вводит контраст, второй — следствие из уже названных оснований.",
+    table: `<table><thead><tr><th>Шаг</th><th>Формулы</th><th>Пример</th><th>Функция</th></tr></thead><tbody>
+      <tr><th>тезис</th><td>a mi juicio, sostengo que</td><td>A mi juicio, conviene mantener el servicio.</td><td>позиция</td></tr>
+      <tr><th>основание</th><td>porque, ya que, dado que</td><td>Es necesario, ya que no hay alternativa.</td><td>причина</td></tr>
+      <tr><th>доказательство</th><td>como muestra, según</td><td>Como muestran los datos, aumentó la demanda.</td><td>опора</td></tr>
+      <tr><th>пример</th><td>por ejemplo, en concreto</td><td>En concreto, crecieron los trayectos cortos.</td><td>иллюстрация</td></tr>
+      <tr><th>частичное согласие</th><td>es cierto que, si bien</td><td>Es cierto que cuesta más, pero dura más.</td><td>уступка</td></tr>
+      <tr><th>контраргумент</th><td>sin embargo, ahora bien</td><td>Ahora bien, el plazo sigue siendo insuficiente.</td><td>ограничение</td></tr>
+      <tr><th>вывод</th><td>por tanto, de ahí que + subj.</td><td>De ahí que sea necesario revisarlo.</td><td>следствие</td></tr>
+      <tr><th>условие вывода</th><td>siempre que, siempre y cuando</td><td>Es viable siempre que haya financiación.</td><td>границы позиции</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Наречия, предлоги и связки",
+    subgroup: "Позиция и достоверность",
+    title: "Как смягчить утверждение: al parecer, cabe, puede que, todo apunta a",
+    description: "Маркеры эпистемической позиции показывают источник и степень уверенности, позволяя не выдавать предположение за установленный факт.",
+    summary: "Al parecer…; Puede que…; Cabe pensar que…; Todo apunta a que…; No se puede descartar que…",
+    mistake: "Quizá/tal vez допускают оба наклонения по позиции говорящего; puede que и no se puede descartar que требуют Subjuntivo.",
+    table: `<table><thead><tr><th>Степень</th><th>Формула</th><th>Пример</th><th>Комментарий</th></tr></thead><tbody>
+      <tr><th>источник не назван</th><td>al parecer</td><td>Al parecer, habrá cambios.</td><td>по имеющимся сведениям</td></tr>
+      <tr><th>возможность</th><td>puede que + subj.</td><td>Puede que llegue tarde.</td><td>возможно</td></tr>
+      <tr><th>осторожный вывод</th><td>cabe pensar que</td><td>Cabe pensar que la tendencia continuará.</td><td>формально-аналитическое</td></tr>
+      <tr><th>сильные признаки</th><td>todo apunta a que</td><td>Todo apunta a que ganará.</td><td>вероятный вывод</td></tr>
+      <tr><th>не исключено</th><td>no se puede descartar que + subj.</td><td>No se puede descartar que haya errores.</td><td>сохраняется возможность</td></tr>
+      <tr><th>ограничение знания</th><td>hasta donde sé</td><td>Hasta donde sé, no se ha aprobado.</td><td>насколько мне известно</td></tr>
+      <tr><th>интерпретация</th><td>se diría que</td><td>Se diría que nadie lo esperaba.</td><td>создаётся впечатление</td></tr>
+      <tr><th>осторожная связь</th><td>los datos sugieren</td><td>Los datos sugieren una mejora.</td><td>не равняется «доказывают»</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Синтаксис и порядок слов",
+    subgroup: "Тема и фокус",
+    title: "Lo que…, fue quien…: тематизация и фокус",
+    description: "Порядок слов и расщеплённые конструкции выделяют тему или контрастный элемент, не меняя основное событие.",
+    summary: "Ese problema ya lo resolvimos; Lo que necesito es tiempo; Fue Ana quien llamó.",
+    mistake: "Вынос прямого объекта влево обычно требует дублирующего местоимения: Ese libro lo compré ayer, а не Ese libro compré ayer.",
+    table: `<table><thead><tr><th>Конструкция</th><th>Фокус</th><th>Пример</th><th>Нейтральная версия</th></tr></thead><tbody>
+      <tr><th>объект как тема</th><td>о чём уже говорим</td><td>Ese informe ya lo he leído.</td><td>Ya he leído ese informe.</td></tr>
+      <tr><th>lo que… es…</th><td>выделение элемента</td><td>Lo que necesito es tiempo.</td><td>Necesito tiempo.</td></tr>
+      <tr><th>fue X quien…</th><td>контраст деятеля</td><td>Fue Marta quien lo propuso.</td><td>Marta lo propuso.</td></tr>
+      <tr><th>donde/cuando fue…</th><td>место или время</td><td>En Madrid fue donde nos conocimos.</td><td>Nos conocimos en Madrid.</td></tr>
+      <tr><th>инверсия</th><td>новый субъект после глагола</td><td>Entonces apareció el director.</td><td>El director apareció entonces.</td></tr>
+      <tr><th>контрастное yo</th><td>противопоставление</td><td>Eso no lo dije yo.</td><td>Yo no dije eso.</td></tr>
+      <tr><th>письменная тема</th><td>en cuanto a / respecto a</td><td>En cuanto al plazo, sigue igual.</td><td>El plazo sigue igual.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Синтаксис и порядок слов",
+    subgroup: "Связность текста",
+    title: "Ссылки внутри текста: este, dicho, lo anterior, ello",
+    description: "Анафорические выражения связывают предложения и помогают точно указать на участника, понятие или всё предыдущее сообщение.",
+    summary: "La medida fue rechazada. Esta decisión…; Dicho cambio…; Lo anterior no implica que…",
+    mistake: "Este/esta без ясного существительного может быть двусмысленным; в сложном тексте часто лучше повторить точное название или использовать dicho + nombre.",
+    table: `<table><thead><tr><th>Средство</th><th>На что ссылается</th><th>Пример</th><th>Регистр</th></tr></thead><tbody>
+      <tr><th>este/esta + nombre</th><td>последнее понятие</td><td>Se aprobó una reforma. Esta medida entrará en vigor.</td><td>нейтральный</td></tr>
+      <tr><th>dicho/a + nombre</th><td>уже названное</td><td>Dicho acuerdo tendrá una vigencia de dos años.</td><td>формальный</td></tr>
+      <tr><th>lo anterior</th><td>предыдущий фрагмент</td><td>Lo anterior no implica que sea imposible.</td><td>аналитический</td></tr>
+      <tr><th>ello</th><td>ситуация или аргумент</td><td>Carece de permiso y, por ello, no puede abrir.</td><td>формальный</td></tr>
+      <tr><th>lo cual</th><td>вся предыдущая фраза</td><td>Llegó tarde, lo cual nos preocupó.</td><td>нейтрально-формальный</td></tr>
+      <tr><th>el primero/el segundo</th><td>два ранее названных элемента</td><td>Comparamos tren y avión; el primero era más barato.</td><td>письменный</td></tr>
+      <tr><th>повтор термина</th><td>устранение двусмысленности</td><td>El informe corrige el contrato. El informe se publicará mañana.</td><td>точность важнее вариативности</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Словообразование и лексика",
+    subgroup: "Номинализация",
+    title: "Номинализация: decidir → decisión, aplicar → aplicación",
+    description: "Номинализация уплотняет формальный текст и позволяет говорить о процессе как о понятии; глагольная версия обычно яснее показывает участников.",
+    summary: "El comité aprobó la medida → La aprobación de la medida por el comité.",
+    mistake: "Цепочка существительных может скрыть деятеля и сделать текст тяжёлым; чередуйте номинальный и глагольный стиль по задаче.",
+    table: `<table><thead><tr><th>Глагол/признак</th><th>Существительное</th><th>Номинальная версия</th><th>Глагольная версия</th></tr></thead><tbody>
+      <tr><th>decidir</th><td>decisión</td><td>La decisión del comité sorprendió.</td><td>El comité decidió y sorprendió a todos.</td></tr>
+      <tr><th>aplicar</th><td>aplicación</td><td>La aplicación de la norma será gradual.</td><td>La norma se aplicará gradualmente.</td></tr>
+      <tr><th>aumentar</th><td>aumento</td><td>Se observó un aumento de precios.</td><td>Se observó que los precios aumentaron.</td></tr>
+      <tr><th>reducir</th><td>reducción</td><td>La reducción del consumo continúa.</td><td>El consumo sigue reduciéndose.</td></tr>
+      <tr><th>viable</th><td>viabilidad</td><td>Se evaluará la viabilidad del proyecto.</td><td>Se evaluará si el proyecto es viable.</td></tr>
+      <tr><th>eficaz</th><td>eficacia</td><td>No se ha demostrado su eficacia.</td><td>No se ha demostrado que sea eficaz.</td></tr>
+      <tr><th>agente</th><td>de / por</td><td>La revisión del texto por el equipo.</td><td>El equipo revisó el texto.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Живой испанский",
+    subgroup: "Регистр",
+    title: "Разговорный, нейтральный и формальный регистр",
+    description: "Регистр меняет обращение, прямоту, лексику, синтаксис и формулы начала/конца; одной замены tú на usted недостаточно.",
+    summary: "¿Me lo mandas? → ¿Puedes enviármelo? → Le agradecería que me lo enviara.",
+    mistake: "Не смешивайте несовместимые сигналы: Hola + Le ruego encarecidamente + Un abrazo обычно звучит стилистически неровно.",
+    table: `<table><thead><tr><th>Задача</th><th>Разговорно</th><th>Нейтрально</th><th>Формально</th></tr></thead><tbody>
+      <tr><th>попросить</th><td>¿Me lo mandas?</td><td>¿Puedes enviármelo?</td><td>Le agradecería que me lo enviara.</td></tr>
+      <tr><th>не согласиться</th><td>No lo veo así.</td><td>No estoy del todo de acuerdo.</td><td>Permítame discrepar en este punto.</td></tr>
+      <tr><th>сообщить проблему</th><td>Esto no funciona.</td><td>Hay un problema con el sistema.</td><td>Se ha detectado una incidencia en el sistema.</td></tr>
+      <tr><th>предложить</th><td>¿Y si lo dejamos?</td><td>Podríamos aplazarlo.</td><td>Se propone aplazar la reunión.</td></tr>
+      <tr><th>уточнить</th><td>O sea, ¿mañana?</td><td>Entonces, ¿sería mañana?</td><td>¿Podría confirmar si se refiere a mañana?</td></tr>
+      <tr><th>начать письмо</th><td>Hola, Ana:</td><td>Buenos días, Ana:</td><td>Estimada señora López:</td></tr>
+      <tr><th>завершить</th><td>Un abrazo.</td><td>Gracias. Un saludo.</td><td>Atentamente / Reciba un cordial saludo.</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Живой испанский",
+    subgroup: "Здоровье",
+    title: "У врача и в аптеке в Испании",
+    description: "Чтобы получить помощь, назовите симптом, место, длительность, интенсивность, уже принятые меры и нужное действие.",
+    summary: "Me duele la garganta; Tengo fiebre desde ayer; Quería pedir cita; ¿Necesito receta?",
+    mistake: "Doler согласуется с тем, что болит: Me duele la cabeza, но Me duelen las piernas.",
+    table: `<table><thead><tr><th>Задача</th><th>Фраза</th><th>Перевод</th><th>Ключевое слово</th></tr></thead><tbody>
+      <tr><th>записаться</th><td>Quería pedir cita con mi médico de familia.</td><td>Я хотел бы записаться к семейному врачу.</td><td>pedir cita</td></tr>
+      <tr><th>назвать симптом</th><td>Me duele mucho la garganta.</td><td>У меня сильно болит горло.</td><td>doler</td></tr>
+      <tr><th>длительность</th><td>Tengo fiebre desde ayer.</td><td>У меня температура со вчерашнего дня.</td><td>desde</td></tr>
+      <tr><th>изменение</th><td>El dolor ha empeorado esta mañana.</td><td>Сегодня утром боль усилилась.</td><td>empeorar</td></tr>
+      <tr><th>аллергия</th><td>Soy alérgico/a a la penicilina.</td><td>У меня аллергия на пенициллин.</td><td>ser alérgico a</td></tr>
+      <tr><th>в аптеке</th><td>¿Tiene algo para la tos?</td><td>У вас есть что-нибудь от кашля?</td><td>algo para</td></tr>
+      <tr><th>рецепт</th><td>¿Hace falta receta?</td><td>Нужен рецепт?</td><td>receta</td></tr>
+      <tr><th>дозировка</th><td>¿Cada cuánto tengo que tomarlo?</td><td>Как часто мне это принимать?</td><td>cada cuánto</td></tr>
+      <tr><th>уточнение</th><td>¿Puede explicármelo más despacio?</td><td>Вы можете объяснить это помедленнее?</td><td>уточнить инструкцию</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Живой испанский",
+    subgroup: "Жильё и отель",
+    title: "Отель, аренда жилья и бытовая проблема",
+    description: "Основные модели для бронирования, заселения, аренды квартиры, описания неисправности и согласования решения.",
+    summary: "Tengo una reserva; ¿Están incluidos los gastos?; No funciona la calefacción; ¿Cuándo pueden repararla?",
+    mistake: "Habitación — комната или номер в отеле; piso — квартира или этаж по контексту; alquiler — аренда, alquilar — арендовать/сдавать.",
+    table: `<table><thead><tr><th>Ситуация</th><th>Фраза</th><th>Перевод</th><th>Лексика</th></tr></thead><tbody>
+      <tr><th>заселение</th><td>Tengo una reserva a nombre de Petrov.</td><td>У меня бронь на имя Петров.</td><td>a nombre de</td></tr>
+      <tr><th>условия</th><td>¿El desayuno está incluido?</td><td>Завтрак включён?</td><td>estar incluido</td></tr>
+      <tr><th>снять жильё</th><td>Estoy interesado/a en alquilar el piso.</td><td>Я заинтересован в аренде квартиры.</td><td>alquilar</td></tr>
+      <tr><th>расходы</th><td>¿Están incluidos los gastos?</td><td>Коммунальные расходы включены?</td><td>los gastos</td></tr>
+      <tr><th>залог</th><td>¿De cuánto es la fianza?</td><td>Каков размер залога?</td><td>la fianza</td></tr>
+      <tr><th>неисправность</th><td>No funciona la calefacción.</td><td>Отопление не работает.</td><td>no funciona</td></tr>
+      <tr><th>шум</th><td>La habitación da a una calle muy ruidosa.</td><td>Номер выходит на очень шумную улицу.</td><td>dar a</td></tr>
+      <tr><th>решение</th><td>¿Cuándo podrían venir a repararlo?</td><td>Когда могли бы прийти это починить?</td><td>reparar</td></tr>
+      <tr><th>подтверждение</th><td>Entonces, lo cambiarán mañana, ¿verdad?</td><td>Итак, это заменят завтра, верно?</td><td>подтвердить договорённость</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Живой испанский",
+    subgroup: "Покупки и техника",
+    title: "Возврат товара, гарантия и неисправная техника",
+    description: "Фразы для описания дефекта, предъявления подтверждения покупки и просьбы обменять, вернуть деньги или отремонтировать товар.",
+    summary: "No funciona; Está en garantía; Tengo el recibo; Quisiera cambiarlo; ¿Cuánto tardará la reparación?",
+    mistake: "Devolver может означать вернуть товар или деньги: Quiero devolver el móvil; Me devolvieron el dinero.",
+    table: `<table><thead><tr><th>Задача</th><th>Фраза</th><th>Перевод</th><th>Лексика</th></tr></thead><tbody>
+      <tr><th>назвать дефект</th><td>El móvil no carga.</td><td>Телефон не заряжается.</td><td>cargar</td></tr>
+      <tr><th>объяснить момент</th><td>Dejó de funcionar ayer.</td><td>Он перестал работать вчера.</td><td>dejar de</td></tr>
+      <tr><th>подтверждение покупки</th><td>Tengo el recibo y el embalaje.</td><td>У меня есть чек и упаковка.</td><td>recibo, embalaje</td></tr>
+      <tr><th>гарантия</th><td>Todavía está en garantía.</td><td>Он ещё на гарантии.</td><td>estar en garantía</td></tr>
+      <tr><th>обмен</th><td>Quisiera cambiarlo por otro.</td><td>Я хотел бы обменять его на другой.</td><td>cambiar por</td></tr>
+      <tr><th>возврат</th><td>Quiero devolverlo y solicitar el reembolso.</td><td>Я хочу вернуть его и запросить возврат денег.</td><td>reembolso</td></tr>
+      <tr><th>ремонт</th><td>¿Cuánto tardará la reparación?</td><td>Сколько займёт ремонт?</td><td>tardar</td></tr>
+      <tr><th>статус</th><td>¿Cómo puedo consultar el estado de la reparación?</td><td>Как проверить статус ремонта?</td><td>consultar el estado</td></tr>
+      <tr><th>договорённость</th><td>¿Me confirma que estará listo el viernes?</td><td>Подтвердите, что всё будет готово в пятницу?</td><td>confirmar</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Живой испанский",
+    subgroup: "Административные ситуации",
+    title: "Cita previa, formulario и justificante: базовые госуслуги в Испании",
+    description: "Нейтральные фразы для записи, подачи документов, исправления данных и получения подтверждения; конкретные требования всегда проверяются на официальном сайте учреждения.",
+    summary: "Necesito cita previa; ¿Qué documentos tengo que presentar?; Quisiera subsanar un error; ¿Me da un justificante?",
+    mistake: "Требования и названия процедур меняются; эта шпаргалка помогает общаться, но не заменяет актуальную информацию официального учреждения.",
+    table: `<table><thead><tr><th>Задача</th><th>Фраза</th><th>Перевод</th><th>Термин</th></tr></thead><tbody>
+      <tr><th>узнать о записи</th><td>¿Hace falta cita previa?</td><td>Нужна предварительная запись?</td><td>cita previa</td></tr>
+      <tr><th>записаться</th><td>Quisiera pedir cita para este trámite.</td><td>Я хотел бы записаться для этой процедуры.</td><td>trámite</td></tr>
+      <tr><th>документы</th><td>¿Qué documentos tengo que presentar?</td><td>Какие документы нужно подать?</td><td>presentar</td></tr>
+      <tr><th>форма</th><td>¿Dónde puedo descargar el formulario?</td><td>Где скачать форму?</td><td>formulario</td></tr>
+      <tr><th>копия</th><td>¿Necesita el original o una copia?</td><td>Нужен оригинал или копия?</td><td>original / copia</td></tr>
+      <tr><th>исправить ошибку</th><td>Quisiera subsanar un error en mis datos.</td><td>Я хотел бы исправить ошибку в данных.</td><td>subsanar</td></tr>
+      <tr><th>подтверждение</th><td>¿Me puede dar un justificante?</td><td>Вы можете выдать подтверждение?</td><td>justificante</td></tr>
+      <tr><th>статус</th><td>¿Cómo puedo consultar el estado del expediente?</td><td>Как проверить статус дела?</td><td>expediente</td></tr>
+      <tr><th>электронно</th><td>¿Se puede hacer por la sede electrónica?</td><td>Можно сделать это через электронный портал?</td><td>sede electrónica</td></tr>
+    </tbody></table>`
+  },
+
+  {
+    group: "Живой испанский",
+    subgroup: "Работа и встречи",
+    title: "Рабочая встреча: слово, решение, срок и следующий шаг",
+    description: "Фразы для участия во встрече, уточнения позиции, фиксации решения, ответственного и срока выполнения.",
+    summary: "¿Puedo añadir algo?; Entonces, quedamos en…; ¿Quién se encarga?; El plazo es el viernes.",
+    mistake: "Quedar en + infinitivo означает договориться что-то сделать: Quedamos en enviarlo, а quedar con — договориться встретиться с человеком.",
+    table: `<table><thead><tr><th>Этап</th><th>Фраза</th><th>Перевод</th><th>Функция</th></tr></thead><tbody>
+      <tr><th>повестка</th><td>El primer punto del orden del día es…</td><td>Первый пункт повестки — …</td><td>orden del día</td></tr>
+      <tr><th>взять слово</th><td>¿Puedo añadir algo?</td><td>Можно я кое-что добавлю?</td><td>войти в разговор</td></tr>
+      <tr><th>уточнить</th><td>¿Te refieres al coste total?</td><td>Ты имеешь в виду общую стоимость?</td><td>referirse a</td></tr>
+      <tr><th>не согласиться</th><td>No lo veo exactamente así.</td><td>Я вижу это несколько иначе.</td><td>смягчённое несогласие</td></tr>
+      <tr><th>предложить</th><td>Propongo que revisemos el calendario.</td><td>Предлагаю пересмотреть график.</td><td>proponer que + subj.</td></tr>
+      <tr><th>зафиксировать</th><td>Entonces, quedamos en enviar una nueva versión.</td><td>Итак, договорились отправить новую версию.</td><td>quedar en</td></tr>
+      <tr><th>ответственный</th><td>¿Quién se encarga de esta tarea?</td><td>Кто отвечает за эту задачу?</td><td>encargarse de</td></tr>
+      <tr><th>срок</th><td>El plazo es el viernes a mediodía.</td><td>Срок — пятница, полдень.</td><td>plazo</td></tr>
+      <tr><th>итог</th><td>Enviaré un resumen con los próximos pasos.</td><td>Я отправлю итог с дальнейшими шагами.</td><td>próximos pasos</td></tr>
+    </tbody></table>`
   }
 ];
 const TABLE_GROUPS = [
@@ -7764,15 +8173,15 @@ const TABLE_GROUPS = [
   },
   {
     title: "Синтаксис и порядок слов",
-    description: "Se, пассив, вопросы, косвенная речь, управление que и положение подлежащего."
+    description: "Se, пассив, косвенная речь, тема и фокус, связность, управление que и порядок слов."
   },
   {
     title: "Наречия, предлоги и связки",
-    description: "Наречия, союзы, коннекторы и предлоги для точной связи идей."
+    description: "Наречия, предлоги, коннекторы, аргументация и маркеры позиции говорящего."
   },
   {
     title: "Словообразование и лексика",
-    description: "Приставки, суффиксы, уменьшительные формы и ложные друзья переводчика."
+    description: "Приставки, суффиксы, номинализация, оттенки слов и ложные друзья переводчика."
   },
   {
     title: "Произношение, орфография и письмо",
@@ -7780,7 +8189,7 @@ const TABLE_GROUPS = [
   },
   {
     title: "Живой испанский",
-    description: "Обращение, вежливость и разговорные ситуации современного испанского Испании."
+    description: "Регистр, вежливость и практические ситуации современного испанского Испании."
   },
   {
     title: "Числа, время и даты",
@@ -8007,7 +8416,7 @@ const LEARNING_LEVELS = [
     id: "a2", label: "A2", title: "Повседневная самостоятельность",
     description: "Общение в регулярно встречающихся ситуациях и рассказ о прошлом, настоящем и планах.",
     can: ["понимать часто употребляемые фразы о семье, работе, покупках и поездках", "общаться в большинстве простых рутинных ситуаций", "описать прошлый опыт, планы и ближайшие намерения простыми связанными фразами"],
-    grammar: ["pretérito perfecto compuesto, indefinido и imperfecto: базовое противопоставление", "будущее и условное намерение: ir a + infinitivo, futuro simple в частотных случаях", "сравнение, превосходная степень и наречия частотности", "прямые/косвенные местоимения, возвратные глаголы и базовый imperativo", "союзы porque, aunque, cuando, si и простые придаточные"],
+    grammar: ["pretérito perfecto compuesto, indefinido и imperfecto: базовое противопоставление", "будущее и условное намерение: ir a + infinitivo, futuro simple в частотных случаях", "сравнение, превосходная степень и наречия частотности", "привычки и действие в процессе: soler + infinitivo, estar/seguir + gerundio", "прямые/косвенные местоимения, возвратные глаголы и базовый imperativo", "союзы porque, aunque, cuando, si и простые придаточные"],
     topics: ["путешествия, жильё, услуги и здоровье", "работа, учёба, планы и опыт", "личные события, привычки и воспоминания", "покупки, технологии и повседневные проблемы"],
     practice: ["рассказать, что произошло вчера или недавно", "описать привычки и фоновые обстоятельства в прошлом", "объяснить проблему в магазине, отеле или у врача", "написать короткий рассказ, письмо или отзыв"],
     checklist: ["Я могу объясниться в типичной поездке без постоянного перехода на другой язык", "Я различаю основные способы рассказать о прошлом", "Я связываю несколько фраз в понятный рассказ о знакомой теме"]
@@ -8016,7 +8425,7 @@ const LEARNING_LEVELS = [
     id: "b1", label: "B1", title: "Уверенное самостоятельное общение",
     description: "Самостоятельное общение на знакомые темы, рассказ о событиях и объяснение мнения.",
     can: ["понимать основную мысль ясной стандартной речи на знакомые темы", "справляться с большинством ситуаций в поездке по Испании", "создавать связный рассказ о событиях, опыте, планах и целях", "кратко объяснять причины, сравнивать варианты и выражать мнение"],
-    grammar: ["системное различение indefinido, imperfecto и perfecto", "futuro, condicional и основные перифразы", "presente de subjuntivo в желаниях, оценках, советах и цели", "условные конструкции реального и гипотетического типа", "относительные, временные, причинные и условные придаточные", "связки текста, местоимения, косвенная речь в базовом объёме"],
+    grammar: ["системное различение indefinido, imperfecto и perfecto", "futuro, condicional и основные перифразы", "presente de subjuntivo в желаниях, оценках, советах и цели", "мнение и достоверность: indicativo или subjuntivo после creo, no creo, dudo", "условные конструкции реального и гипотетического типа", "относительные, временные, причинные и условные придаточные", "связки текста, местоимения, косвенная речь в базовом объёме"],
     topics: ["работа и образование, путешествия и общество", "здоровье, окружающая среда, медиа и технологии", "биография, планы, проблемы и решения", "культурные и бытовые реалии Испании"],
     practice: ["рассказать историю и поддержать разговор без подготовки", "написать письмо, отзыв или связный рассказ", "объяснить проблему и предложить решение", "перефразировать простое сообщение для другого человека"],
     checklist: ["Я могу поддерживать разговор на большинство знакомых тем", "Я связно рассказываю о прошлом и планах", "Я выражаю мнение и объясняю его простыми аргументами"]
@@ -11503,6 +11912,13 @@ const A2_LEARNING_DETAILS = buildLearningDetails([
     "Сравните два знакомых города по трём признакам и добавьте две фразы о своих привычках."
   ],
   [
+    "привычки и действие в процессе: soler + infinitivo, estar/seguir + gerundio",
+    "Различайте обычное действие, текущий процесс и его продолжение: это разные взгляды на действие, а не взаимозаменяемые формы.",
+    ["Soler + infinitivo сообщает привычку: Suelo caminar; solía + infinitivo — прежнюю привычку.", "Estar + gerundio выделяет процесс, seguir + gerundio подчёркивает, что он продолжается."],
+    [["Suelo ir al trabajo en metro.", "Я обычно езжу на работу на метро."], ["Esta semana estoy trabajando en casa y sigo preparando el informe.", "На этой неделе я работаю из дома и продолжаю готовить отчёт."]],
+    "Опишите две постоянные привычки, одну привычку в прошлом, два текущих процесса и одно продолжающееся действие."
+  ],
+  [
     "прямые/косвенные местоимения, возвратные глаголы и базовый imperativo",
     "Определяйте функцию местоимения до выбора формы: что заменяем, кому адресовано действие и совпадает ли исполнитель с объектом.",
     ["Прямое дополнение: lo/la/los/las; косвенное: le/les, перед lo/la превращается в se: se lo doy.", "В утвердительном Imperativo местоимение присоединяется: dímelo; в отрицательном стоит перед формой: no me lo digas."],
@@ -11644,6 +12060,13 @@ const B1_LEARNING_DETAILS = buildLearningDetails([
     ["Желание/совет: quiero que, te recomiendo que; оценка: es importante que; цель: para que.", "При одном субъекте обычно нужен инфинитив: Quiero salir; при двух — que + Subjuntivo: Quiero que salgas."],
     [["Te recomiendo que reserves con antelación.", "Советую тебе забронировать заранее."], ["Te escribo para que sepas que ya he llegado.", "Пишу тебе, чтобы ты знал, что я уже приехал."]],
     "Преобразуйте четыре пары с одним субъектом в конструкции с двумя субъектами и Subjuntivo."
+  ],
+  [
+    "мнение и достоверность: indicativo или subjuntivo после creo, no creo, dudo",
+    "Выбирайте наклонение по тому, утверждает ли говорящий содержание, отрицает его достоверность или оставляет под сомнением.",
+    ["Creo/pienso/me parece que обычно вводят Indicativo; no creo/no pienso/dudo que — Subjuntivo.", "Формулы уверенности está claro que и sé que требуют Indicativo, а es posible que и puede que — Subjuntivo."],
+    [["Creo que la reunión empieza a las nueve.", "Думаю, встреча начинается в девять."], ["No creo que hayan confirmado la fecha.", "Не думаю, что они подтвердили дату."]],
+    "Составьте четыре пары утверждение/сомнение и объясните, какую позицию показывает смена наклонения."
   ],
   [
     "условные конструкции реального и гипотетического типа",
@@ -12218,7 +12641,10 @@ const LEARNING_LEVEL_RESOURCES = {
     ["Preposiciones de lugar", "Место"],
     ["Погода: hacer, estar", "Погода"],
     ["Вежливые просьбы в Испании", "Вежливые просьбы"],
-    ["Письма и сообщения", "Сообщения"]
+    ["Письма и сообщения", "Сообщения"],
+    ["Bueno / bien, malo / mal", "Bueno / bien"],
+    ["Presente или estar / seguir", "Действие в процессе"],
+    ["Decir, contar, hablar", "Глаголы речи"]
   ],
   a2: [
     ["Pretérito Perfecto vs Indefinido", "Perfecto / Indefinido"],
@@ -12232,7 +12658,12 @@ const LEARNING_LEVEL_RESOURCES = {
     ["Как рассказывать историю", "Как строить рассказ"],
     ["Транспорт и маршруты", "Поездки по Испании"],
     ["Doler и части тела", "У врача"],
-    ["Письма и сообщения", "Письма и отзывы"]
+    ["Письма и сообщения", "Письма и отзывы"],
+    ["Soler, acostumbrarse a", "Привычки и тенденции"],
+    ["Presente или estar / seguir", "Процесс и привычка"],
+    ["У врача и в аптеке", "Врач и аптека"],
+    ["Отель, аренда жилья", "Отель и жильё"],
+    ["Возврат товара, гарантия", "Возврат и гарантия"]
   ],
   b1: [
     ["Pretérito Perfecto vs Indefinido", "Perfecto / Indefinido"],
@@ -12246,7 +12677,11 @@ const LEARNING_LEVEL_RESOURCES = {
     ["Conectores: все связки", "Связки текста"],
     ["Косвенная речь: полная таблица", "Косвенная речь"],
     ["Вежливые просьбы в Испании", "Вежливое общение"],
-    ["Письма и сообщения", "Письма и сообщения"]
+    ["Письма и сообщения", "Письма и сообщения"],
+    ["Creo que / No creo que", "Мнение и наклонение"],
+    ["Para que, antes de que", "Цель и обстоятельства"],
+    ["Cita previa, formulario", "Госуслуги в Испании"],
+    ["Рабочая встреча", "Рабочая встреча"]
   ],
   b2: [
     ["Pluscuamperfecto", "Предшествование в прошлом"],
@@ -12260,7 +12695,11 @@ const LEARNING_LEVEL_RESOURCES = {
     ["Conectores: все связки", "Связность текста"],
     ["Глаголы с предлогами", "Управление глаголов"],
     ["Yo, tú, él: когда подлежащее", "Фокус и порядок слов"],
-    ["Письма и сообщения", "Формальное письмо"]
+    ["Письма и сообщения", "Формальное письмо"],
+    ["Aunque, a pesar de que", "Уступка и наклонение"],
+    ["Как построить аргумент", "Аргументация"],
+    ["Глаголы передачи речи", "Передача источника"],
+    ["Разговорный, нейтральный", "Регистры"]
   ],
   c1: [
     ["Concordancia de tiempos", "Согласование времён"],
@@ -12274,7 +12713,11 @@ const LEARNING_LEVEL_RESOURCES = {
     ["Относительные предложения: смысл запятых", "Относительные и пунктуация"],
     ["Conectores: все связки", "Продвинутая связность"],
     ["Глаголы с предлогами", "Управление и коллокации"],
-    ["Expresiones coloquiales de España", "Разговорный регистр Испании"]
+    ["Expresiones coloquiales de España", "Разговорный регистр Испании"],
+    ["Lo que…, fue quien", "Тема и фокус"],
+    ["Ссылки внутри текста", "Связность текста"],
+    ["Номинализация", "Номинализация"],
+    ["Как смягчить утверждение", "Достоверность"]
   ],
   c2: [
     ["Concordancia de tiempos", "Точка отсчёта и времена"],
@@ -12288,7 +12731,11 @@ const LEARNING_LEVEL_RESOURCES = {
     ["Expresiones coloquiales de España", "Идиоматика Испании"],
     ["Diminutivos и aumentativos", "Стилистические оттенки"],
     ["Tilde diacrítica", "Тонкая орфография"],
-    ["¿? ¡! Запятые", "Пунктуация и оформление"]
+    ["¿? ¡! Запятые", "Пунктуация и оформление"],
+    ["Lo que…, fue quien", "Тема и фокус"],
+    ["Ссылки внутри текста", "Связность текста"],
+    ["Номинализация", "Номинализация"],
+    ["Разговорный, нейтральный", "Регистры"]
   ]
 };
 
@@ -12355,8 +12802,16 @@ const LEARNING_RESOURCE_RULES = [
     resources: [["Futuro: ir a + infinitivo", "Будущее"], ["Perífrasis verbales", "Перифразы"]]
   },
   {
+    terms: ["привычк", "процесс", "soler", "gerundio", "распорядок"],
+    resources: [["Soler, acostumbrarse a", "Привычки"], ["Presente или estar / seguir", "Действие в процессе"]]
+  },
+  {
     terms: ["subjuntivo", "желани", "сомнени", "гипотез"],
     resources: [["Subjuntivo по смыслу", "Subjuntivo по смыслу"], ["Infinitivo или que + subjuntivo", "Infinitivo или Subjuntivo"]]
+  },
+  {
+    terms: ["мнение", "достоверност", "уверенност", "позици"],
+    resources: [["Creo que / No creo que", "Мнение и наклонение"], ["Как смягчить утверждение", "Степень уверенности"]]
   },
   {
     terms: ["условн"],
@@ -12364,19 +12819,27 @@ const LEARNING_RESOURCE_RULES = [
   },
   {
     terms: ["относительн", "придаточн"],
-    resources: [["Относительные: que, quien", "Относительные местоимения"], ["Относительные предложения: смысл запятых", "Смысл запятых"]]
+    resources: [["Относительные: que, quien", "Относительные местоимения"], ["Para que, antes de que", "Цель и обстоятельства"]]
+  },
+  {
+    terms: ["уступ", "aunque", "возражен"],
+    resources: [["Aunque, a pesar de que", "Уступка и наклонение"], ["Как построить аргумент", "Аргументация"]]
   },
   {
     terms: ["связ", "текст", "эссе", "отчёт", "источник", "суммир", "синтез"],
-    resources: [["Conectores: все связки", "Связки текста"], ["Относительные предложения: смысл запятых", "Связность и пунктуация"]]
+    resources: [["Conectores: все связки", "Связки текста"], ["Ссылки внутри текста", "Ссылки внутри текста"]]
   },
   {
     terms: ["косвен", "перефраз", "чуж", "передач"],
-    resources: [["Косвенная речь: полная таблица", "Косвенная речь"], ["Concordancia de tiempos", "Согласование времён"]]
+    resources: [["Косвенная речь: полная таблица", "Косвенная речь"], ["Глаголы передачи речи", "Точные глаголы речи"]]
   },
   {
-    terms: ["пассив", "безличн", "номинализац"],
+    terms: ["пассив", "безличн"],
     resources: [["Voz pasiva", "Пассив и безличность"], ["Se: возвратность", "Функции se"]]
+  },
+  {
+    terms: ["номинализац"],
+    resources: [["Номинализация", "Номинализация"], ["Глаголы передачи речи", "Глагольный стиль"]]
   },
   {
     terms: ["местоимени", "возвратн", "объект"],
@@ -12384,11 +12847,11 @@ const LEARNING_RESOURCE_RULES = [
   },
   {
     terms: ["модаль", "вероятност", "дистанц", "обязательност"],
-    resources: [["Предположение о настоящем и прошлом", "Предположение"], ["Deber / Tener que / Hay que", "Обязательность"]]
+    resources: [["Предположение о настоящем и прошлом", "Предположение"], ["Как смягчить утверждение", "Степень уверенности"]]
   },
   {
     terms: ["регистр", "стил", "аудитори", "делов", "академ", "формальн", "письмо"],
-    resources: [["Письма и сообщения", "Письма и регистр"], ["Вежливые просьбы в Испании", "Степень вежливости"]]
+    resources: [["Разговорный, нейтральный", "Три регистра"], ["Письма и сообщения", "Письма и регистр"]]
   },
   {
     terms: ["идиом", "метафор", "юмор", "разговорн"],
@@ -12404,11 +12867,31 @@ const LEARNING_RESOURCE_RULES = [
   },
   {
     terms: ["порядок слов", "эмфаз", "тематизац", "фокус"],
-    resources: [["Yo, tú, él: когда подлежащее", "Подлежащее и фокус"], ["A María le escribí", "Вынос дополнения"]]
+    resources: [["Lo que…, fue quien", "Тема и фокус"], ["A María le escribí", "Вынос дополнения"]]
   },
   {
     terms: ["переговор", "компромисс", "решени", "аргумент", "мнени"],
-    resources: [["Conectores: все связки", "Аргументация"], ["Вежливые просьбы в Испании", "Смягчение позиции"]]
+    resources: [["Как построить аргумент", "Структура аргумента"], ["Reformular, corregir y matizar", "Уточнить позицию"]]
+  },
+  {
+    terms: ["здоров", "врач", "аптек"],
+    resources: [["У врача и в аптеке", "Врач и аптека"], ["Doler и части тела", "Doler"]]
+  },
+  {
+    terms: ["жиль", "отел", "аренд"],
+    resources: [["Отель, аренда жилья", "Отель и жильё"]]
+  },
+  {
+    terms: ["покупк", "магазин", "технолог", "товар"],
+    resources: [["Возврат товара, гарантия", "Возврат и гарантия"]]
+  },
+  {
+    terms: ["услуг", "административ", "документ"],
+    resources: [["Cita previa, formulario", "Госуслуги в Испании"]]
+  },
+  {
+    terms: ["работ", "встреч", "профессиональн"],
+    resources: [["Рабочая встреча", "Рабочая встреча"]]
   },
   {
     terms: ["орфограф", "редактир", "пунктуац"],
@@ -12580,7 +13063,7 @@ function learningItemDetails(level, section, item) {
     points: levelDetail?.points || [],
     examples: levelDetail?.examples || [],
     note: levelDetail?.note || "",
-    links: links.slice(0, 5)
+    links: links.slice(0, 6)
   };
 }
 

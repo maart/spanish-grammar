@@ -3356,7 +3356,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.78 · обновлено: 22.08.2026 15:02 CEST</span>
+        <span>Версия MVP 0.79 · обновлено: 22.08.2026 15:05 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -10551,8 +10551,9 @@ function renderVerbResults(content, results, selectedPanel) {
     <div class="verb-list" ${isDefaultSuggestionPage ? `id="commonVerbList"` : ""}></div>
     ${isDefaultSuggestionPage ? `
       <div class="common-verbs-footer">
-        <p class="muted">${showingAllVerbs ? `Показано ${visibleCommonVerbs.length} глаголов` : `Показано ${visibleCommonVerbs.length} из ${commonVerbs.length} частых`}</p>
+        <p class="muted">${showingAllVerbs ? `Показано ${visibleCommonVerbs.length} глаголов` : `Показано ${visibleCommonVerbs.length} самых частых`}</p>
         <div class="common-verbs-actions">
+          ${state.commonVerbLimit === 20 ? `<button class="small-button" type="button" data-common-limit="100" aria-controls="commonVerbList">Показать 100</button>` : ""}
           ${state.commonVerbLimit === 20 ? `<button class="small-button" type="button" data-common-limit="all" aria-controls="commonVerbList">Показать все глаголы</button>` : ""}
           ${state.commonVerbLimit === 100 ? `<button class="small-button" type="button" data-common-limit="all" aria-controls="commonVerbList">Показать все глаголы</button>` : ""}
           ${state.commonVerbLimit === "all" ? `<button class="small-button" type="button" data-common-limit="100" aria-controls="commonVerbList">Свернуть до 100</button>` : ""}

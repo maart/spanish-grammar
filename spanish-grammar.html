@@ -2998,7 +2998,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.65 · обновлено: 22.08.2026 12:06 CEST</span>
+        <span>Версия MVP 0.66 · обновлено: 22.08.2026 12:10 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -11064,10 +11064,11 @@ const A0_LEARNING_DETAILS = {
     points: [
       "Нейтрально: Hola. По времени суток: Buenos días, Buenas tardes, Buenas noches.",
       "Представление: Me llamo Ana или Soy Ana. Реакция: Encantado / Encantada; Mucho gusto.",
+      "С ровесником и знакомым: ¿Cómo estás? / ¿Y tú? Вежливо или официально: ¿Cómo está? / ¿Y usted?",
       "Происхождение: Soy de Rusia. Национальность и язык пишутся со строчной буквы: soy ruso / rusa, hablo ruso.",
       "Прощание: Adiós, Hasta luego, Nos vemos."
     ],
-    examples: [["Hola, me llamo Mijaíl.", "Привет, меня зовут Михаил."], ["Soy de Rusia y hablo ruso.", "Я из России и говорю по-русски."], ["Encantado. ¿Y tú?", "Очень приятно. А ты?"], ["Hasta luego.", "До скорого."]],
+    examples: [["Hola, me llamo Mijaíl.", "Привет, меня зовут Михаил."], ["Soy de Rusia y hablo ruso.", "Я из России и говорю по-русски."], ["Encantado. ¿Y tú?", "Очень приятно. А ты?"], ["Buenos días. ¿Cómo está usted?", "Доброе утро. Как Вы?"], ["Hasta luego.", "До скорого."]],
     task: "Скажите всю цепочку без подсказки и замените имя, страну и язык своими данными."
   },
   "понять числа 0–20, дни недели и простое время": {
@@ -11076,21 +11077,23 @@ const A0_LEARNING_DETAILS = {
       "0–10: cero, uno, dos, tres, cuatro, cinco, seis, siete, ocho, nueve, diez.",
       "11–20: once, doce, trece, catorce, quince, dieciséis, diecisiete, dieciocho, diecinueve, veinte.",
       "Дни недели пишутся со строчной буквы: lunes, martes, miércoles, jueves, viernes, sábado, domingo.",
-      "Для одного часа: Es la una. Для остальных: Son las dos. Минуты: Son las tres y diez."
+      "Для одного часа: Es la una. Для остальных: Son las dos. Минуты: Son las tres y diez.",
+      "Полезные части часа: y cuarto — четверть после, y media — половина, menos cuarto — без четверти."
     ],
-    examples: [["Hoy es lunes.", "Сегодня понедельник."], ["Son las ocho y veinte.", "Сейчас восемь часов двадцать минут."], ["Cuesta quince euros.", "Это стоит пятнадцать евро."], ["Tengo clase el miércoles.", "У меня занятие в среду."]],
+    examples: [["Hoy es lunes.", "Сегодня понедельник."], ["Son las ocho y veinte.", "Сейчас восемь часов двадцать минут."], ["Son las nueve y media.", "Сейчас половина десятого."], ["Cuesta quince euros.", "Это стоит пятнадцать евро."], ["Tengo clase el miércoles.", "У меня занятие в среду."]],
     task: "Запишите на слух или произнесите пять чисел от 0 до 20, сегодняшний день недели и текущее время."
   },
   "алфавит, ударение и базовые правила чтения": {
     guidance: "В испанском алфавите 27 букв; ch и ll являются сочетаниями, а ñ — отдельной буквой. Для чтения незнакомого слова достаточно знать основные соответствия и правило ударения.",
     points: [
+      "Названия букв: a, be, ce, de, e, efe, ge, hache, i, jota, ka, ele, eme, ene, eñe, o, pe, cu, erre, ese, te, u, uve, uve doble, equis, ye, zeta.",
       "Если слово заканчивается на гласную, n или s, без письменного ударения обычно выделяется предпоследний слог: casa, examen, lunes.",
       "После другой согласной обычно ударен последний слог: hotel, hablar, Madrid.",
       "Знак ударения отменяет общее правило: café, teléfono, también.",
       "Вопрос и восклицание открываются и закрываются знаками: ¿Cómo te llamas? ¡Hola!"
     ],
-    examples: [["casa", "CA-sa: предпоследний слог"], ["hotel", "ho-TEL: последний слог"], ["teléfono", "te-LÉ-fo-no: ударение показано знаком"], ["¿Qué tal?", "Как дела? Открывающий знак обязателен."]],
-    task: "Разделите на слоги и поставьте голосом ударение: amigo, español, examen, profesor, música, también."
+    examples: [["María: eme, a, erre, i, a", "Имя María по буквам."], ["casa", "CA-sa: предпоследний слог"], ["hotel", "ho-TEL: последний слог"], ["teléfono", "te-LÉ-fo-no: ударение показано знаком"], ["¿Qué tal?", "Как дела? Открывающий знак обязателен."]],
+    task: "Назовите по буквам своё имя и фамилию, затем разделите на слоги и поставьте голосом ударение: amigo, español, examen, profesor, música, también."
   },
   "род и число существительных; артикли el/la, un/una": {
     guidance: "Учите существительное сразу с артиклем: не casa, а la casa; не libro, а el libro. Артикль одновременно подсказывает род и определённость.",
@@ -11098,7 +11101,8 @@ const A0_LEARNING_DETAILS = {
       "Частая модель: -o — мужской род, -a — женский: el libro, la casa. Но есть исключения: el día, la mano, el problema.",
       "el/la называют конкретный или уже известный предмет; un/una вводят один новый или неопределённый предмет.",
       "После гласной множественное число обычно получает -s: casa → casas; после согласной — -es: hotel → hoteles.",
-      "Слова на -z меняют z на c: luz → luces."
+      "Слова на -z меняют z на c: luz → luces.",
+      "Базовые цвета тоже согласуются: blanco/a, negro/a, rojo/a, amarillo/a; azul, verde и gris не меняются по роду: una casa verde."
     ],
     examples: [["Hay una mesa.", "Есть стол: предмет вводится впервые."], ["La mesa es blanca.", "Этот стол белый: предмет уже известен."], ["un libro — unos libros", "книга — несколько книг"], ["la luz — las luces", "свет — огни"]],
     task: "Добавьте артикль и множественное число: casa, libro, hotel, ciudad, día, mano, luz."
@@ -11129,12 +11133,14 @@ const A0_LEARNING_DETAILS = {
     guidance: "Личные данные удобно учить парами «вопрос — короткий ответ». На уровне A0 достаточно распознать вопрос и ответить одной моделью.",
     points: [
       "Имя: ¿Cómo te llamas? — Me llamo… / ¿Cuál es tu nombre? — Mi nombre es…",
+      "Фамилия и написание: ¿Cuál es tu apellido? — Mi apellido es…; ¿Cómo se escribe? — Se escribe…",
       "Возраст: ¿Cuántos años tienes? — Tengo … años. В испанском возраст выражается с tener.",
       "Происхождение: ¿De dónde eres? — Soy de…; место жительства: ¿Dónde vives? — Vivo en…",
-      "Языки: ¿Qué idiomas hablas? — Hablo ruso y un poco de español."
+      "Языки: ¿Qué idiomas hablas? — Hablo ruso y un poco de español.",
+      "Контакты: ¿Cuál es tu número de teléfono?; correo electrónico — e-mail, arroba — @, punto — точка, guion bajo — _."
     ],
-    examples: [["Me llamo Irina.", "Меня зовут Ирина."], ["Tengo veintiocho años.", "Мне двадцать восемь лет."], ["Soy de Moldavia y vivo en España.", "Я из Молдовы и живу в Испании."], ["Hablo ruso y rumano.", "Я говорю по-русски и по-румынски."]],
-    task: "Ответьте вслух на четыре вопроса: ¿Cómo te llamas? ¿Cuántos años tienes? ¿De dónde eres? ¿Qué idiomas hablas?"
+    examples: [["Me llamo Irina López.", "Меня зовут Ирина Лопес."], ["Tengo veintiocho años.", "Мне двадцать восемь лет."], ["Soy de Moldavia y vivo en España.", "Я из Молдовы и живу в Испании."], ["Hablo ruso y rumano.", "Я говорю по-русски и по-румынски."], ["Mi correo es irina arroba ejemplo punto es.", "Мой e-mail: irina@example.es."]],
+    task: "Ответьте вслух на вопросы об имени, фамилии, возрасте, стране и языках; затем продиктуйте по цифрам номер телефона и произнесите адрес электронной почты."
   },
   "семья и базовые личные данные": {
     guidance: "Для первого описания семьи нужны названия родства, притяжательные mi/tu/su и уже знакомые ser, tener, llamarse, vivir.",
@@ -11150,13 +11156,16 @@ const A0_LEARNING_DETAILS = {
   "числа, даты, время и классные команды": {
     guidance: "Этот набор помогает ориентироваться на уроке и извлекать конкретную информацию: номер, день, час и простое действие преподавателя.",
     points: [
-      "Дата: Hoy es lunes, 5 de mayo. Дни недели и месяцы пишутся со строчной буквы.",
-      "Время: Es la una; Son las dos; La clase es a las nueve.",
+      "Месяцы: enero, febrero, marzo, abril, mayo, junio, julio, agosto, septiembre, octubre, noviembre, diciembre.",
+      "Времена года: primavera, verano, otoño, invierno. С месяцем и временем года: en mayo, en verano.",
+      "Дата: Hoy es lunes, 5 de mayo. День недели и месяц пишутся со строчной буквы.",
+      "Время: Es la una; Son las dos; Son las cuatro y media; La clase es a las nueve.",
       "Частые команды: escucha, lee, escribe, repite, abre, cierra, mira, habla.",
-      "Полезные просьбы: Más despacio, por favor. ¿Puede repetir? No entiendo."
+      "Предметы класса: libro, diccionario, papel, bolígrafo, lápiz, goma, mesa, silla, pizarra, ordenador.",
+      "Фразы для уточнения: Más despacio, por favor. ¿Puede repetir? ¿Qué significa…? ¿Cómo se dice… en español? ¿Cómo se escribe? No entiendo."
     ],
-    examples: [["Abre el libro.", "Открой книгу."], ["Escucha y repite.", "Слушай и повторяй."], ["La clase es el martes a las diez.", "Урок во вторник в десять."], ["¿Puede repetir, por favor?", "Можете повторить, пожалуйста?"]],
-    task: "Запишите сегодняшнюю дату и время, затем выполните без перевода команды: abre, lee, escribe, cierra."
+    examples: [["Mi cumpleaños es el 14 de septiembre.", "Мой день рождения 14 сентября."], ["En agosto es verano en España.", "В августе в Испании лето."], ["Abre el libro.", "Открой книгу."], ["Escucha y repite.", "Слушай и повторяй."], ["La clase es el martes a las diez.", "Урок во вторник в десять."], ["¿Qué significa pizarra?", "Что означает pizarra?"]],
+    task: "Запишите сегодняшнюю дату и время, назовите текущий месяц и время года, затем выполните без перевода команды: abre, lee, escribe, cierra."
   },
   "представиться в 4–5 фразах": {
     guidance: "Короткое представление лучше строить по устойчивому порядку: приветствие → имя → происхождение/место → занятие → языки или цель обучения.",
@@ -11216,6 +11225,7 @@ const A0_LEARNING_DETAILS = {
       "Вопросы: ¿Cómo te llamas? ¿De dónde eres? ¿Cuántos años tienes? ¿Dónde vives? ¿Qué idiomas hablas?",
       "Инструкции: escucha, mira, lee, escribe, repite, abre, cierra.",
       "Разрешённая стратегия: попросить повторить — ¿Puede repetir? — или говорить медленнее — Más despacio, por favor.",
+      "Если мешает одно слово: ¿Qué significa…? Если нужно назвать или записать слово: ¿Cómo se dice…? ¿Cómo se escribe?",
       "Не нужно понимать каждое слово; нужно правильно выполнить действие или дать подходящий короткий ответ."
     ],
     examples: [["¿Dónde vives?", "Где ты живёшь?"], ["Lee el texto.", "Прочитай текст."], ["Escribe tu nombre.", "Напиши своё имя."], ["Más despacio, por favor.", "Помедленнее, пожалуйста."]],

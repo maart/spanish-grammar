@@ -3,6 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f6f3ee">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>Справочник по испанскому</title>
     <style>
 :root {
@@ -50,6 +54,7 @@ body.dark {
 
 body {
   margin: 0;
+  overflow-x: hidden;
   background: var(--bg);
   color: var(--text);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -70,6 +75,7 @@ input {
   width: min(var(--page-width), calc(100vw - 28px));
   min-width: 0;
   min-height: 100vh;
+  min-height: 100svh;
   margin: 0 auto;
   padding: 18px 14px 28px;
 }
@@ -2883,6 +2889,58 @@ select {
   font-weight: 800;
 }
 
+@supports not (backdrop-filter: blur(12px)) {
+  .tabs {
+    background: var(--bg);
+  }
+}
+
+@supports not (color: color-mix(in srgb, black, white)) {
+  .topbar,
+  .search-panel,
+  .content > article,
+  .content > section,
+  .selected-verb-panel > article,
+  .list-grid > article,
+  .list-grid > section {
+    background: var(--surface);
+  }
+
+  .tabs {
+    background: var(--bg);
+  }
+
+  .brand-stats span,
+  .tense-contrast-note,
+  .tense-card-use {
+    border-color: var(--line);
+    background: var(--surface-2);
+  }
+}
+
+@media (min-width: 561px) and (max-width: 760px) {
+  .topbar {
+    flex-wrap: wrap;
+  }
+
+  .header-actions {
+    margin-left: auto;
+  }
+
+  .tabs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    overflow: visible;
+  }
+
+  .tab {
+    min-height: 46px;
+  }
+
+  .tense-group-links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 560px) {
   .app-shell {
     padding: 10px 10px calc(92px + env(safe-area-inset-bottom));
@@ -3459,7 +3517,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.81 · обновлено: 22.08.2026 15:25 CEST</span>
+        <span>Версия MVP 0.82 · обновлено: 22.08.2026 16:32 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -9137,21 +9195,75 @@ const LEARNING_LEVELS = [
   }
 ];
 
+// Хранилище может быть недоступно для file://, приватного режима или строгих настроек браузера.
+// В таком случае приложение продолжает работать в текущей сессии без сохранения настроек.
+const appStorage = (() => {
+  let backend = null;
+  const memory = new Map();
+
+  try {
+    const candidate = window.localStorage;
+    const probe = "__msg_storage_probe__";
+    candidate.setItem(probe, "1");
+    candidate.removeItem(probe);
+    backend = candidate;
+  } catch (_error) {
+    backend = null;
+  }
+
+  return {
+    get(key, fallback = null) {
+      try {
+        const value = backend?.getItem(key);
+        return value === null || value === undefined ? memory.get(key) ?? fallback : value;
+      } catch (_error) {
+        return memory.get(key) ?? fallback;
+      }
+    },
+    set(key, value) {
+      const normalized = String(value);
+      memory.set(key, normalized);
+      try {
+        backend?.setItem(key, normalized);
+      } catch (_error) {
+        // Память текущей вкладки уже содержит последнее значение.
+      }
+    },
+    remove(key) {
+      memory.delete(key);
+      try {
+        backend?.removeItem(key);
+      } catch (_error) {
+        // Удаление из резервной памяти уже выполнено.
+      }
+    }
+  };
+})();
+
+function readStoredJSON(key, fallback) {
+  try {
+    const value = appStorage.get(key);
+    return value === null ? fallback : JSON.parse(value);
+  } catch (_error) {
+    return fallback;
+  }
+}
+
 const state = {
   view: "verbs",
-  learningLevel: LEARNING_LEVELS.some((level) => level.id === localStorage.getItem("msg:learningLevel"))
-    ? localStorage.getItem("msg:learningLevel")
+  learningLevel: LEARNING_LEVELS.some((level) => level.id === appStorage.get("msg:learningLevel"))
+    ? appStorage.get("msg:learningLevel")
     : "a0",
-  learningProgress: JSON.parse(localStorage.getItem("msg:learningProgress") || "{}"),
-  learningDetails: JSON.parse(localStorage.getItem("msg:learningDetails") || "{}"),
+  learningProgress: readStoredJSON("msg:learningProgress", {}),
+  learningDetails: readStoredJSON("msg:learningDetails", {}),
   query: "",
   selectedVerb: null,
   previousVerbQuery: null,
-  recentVerbs: JSON.parse(localStorage.getItem("msg:recentVerbs") || "[]"),
+  recentVerbs: readStoredJSON("msg:recentVerbs", []),
   commonVerbLimit: 20,
   verbCardMode: "basic",
-  selectedMood: ["indicativo", "subjuntivo", "imperativo", "condicional"].includes(localStorage.getItem("msg:selectedMood"))
-    ? localStorage.getItem("msg:selectedMood")
+  selectedMood: ["indicativo", "subjuntivo", "imperativo", "condicional"].includes(appStorage.get("msg:selectedMood"))
+    ? appStorage.get("msg:selectedMood")
     : "indicativo",
   showMoodChooser: false,
   moodChooserStep: "start",
@@ -9161,17 +9273,17 @@ const state = {
   showImperativoIrregulars: false,
   showImperativoPronouns: false,
   showMoodMoreExamples: false,
-  tableFilter: localStorage.getItem("msg:tableFilter") || "all",
-  tableSubgroup: localStorage.getItem("msg:tableSubgroup") || "",
-  tableLevel: TABLE_LEVELS.some((level) => level.id === localStorage.getItem("msg:tableLevel"))
-    ? localStorage.getItem("msg:tableLevel")
+  tableFilter: appStorage.get("msg:tableFilter") || "all",
+  tableSubgroup: appStorage.get("msg:tableSubgroup") || "",
+  tableLevel: TABLE_LEVELS.some((level) => level.id === appStorage.get("msg:tableLevel"))
+    ? appStorage.get("msg:tableLevel")
     : "all",
-  tableLevelCumulative: localStorage.getItem("msg:tableLevelCumulative") !== "false",
+  tableLevelCumulative: appStorage.get("msg:tableLevelCumulative") !== "false",
   focusedTable: null,
   tableReturnVerb: null,
   showTenseToc: true,
-  tenseFilter: ["basic", "frequent", "all"].includes(localStorage.getItem("msg:tenseFilter"))
-    ? localStorage.getItem("msg:tenseFilter")
+  tenseFilter: ["basic", "frequent", "all"].includes(appStorage.get("msg:tenseFilter"))
+    ? appStorage.get("msg:tenseFilter")
     : "basic",
   focusedTense: null,
   returnMood: null,
@@ -9182,22 +9294,22 @@ const state = {
   openMobileTense: null,
   cardFeedback: null,
   searchCursor: -1,
-  cards: JSON.parse(localStorage.getItem("msg:cards") || localStorage.getItem("msg:favorites") || "[]"),
-  quizConfig: JSON.parse(localStorage.getItem("msg:quizConfig") || JSON.stringify({
+  cards: readStoredJSON("msg:cards", readStoredJSON("msg:favorites", [])),
+  quizConfig: readStoredJSON("msg:quizConfig", {
     type: "infinitive",
     tenses: ["presente"],
     persons: [0, 1, 2, 3, 4, 5],
     count: 5
-  })),
+  }),
   showQuizSettings: false,
-  showQuizPanel: localStorage.getItem("msg:showQuizPanel") === "true",
+  showQuizPanel: appStorage.get("msg:showQuizPanel") === "true",
   cardsQuery: "",
-  cardsSort: localStorage.getItem("msg:cardsSort") || "recent",
-  cardsFilter: ["all", "reviewed", "unreviewed", "mistakes", "mastered"].includes(localStorage.getItem("msg:cardsFilter"))
-    ? localStorage.getItem("msg:cardsFilter")
+  cardsSort: appStorage.get("msg:cardsSort") || "recent",
+  cardsFilter: ["all", "reviewed", "unreviewed", "mistakes", "mastered"].includes(appStorage.get("msg:cardsFilter"))
+    ? appStorage.get("msg:cardsFilter")
     : "all",
-  cardStats: JSON.parse(localStorage.getItem("msg:cardStats") || "{}"),
-  savedQuizSession: JSON.parse(localStorage.getItem("msg:quizSession") || "null"),
+  cardStats: readStoredJSON("msg:cardStats", {}),
+  savedQuizSession: readStoredJSON("msg:quizSession", null),
   cardUndo: null,
   cardQuiz: [],
   cardQuizIndex: 0,
@@ -9208,7 +9320,7 @@ const state = {
   cardQuizAttempts: [],
   cardQuizSnapshot: [],
   cardQuizAllVerbs: [],
-  dark: localStorage.getItem("msg:theme") === "dark"
+  dark: appStorage.get("msg:theme") === "dark"
 };
 
 // Frequency order from the Spain press subcorpus of CORPES 1.0.
@@ -9414,7 +9526,7 @@ function applyRouteHash() {
     if (!MOODS.some((mood) => mood.id === moodId)) return false;
     state.view = "moods";
     state.selectedMood = moodId;
-    localStorage.setItem("msg:selectedMood", moodId);
+    appStorage.set("msg:selectedMood", moodId);
     resetMoodDetailState();
   } else if (route.startsWith("table-")) {
     const index = Number(route.slice(6));
@@ -10206,7 +10318,7 @@ function formMatchReason(match) {
 }
 
 function saveCards() {
-  localStorage.setItem("msg:cards", JSON.stringify(state.cards));
+  appStorage.set("msg:cards", JSON.stringify(state.cards));
 }
 
 function toggleCard(verb) {
@@ -10245,7 +10357,7 @@ function restoreLastRemovedCard() {
 function rememberRecentVerb(verb) {
   const recent = Array.isArray(state.recentVerbs) ? state.recentVerbs : [];
   state.recentVerbs = [verb, ...recent.filter((item) => item !== verb && BASE_VERBS.includes(item))].slice(0, 8);
-  localStorage.setItem("msg:recentVerbs", JSON.stringify(state.recentVerbs));
+  appStorage.set("msg:recentVerbs", JSON.stringify(state.recentVerbs));
 }
 
 function selectVerb(verb, { keepReturnQuery = true, updateRoute = true } = {}) {
@@ -10741,7 +10853,7 @@ function renderVerbResults(content, results, selectedPanel) {
       recentVerbs.forEach((verb) => recentList.appendChild(renderVerbListItem(verb, { showBadges: false })));
       recentCard.querySelector("[data-clear-recent]").addEventListener("click", () => {
         state.recentVerbs = [];
-        localStorage.removeItem("msg:recentVerbs");
+        appStorage.remove("msg:recentVerbs");
         renderVerbs();
       });
       results.appendChild(recentCard);
@@ -11033,7 +11145,7 @@ function renderTenses() {
     });
     bindClickAll(focusNav, "[data-return-mood]", (event) => {
       state.selectedMood = event.currentTarget.dataset.returnMood;
-      localStorage.setItem("msg:selectedMood", state.selectedMood);
+      appStorage.set("msg:selectedMood", state.selectedMood);
       resetMoodDetailState();
       state.view = "moods";
       state.focusedTense = null;
@@ -11120,7 +11232,7 @@ function renderTenses() {
   bindClickAll(nav, "[data-tense-filter]", (event) => {
     const button = event.currentTarget;
     state.tenseFilter = button.dataset.tenseFilter;
-    localStorage.setItem("msg:tenseFilter", state.tenseFilter);
+    appStorage.set("msg:tenseFilter", state.tenseFilter);
     renderTenses();
     scrollToCard("tensesTop");
   });
@@ -11472,27 +11584,27 @@ function renderTables() {
   nav.querySelector("[data-table-filter]")?.addEventListener("change", (event) => {
     state.tableFilter = event.currentTarget.value;
     state.tableSubgroup = "";
-    localStorage.setItem("msg:tableFilter", state.tableFilter);
-    localStorage.setItem("msg:tableSubgroup", state.tableSubgroup);
+    appStorage.set("msg:tableFilter", state.tableFilter);
+    appStorage.set("msg:tableSubgroup", state.tableSubgroup);
     renderTables();
   });
   nav.querySelector("[data-table-level]")?.addEventListener("change", (event) => {
     state.tableLevel = event.currentTarget.value;
     state.tableSubgroup = "";
-    localStorage.setItem("msg:tableLevel", state.tableLevel);
-    localStorage.setItem("msg:tableSubgroup", state.tableSubgroup);
+    appStorage.set("msg:tableLevel", state.tableLevel);
+    appStorage.set("msg:tableSubgroup", state.tableSubgroup);
     renderTables();
   });
   nav.querySelector("[data-table-level-cumulative]")?.addEventListener("change", (event) => {
     state.tableLevelCumulative = event.currentTarget.checked;
     state.tableSubgroup = "";
-    localStorage.setItem("msg:tableLevelCumulative", String(state.tableLevelCumulative));
-    localStorage.setItem("msg:tableSubgroup", state.tableSubgroup);
+    appStorage.set("msg:tableLevelCumulative", String(state.tableLevelCumulative));
+    appStorage.set("msg:tableSubgroup", state.tableSubgroup);
     renderTables();
   });
   nav.querySelector("[data-table-subgroup]")?.addEventListener("change", (event) => {
     state.tableSubgroup = event.currentTarget.value;
-    localStorage.setItem("msg:tableSubgroup", state.tableSubgroup);
+    appStorage.set("msg:tableSubgroup", state.tableSubgroup);
     renderTables();
   });
 
@@ -11538,9 +11650,9 @@ function renderTables() {
     state.tableFilter = "all";
     state.tableSubgroup = "";
     state.tableLevel = "all";
-    localStorage.setItem("msg:tableFilter", state.tableFilter);
-    localStorage.setItem("msg:tableSubgroup", state.tableSubgroup);
-    localStorage.setItem("msg:tableLevel", state.tableLevel);
+    appStorage.set("msg:tableFilter", state.tableFilter);
+    appStorage.set("msg:tableSubgroup", state.tableSubgroup);
+    appStorage.set("msg:tableLevel", state.tableLevel);
     renderTables();
   });
 }
@@ -11594,10 +11706,10 @@ function openTableCatalog({ filterId = "all", subgroup = "", levelId = "all", cu
   state.tableSubgroup = subgroup || "";
   state.tableLevel = TABLE_LEVELS.some((level) => level.id === levelId) ? levelId : "all";
   state.tableLevelCumulative = cumulative;
-  localStorage.setItem("msg:tableFilter", state.tableFilter);
-  localStorage.setItem("msg:tableSubgroup", state.tableSubgroup);
-  localStorage.setItem("msg:tableLevel", state.tableLevel);
-  localStorage.setItem("msg:tableLevelCumulative", String(state.tableLevelCumulative));
+  appStorage.set("msg:tableFilter", state.tableFilter);
+  appStorage.set("msg:tableSubgroup", state.tableSubgroup);
+  appStorage.set("msg:tableLevel", state.tableLevel);
+  appStorage.set("msg:tableLevelCumulative", String(state.tableLevelCumulative));
   renderTables();
   updateRouteHash("tables");
   scrollToCard("tablesTop");
@@ -11972,7 +12084,7 @@ function renderMoods() {
 function selectMood(moodId, { updateRoute = true } = {}) {
   if (!MOODS.some((mood) => mood.id === moodId)) return;
   state.selectedMood = moodId;
-  localStorage.setItem("msg:selectedMood", moodId);
+  appStorage.set("msg:selectedMood", moodId);
   resetMoodDetailState();
   renderMoods();
   if (updateRoute) updateRouteHash(`mood-${moodId}`);
@@ -12226,7 +12338,7 @@ function selectedQuizPersons() {
 }
 
 function saveQuizConfig() {
-  localStorage.setItem("msg:quizConfig", JSON.stringify(state.quizConfig));
+  appStorage.set("msg:quizConfig", JSON.stringify(state.quizConfig));
 }
 
 function getAllTenseIds() {
@@ -12395,7 +12507,7 @@ function cardDifficulty(verb) {
 }
 
 function saveCardStats() {
-  localStorage.setItem("msg:cardStats", JSON.stringify(state.cardStats));
+  appStorage.set("msg:cardStats", JSON.stringify(state.cardStats));
 }
 
 function difficultStudyCards() {
@@ -14066,10 +14178,10 @@ function renderLearningPlan() {
     <p class="muted learning-plan-sources">Основа: <a href="https://www.coe.int/en/web/common-european-framework-reference-languages/companion-volume" target="_blank" rel="noopener">CEFR Companion Volume</a> и <a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/default.htm" target="_blank" rel="noopener">Plan Curricular del Instituto Cervantes</a>. A0 опирается на коммуникативные дескрипторы Pre-A1 и начальное содержание A1; планы A1–C2 соотнесены с официальными дескрипторами и инвентарями функций, грамматики, прагматики и учебных тем соответствующих уровней. Списки являются практической адаптацией для самостоятельного обучения, а не официальным экзаменационным силлабусом.</p>
   `;
   content.appendChild(header);
-  bindClickAll(header, "[data-learning-level]", (event) => { state.learningLevel = event.currentTarget.dataset.learningLevel; localStorage.setItem("msg:learningLevel", state.learningLevel); renderLearningPlan(); });
-  bindClickAll(header, "[data-learning-item]", (event) => { const key = event.currentTarget.dataset.learningItem; state.learningProgress[key] = event.currentTarget.checked; localStorage.setItem("msg:learningProgress", JSON.stringify(state.learningProgress)); renderLearningPlan(); });
-  $all("[data-learning-detail]", header).forEach((detail) => detail.addEventListener("toggle", () => { const key = detail.dataset.learningDetail; if (detail.open) state.learningDetails[key] = true; else delete state.learningDetails[key]; localStorage.setItem("msg:learningDetails", JSON.stringify(state.learningDetails)); }));
-  bindClickAll(header, "[data-reset-learning]", () => { Object.keys(state.learningProgress).filter((key) => key.startsWith(`${level.id}:`)).forEach((key) => delete state.learningProgress[key]); localStorage.setItem("msg:learningProgress", JSON.stringify(state.learningProgress)); renderLearningPlan(); });
+  bindClickAll(header, "[data-learning-level]", (event) => { state.learningLevel = event.currentTarget.dataset.learningLevel; appStorage.set("msg:learningLevel", state.learningLevel); renderLearningPlan(); });
+  bindClickAll(header, "[data-learning-item]", (event) => { const key = event.currentTarget.dataset.learningItem; state.learningProgress[key] = event.currentTarget.checked; appStorage.set("msg:learningProgress", JSON.stringify(state.learningProgress)); renderLearningPlan(); });
+  $all("[data-learning-detail]", header).forEach((detail) => detail.addEventListener("toggle", () => { const key = detail.dataset.learningDetail; if (detail.open) state.learningDetails[key] = true; else delete state.learningDetails[key]; appStorage.set("msg:learningDetails", JSON.stringify(state.learningDetails)); }));
+  bindClickAll(header, "[data-reset-learning]", () => { Object.keys(state.learningProgress).filter((key) => key.startsWith(`${level.id}:`)).forEach((key) => delete state.learningProgress[key]); appStorage.set("msg:learningProgress", JSON.stringify(state.learningProgress)); renderLearningPlan(); });
 }
 
 function renderCards() {
@@ -14196,7 +14308,7 @@ function renderCards() {
   header.querySelectorAll("[data-cards-dashboard-filter]").forEach((button) => button.addEventListener("click", () => {
     state.cardsFilter = button.dataset.cardsDashboardFilter;
     state.cardsQuery = "";
-    localStorage.setItem("msg:cardsFilter", state.cardsFilter);
+    appStorage.set("msg:cardsFilter", state.cardsFilter);
     renderCards();
     requestAnimationFrame(() => document.querySelector(".verb-list-card")?.scrollIntoView({ behavior: "smooth", block: "start" }));
   }));
@@ -14207,7 +14319,7 @@ function renderCards() {
   });
   header.querySelector("[data-toggle-quiz-panel]")?.addEventListener("click", () => {
     state.showQuizPanel = !state.showQuizPanel;
-    localStorage.setItem("msg:showQuizPanel", String(state.showQuizPanel));
+    appStorage.set("msg:showQuizPanel", String(state.showQuizPanel));
     renderCards();
   });
   header.querySelector("[data-resume-quiz]")?.addEventListener("click", resumeCardQuiz);
@@ -14347,12 +14459,12 @@ function renderCards() {
   });
   listCard.querySelector("#cardsSort").addEventListener("change", (event) => {
     state.cardsSort = event.target.value;
-    localStorage.setItem("msg:cardsSort", state.cardsSort);
+    appStorage.set("msg:cardsSort", state.cardsSort);
     renderCards();
   });
   listCard.querySelectorAll("[data-cards-filter]").forEach((button) => button.addEventListener("click", () => {
     state.cardsFilter = button.dataset.cardsFilter;
-    localStorage.setItem("msg:cardsFilter", state.cardsFilter);
+    appStorage.set("msg:cardsFilter", state.cardsFilter);
     renderCards();
   }));
   listCard.querySelector("[data-clear-cards-search]")?.addEventListener("click", () => {
@@ -14361,7 +14473,7 @@ function renderCards() {
   });
   listCard.querySelector("[data-show-all-cards]")?.addEventListener("click", () => {
     state.cardsFilter = "all";
-    localStorage.setItem("msg:cardsFilter", state.cardsFilter);
+    appStorage.set("msg:cardsFilter", state.cardsFilter);
     renderCards();
   });
   listCard.querySelectorAll("[data-quiz-verb]").forEach((button) => button.addEventListener("click", () => {
@@ -14385,12 +14497,12 @@ function saveQuizSession() {
     savedAt: new Date().toISOString()
   };
   state.savedQuizSession = session;
-  localStorage.setItem("msg:quizSession", JSON.stringify(session));
+  appStorage.set("msg:quizSession", JSON.stringify(session));
 }
 
 function clearSavedQuizSession() {
   state.savedQuizSession = null;
-  localStorage.removeItem("msg:quizSession");
+  appStorage.remove("msg:quizSession");
 }
 
 function resumeCardQuiz() {
@@ -15238,6 +15350,7 @@ const VIEW_RENDERERS = {
 
 function render() {
   document.body.classList.toggle("dark", state.dark);
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", state.dark ? "#191a17" : "#f6f3ee");
   const themeToggle = $(SELECTORS.themeToggle);
   const themeLabel = state.dark ? "Включить светлую тему" : "Включить тёмную тему";
   themeToggle.setAttribute("aria-label", themeLabel);
@@ -15296,7 +15409,7 @@ $(SELECTORS.homeTitle).addEventListener("click", () => {
 
 $(SELECTORS.themeToggle).addEventListener("click", () => {
   state.dark = !state.dark;
-  localStorage.setItem("msg:theme", state.dark ? "dark" : "light");
+  appStorage.set("msg:theme", state.dark ? "dark" : "light");
   render();
 });
 

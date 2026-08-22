@@ -2643,6 +2643,51 @@ td.irregular {
   font-weight: 900;
 }
 
+.table-context-path {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 3px;
+  min-width: 0;
+}
+
+.table-context-link,
+.table-context-level {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.table-context-level {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.table-context-link {
+  border: 0;
+  border-radius: 4px;
+  padding: 2px 3px;
+  background: transparent;
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent-2) 45%, transparent);
+  text-underline-offset: 2px;
+}
+
+.table-context-link:hover,
+.table-context-link:focus-visible,
+.table-context-level:hover,
+.table-context-level:focus-visible {
+  background: var(--success-soft);
+  text-decoration-color: currentColor;
+}
+
+.table-context-separator {
+  color: var(--muted);
+}
+
 .app-footer {
   display: flex;
   align-items: center;
@@ -3304,7 +3349,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.74 · обновлено: 22.08.2026 14:35 CEST</span>
+        <span>Версия MVP 0.75 · обновлено: 22.08.2026 14:39 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -11181,7 +11226,13 @@ function renderUsefulTableCard(item) {
     id: `table-${index}`,
     className: "info-card table-card is-open",
     html: `
-      <p class="table-context"><span>${item.group}${item.subgroup ? ` · ${item.subgroup}` : ""}</span>${tableLevelBadge(item)}</p>
+      <p class="table-context" aria-label="Положение в каталоге шпаргалок">
+        <span class="table-context-path">
+          <button class="table-context-link" type="button" data-table-context-group>${escapeHTML(item.group)}</button>
+          ${item.subgroup ? `<span class="table-context-separator" aria-hidden="true">›</span><button class="table-context-link" type="button" data-table-context-subgroup>${escapeHTML(item.subgroup)}</button>` : ""}
+        </span>
+        ${tableLevelButton(item)}
+      </p>
       <h2>${item.title}</h2>
       <p class="muted">${item.description}</p>
       <div class="table-summary"><strong>Главное:</strong> ${summary}</div>
@@ -11196,7 +11247,32 @@ function renderUsefulTableCard(item) {
   bindClickAll(section, "[data-table-jump-related]", (event) => {
     openTableFromLink(event.currentTarget.dataset.tableJumpRelated);
   });
+  bindClickAll(section, "[data-table-context-group]", () => {
+    openTableCatalog({ filterId: tableFilterIdForGroup(item.group) });
+  });
+  bindClickAll(section, "[data-table-context-subgroup]", () => {
+    openTableCatalog({ filterId: tableFilterIdForGroup(item.group), subgroup: item.subgroup });
+  });
+  bindClickAll(section, "[data-table-context-level]", () => {
+    openTableCatalog({ levelId: item.minLevel, cumulative: false });
+  });
   return section;
+}
+
+function openTableCatalog({ filterId = "all", subgroup = "", levelId = "all", cumulative = true } = {}) {
+  state.focusedTable = null;
+  state.tableReturnVerb = null;
+  state.tableFilter = TABLE_FILTERS.some((filter) => filter.id === filterId) ? filterId : "all";
+  state.tableSubgroup = subgroup || "";
+  state.tableLevel = TABLE_LEVELS.some((level) => level.id === levelId) ? levelId : "all";
+  state.tableLevelCumulative = cumulative;
+  localStorage.setItem("msg:tableFilter", state.tableFilter);
+  localStorage.setItem("msg:tableSubgroup", state.tableSubgroup);
+  localStorage.setItem("msg:tableLevel", state.tableLevel);
+  localStorage.setItem("msg:tableLevelCumulative", String(state.tableLevelCumulative));
+  renderTables();
+  updateRouteHash("tables");
+  scrollToCard("tablesTop");
 }
 
 function openTableFromLink(targetId) {
@@ -11253,6 +11329,16 @@ function tableLevelMeta(levelId) {
 function tableLevelBadge(item) {
   const level = tableLevelMeta(item.minLevel);
   return `<span class="table-level-badge" title="Рекомендуется начиная с уровня ${level.badge}">с ${level.badge}</span>`;
+}
+
+function tableLevelButton(item) {
+  const level = tableLevelMeta(item.minLevel);
+  return `<button class="table-level-badge table-context-level" type="button" data-table-context-level title="Показать шпаргалки уровня ${level.badge}" aria-label="Показать шпаргалки уровня ${level.badge}">с ${level.badge}</button>`;
+}
+
+function tableFilterIdForGroup(groupTitle) {
+  const match = Object.entries(TABLE_FILTER_GROUPS).find(([, groups]) => groups.includes(groupTitle));
+  return match?.[0] || "all";
 }
 
 function getSubgroupsForFilter(filterId) {

@@ -660,6 +660,50 @@ input[type="search"] {
   margin: 0;
 }
 
+.learning-detail-lead {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.learning-detail-points {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  padding-left: 18px;
+}
+
+.learning-detail-examples {
+  display: grid;
+  border-block: 1px solid var(--line);
+}
+
+.learning-detail-example {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+  padding: 7px 0;
+}
+
+.learning-detail-example + .learning-detail-example {
+  border-top: 1px solid var(--line);
+}
+
+.learning-detail-example [lang="es"] {
+  color: var(--text);
+  font-weight: 750;
+}
+
+.learning-detail-task {
+  padding: 9px 10px;
+  border-left: 3px solid var(--accent-2);
+  background: color-mix(in srgb, var(--accent-2) 8%, transparent);
+  color: var(--text);
+}
+
+.learning-detail-note {
+  font-size: 13px;
+}
+
 .learning-item-links {
   display: flex;
   flex-wrap: wrap;
@@ -2517,6 +2561,11 @@ select {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
+  .learning-detail-example {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
   .table-catalog-links {
     grid-template-columns: 1fr;
   }
@@ -2949,7 +2998,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.63 · обновлено: 25.07.2026 17:44 CEST</span>
+        <span>Версия MVP 0.64 · обновлено: 22.08.2026 11:57 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -10998,6 +11047,182 @@ function hasSavedQuizSession() {
   return Boolean(state.savedQuizSession?.cardQuiz?.length);
 }
 
+const A0_LEARNING_DETAILS = {
+  "прочитать и произнести основные испанские звуки": {
+    guidance: "Испанское письмо довольно предсказуемо: сначала закрепите пять устойчивых гласных, затем несколько сочетаний, которые читаются не как в русском.",
+    points: [
+      "a, e, i, o, u произносятся отчётливо и почти не редуцируются; h не читается: hola, hotel.",
+      "В норме Испании c перед e/i и z дают межзубный звук: cero, cinco, Zaragoza; j и g перед e/i звучат примерно как сильное русское «х»: jamón, gente.",
+      "ñ читается как «нь»; b и v обозначают один фонемный ряд; rr сильнее одиночного r: pero — perro.",
+      "В gue/gui буква u обычно не звучит: guerra, guitarra; две точки возвращают звук u: pingüino."
+    ],
+    examples: [["hola", "привет; h не читается"], ["cinco", "пять; c перед i — межзубный звук"], ["gente", "люди; g перед e звучит как сильное «х»"], ["España", "Испания; ñ = «нь»"]],
+    task: "Прочитайте вслух: hola, vino, cinco, Zaragoza, gente, guitarra, niño, perro. Затем проверьте, не превращаются ли гласные в безударные русские звуки."
+  },
+  "поздороваться, попрощаться, представиться и назвать страну/язык": {
+    guidance: "Для первого контакта достаточно готовой цепочки: приветствие → имя → происхождение или язык → реакция на знакомство → прощание.",
+    points: [
+      "Нейтрально: Hola. По времени суток: Buenos días, Buenas tardes, Buenas noches.",
+      "Представление: Me llamo Ana или Soy Ana. Реакция: Encantado / Encantada; Mucho gusto.",
+      "Происхождение: Soy de Rusia. Национальность и язык пишутся со строчной буквы: soy ruso / rusa, hablo ruso.",
+      "Прощание: Adiós, Hasta luego, Nos vemos."
+    ],
+    examples: [["Hola, me llamo Mijaíl.", "Привет, меня зовут Михаил."], ["Soy de Rusia y hablo ruso.", "Я из России и говорю по-русски."], ["Encantado. ¿Y tú?", "Очень приятно. А ты?"], ["Hasta luego.", "До скорого."]],
+    task: "Скажите всю цепочку без подсказки и замените имя, страну и язык своими данными."
+  },
+  "понять числа 0–20, дни недели и простое время": {
+    guidance: "На старте важно не только перечислить слова, но и узнавать их в цене, дате, номере телефона и вопросе о времени.",
+    points: [
+      "0–10: cero, uno, dos, tres, cuatro, cinco, seis, siete, ocho, nueve, diez.",
+      "11–20: once, doce, trece, catorce, quince, dieciséis, diecisiete, dieciocho, diecinueve, veinte.",
+      "Дни недели пишутся со строчной буквы: lunes, martes, miércoles, jueves, viernes, sábado, domingo.",
+      "Для одного часа: Es la una. Для остальных: Son las dos. Минуты: Son las tres y diez."
+    ],
+    examples: [["Hoy es lunes.", "Сегодня понедельник."], ["Son las ocho y veinte.", "Сейчас восемь часов двадцать минут."], ["Cuesta quince euros.", "Это стоит пятнадцать евро."], ["Tengo clase el miércoles.", "У меня занятие в среду."]],
+    task: "Запишите на слух или произнесите пять чисел от 0 до 20, сегодняшний день недели и текущее время."
+  },
+  "алфавит, ударение и базовые правила чтения": {
+    guidance: "В испанском алфавите 27 букв; ch и ll являются сочетаниями, а ñ — отдельной буквой. Для чтения незнакомого слова достаточно знать основные соответствия и правило ударения.",
+    points: [
+      "Если слово заканчивается на гласную, n или s, без письменного ударения обычно выделяется предпоследний слог: casa, examen, lunes.",
+      "После другой согласной обычно ударен последний слог: hotel, hablar, Madrid.",
+      "Знак ударения отменяет общее правило: café, teléfono, también.",
+      "Вопрос и восклицание открываются и закрываются знаками: ¿Cómo te llamas? ¡Hola!"
+    ],
+    examples: [["casa", "CA-sa: предпоследний слог"], ["hotel", "ho-TEL: последний слог"], ["teléfono", "te-LÉ-fo-no: ударение показано знаком"], ["¿Qué tal?", "Как дела? Открывающий знак обязателен."]],
+    task: "Разделите на слоги и поставьте голосом ударение: amigo, español, examen, profesor, música, también."
+  },
+  "род и число существительных; артикли el/la, un/una": {
+    guidance: "Учите существительное сразу с артиклем: не casa, а la casa; не libro, а el libro. Артикль одновременно подсказывает род и определённость.",
+    points: [
+      "Частая модель: -o — мужской род, -a — женский: el libro, la casa. Но есть исключения: el día, la mano, el problema.",
+      "el/la называют конкретный или уже известный предмет; un/una вводят один новый или неопределённый предмет.",
+      "После гласной множественное число обычно получает -s: casa → casas; после согласной — -es: hotel → hoteles.",
+      "Слова на -z меняют z на c: luz → luces."
+    ],
+    examples: [["Hay una mesa.", "Есть стол: предмет вводится впервые."], ["La mesa es blanca.", "Этот стол белый: предмет уже известен."], ["un libro — unos libros", "книга — несколько книг"], ["la luz — las luces", "свет — огни"]],
+    task: "Добавьте артикль и множественное число: casa, libro, hotel, ciudad, día, mano, luz."
+  },
+  "личные местоимения и базовый порядок слов": {
+    guidance: "Базовая схема фразы — подлежащее + глагол + дополнение, но личное местоимение обычно опускается: форма глагола уже показывает лицо.",
+    points: [
+      "Лица: yo, tú, él/ella/usted, nosotros/as, vosotros/as, ellos/ellas/ustedes. В Испании vosotros — обычное неформальное «вы» во множественном числе.",
+      "usted и ustedes сочетаются с формами третьего лица: usted habla, ustedes hablan.",
+      "Нейтрально: Ana habla español. Часто: Hablo español, а не Yo hablo español; yo нужно для контраста или акцента.",
+      "Отрицание ставится перед глаголом: No hablo inglés. Вопрос оформляется знаками и интонацией: ¿Hablas español?"
+    ],
+    examples: [["Estudio español.", "Я изучаю испанский; yo не требуется."], ["Yo soy Ana, ¿y tú?", "Я Ана, а ты? Здесь yo создаёт контраст."], ["Vosotros vivís en Madrid.", "Вы живёте в Мадриде."], ["¿Usted habla inglés?", "Вы говорите по-английски?"]],
+    task: "Переделайте три утверждения в отрицания и вопросы: Hablas español. Vive en Madrid. Tenéis clase."
+  },
+  "ser, estar, tener, hay, llamarse в настоящем времени": {
+    guidance: "Эти пять моделей покрывают большую часть рассказа о себе и ближайшем окружении: кто вы, где вы, что у вас есть и что где-то существует.",
+    points: [
+      "ser: soy, eres, es, somos, sois, son — личность, происхождение, профессия, постоянная характеристика.",
+      "estar: estoy, estás, está, estamos, estáis, están — место и состояние.",
+      "tener: tengo, tienes, tiene, tenemos, tenéis, tienen — обладание и возраст.",
+      "hay — неизменяемое «есть / имеется»; llamarse: me llamo, te llamas, se llama, nos llamamos, os llamáis, se llaman."
+    ],
+    examples: [["Soy estudiante.", "Я студент."], ["Estoy en Madrid.", "Я нахожусь в Мадриде."], ["Tengo treinta años.", "Мне тридцать лет."], ["Hay un café aquí.", "Здесь есть кафе."], ["Me llamo Elena.", "Меня зовут Елена."]],
+    task: "Заполните своими данными пять фраз: Soy…, Estoy en…, Tengo… años, Hay… cerca, Me llamo…"
+  },
+  "имя, возраст, происхождение и языки": {
+    guidance: "Личные данные удобно учить парами «вопрос — короткий ответ». На уровне A0 достаточно распознать вопрос и ответить одной моделью.",
+    points: [
+      "Имя: ¿Cómo te llamas? — Me llamo… / ¿Cuál es tu nombre? — Mi nombre es…",
+      "Возраст: ¿Cuántos años tienes? — Tengo … años. В испанском возраст выражается с tener.",
+      "Происхождение: ¿De dónde eres? — Soy de…; место жительства: ¿Dónde vives? — Vivo en…",
+      "Языки: ¿Qué idiomas hablas? — Hablo ruso y un poco de español."
+    ],
+    examples: [["Me llamo Irina.", "Меня зовут Ирина."], ["Tengo veintiocho años.", "Мне двадцать восемь лет."], ["Soy de Moldavia y vivo en España.", "Я из Молдовы и живу в Испании."], ["Hablo ruso y rumano.", "Я говорю по-русски и по-румынски."]],
+    task: "Ответьте вслух на четыре вопроса: ¿Cómo te llamas? ¿Cuántos años tienes? ¿De dónde eres? ¿Qué idiomas hablas?"
+  },
+  "семья и базовые личные данные": {
+    guidance: "Для первого описания семьи нужны названия родства, притяжательные mi/tu/su и уже знакомые ser, tener, llamarse, vivir.",
+    points: [
+      "Базовые слова: madre, padre, padres, hermano/a, hijo/a, marido, mujer, pareja, abuelo/a.",
+      "mi и tu во множественном числе получают -s: mi hermana — mis hermanas; tu hijo — tus hijos.",
+      "su может означать его, её или Ваш; на A0 значение обычно ясно из контекста.",
+      "Для количества: Tengo un hermano. Для имени: Mi madre se llama Ana."
+    ],
+    examples: [["Esta es mi familia.", "Это моя семья."], ["Tengo una hermana.", "У меня есть сестра."], ["Mi padre se llama Víctor.", "Моего отца зовут Виктор."], ["Mis padres viven en Chisináu.", "Мои родители живут в Кишинёве."]],
+    task: "Составьте четыре фразы о реальной или вымышленной семье, используя mi/mis, tener, llamarse и vivir."
+  },
+  "числа, даты, время и классные команды": {
+    guidance: "Этот набор помогает ориентироваться на уроке и извлекать конкретную информацию: номер, день, час и простое действие преподавателя.",
+    points: [
+      "Дата: Hoy es lunes, 5 de mayo. Дни недели и месяцы пишутся со строчной буквы.",
+      "Время: Es la una; Son las dos; La clase es a las nueve.",
+      "Частые команды: escucha, lee, escribe, repite, abre, cierra, mira, habla.",
+      "Полезные просьбы: Más despacio, por favor. ¿Puede repetir? No entiendo."
+    ],
+    examples: [["Abre el libro.", "Открой книгу."], ["Escucha y repite.", "Слушай и повторяй."], ["La clase es el martes a las diez.", "Урок во вторник в десять."], ["¿Puede repetir, por favor?", "Можете повторить, пожалуйста?"]],
+    task: "Запишите сегодняшнюю дату и время, затем выполните без перевода команды: abre, lee, escribe, cierra."
+  },
+  "представиться в 4–5 фразах": {
+    guidance: "Короткое представление лучше строить по устойчивому порядку: приветствие → имя → происхождение/место → занятие → языки или цель обучения.",
+    points: [
+      "Не пытайтесь включить всю биографию: одна мысль — одна короткая фраза.",
+      "Профессия после ser обычно без артикля: Soy programador. Soy profesora.",
+      "Связка y соединяет две близкие мысли; pero можно использовать для простого контраста."
+    ],
+    examples: [["Hola, me llamo Pablo.", "Привет, меня зовут Пабло."], ["Soy de Argentina y vivo en Madrid.", "Я из Аргентины и живу в Мадриде."], ["Soy diseñador.", "Я дизайнер."], ["Hablo español e inglés.", "Я говорю по-испански и по-английски."], ["Estudio ruso.", "Я изучаю русский."]],
+    task: "Подготовьте свою версию из пяти фраз, произнесите её дважды и во второй раз не смотрите в текст."
+  },
+  "задать и понять имя, страну и профессию": {
+    guidance: "В мини-диалоге достаточно трёх вопросительных моделей. Слушайте ключевое слово после llamo, de и soy, а не пытайтесь перевести каждое слово.",
+    points: [
+      "Имя: ¿Cómo te llamas? — Me llamo…",
+      "Страна: ¿De dónde eres? — Soy de…",
+      "Профессия или занятие: ¿A qué te dedicas? — Soy… / Trabajo como… / Estudio…",
+      "Вежливая форма: ¿Cómo se llama? ¿De dónde es? ¿A qué se dedica?"
+    ],
+    examples: [["¿Cómo te llamas? — Me llamo Sara.", "Как тебя зовут? — Меня зовут Сара."], ["¿De dónde eres? — Soy de Italia.", "Откуда ты? — Я из Италии."], ["¿A qué te dedicas? — Soy médico.", "Чем ты занимаешься? — Я врач."]],
+    task: "Разыграйте обе роли: задайте три вопроса на tú, ответьте, затем повторите диалог в вежливой форме usted."
+  },
+  "прочитать короткое расписание или ценник": {
+    guidance: "В расписании и ценнике не нужно понимать весь текст: сначала найдите тип информации, затем извлеките день, время, цену или статус abierto/cerrado.",
+    points: [
+      "Horario — расписание или часы работы; de lunes a viernes — с понедельника по пятницу; cerrado — закрыто.",
+      "Интервал 9:30–14:00 читается как de nueve y media a dos; цена в Испании может быть записана 3,50 €.",
+      "A las указывает время события: La visita es a las once. El показывает день: el martes.",
+      "Перед чтением сформулируйте вопрос: когда открыто, во сколько начинается или сколько стоит?"
+    ],
+    examples: [["Horario: 9:30–14:00", "Часы работы: с 9:30 до 14:00."], ["De lunes a viernes", "С понедельника по пятницу."], ["Entrada: 12 €", "Вход: 12 евро."], ["Cerrado el domingo", "В воскресенье закрыто."]],
+    task: "Ответьте по примерам: ¿Cuándo está abierto? ¿A qué hora cierra? ¿Cuánto cuesta la entrada?"
+  },
+  "Я читаю простые слова по правилам испанского": {
+    guidance: "Пункт выполнен, если вы можете прочитать новое короткое слово, объяснить ударение и распознать основные буквенные сочетания без транскрипции.",
+    points: [
+      "Проверьте отдельно гласные, h, ñ, c/z, g/j, gue/gui и r/rr.",
+      "Не требуется идеальный акцент; важны различимость слова, правильный ударный слог и отсутствие русской редукции гласных.",
+      "Если слово незнакомо, сначала найдите ударение по окончанию или знаку tilde, затем читайте по слогам."
+    ],
+    examples: [["guitarra", "gui-ta-rra"], ["miércoles", "MIÉR-co-les"], ["habitación", "ha-bi-ta-CIÓN; h не читается"], ["cerveza", "два межзубных звука в норме справочника"]],
+    task: "Без подготовки прочитайте: gente, guitarra, cerveza, español, habitación, miércoles. Отметьте пункт только если верно прочитали минимум пять слов из шести."
+  },
+  "Я могу кратко рассказать о себе": {
+    guidance: "Готовность определяется самостоятельной речью, а не заучиванием одного текста: вы должны уметь заменить в модели имя, страну, город, занятие и язык.",
+    points: [
+      "Минимум: 4–5 связанных фраз без перехода на русский.",
+      "Допустимы паузы и отдельные ошибки, если собеседник понимает основные данные.",
+      "После рассказа будьте готовы ответить хотя бы на два вопроса: ¿De dónde eres? ¿Qué idiomas hablas?"
+    ],
+    examples: [["Me llamo Olga.", "Меня зовут Ольга."], ["Soy de Ucrania y vivo en Valencia.", "Я из Украины и живу в Валенсии."], ["Soy ingeniera.", "Я инженер."], ["Hablo ucraniano y ruso.", "Я говорю по-украински и по-русски."]],
+    task: "Запишите себя на одну минуту. Отметьте пункт, если сказали минимум четыре понятные фразы и ответили на два базовых вопроса без готового текста."
+  },
+  "Я понимаю базовые вопросы и инструкции": {
+    guidance: "На подготовительном уровне достаточно узнавать ключевые личные вопросы и короткие инструкции, если собеседник говорит медленно, чётко и при необходимости повторяет.",
+    points: [
+      "Вопросы: ¿Cómo te llamas? ¿De dónde eres? ¿Cuántos años tienes? ¿Dónde vives? ¿Qué idiomas hablas?",
+      "Инструкции: escucha, mira, lee, escribe, repite, abre, cierra.",
+      "Разрешённая стратегия: попросить повторить — ¿Puede repetir? — или говорить медленнее — Más despacio, por favor.",
+      "Не нужно понимать каждое слово; нужно правильно выполнить действие или дать подходящий короткий ответ."
+    ],
+    examples: [["¿Dónde vives?", "Где ты живёшь?"], ["Lee el texto.", "Прочитай текст."], ["Escribe tu nombre.", "Напиши своё имя."], ["Más despacio, por favor.", "Помедленнее, пожалуйста."]],
+    task: "Попросите другого человека в случайном порядке прочитать пять вопросов или команд. Отметьте пункт, если правильно отреагировали минимум четыре раза."
+  }
+};
+
 const LEARNING_DETAIL_PATTERNS = [
   {
     terms: ["perfecto", "indefinido", "imperfecto"],
@@ -11051,8 +11276,20 @@ function learningTableResource(titlePart, label) {
   return table ? { href: `#table-${table.index}`, label } : null;
 }
 
+function learningDetailMarkup(detail) {
+  const points = detail.points?.length
+    ? `<ul class="learning-detail-points">${detail.points.map((point) => `<li>${point}</li>`).join("")}</ul>`
+    : "";
+  const examples = detail.examples?.length
+    ? `<div class="learning-detail-examples" aria-label="Примеры">${detail.examples.map(([spanish, russian]) => `<div class="learning-detail-example"><span lang="es">${spanish}</span><span>${russian}</span></div>`).join("")}</div>`
+    : "";
+  const note = detail.note ? `<p class="learning-detail-note">${detail.note}</p>` : "";
+  return `<p class="learning-detail-lead">${detail.guidance}</p>${points}${examples}<p class="learning-detail-task"><strong>Мини-проверка.</strong> ${detail.task}</p>${note}`;
+}
+
 function learningItemDetails(level, section, item) {
   const text = item.toLocaleLowerCase("es-ES");
+  const levelDetail = level.id === "a0" ? A0_LEARNING_DETAILS[item] : null;
   const links = [];
   const add = (resource) => {
     if (resource && !links.some((link) => link.href === resource.href)) links.push(resource);
@@ -11072,7 +11309,14 @@ function learningItemDetails(level, section, item) {
   if (text.includes("imperativo")) mood("imperativo", "Imperativo");
   if (text.includes("ser, estar")) table("Ser/estar: сущность или состояние", "Шпаргалка ser / estar");
   if (text.includes("артикл") || text.includes("род и число")) table("Артикли: el/la/los/las и un/una", "Артикли");
+  if (text.includes("прочитать") || text.includes("алфавит") || text.includes("правилам испанского")) {
+    table("Как читать b/v, c/z, g/j, h, r/rr", "Правила чтения");
+    table("Agudas, llanas, esdrújulas", "Правила ударения");
+  }
+  if (text.includes("числа") || text.includes("ценник")) table("Числительные: количественные", "Числительные");
+  if (text.includes("время") || text.includes("даты") || text.includes("расписание")) table("La hora y la fecha", "Время и дата");
   if (text.includes("возвратн")) table("Me/te/se: возвратные местоимения", "Возвратные местоимения");
+  if (text.includes("личные местоимения")) table("Личные местоимения: полная таблица", "Личные местоимения");
   if (text.includes("прямые/косвенные")) table("Прямые и косвенные объекты", "Прямые и косвенные дополнения");
   if (text.includes("притяжательн")) table("Mi/mío, tu/tuyo", "Притяжательные");
   if (text.includes("указательн")) table("Указательные: este/ese/aquel", "Указательные");
@@ -11085,8 +11329,12 @@ function learningItemDetails(level, section, item) {
   if (text.includes("дорогу") || text.includes("направлен")) table("Ir/venir/llevar/traer: идти, приходить, нести", "Глаголы движения");
   if (text.includes("здоров") || text.includes("врача")) table("Tener + sustantivo: tener hambre", "Полезные выражения с tener");
   if (text.includes("даты") || text.includes("простое время")) table("La hora y la fecha: время, дни, месяцы", "Время и дата");
+  if (text.includes("возраст")) table("Возраст и длительность", "Возраст с tener");
   if (text.includes("hay")) verb("haber", "Глагол haber");
   if (text.includes("llamarse")) verb("llamar", "Глагол llamar(se)");
+  if (text.includes("имя") || text.includes("представиться") || text.includes("рассказать о себе")) verb("llamar", "Глагол llamar(se)");
+  if (text.includes("професси") || text.includes("происхождени")) verb("ser", "Глагол ser");
+  if (text.includes("семья") || text.includes("возраст")) verb("tener", "Глагол tener");
   if (text.includes("ir a + infinitivo")) verb("ir", "Глагол ir");
   if (text.includes("заказать") || text.includes("покупк")) verb("pedir", "Глагол pedir");
   if (text.includes("врача") || text.includes("здоров")) verb("tener", "Глагол tener");
@@ -11107,7 +11355,14 @@ function learningItemDetails(level, section, item) {
     "Практические ситуации": `Мини-проверка: разыграйте сценарий «${item}» в роли говорящего и собеседника.`,
     "Чек-лист уровня": `Самопроверка: подтвердите утверждение «${item}» конкретным примером речи или текста.`
   }[section];
-  return { guidance: pattern?.guidance || genericGuidance, task: pattern?.task || genericTask, links };
+  return {
+    guidance: levelDetail?.guidance || pattern?.guidance || genericGuidance,
+    task: levelDetail?.task || pattern?.task || genericTask,
+    points: levelDetail?.points || [],
+    examples: levelDetail?.examples || [],
+    note: levelDetail?.note || "",
+    links
+  };
 }
 
 function renderLearningPlan() {
@@ -11139,7 +11394,7 @@ function renderLearningPlan() {
       const links = detail.links.length
         ? `<div class="learning-item-links">${detail.links.map((link) => `<a class="small-button" href="${link.href}">${link.label}</a>`).join("")}</div>`
         : `<p>Точной карточки для этого пункта пока нет; используйте мини-проверку ниже.</p>`;
-      return `<li class="learning-plan-item"><label><input type="checkbox" data-learning-item="${key}" ${checked ? "checked" : ""}> <span>${item}</span></label><details class="learning-item-detail" data-learning-detail="${key}" ${state.learningDetails[key] ? "open" : ""}><summary>Подробнее</summary><div class="learning-item-detail-body"><p>${detail.guidance}</p><p>${detail.task}</p>${links}</div></details></li>`;
+      return `<li class="learning-plan-item"><label><input type="checkbox" data-learning-item="${key}" ${checked ? "checked" : ""}> <span>${item}</span></label><details class="learning-item-detail" data-learning-detail="${key}" ${state.learningDetails[key] ? "open" : ""}><summary>Подробнее</summary><div class="learning-item-detail-body">${learningDetailMarkup(detail)}${links}</div></details></li>`;
     }).join("");
     return `<section class="learning-plan-section"><div class="learning-plan-section-head"><h3>${title}</h3><span>${sectionDone}/${items.length}</span></div><ul class="learning-plan-list">${itemMarkup}</ul></section>`;
   };
@@ -11150,7 +11405,7 @@ function renderLearningPlan() {
     <div class="learning-level-tabs" aria-label="Выбор уровня">${levelButtons}</div>
     <section class="learning-plan-summary" aria-live="polite"><p><strong>${level.label} · ${level.title}</strong></p><p>${level.description}</p><p><strong>Прогресс: ${doneCount} из ${allItems.length} · ${progress}%</strong></p><progress max="100" value="${progress}" aria-label="Прогресс уровня ${level.label}"></progress><p><button class="small-button" type="button" data-reset-learning>Сбросить прогресс уровня</button></p></section>
     ${sections.map(([title, items]) => list(title, items)).join("")}
-    <p class="muted learning-plan-sources">Основа: <a href="https://www.coe.int/en/web/common-european-framework-reference-languages/companion-volume" target="_blank" rel="noopener">CEFR Companion Volume</a> и <a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/default.htm" target="_blank" rel="noopener">Plan Curricular del Instituto Cervantes</a>. Списки являются практической адаптацией для самостоятельного обучения, а не официальным экзаменационным силлабусом.</p>
+    <p class="muted learning-plan-sources">Основа: <a href="https://www.coe.int/en/web/common-european-framework-reference-languages/companion-volume" target="_blank" rel="noopener">CEFR Companion Volume</a> и <a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/default.htm" target="_blank" rel="noopener">Plan Curricular del Instituto Cervantes</a>. A0 опирается на коммуникативные дескрипторы Pre-A1 и начальное содержание A1: личные данные, приветствия, числа, цены, даты, дни недели и простые инструкции. Списки являются практической адаптацией для самостоятельного обучения, а не официальным экзаменационным силлабусом.</p>
   `;
   content.appendChild(header);
   bindClickAll(header, "[data-learning-level]", (event) => { state.learningLevel = event.currentTarget.dataset.learningLevel; localStorage.setItem("msg:learningLevel", state.learningLevel); renderLearningPlan(); });

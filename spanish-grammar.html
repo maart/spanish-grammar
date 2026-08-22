@@ -1659,6 +1659,42 @@ td.irregular {
   font-weight: 900;
 }
 
+.verb-cheatsheets {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0;
+  padding: 11px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.verb-cheatsheets-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+}
+
+.verb-cheatsheets-heading span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.verb-cheatsheet-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.verb-cheatsheet-link {
+  height: auto;
+  min-height: 38px;
+  padding-block: 7px;
+  text-align: left;
+}
+
 .verb-card-tabs {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2812,6 +2848,15 @@ select {
     grid-template-columns: 1fr;
   }
 
+  .verb-cheatsheet-links {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .verb-cheatsheet-link {
+    width: 100%;
+  }
+
   .mood-tabs {
     grid-template-columns: 1fr;
   }
@@ -3203,7 +3248,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.71 · обновлено: 22.08.2026 13:31 CEST</span>
+        <span>Версия MVP 0.72 · обновлено: 22.08.2026 14:10 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -8698,6 +8743,7 @@ const state = {
   tableFilter: localStorage.getItem("msg:tableFilter") || "all",
   tableSubgroup: localStorage.getItem("msg:tableSubgroup") || "",
   focusedTable: null,
+  tableReturnVerb: null,
   showTenseToc: false,
   tenseFilter: ["basic", "frequent", "all"].includes(localStorage.getItem("msg:tenseFilter"))
     ? localStorage.getItem("msg:tenseFilter")
@@ -8917,7 +8963,10 @@ function applyRouteHash() {
   } else if (views.includes(route)) {
     state.view = route;
     if (route === "tenses") state.focusedTense = null;
-    if (route === "tables") state.focusedTable = null;
+    if (route === "tables") {
+      state.focusedTable = null;
+      state.tableReturnVerb = null;
+    }
   } else if (route.startsWith("verb-")) {
     const verb = route.slice(5);
     if (!BASE_VERBS.includes(verb)) return false;
@@ -8945,6 +8994,7 @@ function applyRouteHash() {
     if (!Number.isInteger(index) || !INDEXED_TABLES[index]) return false;
     state.view = "tables";
     state.focusedTable = index;
+    state.tableReturnVerb = null;
   } else {
     return false;
   }
@@ -9799,6 +9849,10 @@ function setView(view, { updateRoute = true } = {}) {
   if (view !== "cards") clearQuizHotkeys();
   if (view === "verbs") {
     resetVerbLanding();
+  } else if (view === "tables") {
+    state.view = view;
+    state.focusedTable = null;
+    state.tableReturnVerb = null;
   } else {
     state.view = view;
   }
@@ -9853,6 +9907,14 @@ function renderVerbCard(verb) {
     line.appendChild(item);
   });
 
+  const cheatsheets = verbCheatsheetsMarkup(verb);
+  if (cheatsheets) {
+    line.insertAdjacentHTML("afterend", cheatsheets);
+    node.querySelectorAll("[data-verb-cheatsheet]").forEach((button) => {
+      button.addEventListener("click", () => openCheatsheetFromVerb(verb, Number(button.dataset.verbCheatsheet)));
+    });
+  }
+
   const wrap = node.querySelector(".table-wrap");
   const activeTenseIds = state.verbCardMode === "all"
     ? VERB_TENSE_GROUPS.flatMap((group) => group.tenseIds)
@@ -9887,6 +9949,46 @@ function renderVerbCard(verb) {
     wrap.appendChild(conjugationTable(info, MAIN_VERB_TENSE_IDS));
   }
   return node;
+}
+
+function verbCheatsheetItems(verb) {
+  const simpleVerb = baseVerb(verb);
+  const keys = [
+    ...(VERB_CHEATSHEET_LINKS[verb] || []),
+    ...(isReflexive(verb) ? ["reflexive"] : []),
+    ...(simpleVerb !== verb ? (VERB_CHEATSHEET_LINKS[simpleVerb] || []) : [])
+  ];
+  const seen = new Set();
+  const items = [];
+  keys.forEach((key) => {
+    const title = VERB_CHEATSHEET_TITLES[key];
+    const item = title ? INDEXED_TABLES.find((table) => table.title === title) : null;
+    if (!item || seen.has(item.index)) return;
+    seen.add(item.index);
+    items.push(item);
+  });
+  return items.slice(0, 3);
+}
+
+function verbCheatsheetsMarkup(verb) {
+  const items = verbCheatsheetItems(verb);
+  if (items.length === 0) return "";
+  return `
+    <section class="verb-cheatsheets" aria-label="Связанные шпаргалки">
+      <div class="verb-cheatsheets-heading"><strong>Связанные шпаргалки</strong><span>по теме глагола</span></div>
+      <div class="verb-cheatsheet-links">
+        ${items.map((item) => `<button class="small-button verb-cheatsheet-link" type="button" data-verb-cheatsheet="${item.index}">${escapeHTML(item.title)}</button>`).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function openCheatsheetFromVerb(verb, index) {
+  if (!BASE_VERBS.includes(verb) || !INDEXED_TABLES[index]) return;
+  state.tableReturnVerb = verb;
+  state.view = "tables";
+  syncActiveTab("tables");
+  openTableByIndex(index);
 }
 
 function hasIrregularFormsInTenses(info, tenseIds) {
@@ -10776,6 +10878,7 @@ function renderTables() {
   const focusedTable = Number.isInteger(state.focusedTable) ? INDEXED_TABLES[state.focusedTable] : null;
 
   if (focusedTable) {
+    const returnVerb = state.tableReturnVerb && BASE_VERBS.includes(state.tableReturnVerb) ? state.tableReturnVerb : null;
     const groupTables = INDEXED_TABLES.filter((item) => item.group === focusedTable.group);
     const position = groupTables.findIndex((item) => item.index === focusedTable.index);
     const previous = position > 0 ? groupTables[position - 1] : null;
@@ -10785,7 +10888,8 @@ function renderTables() {
       html: `
         <div class="focused-table-toolbar">
           <div class="focused-table-actions">
-            <button class="small-button primary" type="button" data-table-back>← К оглавлению</button>
+            ${returnVerb ? `<button class="small-button primary" type="button" data-table-return-verb>← К глаголу: ${escapeHTML(verbInfo(returnVerb).displayInfinitive)}</button>` : ""}
+            <button class="small-button" type="button" data-table-back>К оглавлению</button>
             <span class="focused-table-status">${position + 1} из ${groupTables.length} в разделе</span>
           </div>
           <div class="focused-table-paging" aria-label="Навигация между шпаргалками">
@@ -10797,8 +10901,14 @@ function renderTables() {
     });
     content.appendChild(toolbar);
     content.appendChild(renderUsefulTableCard(focusedTable));
+    bindClickAll(toolbar, "[data-table-return-verb]", () => {
+      const verb = state.tableReturnVerb;
+      state.tableReturnVerb = null;
+      if (verb) selectVerb(verb, { keepReturnQuery: false });
+    });
     bindClickAll(toolbar, "[data-table-back]", () => {
       state.focusedTable = null;
+      state.tableReturnVerb = null;
       renderTables();
       updateRouteHash("tables");
       scrollToCard("tablesTop");
@@ -14402,6 +14512,119 @@ function renderExceptionCard(verb, tenseId) {
 }
 
 const INDEXED_TABLES = USEFUL_TABLES.map((item, index) => ({ ...item, index }));
+
+const VERB_CHEATSHEET_TITLES = Object.freeze({
+  serEstar: "Ser/estar: сущность или состояние",
+  serParticiple: "Ser/estar + participio: действие или состояние",
+  passive: "Voz pasiva: ser + participio, pasiva refleja, impersonal con se",
+  hayLocation: "Hay / Está / Se encuentra: как сказать «есть / находится»",
+  haber: "Haber: hay, he, había, habrá — все формы",
+  hayHomonyms: "Hay/ahí/ay, a ver/haber, hecho/echo: частые омонимы",
+  tenerNoun: "Tener + sustantivo: tener hambre, tener sed…",
+  obligation: "Deber / Tener que / Hay que: долженствование",
+  ageDuration: "Возраст и длительность: tener, cumplir, llevar",
+  motion: "Ir/venir/llevar/traer: идти, приходить, нести",
+  irIrse: "Ir / Irse и другие пары с -se",
+  futureChoice: "Futuro: ir a + infinitivo или Futuro Simple",
+  llevar: "Llevar: 5 конструкций",
+  gustar: "Gustar и похожие глаголы",
+  gustarFamily: "Gustar: 20+ глаголов с косвенным объектом",
+  saberConocer: "Saber/conocer: знать факт или быть знакомым",
+  pedirPreguntar: "Pedir/preguntar: просить или спрашивать",
+  become: "Ponerse / Volverse / Hacerse / Llegar a ser: «становиться»",
+  darNoun: "Dar + sustantivo: dar un paseo, dar miedo, dar igual…",
+  echar: "Expresiones con «echar»: echar de menos, echar una mano…",
+  hacer: "Expresiones con «hacer»: hacer la cama, hacer caso, hacer daño…",
+  verbPrepositions: "Глаголы с предлогами: pensar en, soñar con…",
+  parecer: "Parecer vs Parecerse: казаться или быть похожим",
+  quedar: "Quedar / Quedarse: 6+ значений",
+  recordar: "Recordar / Acordarse de и Olvidar / Olvidarse de",
+  perception: "Ver / Mirar, Oír / Escuchar, Tocar / Jugar",
+  sentir: "Sentir, sentirse и sentar: чувствовать, чувствовать себя, усаживать",
+  doler: "Doler и части тела: me duele / me duelen",
+  faltar: "Faltar, quedar и sobrar: чего не хватает или сколько осталось",
+  speech: "Decir, contar, hablar и preguntar: сказать, рассказать, поговорить, спросить",
+  speechTransfer: "Глаголы передачи речи: afirmar, señalar, admitir, negar, pedir",
+  habit: "Soler, acostumbrarse a и tender a: привычка или тенденция",
+  weather: "Погода: hacer, estar, hay, llover",
+  body: "Части тела и одежда: me lavo las manos",
+  completionSe: "Se завершённости: comer / comerse, leer / leerse",
+  reflexive: "Возвратные глаголы: обычный vs возвратный",
+  infinitiveSubjunctive: "Infinitivo или que + subjuntivo: один или разные субъекты",
+  politeRequests: "Вежливые просьбы в Испании: puedes, podrías, quería",
+  probability: "Предположение о настоящем и прошлом: quizá, debe de, futuro, condicional",
+  creer: "Creo que / No creo que: мнение, уверенность и наклонение",
+  causative: "Hacer, dejar, ver и oír + infinitivo"
+});
+
+const VERB_CHEATSHEET_LINKS = Object.freeze({
+  ser: ["serEstar", "serParticiple", "passive"],
+  estar: ["serEstar", "serParticiple", "hayLocation"],
+  haber: ["haber", "hayLocation", "hayHomonyms"],
+  tener: ["tenerNoun", "obligation", "ageDuration"],
+  ir: ["motion", "irIrse", "futureChoice"],
+  irse: ["irIrse"],
+  venir: ["motion"],
+  llevar: ["llevar", "motion", "ageDuration"],
+  traer: ["motion"],
+  gustar: ["gustar", "gustarFamily"],
+  encantar: ["gustarFamily", "gustar"],
+  interesar: ["gustarFamily", "gustar"],
+  doler: ["doler", "gustarFamily"],
+  faltar: ["faltar", "gustarFamily"],
+  sobrar: ["faltar", "gustarFamily"],
+  saber: ["saberConocer"],
+  conocer: ["saberConocer"],
+  pedir: ["pedirPreguntar", "speechTransfer"],
+  preguntar: ["pedirPreguntar", "speech", "speechTransfer"],
+  poner: ["become"],
+  volver: ["become"],
+  convertir: ["become"],
+  dar: ["darNoun"],
+  echar: ["echar"],
+  hacer: ["hacer", "weather", "causative"],
+  pensar: ["verbPrepositions"],
+  "soñar": ["verbPrepositions"],
+  depender: ["verbPrepositions"],
+  parecer: ["parecer", "gustarFamily"],
+  quedar: ["quedar", "faltar"],
+  quedarse: ["quedar"],
+  recordar: ["recordar"],
+  acordar: ["recordar"],
+  olvidar: ["recordar"],
+  olvidarse: ["recordar"],
+  ver: ["perception", "causative"],
+  mirar: ["perception"],
+  oir: ["perception", "causative"],
+  escuchar: ["perception"],
+  tocar: ["perception"],
+  jugar: ["perception"],
+  sentir: ["sentir"],
+  sentar: ["sentir"],
+  sentarse: ["sentir"],
+  decir: ["speech", "speechTransfer"],
+  contar: ["speech"],
+  hablar: ["speech"],
+  afirmar: ["speechTransfer"],
+  senalar: ["speechTransfer"],
+  "señalar": ["speechTransfer"],
+  admitir: ["speechTransfer"],
+  negar: ["speechTransfer"],
+  deber: ["obligation", "probability"],
+  poder: ["politeRequests", "probability"],
+  querer: ["infinitiveSubjunctive", "politeRequests"],
+  necesitar: ["infinitiveSubjunctive"],
+  esperar: ["infinitiveSubjunctive"],
+  preferir: ["infinitiveSubjunctive"],
+  creer: ["creer", "probability"],
+  acostumbrar: ["habit"],
+  tender: ["habit"],
+  llover: ["weather"],
+  lavar: ["body"],
+  comer: ["completionSe"],
+  leer: ["completionSe"]
+});
+
 const LINKED_TABLE_HTML = INDEXED_TABLES.map((item) => linkTableTenses(item.table));
 const TABLE_FILTER_COUNTS = TABLE_FILTERS.reduce((acc, f) => { acc[f.id] = countFilteredTables(f.id); return acc; }, {});
 

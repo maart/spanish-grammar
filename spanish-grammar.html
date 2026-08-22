@@ -723,9 +723,41 @@ input[type="search"] {
   gap: 8px;
 }
 
-.learning-plan-item input {
-  flex: 0 0 auto;
-  margin-top: 3px;
+.learning-item-main {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) minmax(132px, auto);
+  align-items: center;
+  gap: 10px;
+}
+
+.learning-item-status-dot {
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--line);
+  border-radius: 50%;
+  background: transparent;
+}
+
+.learning-item-status-dot.is-learning {
+  border-color: var(--accent-2);
+  background: var(--accent-2);
+}
+
+.learning-item-status-dot.is-done {
+  border-color: var(--success);
+  background: var(--success);
+}
+
+.learning-item-title {
+  min-width: 0;
+}
+
+.learning-status-select {
+  width: auto;
+  min-width: 132px;
+  height: 38px;
+  padding-inline: 9px;
+  font-size: 13px;
 }
 
 .learning-item-detail {
@@ -2047,6 +2079,7 @@ td.irregular {
 }
 
 .cards-dashboard-actions,
+.cards-primary-actions,
 .quiz-presets,
 .cards-list-toolbar,
 .quiz-result-links,
@@ -2055,6 +2088,21 @@ td.irregular {
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
+}
+
+.cards-primary-actions {
+  align-items: stretch;
+}
+
+.cards-primary-actions .small-button.primary {
+  min-width: 220px;
+}
+
+.cards-purpose {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .cards-resume {
@@ -3277,6 +3325,7 @@ select {
   }
 
   .cards-dashboard-actions,
+  .cards-primary-actions,
   .quiz-presets,
   .cards-list-toolbar {
     display: grid;
@@ -3295,6 +3344,7 @@ select {
   }
 
   .cards-dashboard-actions .small-button,
+  .cards-primary-actions .small-button,
   .quiz-presets .small-button,
   .cards-list-toolbar input,
   .cards-list-toolbar select {
@@ -3317,6 +3367,28 @@ select {
   .study-verb-quiz {
     grid-column: 1 / -1;
     width: 100%;
+  }
+
+  .learning-item-main {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .learning-status-select {
+    grid-column: 2;
+    width: 100%;
+  }
+
+  .small-button,
+  .study-verb-quiz,
+  .favorite-button,
+  .icon-button {
+    min-height: 44px;
+  }
+
+  .small-button {
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .common-verbs-footer {
@@ -3343,6 +3415,21 @@ select {
     height: 46px;
     border-radius: 8px 0 0 8px;
     box-shadow: 0 4px 14px color-mix(in srgb, var(--text) 20%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
@@ -3517,7 +3604,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.82 · обновлено: 22.08.2026 16:32 CEST</span>
+        <span>Версия MVP 0.83 · обновлено: 22.08.2026 16:50 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -9259,6 +9346,8 @@ const state = {
   query: "",
   selectedVerb: null,
   previousVerbQuery: null,
+  previousVerbScrollY: null,
+  viewScrollPositions: {},
   recentVerbs: readStoredJSON("msg:recentVerbs", []),
   commonVerbLimit: 20,
   verbCardMode: "basic",
@@ -9497,6 +9586,7 @@ function applyRouteHash() {
   }
 
   const views = ["verbs", "tenses", "moods", "tables", "learning-plan", "cards"];
+  if (route !== "verbs" && !route.startsWith("verb-")) clearVerbSearchContext();
   if (!route || route === "verbs") {
     resetVerbLanding();
   } else if (views.includes(route)) {
@@ -10362,9 +10452,11 @@ function rememberRecentVerb(verb) {
 
 function selectVerb(verb, { keepReturnQuery = true, updateRoute = true } = {}) {
   const sourceQuery = String(state.query).trim();
+  const hasReturnQuery = keepReturnQuery && sourceQuery && normalize(sourceQuery) !== normalize(verb);
   state.previousVerbQuery = keepReturnQuery && sourceQuery && normalize(sourceQuery) !== normalize(verb)
     ? sourceQuery
     : null;
+  state.previousVerbScrollY = hasReturnQuery ? window.scrollY : null;
   state.view = "verbs";
   state.selectedVerb = verb;
   state.verbCardMode = "basic";
@@ -10381,10 +10473,24 @@ function resetVerbLanding() {
   state.query = "";
   state.selectedVerb = null;
   state.previousVerbQuery = null;
+  state.previousVerbScrollY = null;
   state.verbCardMode = "basic";
 }
 
+function clearVerbSearchContext() {
+  state.query = "";
+  state.selectedVerb = null;
+  state.previousVerbQuery = null;
+  state.previousVerbScrollY = null;
+  state.searchCursor = -1;
+}
+
 function setView(view, { updateRoute = true } = {}) {
+  const previousView = state.view;
+  const wasVerbCard = previousView === "verbs" && Boolean(state.selectedVerb);
+  if (previousView !== view) {
+    state.viewScrollPositions[previousView] = window.scrollY;
+  }
   if (view !== "cards") clearQuizHotkeys();
   if (view === "verbs") {
     resetVerbLanding();
@@ -10392,12 +10498,22 @@ function setView(view, { updateRoute = true } = {}) {
     state.view = view;
     state.focusedTable = null;
     state.tableReturnVerb = null;
+    clearVerbSearchContext();
   } else {
     state.view = view;
+    clearVerbSearchContext();
   }
   syncActiveTab(view);
   render();
   if (updateRoute) updateRouteHash(view);
+  requestAnimationFrame(() => {
+    if (wasVerbCard) {
+      window.scrollTo({ top: 0, behavior: "auto" });
+      return;
+    }
+    const savedPosition = previousView !== view ? state.viewScrollPositions[view] : null;
+    window.scrollTo({ top: Number.isFinite(savedPosition) ? savedPosition : 0, behavior: "auto" });
+  });
 }
 
 function renderVerbCard(verb) {
@@ -10421,14 +10537,16 @@ function renderVerbCard(verb) {
     returnButton.type = "button";
     returnButton.textContent = `← К результатам: «${state.previousVerbQuery}»`;
     returnButton.addEventListener("click", () => {
+      const returnScrollY = state.previousVerbScrollY;
       state.query = state.previousVerbQuery;
       state.previousVerbQuery = null;
+      state.previousVerbScrollY = null;
       state.selectedVerb = null;
       state.verbCardMode = "basic";
       updateRouteHash("verbs");
       renderVerbs();
-      scrollToCard("content");
       requestAnimationFrame(() => document.getElementById("searchInput")?.focus());
+      requestAnimationFrame(() => window.scrollTo({ top: Number.isFinite(returnScrollY) ? returnScrollY : 0, behavior: "smooth" }));
     });
     node.querySelector(".card-head").insertAdjacentElement("afterend", returnButton);
   }
@@ -10973,10 +11091,11 @@ function renderEmptyVerbSearch(rawQuery) {
   return card;
 }
 
-function renderVerbListItem(verb, { showBadges = true, isBestMatch = false } = {}) {
+function renderVerbListItem(verb, { showBadges = true, isBestMatch = false, showSearchMeta = true } = {}) {
   const info = verbInfo(verb);
-  const infinitiveLabel = highlightSearchMatch(info.displayInfinitive);
-  const translationLabel = highlightSearchMatch(info.ru);
+  const useSearchMeta = showSearchMeta && state.view === "verbs";
+  const infinitiveLabel = useSearchMeta ? highlightSearchMatch(info.displayInfinitive) : escapeHTML(info.displayInfinitive);
+  const translationLabel = useSearchMeta ? highlightSearchMatch(info.ru) : escapeHTML(info.ru);
   const feedback = state.cardFeedback?.verb === verb;
   const row = document.createElement("div");
   row.className = `verb-row ${verb === state.selectedVerb ? "is-active" : ""} ${feedback ? "is-card-feedback" : ""} ${isBestMatch ? "is-best-match" : ""}`;
@@ -10995,9 +11114,9 @@ function renderVerbListItem(verb, { showBadges = true, isBestMatch = false } = {
       ${state.cards.includes(verb) ? "★" : "☆"}
     </button>
   `;
-  const reason = searchMatchReason(info);
-  if (reason || isBestMatch) {
-    const bestLabel = isBestMatch ? "Лучшее совпадение" : "";
+  const reason = useSearchMeta ? searchMatchReason(info) : "";
+  if (reason || (useSearchMeta && isBestMatch)) {
+    const bestLabel = useSearchMeta && isBestMatch ? "Лучшее совпадение" : "";
     row.insertAdjacentHTML("beforeend", `<div class="verb-match-note">${[bestLabel, reason].filter(Boolean).join(" · ")}</div>`);
   }
   if (feedback) {
@@ -14134,13 +14253,33 @@ function learningItemDetails(level, section, item) {
   };
 }
 
+const LEARNING_STATUS_LABELS = {
+  todo: "Не начинал",
+  learning: "Изучаю",
+  done: "Освоено"
+};
+
+function learningStatusFor(key) {
+  const stored = state.learningProgress[key];
+  if (stored === true || stored === "done") return "done";
+  if (stored === "learning") return "learning";
+  return "todo";
+}
+
+function learningStatusSelect(key, item) {
+  const status = learningStatusFor(key);
+  return `<select class="learning-status-select" data-learning-status="${key}" aria-label="Статус: ${escapeHTML(item)}">
+    ${Object.entries(LEARNING_STATUS_LABELS).map(([value, label]) => `<option value="${value}" ${status === value ? "selected" : ""}>${label}</option>`).join("")}
+  </select>`;
+}
+
 function renderLearningPlan() {
   const content = clearContent();
   const level = LEARNING_LEVELS.find((item) => item.id === state.learningLevel) || LEARNING_LEVELS[0];
   const levelButtons = LEARNING_LEVELS.map((item) => {
     const selected = item.id === level.id;
     const total = [item.can, item.grammar, item.topics, item.practice, item.checklist].reduce((sum, list) => sum + (list?.length || 0), 0);
-    const done = Object.keys(state.learningProgress).filter((key) => key.startsWith(`${item.id}:`) && state.learningProgress[key]).length;
+    const done = Object.keys(state.learningProgress).filter((key) => key.startsWith(`${item.id}:`) && learningStatusFor(key) === "done").length;
     return `<button class="small-button ${selected ? "is-active" : ""}" type="button" data-learning-level="${item.id}" aria-pressed="${selected}">${item.label}${total ? ` · ${done}/${total}` : ""}</button>`;
   }).join("");
   const sections = [
@@ -14148,22 +14287,23 @@ function renderLearningPlan() {
     ["Практические ситуации", level.practice], ["Чек-лист уровня", level.checklist]
   ];
   const allItems = sections.flatMap(([section, items]) => (items || []).map((item) => ({ section, item })));
-  const doneCount = allItems.filter((_, index) => state.learningProgress[`${level.id}:${index}`]).length;
+  const doneCount = allItems.filter((_, index) => learningStatusFor(`${level.id}:${index}`) === "done").length;
+  const learningCount = allItems.filter((_, index) => learningStatusFor(`${level.id}:${index}`) === "learning").length;
   const progress = allItems.length ? Math.round(doneCount / allItems.length * 100) : 0;
   let itemIndex = 0;
   const list = (title, items = []) => {
     if (!items.length) return "";
     const sectionStart = itemIndex;
-    const sectionDone = items.filter((_, index) => state.learningProgress[`${level.id}:${sectionStart + index}`]).length;
+    const sectionDone = items.filter((_, index) => learningStatusFor(`${level.id}:${sectionStart + index}`) === "done").length;
     itemIndex += items.length;
     const itemMarkup = items.map((item, index) => {
       const key = `${level.id}:${sectionStart + index}`;
-      const checked = Boolean(state.learningProgress[key]);
+      const status = learningStatusFor(key);
       const detail = learningItemDetails(level, title, item);
       const links = detail.links.length
         ? `<div class="learning-item-links">${detail.links.map((link) => `<a class="small-button" href="${link.href}">${link.label}</a>`).join("")}</div>`
         : `<p>Точной карточки для этого пункта пока нет; используйте мини-проверку ниже.</p>`;
-      return `<li class="learning-plan-item"><label><input type="checkbox" data-learning-item="${key}" ${checked ? "checked" : ""}> <span>${item}</span></label><details class="learning-item-detail" data-learning-detail="${key}" ${state.learningDetails[key] ? "open" : ""}><summary>Подробнее</summary><div class="learning-item-detail-body">${learningDetailMarkup(detail)}${links}</div></details></li>`;
+      return `<li class="learning-plan-item"><div class="learning-item-main"><span class="learning-item-status-dot is-${status}" aria-hidden="true"></span><span class="learning-item-title">${item}</span>${learningStatusSelect(key, item)}</div><details class="learning-item-detail" data-learning-detail="${key}" ${state.learningDetails[key] ? "open" : ""}><summary>Подробнее</summary><div class="learning-item-detail-body">${learningDetailMarkup(detail)}${links}</div></details></li>`;
     }).join("");
     return `<section class="learning-plan-section"><div class="learning-plan-section-head"><h3>${title}</h3><span>${sectionDone}/${items.length}</span></div><ul class="learning-plan-list">${itemMarkup}</ul></section>`;
   };
@@ -14172,14 +14312,21 @@ function renderLearningPlan() {
   header.innerHTML = `
     <div class="card-head"><div><h2>План обучения</h2><p class="muted">Практическая карта испанского по CEFR. A0 — внутренняя подготовительная ступень; A1–C2 — официальные уровни.</p></div></div>
     <div class="learning-level-tabs" aria-label="Выбор уровня">${levelButtons}</div>
-    <section class="learning-plan-summary" aria-live="polite"><p><strong>${level.label} · ${level.title}</strong></p><p>${level.description}</p><p><strong>Прогресс: ${doneCount} из ${allItems.length} · ${progress}%</strong></p><progress max="100" value="${progress}" aria-label="Прогресс уровня ${level.label}"></progress><p><button class="small-button" type="button" data-reset-learning>Сбросить прогресс уровня</button></p></section>
+    <section class="learning-plan-summary" aria-live="polite"><p><strong>${level.label} · ${level.title}</strong></p><p>${level.description}</p><p><strong>Освоено: ${doneCount} из ${allItems.length} · ${progress}%</strong>${learningCount ? ` · В процессе: ${learningCount}` : ""}</p><progress max="100" value="${progress}" aria-label="Освоено на уровне ${level.label}"></progress><p><button class="small-button" type="button" data-reset-learning>Сбросить прогресс уровня</button></p></section>
     ${learningLevelResourcesMarkup(level.id)}
     ${sections.map(([title, items]) => list(title, items)).join("")}
     <p class="muted learning-plan-sources">Основа: <a href="https://www.coe.int/en/web/common-european-framework-reference-languages/companion-volume" target="_blank" rel="noopener">CEFR Companion Volume</a> и <a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/default.htm" target="_blank" rel="noopener">Plan Curricular del Instituto Cervantes</a>. A0 опирается на коммуникативные дескрипторы Pre-A1 и начальное содержание A1; планы A1–C2 соотнесены с официальными дескрипторами и инвентарями функций, грамматики, прагматики и учебных тем соответствующих уровней. Списки являются практической адаптацией для самостоятельного обучения, а не официальным экзаменационным силлабусом.</p>
   `;
   content.appendChild(header);
   bindClickAll(header, "[data-learning-level]", (event) => { state.learningLevel = event.currentTarget.dataset.learningLevel; appStorage.set("msg:learningLevel", state.learningLevel); renderLearningPlan(); });
-  bindClickAll(header, "[data-learning-item]", (event) => { const key = event.currentTarget.dataset.learningItem; state.learningProgress[key] = event.currentTarget.checked; appStorage.set("msg:learningProgress", JSON.stringify(state.learningProgress)); renderLearningPlan(); });
+  $all("[data-learning-status]", header).forEach((select) => select.addEventListener("change", (event) => {
+    const key = event.currentTarget.dataset.learningStatus;
+    const status = event.currentTarget.value;
+    if (status === "todo") delete state.learningProgress[key];
+    else state.learningProgress[key] = status;
+    appStorage.set("msg:learningProgress", JSON.stringify(state.learningProgress));
+    renderLearningPlan();
+  }));
   $all("[data-learning-detail]", header).forEach((detail) => detail.addEventListener("toggle", () => { const key = detail.dataset.learningDetail; if (detail.open) state.learningDetails[key] = true; else delete state.learningDetails[key]; appStorage.set("msg:learningDetails", JSON.stringify(state.learningDetails)); }));
   bindClickAll(header, "[data-reset-learning]", () => { Object.keys(state.learningProgress).filter((key) => key.startsWith(`${level.id}:`)).forEach((key) => delete state.learningProgress[key]); appStorage.set("msg:learningProgress", JSON.stringify(state.learningProgress)); renderLearningPlan(); });
 }
@@ -14199,6 +14346,7 @@ function renderCards() {
   const quickCount = Math.min(5, state.cards.length);
   const studyCounts = studyCardCounts();
   const mistakeCards = cardsForFilter("mistakes");
+  const hasResume = hasSavedQuizSession();
   const canStartCustom = cfg.type !== "conjugation" || (cfg.tenses.length > 0 && cfg.persons.length > 0);
 
   const tenseButtons = QUIZ_TENSES.map((tense) => {
@@ -14224,16 +14372,25 @@ function renderCards() {
     <div class="cards-dashboard-head">
       <div>
         <h2>Избранное</h2>
-        <p class="muted">${state.cards.length} ${pluralizeVerbs(state.cards.length)} для повторения</p>
+        <p class="cards-purpose">Избранные глаголы для повторения · ${state.cards.length} ${pluralizeVerbs(state.cards.length)}</p>
       </div>
-      ${state.cards.length > 0 ? `<div class="cards-dashboard-actions">
-        ${mistakeCards.length > 0
-          ? `<button class="small-button primary" type="button" data-preset="mistakes">Повторить ошибки · ${mistakeCards.length}</button>
-             <button class="small-button" type="button" data-preset="quick">Быстрая проверка · ${quickCount}</button>`
-          : `<button class="small-button primary" type="button" data-preset="quick">Быстрая проверка · ${quickCount}</button>`}
-        <button class="small-button" type="button" data-toggle-quiz-panel aria-expanded="${state.showQuizPanel}">${state.showQuizPanel ? "Скрыть режимы" : "Режимы квиза"}</button>
-      </div>` : ""}
     </div>
+    ${state.cards.length > 0
+      ? hasResume
+        ? `<div class="cards-resume cards-primary-action" role="status">
+            <p><strong>Есть незавершенная проверка.</strong> Вопрос ${Math.min(state.savedQuizSession.cardQuizIndex + 1, state.savedQuizSession.cardQuiz.length)} из ${state.savedQuizSession.cardQuiz.length}.</p>
+            <div class="cards-dashboard-actions">
+              <button class="small-button primary" type="button" data-resume-quiz>Продолжить проверку</button>
+              <button class="small-button" type="button" data-toggle-quiz-panel aria-expanded="${state.showQuizPanel}">${state.showQuizPanel ? "Скрыть режимы" : "Режимы квиза"}</button>
+              <button class="small-button" type="button" data-discard-quiz>Сбросить</button>
+            </div>
+          </div>`
+        : `<div class="cards-primary-actions">
+            <button class="small-button primary" type="button" data-preset="quick">Начать проверку · ${quickCount}</button>
+            ${mistakeCards.length > 0 ? `<button class="small-button" type="button" data-preset="mistakes">Повторить ошибки · ${mistakeCards.length}</button>` : ""}
+            <button class="small-button" type="button" data-toggle-quiz-panel aria-expanded="${state.showQuizPanel}">${state.showQuizPanel ? "Скрыть режимы" : "Режимы квиза"}</button>
+          </div>`
+      : ""}
     ${state.cards.length > 0 ? `<div class="cards-overview" aria-label="Прогресс изучения">
       <button class="${state.cardsFilter === "reviewed" ? "is-active" : ""}" type="button" data-cards-dashboard-filter="reviewed" aria-pressed="${state.cardsFilter === "reviewed"}"><strong>${studyCounts.reviewed}</strong><span>проверено</span></button>
       <button class="${state.cardsFilter === "unreviewed" ? "is-active" : ""}" type="button" data-cards-dashboard-filter="unreviewed" aria-pressed="${state.cardsFilter === "unreviewed"}"><strong>${studyCounts.unreviewed}</strong><span>не проверено</span></button>
@@ -14249,13 +14406,6 @@ function renderCards() {
         <div><strong>Освоено</strong><span>Минимум 3 ответа, точность от 80% и серия от 2.</span></div>
       </div>
     </details>` : `<p class="muted">Глаголы, выбранные для повторения. Результаты сохраняются только на этом устройстве.</p>`}
-    ${hasSavedQuizSession() ? `<div class="cards-resume" role="status">
-      <p><strong>Есть незавершенный квиз.</strong> Вопрос ${Math.min(state.savedQuizSession.cardQuizIndex + 1, state.savedQuizSession.cardQuiz.length)} из ${state.savedQuizSession.cardQuiz.length}.</p>
-      <div class="cards-dashboard-actions">
-        <button class="small-button primary" type="button" data-resume-quiz>Продолжить</button>
-        <button class="small-button" type="button" data-discard-quiz>Сбросить</button>
-      </div>
-    </div>` : ""}
     ${state.cardUndo && !state.cards.includes(state.cardUndo.verb) ? `<div class="cards-undo" role="status">
       <p><strong>${displayInfinitive(state.cardUndo.verb)}</strong> убран из избранного.</p>
       <button class="small-button" type="button" data-undo-remove>Отменить</button>
@@ -14423,7 +14573,7 @@ function renderCards() {
     const needsReview = cardNeedsReview(verb);
     const status = stats.attempts === 0 ? "Не проверялся" : mastered ? "Освоен" : needsReview ? "Повторить" : "В работе";
     const statusClass = stats.attempts === 0 ? "is-unreviewed" : mastered ? "is-mastered" : needsReview ? "is-mistake" : "is-progress";
-    const row = renderVerbListItem(verb, { showBadges: false });
+    const row = renderVerbListItem(verb, { showBadges: false, showSearchMeta: false });
     row.classList.add("is-study-card");
     row.insertAdjacentHTML("beforeend", `<div class="cards-study-footer">
       <div class="cards-study-meta">
@@ -15481,14 +15631,17 @@ document.addEventListener("keydown", (e) => {
       return;
     }
     if (state.selectedVerb) {
+      const returnScrollY = state.previousVerbScrollY;
       if (state.previousVerbQuery) {
         state.query = state.previousVerbQuery;
         state.previousVerbQuery = null;
       }
+      state.previousVerbScrollY = null;
       state.selectedVerb = null;
       state.searchCursor = -1;
       updateRouteHash("verbs");
       render();
+      requestAnimationFrame(() => window.scrollTo({ top: Number.isFinite(returnScrollY) ? returnScrollY : 0, behavior: "smooth" }));
       e.preventDefault();
     } else if (state.query) {
       state.query = "";

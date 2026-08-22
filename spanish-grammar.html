@@ -511,6 +511,71 @@ input[type="search"] {
   margin-bottom: 0;
 }
 
+.tense-level-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.tense-card-use {
+  display: grid;
+  gap: 4px;
+  margin: 12px 0;
+  padding: 10px 12px;
+  border-left: 3px solid var(--accent-2);
+  background: color-mix(in srgb, var(--surface-2) 72%, transparent);
+}
+
+.tense-card-use p {
+  margin: 0;
+}
+
+.tense-card-label {
+  color: var(--accent-2);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.tense-contrast-note {
+  display: grid;
+  gap: 6px;
+  margin: 12px 0;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--accent-2) 34%, var(--line));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent-2) 8%, var(--surface));
+}
+
+.tense-contrast-note strong {
+  color: var(--accent-2);
+}
+
+.tense-contrast-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tense-contrast-link {
+  border: 0;
+  border-bottom: 1px dashed currentColor;
+  padding: 0;
+  background: transparent;
+  color: var(--accent-2);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 900;
+}
+
 .tense-card-head .chip {
   flex: 0 1 auto;
   max-width: 42%;
@@ -540,6 +605,14 @@ input[type="search"] {
 .focused-tense-actions {
   display: flex;
   flex-wrap: wrap;
+  gap: 6px;
+}
+
+.focused-tense-paging {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 6px;
 }
 
@@ -1196,6 +1269,10 @@ button.choice-card:focus-visible {
   color: var(--text);
   cursor: pointer;
   font-weight: 800;
+}
+
+.button-label-short {
+  display: none;
 }
 
 .small-button:disabled {
@@ -2873,12 +2950,37 @@ select {
   }
 
   .tense-actions.is-compact {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .tense-actions.is-compact .small-button {
     padding-inline: 4px;
     font-size: 12px;
+  }
+
+  .tense-actions.is-compact .small-button:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .button-label-full {
+    display: none;
+  }
+
+  .button-label-short {
+    display: inline;
+  }
+
+  .focused-tense-paging {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .focused-tense-paging .small-button {
+    flex: 1 1 0;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .filter-tabs {
@@ -2994,7 +3096,8 @@ select {
   .tense-card:not(.is-mobile-open) .tense-actions.is-compact,
   .tense-card:not(.is-mobile-open) .example-more-button,
   .tense-card:not(.is-mobile-open) > .tense-detail-block,
-  .tense-card:not(.is-mobile-open) > .compact-exceptions {
+  .tense-card:not(.is-mobile-open) > .compact-exceptions,
+  .tense-card:not(.is-mobile-open) > .tense-contrast-note {
     display: none;
   }
 
@@ -3356,7 +3459,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.79 · обновлено: 22.08.2026 15:05 CEST</span>
+        <span>Версия MVP 0.80 · обновлено: 22.08.2026 15:20 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -5502,6 +5605,107 @@ const TENSE_FILTERS = {
     label: "Все",
     description: "полный справочник",
     ids: TENSES.map((tense) => tense.id)
+  }
+};
+
+const TENSE_LEVELS = {
+  presente: "A0–A1",
+  perfecto: "A1",
+  indefinido: "A1",
+  imperfecto: "A2",
+  pluscuamperfecto: "A2",
+  preterito_anterior: "B2",
+  futuro: "A2",
+  futuro_perfecto: "B1",
+  condicional: "B1",
+  condicional_compuesto: "B2",
+  subjuntivo_presente: "A2–B1",
+  subjuntivo_perfecto: "B1",
+  subjuntivo_imperfecto: "B1",
+  subjuntivo_pluscuamperfecto: "B2",
+  subjuntivo_futuro: "C1",
+  subjuntivo_futuro_perfecto: "C1",
+  imperativo_afirmativo: "A1",
+  imperativo_negativo: "A1",
+  formas_no_personales: "A0–A1"
+};
+
+const TENSE_CONTRASTS = {
+  presente: {
+    text: "Для действия прямо сейчас часто нужен estar + gerundio; для личного плана на будущее — ir a + infinitivo.",
+    links: []
+  },
+  perfecto: {
+    text: "Связан с настоящим или незавершенным периодом; для закрытого прошлого обычно выбирают Indefinido.",
+    links: ["indefinido"]
+  },
+  indefinido: {
+    text: "Завершенное событие в закрытом прошлом; фон, привычка или процесс обычно требуют Imperfecto.",
+    links: ["perfecto", "imperfecto"]
+  },
+  imperfecto: {
+    text: "Фон, привычка или состояние в прошлом; отдельное завершенное событие обычно оформляется Indefinido.",
+    links: ["indefinido"]
+  },
+  pluscuamperfecto: {
+    text: "Показывает действие до другой точки в прошлом; не заменяет обычный рассказ о последовательных событиях.",
+    links: ["indefinido"]
+  },
+  preterito_anterior: {
+    text: "Редкая книжная форма; в обычной речи почти всегда достаточно Indefinido или Pluscuamperfecto.",
+    links: ["indefinido", "pluscuamperfecto"]
+  },
+  futuro: {
+    text: "Futuro Simple подходит для прогноза, обещания и предположения; личный план часто выражается через ir a + infinitivo.",
+    links: []
+  },
+  futuro_perfecto: {
+    text: "Действие завершится к будущей точке; не путай с Perfecto, который связывает завершенность с настоящим.",
+    links: ["perfecto"]
+  },
+  condicional: {
+    text: "В условии используется si + Imperfecto de Subjuntivo, а не *si + Condicional.",
+    links: ["subjuntivo_imperfecto"]
+  },
+  condicional_compuesto: {
+    text: "Нереальное прошлое обычно строится как si + Pluscuamperfecto de Subjuntivo + Condicional Compuesto.",
+    links: ["subjuntivo_pluscuamperfecto"]
+  },
+  subjuntivo_presente: {
+    text: "Indicativo сообщает факт, а Subjuntivo показывает желание, сомнение, эмоцию или оценку.",
+    links: ["presente"]
+  },
+  subjuntivo_perfecto: {
+    text: "Завершенность внутри Subjuntivo; для утверждения о завершенном факте используется Indicativo Perfecto.",
+    links: ["perfecto"]
+  },
+  subjuntivo_imperfecto: {
+    text: "Гипотеза или зависимость от прошлого; в главной части условной конструкции часто стоит Condicional.",
+    links: ["condicional"]
+  },
+  subjuntivo_pluscuamperfecto: {
+    text: "Нереальное или желаемое прошлое; результат обычно выражается Condicional Compuesto.",
+    links: ["condicional_compuesto"]
+  },
+  subjuntivo_futuro: {
+    text: "Архаичная и юридическая форма; в современной речи обычно заменяется Presente de Subjuntivo.",
+    links: ["subjuntivo_presente"]
+  },
+  subjuntivo_futuro_perfecto: {
+    text: "Очень редкая юридическая форма; современная замена — Perfecto de Subjuntivo или Indicativo по контексту.",
+    links: ["subjuntivo_perfecto"]
+  },
+  imperativo_afirmativo: {
+    text: "Утвердительная команда использует особые формы tú, а usted, nosotros и ustedes строятся через Subjuntivo.",
+    links: ["subjuntivo_presente"]
+  },
+  imperativo_negativo: {
+    text: "Отрицательная команда всегда строится через no + Presente de Subjuntivo.",
+    links: ["imperativo_afirmativo", "subjuntivo_presente"]
+  },
+  formas_no_personales: {
+    text: "Infinitivo, Gerundio и Participio не выражают лицо; они входят в перифразы и составные времена.",
+    links: ["perfecto"]
   }
 };
 
@@ -8956,7 +9160,7 @@ const state = {
   tableLevelCumulative: localStorage.getItem("msg:tableLevelCumulative") !== "false",
   focusedTable: null,
   tableReturnVerb: null,
-  showTenseToc: false,
+  showTenseToc: true,
   tenseFilter: ["basic", "frequent", "all"].includes(localStorage.getItem("msg:tenseFilter"))
     ? localStorage.getItem("msg:tenseFilter")
     : "basic",
@@ -9135,7 +9339,8 @@ function subgroupHeading(title) {
 
 function disclosureButton({ open, target, label, hideLabel = `Скрыть ${label.toLowerCase()}`, action }) {
   return `<button class="small-button ${open ? "danger" : "success"}" type="button" data-${action}="${target}" aria-expanded="${open}">
-    ${open ? hideLabel : label}
+    <span class="button-label-full">${open ? hideLabel : label}</span>
+    <span class="button-label-short">${open ? "Скрыть" : label}</span>
   </button>`;
 }
 
@@ -10786,6 +10991,11 @@ function renderTenses() {
   const returnMood = MOODS.find((mood) => mood.id === state.returnMood);
 
   if (focusedTense) {
+    const filteredIds = filteredTenseIds(TENSES.map((tense) => tense.id));
+    const focusIds = filteredIds.includes(focusedTense.id) ? filteredIds : TENSES.map((tense) => tense.id);
+    const focusPosition = focusIds.indexOf(focusedTense.id);
+    const previousTense = focusPosition > 0 ? tenseById(focusIds[focusPosition - 1]) : null;
+    const nextTense = focusPosition >= 0 && focusPosition < focusIds.length - 1 ? tenseById(focusIds[focusPosition + 1]) : null;
     const focusNav = infoSection({
       id: "tensesTop",
       html: `
@@ -10794,7 +11004,11 @@ function renderTenses() {
             ${returnMood ? `<button class="small-button primary" type="button" data-return-mood="${returnMood.id}">← Назад к ${returnMood.title.split(":")[0]}</button>` : ""}
             <button class="small-button" type="button" data-show-all-tenses>Все времена</button>
           </div>
-          <span class="muted">Режим одного времени</span>
+          <div class="focused-tense-paging" aria-label="Навигация между временами">
+            <button class="small-button" type="button" data-focus-tense="${previousTense?.id || ""}" ${previousTense ? "" : "disabled"}>← ${previousTense ? TENSE_NAV_LABELS[previousTense.id] || previousTense.name : "Ранее"}</button>
+            <span class="muted">${focusPosition + 1} из ${focusIds.length}</span>
+            <button class="small-button" type="button" data-focus-tense="${nextTense?.id || ""}" ${nextTense ? "" : "disabled"}>${nextTense ? TENSE_NAV_LABELS[nextTense.id] || nextTense.name : "Далее"} →</button>
+          </div>
         </div>
       `
     });
@@ -10819,6 +11033,18 @@ function renderTenses() {
       renderMoods();
       updateRouteHash(`mood-${state.selectedMood}`);
       scrollToCard("content");
+    });
+    bindClickAll(focusNav, "[data-focus-tense]", (event) => {
+      const nextId = event.currentTarget.dataset.focusTense;
+      if (!nextId) return;
+      state.focusedTense = nextId;
+      state.openMoreExamplesTense = null;
+      state.openFormationTense = null;
+      state.openSignalsTense = null;
+      state.openExceptionTense = null;
+      renderTenses();
+      updateRouteHash(`tense-${nextId}`);
+      scrollToCard(`tense-${nextId}`);
     });
     return;
   }
@@ -10864,7 +11090,7 @@ function renderTenses() {
                 <button class="small-button term-button tense-nav-button ${badge.kind === "rare" ? "is-rare" : ""}" type="button" data-jump="${id}">
                   <span class="tense-nav-main">
                     <span>${TENSE_NAV_LABELS[id] || tense.name}</span>
-                    <small>${tense.ru}</small>
+                    <small>${tense.ru} · ${TENSE_LEVELS[id] || "справка"}</small>
                   </span>
                   ${badgeMarkup(id)}
                 </button>
@@ -10926,6 +11152,7 @@ function renderTenseCard(tense) {
         <div class="tense-title-row">
           <h2 lang="es">${tense.name}</h2>
           ${badgeMarkup(tense.id)}
+          ${tenseLevelMarkup(tense.id)}
         </div>
         <p class="muted">${tense.ru} · ${tense.mood}</p>
       </div>
@@ -10933,8 +11160,12 @@ function renderTenseCard(tense) {
         ${formatFormula(tense.formula || "окончания по типу глагола")}
       </button>
     </div>
-    <p>${tense.use}</p>
+    <div class="tense-card-use">
+      <span class="tense-card-label">Когда использовать</span>
+      <p>${tense.use}</p>
+    </div>
     ${tenseExamplesMarkup(tense.id)}
+    ${tenseContrastMarkup(tense.id)}
     ${state.focusedTense === tense.id ? "" : `<button class="small-button tense-card-mobile-toggle ${mobileOpen ? "danger" : "success"}" type="button" data-mobile-tense="${tense.id}" aria-expanded="${mobileOpen}">
       ${mobileOpen ? "Скрыть детали" : "Показать детали"}
     </button>`}
@@ -10968,6 +11199,18 @@ function renderTenseCard(tense) {
     state.openExceptionTense = state.openExceptionTense === tense.id ? null : tense.id;
     renderTenses();
     scrollToCard(`tense-${tense.id}`);
+  });
+  bindClickAll(section, "[data-contrast-tense]", (event) => {
+    const nextId = event.currentTarget.dataset.contrastTense;
+    if (!tenseById(nextId)) return;
+    state.focusedTense = nextId;
+    state.openMoreExamplesTense = null;
+    state.openFormationTense = null;
+    state.openSignalsTense = null;
+    state.openExceptionTense = null;
+    renderTenses();
+    updateRouteHash(`tense-${nextId}`);
+    scrollToCard(`tense-${nextId}`);
   });
   section.querySelector("[data-tense-examples]")?.addEventListener("click", () => {
     state.openMoreExamplesTense = state.openMoreExamplesTense === tense.id ? null : tense.id;
@@ -11016,6 +11259,26 @@ function tenseBadge(id) {
 function badgeMarkup(id) {
   const badge = tenseBadge(id);
   return `<span class="tense-badge ${badge.kind}">${badge.label}</span>`;
+}
+
+function tenseLevelMarkup(id) {
+  const level = TENSE_LEVELS[id] || "справка";
+  return `<span class="tense-level-badge" title="Ориентировочный уровень изучения">${level}</span>`;
+}
+
+function tenseContrastMarkup(id) {
+  const contrast = TENSE_CONTRASTS[id];
+  if (!contrast) return "";
+  const links = contrast.links.map((linkId) => {
+    const tense = tenseById(linkId);
+    if (!tense) return "";
+    return `<button class="tense-contrast-link" type="button" data-contrast-tense="${linkId}">${TENSE_NAV_LABELS[linkId] || tense.name}</button>`;
+  }).join("");
+  return `<aside class="tense-contrast-note">
+    <strong>Не путать с:</strong>
+    <span>${contrast.text}</span>
+    ${links ? `<span class="tense-contrast-links">${links}</span>` : ""}
+  </aside>`;
 }
 
 function scrollToCard(id) {

@@ -3070,7 +3070,12 @@ td.irregular {
 .textbook-progress p, .textbook-theory p, .textbook-exercise p, .textbook-result p { margin: 0; }
 .textbook-catalog { display: grid; gap: 10px; }
 .textbook-catalog-group { display: grid; gap: 8px; }
-.textbook-catalog-group h3 { margin: 8px 0 0; font-size: 15px; }
+.textbook-catalog-group-toggle { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; margin: 8px 0 0; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2); color: var(--text); font: inherit; font-size: 15px; font-weight: 900; text-align: left; cursor: pointer; }
+.textbook-catalog-group-toggle:hover, .textbook-catalog-group-toggle:focus-visible { border-color: var(--accent); box-shadow: var(--shadow); }
+.textbook-catalog-group-toggle::after { content: "▾"; color: var(--accent); font-size: 18px; transition: transform 160ms ease; }
+.textbook-catalog-group-toggle[aria-expanded="false"]::after { transform: rotate(-90deg); }
+.textbook-catalog-group-lessons { display: grid; gap: 8px; }
+.textbook-catalog-group-lessons[hidden] { display: none; }
 .textbook-lesson-card { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; width: 100%; padding: 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--text); text-align: left; cursor: pointer; }
 .textbook-lesson-card:hover, .textbook-lesson-card:focus-visible { border-color: var(--accent); box-shadow: var(--shadow); }
 .textbook-lesson-number { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 900; }
@@ -3847,7 +3852,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.99 · обновлено: 25.09.2026 15:07 CEST</span>
+        <span>Версия MVP 1.00 · обновлено: 25.09.2026 15:13 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -9677,6 +9682,10 @@ const state = {
     : null,
   textbookVisibleFeedback: {},
   textbookOpenExercises: {},
+  textbookOpenGroups: (() => {
+    const stored = readStoredJSON("msg:textbookOpenGroups", {});
+    return stored && typeof stored === "object" && !Array.isArray(stored) ? stored : {};
+  })(),
   textbookProgress: readTextbookProgress()
 };
 
@@ -15247,9 +15256,12 @@ function renderTextbookCatalog(content) {
     const meta = `${textbookText(lesson.subtitle)} · ${progress.total} ${textbookUi("зад.", "preg.")} · ~${duration} ${textbookUi("мин.", "min.")}`;
     return `<button class="textbook-lesson-card" type="button" data-textbook-open="${lesson.id}"><span class="textbook-lesson-number">${lesson.id}</span><span><strong>${escapeHTML(textbookText(lesson.title))}</strong><small>${escapeHTML(meta)}</small></span><span class="textbook-status ${progress.done ? "is-done" : ""}">${escapeHTML(status)}</span></button>`;
   };
-  const cards = TEXTBOOK_COURSE_GROUPS.map((group) => {
+  const cards = TEXTBOOK_COURSE_GROUPS.map((group, index) => {
     const lessons = group.ids.map((id) => TEXTBOOK_LESSONS.find((lesson) => lesson.id === id)).filter(Boolean);
-    return `<section class="textbook-catalog-group"><h3>${escapeHTML(textbookText(group.title))}</h3>${lessons.map(card).join("")}</section>`;
+    const groupId = "textbook-catalog-group-" + index;
+    const isOpen = Boolean(state.textbookOpenGroups[index]);
+    const label = textbookText(group.title);
+    return `<section class="textbook-catalog-group"><button class="textbook-catalog-group-toggle" type="button" data-textbook-group-toggle="${index}" aria-expanded="${isOpen}" aria-controls="${groupId}"><span>${escapeHTML(label)}</span></button><div class="textbook-catalog-group-lessons" id="${groupId}" ${isOpen ? "" : "hidden"}>${lessons.map(card).join("")}</div></section>`;
   }).join("");
   const header = infoSection({ className: "info-card textbook-dashboard", html: `
     <div class="textbook-toolbar"><div><h2>${escapeHTML(textbookUi("Учебник", "Curso"))}</h2><p class="muted">${escapeHTML(textbookUi("Тридцать интерактивных уроков по базовой грамматике.", "Treinta lecciones interactivas de gramática básica."))}</p></div>${textbookLanguageButtons()}</div>
@@ -15338,6 +15350,13 @@ function bindTextbookControls(root, activeLesson = null) {
     requestAnimationFrame(() => document.querySelector('[data-textbook-language="' + state.textbookLanguage + '"]')?.focus({ preventScroll: true }));
   });
   bindClickAll(root, "[data-textbook-open]", (event) => openTextbookLesson(Number(event.currentTarget.dataset.textbookOpen)));
+  bindClickAll(root, "[data-textbook-group-toggle]", (event) => {
+    const groupIndex = event.currentTarget.dataset.textbookGroupToggle;
+    state.textbookOpenGroups[groupIndex] = !state.textbookOpenGroups[groupIndex];
+    appStorage.set("msg:textbookOpenGroups", JSON.stringify(state.textbookOpenGroups));
+    renderTextbook();
+    requestAnimationFrame(() => document.querySelector('[data-textbook-group-toggle="' + groupIndex + '"]')?.focus({ preventScroll: true }));
+  });
   bindClickAll(root, "[data-textbook-toggle]", (event) => {
     if (!activeLesson) return;
     const exerciseId = event.currentTarget.dataset.textbookToggle;

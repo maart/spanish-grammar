@@ -3074,6 +3074,8 @@ td.irregular {
 .textbook-catalog-group-toggle:hover, .textbook-catalog-group-toggle:focus-visible { border-color: var(--accent); box-shadow: var(--shadow); }
 .textbook-catalog-group-toggle::after { content: "▾"; color: var(--accent); font-size: 18px; transition: transform 160ms ease; }
 .textbook-catalog-group-toggle[aria-expanded="false"]::after { transform: rotate(-90deg); }
+.textbook-catalog-group-title { display: grid; gap: 3px; min-width: 0; }
+.textbook-catalog-group-title small { color: var(--muted); font-size: 13px; font-weight: 700; line-height: 1.35; }
 .textbook-catalog-group-lessons { display: grid; gap: 8px; }
 .textbook-catalog-group-lessons[hidden] { display: none; }
 .textbook-lesson-card { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; width: 100%; padding: 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--text); text-align: left; cursor: pointer; }
@@ -3852,7 +3854,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.00 · обновлено: 25.09.2026 15:13 CEST</span>
+        <span>Версия MVP 1.01 · обновлено: 25.09.2026 15:15 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -15261,11 +15263,14 @@ function renderTextbookCatalog(content) {
     const groupId = "textbook-catalog-group-" + index;
     const isOpen = Boolean(state.textbookOpenGroups[index]);
     const label = textbookText(group.title);
-    return `<section class="textbook-catalog-group"><button class="textbook-catalog-group-toggle" type="button" data-textbook-group-toggle="${index}" aria-expanded="${isOpen}" aria-controls="${groupId}"><span>${escapeHTML(label)}</span></button><div class="textbook-catalog-group-lessons" id="${groupId}" ${isOpen ? "" : "hidden"}>${lessons.map(card).join("")}</div></section>`;
+    const lessonList = lessons.map((lesson) => lesson.id + ". " + textbookText(lesson.title)).join(" · ");
+    const lessonSummary = textbookUi("Уроки: ", "Lecciones: ") + lessonList;
+    return `<section class="textbook-catalog-group"><button class="textbook-catalog-group-toggle" type="button" data-textbook-group-toggle="${index}" aria-expanded="${isOpen}" aria-controls="${groupId}"><span class="textbook-catalog-group-title"><strong>${escapeHTML(label)}</strong><small>${escapeHTML(lessonSummary)}</small></span></button><div class="textbook-catalog-group-lessons" id="${groupId}" ${isOpen ? "" : "hidden"}>${lessons.map(card).join("")}</div></section>`;
   }).join("");
   const header = infoSection({ className: "info-card textbook-dashboard", html: `
     <div class="textbook-toolbar"><div><h2>${escapeHTML(textbookUi("Учебник", "Curso"))}</h2><p class="muted">${escapeHTML(textbookUi("Тридцать интерактивных уроков по базовой грамматике.", "Treinta lecciones interactivas de gramática básica."))}</p></div>${textbookLanguageButtons()}</div>
     <div class="textbook-progress"><p><strong>${escapeHTML(textbookUi("Пройдено", "Completado"))}: ${completed}/${lessonCount}</strong></p><progress max="${lessonCount}" value="${completed}" aria-label="${escapeHTML(textbookUi("Прогресс учебника", "Progreso del curso"))}"></progress><div class="textbook-actions"><button class="small-button primary" type="button" data-textbook-open="${next.id}">${escapeHTML(textbookUi("Продолжить", "Continuar"))}: ${next.id}</button><span class="muted">${escapeHTML(textbookUi("Все уроки доступны сразу.", "Todas las lecciones están disponibles."))}</span></div></div>
+    <div class="textbook-actions" role="group" aria-label="${escapeHTML(textbookUi("Управление темами", "Control de temas"))}"><button class="small-button" type="button" data-textbook-groups="open">${escapeHTML(textbookUi("Раскрыть все темы", "Abrir todos los temas"))}</button><button class="small-button" type="button" data-textbook-groups="close">${escapeHTML(textbookUi("Скрыть все темы", "Cerrar todos los temas"))}</button></div>
     <div class="textbook-catalog">${cards}</div>
   ` });
   content.appendChild(header);
@@ -15356,6 +15361,13 @@ function bindTextbookControls(root, activeLesson = null) {
     appStorage.set("msg:textbookOpenGroups", JSON.stringify(state.textbookOpenGroups));
     renderTextbook();
     requestAnimationFrame(() => document.querySelector('[data-textbook-group-toggle="' + groupIndex + '"]')?.focus({ preventScroll: true }));
+  });
+  bindClickAll(root, "[data-textbook-groups]", (event) => {
+    const open = event.currentTarget.dataset.textbookGroups === "open";
+    TEXTBOOK_COURSE_GROUPS.forEach((_group, index) => { state.textbookOpenGroups[index] = open; });
+    appStorage.set("msg:textbookOpenGroups", JSON.stringify(state.textbookOpenGroups));
+    renderTextbook();
+    requestAnimationFrame(() => document.querySelector('[data-textbook-groups="' + (open ? "open" : "close") + '"]')?.focus({ preventScroll: true }));
   });
   bindClickAll(root, "[data-textbook-toggle]", (event) => {
     if (!activeLesson) return;

@@ -912,7 +912,7 @@ input[type="search"] {
   font-weight: 800;
 }
 
-.learning-next-step {
+.plan-next-step {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -924,20 +924,20 @@ input[type="search"] {
   background: color-mix(in srgb, var(--accent-2) 9%, var(--surface));
 }
 
-.learning-next-step p {
+.plan-next-step p {
   margin: 0;
 }
 
-.learning-next-step strong,
-.learning-next-step small {
+.plan-next-step strong,
+.plan-next-step small {
   display: block;
 }
 
-.learning-next-step strong {
+.plan-next-step strong {
   color: var(--accent-2);
 }
 
-.learning-next-step small {
+.plan-next-step small {
   margin-top: 2px;
   color: var(--muted);
 }
@@ -3335,12 +3335,12 @@ select {
     width: 100%;
   }
 
-  .learning-next-step {
+  .plan-next-step {
     align-items: stretch;
     flex-direction: column;
   }
 
-  .learning-next-step .small-button {
+  .plan-next-step .small-button {
     width: 100%;
   }
 
@@ -3847,7 +3847,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.96 · обновлено: 25.09.2026 14:00 CEST</span>
+        <span>Версия MVP 0.97 · обновлено: 25.09.2026 14:14 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -9583,7 +9583,7 @@ function readTextbookProgress() {
   const fallback = { version: 2, lessons: {} };
   const stored = readStoredJSON("msg:textbookProgress", fallback);
   if (!stored || ![1, 2].includes(stored.version) || typeof stored.lessons !== "object" || Array.isArray(stored.lessons)) return fallback;
-  const allowedLessonIds = new Set(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]);
+  const allowedLessonIds = new Set(Array.from({ length: 20 }, (_value, index) => String(index + 1)));
   const lessons = {};
   Object.entries(stored.lessons).forEach(([lessonId, lesson]) => {
     if (!allowedLessonIds.has(lessonId) || !lesson || typeof lesson !== "object") return;
@@ -9672,7 +9672,7 @@ const state = {
   cardQuizAllVerbs: [],
   dark: appStorage.get("msg:theme") === "dark",
   textbookLanguage: appStorage.get("msg:textbookLanguage") === "es" ? "es" : "ru",
-  textbookLesson: Number.isInteger(Number(appStorage.get("msg:textbookLesson"))) && Number(appStorage.get("msg:textbookLesson")) >= 1 && Number(appStorage.get("msg:textbookLesson")) <= 10
+  textbookLesson: Number.isInteger(Number(appStorage.get("msg:textbookLesson"))) && Number(appStorage.get("msg:textbookLesson")) >= 1 && Number(appStorage.get("msg:textbookLesson")) <= 20
     ? Number(appStorage.get("msg:textbookLesson"))
     : null,
   textbookVisibleFeedback: {},
@@ -9742,7 +9742,7 @@ const IMPERATIVO_EXAMPLES = [
   ["возвратный vosotros", "Sentaos aquí.", "Садитесь здесь."]
 ];
 
-// Первые десять unidades de Gramática de uso del español A1-B2.
+// Первые двадцать unidades de Gramática de uso del español A1-B2.
 // Текст адаптирован для самостоятельного интерактивного прохождения.
 const tb = (ru, es) => ({ ru, es });
 const tbExercise = (id, kind, instruction, items, options = []) => ({ id, kind, instruction, items: items.map(([prompt, answer, note = ""]) => ({ prompt, answer, note })), options });
@@ -9890,6 +9890,136 @@ tbExercise("5.1", "text", tb("Дополните сообщение о чело�
       tbExercise("10.2", "choice", tb("Выберите Ø или нужный артикль/сокращение.", "Elige Ø o el artículo/contracción necesaria."), [["¡Fuego! Llamad a ___ bomberos.", "los"], ["¿Hablas ___ español?", "Ø"], ["___ griego no es difícil.", "el"], ["Este fin de semana vamos a ___ playa.", "la"], ["¿Has escuchado ___ noticias?", "las"], ["Susana estudia ___ Arquitectura.", "Ø"], ["Merche hace ___ gimnasia en el colegio.", "Ø"], ["El padre de Pepe es general de ___ ejército.", "el"], ["___ Historia es una asignatura apasionante.", "la"], ["Los Martín tienen una casa en ___ campo.", "el"], ["Antonio tiene ___ guitarra eléctrica.", "una"], ["He comprado ___ televisión.", "una"], ["Escucho ___ radio por las mañanas.", "la"], ["¡Un ladrón! Llama a ___ policía.", "la"], ["Siempre leo ___ periódico después de desayunar.", "el"]], ["Ø", "el", "la", "los", "las", "una"]),
       tbExercise("10.3", "text", tb("Дополните фразу местом; используйте al, a la, del или Ø по необходимости.", "Completa con el lugar; usa al, a la, del o Ø cuando sea necesario."), [["Estudia una carrera. Va ___.", "a la universidad"], ["Tiene dolor de muelas. Va ___.", "al médico"], ["Está enfermo. Lo llevan ___.", "al hospital"], ["Cumple condena. Está en ___.", "la cárcel"], ["Quiere ver una película. Va ___.", "al cine"], ["Sale de su vivienda. Viene ___.", "de casa"], ["Necesitan enviar un paquete. Van ___.", "a correos"], ["Son alumnos. Están en ___.", "el colegio"]])
     ]
+  },
+  {
+    id: 11, title: tb("Опущенное существительное", "Omisión del nombre"), subtitle: tb("El rojo, uno rojo", "El rojo, uno rojo"),
+    goal: tb("Заменять уже названное существительное артиклем и прилагательным.", "Sustituir un nombre ya mencionado con artículo y adjetivo."),
+    theory: [
+      { title: tb("Прилагательное вместо существительного", "El adjetivo sin nombre"), body: tb("Если существительное уже ясно из ситуации или было названо раньше, его можно не повторять. Определённый артикль выбирает конкретный предмет, а неопределённый — один из предметов такого типа.", "Si el nombre ya está claro por la situación o se ha mencionado antes, no hace falta repetirlo. El artículo determinado elige un objeto concreto; el indeterminado, uno de esa clase."), rules: [tb("el/la/los/las + прилагательное: Dame la roja. = конкретную красную вещь.", "el/la/los/las + adjetivo: Dame la roja. = la roja concreta."), tb("uno/una/unos/unas + прилагательное: Quiero uno pequeño. = один маленький предмет этого типа.", "uno/una/unos/unas + adjetivo: Quiero uno pequeño. = uno pequeño de esa clase."), tb("Прилагательное согласуется с пропущенным существительным: el azul, la azul, los azules, las azules.", "El adjetivo concuerda con el nombre omitido: el azul, la azul, los azules, las azules.")], examples: ["¿Qué camiseta quieres? — La azul.", "¿Tienes un bolígrafo? — Sí, uno negro.", "Prefiero las pequeñas."] },
+      { title: tb("El de… и lo", "El de… y lo"), body: tb("После el/la/los/las можно поставить de + существительное, чтобы указать владельца, материал или расположение. Lo с прилагательным обозначает абстрактное «то, что…» и всегда имеет форму среднего рода.", "Después de el/la/los/las se puede usar de + nombre para indicar dueño, material o lugar. Lo con adjetivo expresa una idea abstracta y siempre es neutro."), rules: [tb("el de mi hermano, la de la izquierda, los de oro — существительное не повторяется.", "el de mi hermano, la de la izquierda, los de oro: el nombre no se repite."), tb("lo + прилагательное: Lo bueno es que…; lo más importante. Не *el bueno*, если речь об идее.", "lo + adjetivo: Lo bueno es que…; lo más importante. No *el bueno* cuando se habla de una idea.")], attention: tb("Форма lo не заменяет конкретный предмет мужского рода: для него нужны el, uno и т. п.", "Lo no sustituye a un objeto masculino concreto: para eso se usan el, uno, etc."), examples: ["¿Cuál es tu abrigo? — El de lana.", "La casa de la derecha es la de Ana.", "Lo difícil es empezar."] }
+    ],
+    exercises: [
+      tbExercise("11.1", "choice", tb("Выберите форму для уже названного предмета.", "Elige la forma para el objeto ya mencionado."), [["¿Qué coche prefieres? — ___ rojo.", "el"], ["¿Tienes un vestido negro? — Sí, tengo ___ negro.", "uno"], ["¿Qué camisas compras? — ___ blancas.", "las"], ["Necesito una mesa. Quiero ___ grande.", "una"], ["¿Qué libros son tuyos? — ___ de la mesa.", "los"], ["Busco unas gafas. Quiero ___ modernas.", "unas"]], ["el", "la", "los", "las", "uno", "una", "unos", "unas"]),
+      tbExercise("11.2", "text", tb("Дополните выражение с de.", "Completa la expresión con de."), [["No quiero tu móvil; quiero el ___ mi madre.", "de"], ["¿Cuál es la maleta de Pablo? — La ___ Pablo.", "de"], ["Prefiero los pendientes ___ plata.", "de"], ["La puerta de la izquierda es la ___ despacho.", "del"], ["¿Qué sillas son cómodas? — Las ___ jardín.", "del"], ["El coche de mi hermana es el ___ fondo.", "del"]]),
+      tbExercise("11.3", "choice", tb("Выберите el, la или lo.", "Elige el, la o lo."), [["___ importante es descansar.", "lo"], ["¿Qué pantalón te gusta? — ___ azul.", "el"], ["___ mejor de Madrid es su ambiente.", "lo"], ["¿Qué mochila es tuya? — ___ pequeña.", "la"], ["___ difícil no es imposible.", "lo"], ["¿Qué zapatos son nuevos? — ___ negros.", "los"]], ["el", "la", "los", "las", "lo"])
+    ]
+  },
+  {
+    id: 12, title: tb("Указательные слова", "Demostrativos"), subtitle: tb("Este, ese, aquel", "Este, ese, aquel"),
+    goal: tb("Выбирать este, ese, aquel и нейтральные esto, eso, aquello.", "Elegir este, ese, aquel y los neutros esto, eso, aquello."),
+    theory: [
+      { title: tb("Три степени расстояния", "Tres distancias"), body: tb("Указательные слова соотносят предмет с говорящим и собеседником. Este обычно близко к говорящему, ese — к собеседнику или на некоторой дистанции, aquel — далеко от обоих.", "Los demostrativos sitúan el objeto respecto al hablante y al oyente. Este suele estar cerca del hablante, ese cerca del oyente o a cierta distancia, y aquel lejos de ambos."), rules: [tb("este/esta/estos/estas: рядом со мной; ese/esa/esos/esas: рядом с тобой; aquel/aquella/aquellos/aquellas: далеко.", "este/esta/estos/estas: cerca de mí; ese/esa/esos/esas: cerca de ti; aquel/aquella/aquellos/aquellas: lejos."), tb("Форма согласуется с существительным и может употребляться без него: esta casa; ¿cuál? Esta.", "La forma concuerda con el nombre y puede usarse sola: esta casa; ¿cuál? Esta."), tb("Ese иногда обозначает просто не очень близкий предмет, без строгого указания на собеседника.", "Ese también puede señalar algo no muy cercano, sin referirse estrictamente al oyente.")], examples: ["Este libro aquí es mío.", "Esa mochila que tienes es nueva.", "Aquellas montañas son los Pirineos."] },
+      { title: tb("Время и средний род", "Tiempo y neutro"), body: tb("С временем este относится к настоящему или близкому будущему, ese — к недавнему прошлому, aquel — к далёкому прошлому. Esto, eso, aquello не имеют рода и называют неизвестную вещь, факт или ситуацию.", "Con el tiempo, este se refiere al presente o futuro próximo, ese al pasado reciente y aquel al pasado lejano. Esto, eso, aquello no tienen género y nombran algo desconocido, un hecho o una situación."), rules: [tb("este año, esta semana; ese día; aquellos años.", "este año, esta semana; ese día; aquellos años."), tb("¿Qué es esto? Eso no me gusta. Aquello fue inolvidable.", "¿Qué es esto? Eso no me gusta. Aquello fue inolvidable.")], examples: ["Este verano voy a Galicia.", "Ese día llovió mucho.", "¿Qué es aquello?" ] }
+    ],
+    exercises: [
+      tbExercise("12.1", "choice", tb("Выберите указательное слово по роду и числу.", "Elige el demostrativo según el género y el número."), [["___ libro aquí (cerca de mí)", "este"], ["___ llaves ahí (cerca de ti)", "esas"], ["___ casas al fondo", "aquellas"], ["___ mesa aquí", "esta"], ["___ chicos que están contigo", "esos"], ["___ montaña lejana", "aquella"]], ["este", "esta", "estos", "estas", "ese", "esa", "esos", "esas", "aquel", "aquella", "aquellos", "aquellas"]),
+      tbExercise("12.2", "choice", tb("Выберите слово для времени.", "Elige la palabra para el tiempo."), [["___ año voy a cambiar de trabajo.", "este"], ["Recuerdo ___ noche de ayer.", "esa"], ["En ___ años no había internet.", "aquellos"], ["___ semana tenemos examen.", "esta"], ["No olvidaré ___ día de 2010.", "aquel"], ["¿Te acuerdas de ___ verano pasado?", "ese"]], ["este", "esta", "ese", "esa", "aquel", "aquella", "aquellos"]),
+      tbExercise("12.3", "choice", tb("Выберите нейтральную форму.", "Elige la forma neutra."), [["¿Qué es ___ que hay sobre la mesa?", "esto"], ["___ que dices no es verdad.", "eso"], ["___ fue hace muchos años.", "aquello"], ["No entiendo ___ .", "esto"], ["¿Ves ___ de allí?", "aquello"], ["___ no me parece bien.", "eso"]], ["esto", "eso", "aquello"])
+    ]
+  },
+  {
+    id: 13, title: tb("Качественные прилагательные", "Adjetivos calificativos"), subtitle: tb("Un coche pequeño", "Un coche pequeño"),
+    goal: tb("Согласовывать качественные прилагательные и ставить их на обычное место.", "Concordar los adjetivos calificativos y colocarlos en su posición habitual."),
+    theory: [
+      { title: tb("Согласование", "La concordancia"), body: tb("Прилагательное согласуется с существительным в роде и числе. Одни прилагательные меняют только число, другие — и род, и число.", "El adjetivo concuerda con el nombre en género y número. Unos adjetivos cambian solo el número; otros cambian género y número."), rules: [tb("-o/-a/-os/-as: alto/alta/altos/altas.", "-o/-a/-os/-as: alto/alta/altos/altas."), tb("-e и большинство согласных: inteligente/inteligentes, fácil/fáciles — род не меняется.", "-e y la mayoría de consonantes: inteligente/inteligentes, fácil/fáciles: no cambia el género."), tb("-or, -án, -ón, -ín обычно получают -a в женском роде: trabajador/trabajadora, charlatán/charlatana.", "-or, -án, -ón, -ín suelen llevar -a en femenino: trabajador/trabajadora, charlatán/charlatana."), tb("Исключение: marrón не меняется в роде; множественное число marrones.", "Excepción: marrón no cambia de género; el plural es marrones.")], examples: ["un coche pequeño — unas casas pequeñas", "un profesor joven — unas profesoras jóvenes", "un niño trabajador — una niña trabajadora"] },
+      { title: tb("Место прилагательного", "La posición del adjetivo"), body: tb("Обычное место качественного прилагательного — после существительного. Buen и mal часто стоят перед существительным и имеют сокращённую форму buen/mal перед мужским существительным в единственном числе.", "La posición habitual del adjetivo calificativo es después del nombre. Buen y mal suelen ir delante y tienen la forma reducida buen/mal ante un nombre masculino singular."), rules: [tb("una ciudad grande, unos zapatos cómodos.", "una ciudad grande, unos zapatos cómodos."), tb("un buen libro, una buena película; un mal día, una mala idea.", "un buen libro, una buena película; un mal día, una mala idea."), tb("При группе мужчин и женщин употребляется мужское множественное: Ana y Luis son altos.", "En un grupo de hombres y mujeres se usa el masculino plural: Ana y Luis son altos.")], examples: ["Tengo una amiga francesa muy simpática.", "Es un buen restaurante.", "Marta y Pedro están cansados."] }
+    ],
+    exercises: [
+      tbExercise("13.1", "text", tb("Напишите форму прилагательного.", "Escribe la forma del adjetivo."), [["una casa (pequeño)", "pequeña"], ["dos coches (rápido)", "rápidos"], ["unas calles (ancho)", "anchas"], ["una chica (trabajador)", "trabajadora"], ["dos libros (fácil)", "fáciles"], ["unas chaquetas (marrón)", "marrones"]]),
+      tbExercise("13.2", "choice", tb("Выберите согласованную форму.", "Elige la forma concordada."), [["Las niñas son muy ___.", "inteligentes"], ["Mi hermano es ___.", "joven"], ["Ana y Luis son ___.", "altos"], ["Tenemos una habitación ___.", "grande"], ["Los ejercicios son ___.", "difíciles"], ["Esas flores son ___.", "bonitas"]], ["inteligente", "inteligentes", "joven", "jóvenes", "alto", "altos", "grande", "grandes", "difíciles", "bonitas"]),
+      tbExercise("13.3", "text", tb("Дополните сочетание нужной формой buen/mal.", "Completa con la forma adecuada de buen/mal."), [["un ___ día", "mal"], ["una ___ noticia", "mala"], ["un ___ restaurante", "buen"], ["una ___ idea", "buena"], ["unos ___ amigos", "buenos"], ["unas ___ notas", "malas"]])
+    ]
+  },
+  {
+    id: 14, title: tb("Прилагательные национальности", "Adjetivos de nacionalidad"), subtitle: tb("Una amiga chilena", "Una amiga chilena"),
+    goal: tb("Согласовывать названия национальности и ставить их после существительного или ser.", "Concordar los adjetivos de nacionalidad y usarlos tras el nombre o ser."),
+    theory: [
+      { title: tb("Окончания", "Las terminaciones"), body: tb("Прилагательные национальности согласуются как другие прилагательные, но их окончания разнообразны. Их обычно пишут со строчной буквы.", "Los adjetivos de nacionalidad concuerdan como los demás, pero tienen terminaciones variadas. Normalmente se escriben con minúscula."), rules: [tb("-o/-a: español/española; chileno/chilena.", "-o/-a: español/española; chileno/chilena."), tb("-a, -e, -í не меняют род: belga, canadiense, iraní; меняется число: belgas, canadienses, iraníes.", "-a, -e, -í no cambian de género: belga, canadiense, iraní; cambia el número: belgas, canadienses, iraníes."), tb("После согласной обычно -a в женском роде: portugués/portuguesa, alemán/alemana.", "Tras consonante suele aparecer -a en femenino: portugués/portuguesa, alemán/alemana."), tb("Смешанная группа: españoles, no *españolas*.", "Grupo mixto: españoles, no *españolas*.")], examples: ["un estudiante español — una estudiante española", "dos chicas canadienses", "un chico marroquí — una chica marroquí"] },
+      { title: tb("Где ставить", "Dónde se colocan"), body: tb("Национальность стоит после ser и после существительного, а не перед ним в нейтральной речи.", "La nacionalidad se coloca después de ser y después del nombre, no delante en la expresión neutra."), rules: [tb("Marta es italiana. Tengo una vecina italiana.", "Marta es italiana. Tengo una vecina italiana."), tb("No *italiana vecina* en una presentación normal.", "No *italiana vecina* en una presentación normal.")], examples: ["Somos españoles.", "Es una película francesa.", "Mis amigos son portugueses."] }
+    ],
+    exercises: [
+      tbExercise("14.1", "text", tb("Напишите нужную форму национальности.", "Escribe la forma necesaria de nacionalidad."), [["una chica de España", "española"], ["dos chicos de Portugal", "portugueses"], ["una mujer de Alemania", "alemana"], ["dos mujeres de Canadá", "canadienses"], ["un chico de Marruecos", "marroquí"], ["unas chicas de Chile", "chilenas"]]),
+      tbExercise("14.2", "choice", tb("Выберите правильное окончание.", "Elige la terminación correcta."), [["Marta es ___. (Italia)", "italiana"], ["Luis y Ana son ___. (Francia)", "franceses"], ["Tengo amigos ___. (Bélgica)", "belgas"], ["La actriz es ___. (Portugal)", "portuguesa"], ["Ellas son ___. (Irán)", "iraníes"], ["Es un escritor ___. (Alemania)", "alemán"]], ["italiana", "franceses", "belgas", "portuguesa", "iraníes", "alemán"]),
+      tbExercise("14.3", "text", tb("Дополните предложение прилагательным национальности.", "Completa la frase con el adjetivo de nacionalidad."), [["Paula vive en Madrid. Es ___ .", "española"], ["Es una película de Francia: una película ___ .", "francesa"], ["Tom y Mary son de Inglaterra. Son ___ .", "ingleses"], ["Tengo una compañera de Japón: una compañera ___ .", "japonesa"], ["Los vecinos son de Brasil. Son ___ .", "brasileños"], ["La comida es de México: comida ___ .", "mexicana"]])
+    ]
+  },
+  {
+    id: 15, title: tb("Сравнение: más y menos", "Comparativos: más y menos"), subtitle: tb("Más caro, menos trabajador", "Más caro, menos trabajador"),
+    goal: tb("Строить сравнения превосходства и уступки с прилагательными.", "Formar comparaciones de superioridad e inferioridad con adjetivos."),
+    theory: [
+      { title: tb("Más/menos + adjetivo", "Más/menos + adjetivo"), body: tb("Для сравнения используйте más или menos перед прилагательным; затем обычно следует que. Прилагательное согласуется с существительным.", "Para comparar se usa más o menos delante del adjetivo; normalmente sigue que. El adjetivo concuerda con el nombre."), rules: [tb("Madrid es más grande que Toledo. Este piso es menos caro que aquel.", "Madrid es más grande que Toledo. Este piso es menos caro que aquel."), tb("Ellas son más altas que vosotros. С местоимениями: que yo, que tú, que él/ella, que nosotros, que vosotros.", "Ellas son más altas que vosotros. Con pronombres: que yo, que tú, que él/ella, que nosotros, que vosotros."), tb("Можно не повторять сравниваемое: Quiero uno más pequeño.", "No hace falta repetir el nombre: Quiero uno más pequeño.")], examples: ["Mi barrio es más tranquilo que el centro.", "Estas maletas son menos pesadas.", "Necesito una mesa más grande."] },
+      { title: tb("Неправильные формы", "Formas irregulares"), body: tb("У bueno и malo вместо más bueno/más malo обычно используются mejor и peor. Для edad употребляются mayor и menor.", "Con bueno y malo, en vez de más bueno/más malo se usan normalmente mejor y peor. Para la edad se usan mayor y menor."), rules: [tb("Este libro es mejor que el otro; la película es peor.", "Este libro es mejor que el otro; la película es peor."), tb("Mi hermana mayor; un hermano menor. Во множественном: mayores, menores.", "Mi hermana mayor; un hermano menor. En plural: mayores, menores.")], examples: ["Hoy estoy mejor que ayer.", "Es la peor opción.", "Mi prima es mayor que yo."] }
+    ],
+    exercises: [
+      tbExercise("15.1", "text", tb("Вставьте más или menos.", "Escribe más o menos."), [["Un tren es ___ rápido que un autobús.", "más"], ["Esta camisa es ___ cara que aquella.", "menos"], ["Madrid es ___ grande que Segovia.", "más"], ["El campo es ___ ruidoso que la ciudad.", "menos"], ["Mi maleta es ___ pesada que la tuya.", "más"], ["Este ejercicio es ___ difícil que el anterior.", "menos"]]),
+      tbExercise("15.2", "choice", tb("Выберите неправильную сравнительную форму.", "Elige la forma comparativa irregular."), [["Este restaurante es ___ que aquel.", "mejor"], ["La segunda película es ___.", "peor"], ["Mi hermano es ___ que yo.", "mayor"], ["Su hija es ___.", "menor"], ["Estas notas son ___ que las de ayer.", "mejores"], ["Son las ___ opciones.", "peores"]], ["mejor", "peor", "mayor", "menor", "mejores", "peores"]),
+      tbExercise("15.3", "text", tb("Дополните сравнением.", "Completa la comparación."), [["Ana es más alta que ___ .", "yo"], ["Somos menos altos que ___ .", "vosotros"], ["Quiero un coche más ___ .", "pequeño"], ["Esta calle es más tranquila ___ la otra.", "que"], ["Necesito una habitación menos ___ .", "oscura"], ["Mi abuela es mayor que ___ .", "mi madre"]])
+    ]
+  },
+  {
+    id: 16, title: tb("Равное сравнение", "Comparativos de igualdad"), subtitle: tb("Tan alto, igual de alto", "Tan alto, igual de alto"),
+    goal: tb("Сравнивать равенство с tan… como и igual de… que.", "Comparar la igualdad con tan… como e igual de… que."),
+    theory: [
+      { title: tb("Tan… como", "Tan… como"), body: tb("Tan ставится перед прилагательным, а como вводит второй элемент сравнения. Прилагательное согласуется с существительным.", "Tan se coloca delante del adjetivo y como introduce el segundo término. El adjetivo concuerda con el nombre."), rules: [tb("Ana es tan alta como Marta. Los dos pisos son tan luminosos como este.", "Ana es tan alta como Marta. Los dos pisos son tan luminosos como este."), tb("С местоимениями: tan rápido como yo; tan altos como vosotros.", "Con pronombres: tan rápido como yo; tan altos como vosotros.")], examples: ["Este libro es tan interesante como el otro.", "Las playas son tan bonitas como las de allí."] },
+      { title: tb("Igual de и отрицание", "Igual de y negación"), body: tb("Igual de + прилагательное (+ que) — равнозначная конструкция. Чтобы смягчённо сказать о неравенстве, часто используется no tan + прилагательное + como.", "Igual de + adjetivo (+ que) es una construcción equivalente. Para expresar una diferencia de manera matizada, se usa a menudo no tan + adjetivo + como."), rules: [tb("La casa es igual de grande que la nuestra.", "La casa es igual de grande que la nuestra."), tb("Adolfo no es tan guapo como Jorge. = Jorge es más guapo.", "Adolfo no es tan guapo como Jorge. = Jorge es más guapo.")], examples: ["Mi móvil es igual de moderno que el tuyo.", "Esta tarea no es tan fácil como parece."] }
+    ],
+    exercises: [
+      tbExercise("16.1", "text", tb("Вставьте tan или como.", "Escribe tan o como."), [["Es ___ alto como su padre.", "tan"], ["Mi barrio es tan tranquilo ___ este.", "como"], ["Las dos son ___ simpáticas como Ana.", "tan"], ["Corres tan rápido ___ yo.", "como"], ["El coche es ___ cómodo como el tren.", "tan"], ["Son tan jóvenes ___ vosotros.", "como"]]),
+      tbExercise("16.2", "text", tb("Дополните конструкцию igual de.", "Completa la construcción igual de."), [["Esta habitación es igual ___ luminosa que la otra.", "de"], ["Mi hermana es igual de alta ___ yo.", "que"], ["Los dos hoteles son igual ___ caros.", "de"], ["La película es igual de buena ___ el libro.", "que"], ["Estas mesas son igual ___ grandes.", "de"], ["El examen fue igual de difícil ___ el anterior.", "que"]]),
+      tbExercise("16.3", "choice", tb("Выберите естественное отрицательное сравнение.", "Elige la comparación negativa natural."), [["Pedro no es ___ alto como Luis.", "tan"], ["Esta calle no es tan tranquila ___ antes.", "como"], ["La segunda parte no es ___ buena como la primera.", "tan"], ["Hoy no estoy tan cansado ___ ayer.", "como"], ["El pueblo no es ___ grande como la ciudad.", "tan"], ["No son tan rápidos ___ nosotros.", "como"]], ["tan", "como"])
+    ]
+  },
+  {
+    id: 17, title: tb("Превосходная степень", "Superlativo"), subtitle: tb("La más alta", "La más alta"),
+    goal: tb("Выражать «самый/наименее» в группе.", "Expresar el más/el menos dentro de un grupo."),
+    theory: [
+      { title: tb("El/la más, el/la menos", "El/la más, el/la menos"), body: tb("Превосходная степень выделяет одного или нескольких в группе: определённый артикль + más/menos + прилагательное. Существительное и группа с de могут быть опущены, если понятны.", "El superlativo destaca a una o varias personas o cosas dentro de un grupo: artículo determinado + más/menos + adjetivo. El nombre y el grupo con de pueden omitirse si están claros."), rules: [tb("Ana es la más alta de la clase. Es el libro más interesante de todos.", "Ana es la más alta de la clase. Es el libro más interesante de todos."), tb("Los menos caros; las más cómodas: артикль и прилагательное согласуются.", "Los menos caros; las más cómodas: el artículo y el adjetivo concuerdan."), tb("Можно назвать группу с que + глагол: Es la ciudad más bonita que conozco.", "Se puede expresar el grupo con que + verbo: Es la ciudad más bonita que conozco.")], examples: ["Es la calle más larga del barrio.", "Son los ejercicios menos difíciles.", "La más cercana es esta."] },
+      { title: tb("Неправильные варианты", "Variantes irregulares"), body: tb("Вместо el más bueno, el más malo, el más grande (по возрасту) и el más pequeño (по возрасту) употребляют mejor, peor, mayor и menor.", "En vez de el más bueno, el más malo, el más grande (edad) y el más pequeño (edad), se usan mejor, peor, mayor y menor."), rules: [tb("Es el mejor restaurante de la zona; la peor noticia del día.", "Es el mejor restaurante de la zona; la peor noticia del día."), tb("Mi hermano mayor; la hija menor.", "Mi hermano mayor; la hija menor.")], examples: ["Es el mejor día de la semana.", "La mayor de mis primas vive aquí."] }
+    ],
+    exercises: [
+      tbExercise("17.1", "text", tb("Вставьте más или menos.", "Escribe más o menos."), [["Es la ciudad ___ grande de España.", "más"], ["Son los zapatos ___ cómodos de la tienda.", "más"], ["Es el ejercicio ___ difícil del libro.", "menos"], ["La calle ___ larga del barrio.", "más"], ["Son las mesas ___ caras del catálogo.", "menos"], ["Es la película ___ divertida que he visto.", "más"]]),
+      tbExercise("17.2", "choice", tb("Выберите неправильную превосходную форму.", "Elige la forma superlativa irregular."), [["Es el ___ hotel de la ciudad.", "mejor"], ["Fue la ___ decisión.", "peor"], ["Es mi hermana ___.", "mayor"], ["Es el hijo ___.", "menor"], ["Son los ___ resultados.", "mejores"], ["Es la ___ opción.", "peor"]], ["mejor", "peor", "mayor", "menor", "mejores"]),
+      tbExercise("17.3", "text", tb("Дополните превосходную степень.", "Completa el superlativo."), [["Es el museo más famoso ___ Madrid.", "de"], ["La playa más bonita ___ conozco.", "que"], ["Ana es la más rápida ___ equipo.", "del"], ["Es la tienda menos cara ___ barrio.", "del"], ["El libro más interesante ___ he leído.", "que"], ["Son los edificios más altos ___ la ciudad.", "de"]])
+    ]
+  },
+  {
+    id: 18, title: tb("Притяжательные I", "Posesivos I"), subtitle: tb("Mi, tu, su…", "Mi, tu, su…"),
+    goal: tb("Употреблять краткие притяжательные перед существительным и избегать лишнего притяжательного.", "Usar los posesivos átonos delante del nombre y evitar posesivos innecesarios."),
+    theory: [
+      { title: tb("Формы перед существительным", "Formas ante el nombre"), body: tb("Краткие притяжательные стоят перед существительным. Mi, tu, su меняются только в числе; nuestro и vuestro также согласуются в роде.", "Los posesivos átonos van delante del nombre. Mi, tu, su cambian solo en número; nuestro y vuestro también concuerdan en género."), rules: [tb("mi/mis, tu/tus, su/sus: mi casa, sus amigos.", "mi/mis, tu/tus, su/sus: mi casa, sus amigos."), tb("nuestro/a/os/as, vuestro/a/os/as: nuestra familia, vuestros libros.", "nuestro/a/os/as, vuestra familia, vuestros libros."), tb("Форма согласуется с предметом обладания, не с владельцем: su madre может быть матерью мужчины или женщины.", "La forma concuerda con lo poseído, no con el poseedor: su madre puede ser la madre de un hombre o de una mujer."), tb("Su/sus может означать de él, de ella, de usted, de ellos, de ellas, de ustedes; контекст снимает неоднозначность.", "Su/sus puede significar de él, de ella, de usted, de ellos, de ellas, de ustedes; el contexto aclara la ambigüedad.")], examples: ["Mi hermano vive aquí.", "Nuestra casa es pequeña.", "¿Dónde están vuestras llaves?"] },
+      { title: tb("Части тела и личные вещи", "Partes del cuerpo y objetos personales"), body: tb("В испанском с частями тела, одеждой и личными вещами часто используется определённый артикль, когда владелец уже понятен из местоимения или ситуации.", "En español, con partes del cuerpo, ropa y objetos personales se usa a menudo el artículo determinado cuando el dueño ya se entiende por el pronombre o la situación."), rules: [tb("Me duele la cabeza; no *mi cabeza* в обычной фразе.", "Me duele la cabeza; no *mi cabeza* en una frase normal."), tb("Quítate el abrigo. Me lavo las manos. Tengo que lavar el coche.", "Quítate el abrigo. Me lavo las manos. Tengo que lavar el coche.")], examples: ["Me pongo los zapatos.", "Nos duele la espalda.", "Cierra los ojos."] }
+    ],
+    exercises: [
+      tbExercise("18.1", "choice", tb("Выберите краткое притяжательное.", "Elige el posesivo átono."), [["Yo tengo un hermano: ___ hermano.", "mi"], ["Tú tienes dos primas: ___ primas.", "tus"], ["Nosotros tenemos una casa: ___ casa.", "nuestra"], ["Vosotros tenéis amigos: ___ amigos.", "vuestros"], ["Ella tiene un coche: ___ coche.", "su"], ["Ustedes tienen hijas: ___ hijas.", "sus"]], ["mi", "mis", "tu", "tus", "su", "sus", "nuestro", "nuestra", "vuestros", "vuestras"]),
+      tbExercise("18.2", "text", tb("Напишите форму nuestro/vuestro.", "Escribe la forma de nuestro/vuestro."), [["___ familia (nosotros)", "nuestra"], ["___ libros (vosotros)", "vuestros"], ["___ vecinos (nosotros)", "nuestros"], ["___ casa (vosotros)", "vuestra"], ["___ profesoras (nosotros)", "nuestras"], ["___ coches (vosotros)", "vuestros"]]),
+      tbExercise("18.3", "choice", tb("Выберите обычную форму в контексте.", "Elige la forma habitual en contexto."), [["Me duele ___ cabeza.", "la"], ["Quítate ___ chaqueta.", "la"], ["Nos lavamos ___ manos.", "las"], ["Él abre ___ mochila.", "su"], ["Cierra ___ ojos.", "los"], ["Tengo que lavar ___ coche.", "el"]], ["el", "la", "los", "las", "su"])
+    ]
+  },
+  {
+    id: 19, title: tb("Притяжательные II", "Posesivos II"), subtitle: tb("Mío, tuyo, suyo…", "Mío, tuyo, suyo…"),
+    goal: tb("Использовать полные притяжательные после ser, с артиклем и после существительного.", "Usar los posesivos tónicos después de ser, con artículo y tras el nombre."),
+    theory: [
+      { title: tb("Полные формы", "Formas tónicas"), body: tb("Mío, tuyo, suyo, nuestro, vuestro согласуются в роде и числе с предметом. Они употребляются после ser и с определённым артиклем, когда существительное не повторяется.", "Mío, tuyo, suyo, nuestro, vuestro concuerdan en género y número con el objeto. Se usan después de ser y con artículo determinado cuando no se repite el nombre."), rules: [tb("Este bolso es mío; estas llaves son tuyas.", "Este bolso es mío; estas llaves son tuyas."), tb("Mi casa es pequeña; la mía es pequeña. Los nuestros llegan mañana.", "Mi casa es pequeña; la mía es pequeña. Los nuestros llegan mañana."), tb("Как и su, suyo может быть неоднозначным; при необходимости скажите de él/de ella/de ustedes.", "Como su, suyo puede ser ambiguo; si hace falta, di de él/de ella/de ustedes.")], examples: ["¿Es tuyo este móvil?", "La nuestra está cerca.", "Esos libros no son suyos."] },
+      { title: tb("После существительного", "Después del nombre"), body: tb("Неопределённый артикль или существительное + полная притяжательная форма описывает связь с группой: amigo mío, una tía nuestra. Это не замена mi amigo в обычном нейтральном сообщении.", "Un artículo indeterminado o un nombre + posesivo tónico expresa relación con un grupo: amigo mío, una tía nuestra. No sustituye a mi amigo en una afirmación neutra."), rules: [tb("Es un amigo mío. Tenemos una vecina vuestra.", "Es un amigo mío. Tenemos una vecina vuestra."), tb("В нейтральном представлении: mi amigo llega, no *amigo mío llega*.", "En una presentación neutra: mi amigo llega, no *amigo mío llega*.")], examples: ["Una prima suya vive en Valencia.", "Es un problema nuestro."] }
+    ],
+    exercises: [
+      tbExercise("19.1", "text", tb("Напишите полную притяжательную форму.", "Escribe el posesivo tónico."), [["Este libro es de mí.", "mío"], ["Esta chaqueta es de ti.", "tuya"], ["Estos coches son de nosotros.", "nuestros"], ["Estas llaves son de vosotros.", "vuestras"], ["La casa es de ella.", "suya"], ["Los problemas son de ellos.", "suyos"]]),
+      tbExercise("19.2", "text", tb("Дополните с артиклем и полным притяжательным.", "Completa con artículo y posesivo tónico."), [["Mi maleta está aquí; ___ está allí.", "la tuya"], ["Nuestros amigos llegan; ___ llegan mañana.", "los tuyos"], ["Su casa es grande; ___ es pequeña.", "la mía"], ["Vuestras llaves son nuevas; ___ no.", "las nuestras"], ["Mi coche es rojo; ___ es azul.", "el suyo"], ["Tus libros están aquí; ___ están en casa.", "los míos"]]),
+      tbExercise("19.3", "choice", tb("Выберите естественное выражение связи.", "Elige la expresión natural de relación."), [["Pedro es ___ .", "un amigo mío"], ["Ana es ___ .", "una prima nuestra"], ["Es ___ que vive aquí.", "un vecino vuestro"], ["Marta tiene ___ en Sevilla.", "una tía suya"], ["Es ___ .", "un problema nuestro"], ["Conozco ___ .", "a un compañero tuyo"]], ["un amigo mío", "una prima nuestra", "un vecino vuestro", "una tía suya", "un problema nuestro", "a un compañero tuyo"])
+    ]
+  },
+  {
+    id: 20, title: tb("Неопределённые слова I", "Indefinidos I"), subtitle: tb("Todos, algunos, ninguno…", "Todos, algunos, ninguno…"),
+    goal: tb("Выбирать todo, algún, uno, ningún и строить отрицание с ninguno.", "Elegir todo, algún, uno, ningún y formar la negación con ninguno."),
+    theory: [
+      { title: tb("Количество без точного числа", "Cantidad sin cifra exacta"), body: tb("Todo обозначает всю группу, alguno — часть группы, uno — неопределённого члена, ninguno — ни одного. Формы согласуются с существительным.", "Todo indica el grupo completo, alguno una parte, uno un miembro no identificado y ninguno la ausencia de miembros. Las formas concuerdan con el nombre."), rules: [tb("todo/toda + ед. число; todos/todas + мн. число: toda la tarde, todos los días.", "todo/toda + singular; todos/todas + plural: toda la tarde, todos los días."), tb("algún/ningún стоят перед существительным в ед. числе; alguno/ninguno — без существительного или после него.", "algún/ningún van ante un nombre singular; alguno/ninguno se usan sin nombre o después de él."), tb("unos/algunos + мн. число: unos amigos, algunas personas.", "unos/algunos + plural: unos amigos, algunas personas.")], examples: ["Todos los alumnos han llegado.", "¿Tienes algún problema?", "No tengo ninguno."] },
+      { title: tb("De и отрицание", "De y negación"), body: tb("Чтобы выбрать часть известной группы, используйте uno/algunos/ninguno + de + множественное число или местоимение. Ninguno может стоять перед глаголом без no или после него вместе с no.", "Para seleccionar parte de un grupo conocido se usa uno/algunos/ninguno + de + plural o pronombre. Ninguno puede ir antes del verbo sin no o después de él con no."), rules: [tb("Algunos de mis amigos; uno de vosotros; ninguno de ellos.", "Algunos de mis amigos; uno de vosotros; ninguno de ellos."), tb("Ninguno de mis amigos ha salido. / No ha salido ninguno de mis amigos.", "Ninguno de mis amigos ha salido. / No ha salido ninguno de mis amigos."), tb("Не говорите *No ninguno ha salido*: отрицание не удваивается перед глаголом.", "No digas *No ninguno ha salido*: la negación no se duplica delante del verbo.")], examples: ["Toda la familia está aquí.", "Alguno de vosotros sabe la respuesta.", "No tengo ningún libro." ] }
+    ],
+    exercises: [
+      tbExercise("20.1", "choice", tb("Выберите неопределённое слово.", "Elige el indefinido."), [["___ los días estudio español.", "todos"], ["¿Tienes ___ pregunta?", "alguna"], ["No tengo ___ problema.", "ningún"], ["___ persona puede aprender.", "toda"], ["Quiero hablar con ___ profesor.", "algún"], ["No veo a ___ .", "nadie"]], ["todo", "toda", "todos", "todas", "algún", "alguna", "ningún", "ninguna", "nadie"]),
+      tbExercise("20.2", "text", tb("Дополните выражение с de.", "Completa la expresión con de."), [["___ de mis amigos vive en Bilbao.", "uno"], ["Algunos ___ vosotros hablan francés.", "de"], ["No conozco a ninguno ___ ellos.", "de"], ["___ de estas opciones es correcta.", "una"], ["Todos ___ alumnos tienen libro.", "los"], ["Ninguno de ___ respuestas es fácil.", "las"]]),
+      tbExercise("20.3", "choice", tb("Выберите правильное отрицание.", "Elige la negación correcta."), [["___ de mis amigos ha llamado.", "ninguno"], ["No ha venido ___ .", "nadie"], ["No tengo ___ dinero.", "ningún"], ["No ha salido ___ de mis compañeros.", "ninguno"], ["___ sabe la respuesta.", "nadie"], ["No veo ___ coche en la calle.", "ningún"]], ["ninguno", "nadie", "ningún"])
+    ]
   }
 ];
 
@@ -9903,7 +10033,17 @@ const TEXTBOOK_LESSON_FEEDBACK = {
   7: tb("Используйте un/una при первом упоминании, а el/la — когда предмет уже известен собеседнику.", "Usa un/una en la primera mención y el/la cuando el objeto ya es conocido por el interlocutor."),
   8: tb("У обращений, учреждений и географических названий артикль зависит от типа названия: запоминайте его как часть формы.", "Con tratamientos, instituciones y nombres geográficos, el artículo depende del tipo de nombre: apréndelo como parte de la forma."),
   9: tb("La/las употребляются с часами; el — с конкретной датой, los — с регулярным днём недели; месяц сам по себе без артикля.", "La/las se usan con horas; el, con una fecha concreta; los, con un día habitual; el mes solo va sin artículo."),
-  10: tb("После tocar и jugar часто нужен артикль, а после estudiar/hablar названия предметов и языков обычно идут без него.", "Después de tocar y jugar suele hacer falta artículo; después de estudiar/hablar, las asignaturas y lenguas suelen ir sin él.")
+  10: tb("После tocar и jugar часто нужен артикль, а после estudiar/hablar названия предметов и языков обычно идут без него.", "Después de tocar y jugar suele hacer falta artículo; después de estudiar/hablar, las asignaturas y lenguas suelen ir sin él."),
+  11: tb("После уже понятного существительного выбирайте el/la или uno/una по смыслу; lo относится к абстрактному качеству.", "Cuando el nombre ya es conocido, elige el/la o uno/una según el sentido; lo se refiere a una cualidad abstracta."),
+  12: tb("Este указывает на близкое говорящему, ese — на собеседника или среднюю дистанцию, aquel — на далёкое; esto/eso/aquello нейтральны.", "Este señala lo cercano al hablante, ese al oyente o a distancia media, aquel lo lejano; esto/eso/aquello son neutros."),
+  13: tb("Согласуйте прилагательное с существительным: после -e и большинства согласных обычно меняется только число.", "Haz concordar el adjetivo con el nombre: tras -e y la mayoría de consonantes normalmente cambia solo el número."),
+  14: tb("Национальность обычно идёт после ser или существительного и согласуется с ним; названия национальности пишутся со строчной буквы.", "La nacionalidad suele ir tras ser o el nombre y concuerda con él; los gentilicios se escriben con minúscula."),
+  15: tb("Для сравнения используйте más/menos + прилагательное + que; mejor, peor, mayor и menor заменяют обычные формы в своих значениях.", "Para comparar usa más/menos + adjetivo + que; mejor, peor, mayor y menor sustituyen las formas regulares en sus sentidos."),
+  16: tb("Равенство выражают tan + прилагательное + como или igual de + прилагательное + que.", "La igualdad se expresa con tan + adjetivo + como o igual de + adjetivo + que."),
+  17: tb("В превосходной степени артикль и прилагательное согласуются: la más alta, los menos caros; помните mejor/peor/mayor/menor.", "En el superlativo concuerdan artículo y adjetivo: la más alta, los menos caros; recuerda mejor/peor/mayor/menor."),
+  18: tb("Краткие притяжательные согласуются с предметом, а не владельцем; с телом и одеждой часто нужен определённый артикль.", "Los posesivos átonos concuerdan con lo poseído, no con el poseedor; con cuerpo y ropa se usa a menudo el artículo determinado."),
+  19: tb("Полные формы mío/tuyo/suyo идут после ser или с артиклем вместо уже названного существительного.", "Las formas tónicas mío/tuyo/suyo van tras ser o con artículo en lugar de un nombre ya mencionado."),
+  20: tb("Algún и ningún стоят перед существительным; alguno и ninguno могут стоять отдельно. Перед глаголом ninguno не требует no.", "Algún y ningún van ante el nombre; alguno y ninguno pueden ir solos. Delante del verbo, ninguno no necesita no.")
 };
 
 const DISPLAY_INFINITIVES = {
@@ -14812,8 +14952,8 @@ function renderLearningPlan() {
   const header = document.createElement("section");
   header.className = "info-card";
   const nextStepMarkup = nextItem
-    ? `<div class="learning-next-step"><div><p><strong>Следующий пункт · шаг ${nextIndex + 1}</strong></p><small>${nextItem.item}</small></div><button class="small-button primary" type="button" data-open-learning-item="${nextKey}">Открыть пункт</button></div>`
-    : `<div class="learning-next-step"><div><p><strong>Уровень завершён</strong></p><small>Все пункты отмечены как освоенные.</small></div></div>`;
+    ? `<div class="plan-next-step"><div><p><strong>Следующий пункт · шаг ${nextIndex + 1}</strong></p><small>${nextItem.item}</small></div><button class="small-button primary" type="button" data-open-learning-item="${nextKey}">Открыть пункт</button></div>`
+    : `<div class="plan-next-step"><div><p><strong>Уровень завершён</strong></p><small>Все пункты отмечены как освоенные.</small></div></div>`;
   header.innerHTML = `
     <div class="card-head"><div><h2>План обучения</h2><p class="muted">Практическая карта испанского по CEFR. A0 — внутренняя подготовительная ступень; A1–C2 — официальные уровни.</p></div></div>
     <div class="learning-level-tabs" role="tablist" aria-label="Выбор уровня">${levelButtons}</div>
@@ -14978,7 +15118,11 @@ function textbookLanguageButtons() {
 const TEXTBOOK_COURSE_GROUPS = [
   { ids: [1, 2, 3], title: tb("Существительные: род и число", "Sustantivos: género y número") },
   { ids: [4, 5], title: tb("Неопределённый артикль и отсутствие артикля", "Artículo indeterminado y ausencia de artículo") },
-  { ids: [6, 7, 8, 9, 10], title: tb("Определённый артикль", "Artículo determinado") }
+  { ids: [6, 7, 8, 9, 10], title: tb("Определённый артикль", "Artículo determinado") },
+  { ids: [11, 12], title: tb("Определение и указание", "Omisión y demostrativos") },
+  { ids: [13, 14], title: tb("Прилагательные", "Adjetivos") },
+  { ids: [15, 16, 17], title: tb("Сравнение и превосходная степень", "Comparación y superlativo") },
+  { ids: [18, 19, 20], title: tb("Притяжательные и неопределённые", "Posesivos e indefinidos") }
 ];
 
 function renderTextbookCatalog(content) {
@@ -15000,7 +15144,7 @@ function renderTextbookCatalog(content) {
     return `<section class="textbook-catalog-group"><h3>${escapeHTML(textbookText(group.title))}</h3>${lessons.map(card).join("")}</section>`;
   }).join("");
   const header = infoSection({ className: "info-card textbook-dashboard", html: `
-    <div class="textbook-toolbar"><div><h2>${escapeHTML(textbookUi("Учебник", "Curso"))}</h2><p class="muted">${escapeHTML(textbookUi("Десять интерактивных уроков по базовой грамматике.", "Diez lecciones interactivas de gramática básica."))}</p></div>${textbookLanguageButtons()}</div>
+    <div class="textbook-toolbar"><div><h2>${escapeHTML(textbookUi("Учебник", "Curso"))}</h2><p class="muted">${escapeHTML(textbookUi("Двадцать интерактивных уроков по базовой грамматике.", "Veinte lecciones interactivas de gramática básica."))}</p></div>${textbookLanguageButtons()}</div>
     <div class="textbook-progress"><p><strong>${escapeHTML(textbookUi("Пройдено", "Completado"))}: ${completed}/${lessonCount}</strong></p><progress max="${lessonCount}" value="${completed}" aria-label="${escapeHTML(textbookUi("Прогресс учебника", "Progreso del curso"))}"></progress><div class="textbook-actions"><button class="small-button primary" type="button" data-textbook-open="${next.id}">${escapeHTML(textbookUi("Продолжить", "Continuar"))}: ${next.id}</button><span class="muted">${escapeHTML(textbookUi("Все уроки доступны сразу.", "Todas las lecciones están disponibles."))}</span></div></div>
     <div class="textbook-catalog">${cards}</div>
   ` });

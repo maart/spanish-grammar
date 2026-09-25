@@ -3829,13 +3829,13 @@ select {
         <button class="tab" data-view="moods" type="button" aria-label="Наклонения"><span class="tab-label-full">Наклонения</span><span class="tab-label-mobile">Наклон.</span></button>
         <button class="tab" data-view="tables" type="button" aria-label="Шпаргалки"><span class="tab-label-full">Шпаргалки</span><span class="tab-label-mobile">Шпаргалки</span></button>
         <button class="tab" data-view="textbook" type="button" aria-label="Учебник"><span class="tab-label-full">Учебник</span><span class="tab-label-mobile">Курс</span></button>
-        <button class="tab" data-view="learning-plan" type="button" aria-label="План обучения"><span class="tab-label-full">План обучения</span><span class="tab-label-mobile">План</span></button>
+        <button class="tab" data-view="learning-plan" type="button" aria-label="План"><span class="tab-label-full">План</span><span class="tab-label-mobile">План</span></button>
         <button class="tab" data-view="cards" type="button" aria-label="Избранное"><span class="tab-label-full">Избранное</span><span class="tab-label-mobile">Избранное</span></button>
       </nav>
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.89 · обновлено: 25.09.2026 11:03 CEST</span>
+        <span>Версия MVP 0.90 · обновлено: 25.09.2026 11:13 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -9663,6 +9663,7 @@ const state = {
   textbookLesson: Number.isInteger(Number(appStorage.get("msg:textbookLesson"))) && Number(appStorage.get("msg:textbookLesson")) >= 1 && Number(appStorage.get("msg:textbookLesson")) <= 5
     ? Number(appStorage.get("msg:textbookLesson"))
     : null,
+  textbookVisibleFeedback: {},
   textbookProgress: readTextbookProgress()
 };
 
@@ -9738,8 +9739,8 @@ const TEXTBOOK_LESSONS = [
     subtitle: tb("Masculino, femenino (1)", "Masculino, femenino (1)"),
     goal: tb("Определять род названий людей и образовывать женский род.", "Identificar el género de los nombres de persona y formar el femenino."),
     theory: [
-      { title: tb("Люди: masculino и femenino", "Personas: masculino y femenino"), body: tb("Названия людей называют мужчин или женщин; поэтому их род обычно связан с полом человека. Артикль и прилагательное должны согласоваться с этим существительным.", "Los nombres de persona designan a hombres o mujeres; por eso su género suele relacionarse con el sexo de la persona. El artículo y el adjetivo concuerdan con ese nombre."), rules: [tb("-o → -a: niño/niña, camarero/camarera.", "-o → -a: niño/niña, camarero/camarera."), tb("После многих согласных добавляется -a: profesor/profesora, señor/señora.", "Después de muchas consonantes se añade -a: profesor/profesora, señor/señora."), tb("Форма в словаре обычно мужская: el hijo; женская форма — la hija.", "La forma del diccionario suele ser masculina: el hijo; la forma femenina es la hija.")], examples: ["el hijo — la hija", "el padre — la madre", "el camarero — la camarera"] },
-      { title: tb("Как образуется женский род", "Cómo se forma el femenino"), body: tb("Не все пары образуются одним правилом. Одни существительные имеют две разные формы, а другие сохраняют форму и меняют только артикль.", "No todas las parejas se forman con una sola regla. Unos nombres tienen dos formas diferentes y otros conservan la forma y solo cambian el artículo."), rules: [tb("На -ante и -ista часто одна форма: el/la estudiante, el/la pianista.", "En -ante y -ista suele haber una sola forma: el/la estudiante, el/la pianista."), tb("Некоторые слова меняют основу: rey/reina, actor/actriz, hombre/mujer.", "Algunas palabras cambian la raíz: rey/reina, actor/actriz, hombre/mujer."), tb("Меняется и зависимое слово: aquel chico rubio → aquella chica rubia.", "También cambia la palabra que acompaña: aquel chico rubio → aquella chica rubia.")], attention: tb("Запоминайте артикль вместе со словом. Для ролей и профессий форма без артикля в словаре не показывает весь род.", "Memoriza el artículo con el nombre. En profesiones y papeles, la forma sin artículo no muestra todo el género."), examples: ["el profesor — la profesora", "el estudiante — la estudiante", "un chico rubio — una chica rubia"] }
+      { title: tb("Люди: masculino и femenino", "Personas: masculino y femenino"), body: tb("В испанском существительные бывают мужского или женского рода. У названий людей род обычно показывает, мужчина это или женщина; артикль помогает увидеть это сразу.", "En español, los nombres son masculinos o femeninos. En los nombres de persona, el género suele indicar si se trata de un hombre o de una mujer; el artículo permite verlo enseguida."), rules: [tb("Названия мужчин — masculino; названия женщин — femenino. У пар с разными словами запоминайте обе формы вместе.", "Los nombres referidos a hombres son masculinos; los referidos a mujeres son femeninos. En las parejas con palabras distintas, memoriza las dos formas juntas."), tb("Не путайте окончание и род: el estudiante и el taxista — мужские с артиклем el; la estudiante и la taxista — женские с la.", "No confundas la terminación con el género: el estudiante y el taxista son masculinos con el; la estudiante y la taxista son femeninos con la.")], examples: ["Masculino: el hijo, el padre, el camarero", "Masculino: el doctor, el estudiante, el taxista", "Femenino: la hija, la madre, la camarera", "Femenino: la doctora, la estudiante, la taxista"] },
+      { title: tb("Как образуется женский род", "Cómo se forma el femenino"), body: tb("Не все пары образуются одним правилом. Окончание может меняться, а может сохраняться; иногда меняется всё слово. Артикль — обязательная часть формы.", "No todas las parejas se forman con una sola regla. La terminación puede cambiar o conservarse; a veces cambia toda la palabra. El artículo es una parte imprescindible de la forma."), rules: [tb("Часто -o или -e меняется на -a: niño/niña, cocinero/cocinera, dependiente/dependienta.", "Con frecuencia -o o -e cambia a -a: niño/niña, cocinero/cocinera, dependiente/dependienta."), tb("После согласной обычно добавляется -a: profesor/profesora, director/directora, marqués/marquesa.", "Después de consonante se suele añadir -a: profesor/profesora, director/directora, marqués/marquesa."), tb("Но piloto, paciente, modelo и joven сохраняют одну форму: меняется только el/la.", "Pero piloto, paciente, modelo y joven conservan una sola forma: solo cambia el/la."), tb("На -ante и -ista форма не меняется: el/la estudiante, el/la pianista.", "En -ante e -ista la forma no cambia: el/la estudiante, el/la pianista."), tb("Есть другие окончания: actor/actriz, rey/reina, alcalde/alcaldesa.", "Hay otras terminaciones: actor/actriz, rey/reina, alcalde/alcaldesa."), tb("Есть разные слова: marido/mujer, hombre/mujer, papá/mamá, padre/madre.", "Hay palabras diferentes: marido/mujer, hombre/mujer, papá/mamá, padre/madre."), tb("У некоторых слов допустимы две женские формы: médico/médica или médico; jefe/jefa или jefe.", "Algunos nombres admiten dos femeninos: médico/médica o médico; jefe/jefa o jefe."), tb("Меняется и зависимое слово: aquel chico rubio → aquella chica rubia.", "También cambia la palabra que acompaña: aquel chico rubio → aquella chica rubia.")], attention: tb("Запоминайте артикль вместе со словом. Для ролей и профессий форма без артикля не всегда показывает род.", "Memoriza el artículo con el nombre. En profesiones y papeles, la forma sin artículo no siempre muestra el género."), examples: ["el niño — la niña", "el piloto — la piloto", "el profesor — la profesora", "el estudiante — la estudiante", "el actor — la actriz", "el médico — la médica / la médico", "un hombre alto — una mujer alta"] }
     ],
     exercises: [
       tbExercise("1.1", "choice", tb("Выберите род каждого названия профессии.", "Elige el género de cada profesión."), [["la periodista", "F"], ["el cocinero", "M"], ["el rey", "M"], ["la estudiante", "F"], ["la señora", "F"], ["el taxista", "M"], ["la piloto", "F"], ["el cantante", "M"], ["la escritora", "F"], ["la bailarina", "F"]], ["M", "F"], "people"),
@@ -9928,12 +9929,16 @@ function applyRouteHash() {
       state.focusedTable = null;
       state.tableReturnVerb = null;
     }
-    if (route === "textbook") state.textbookLesson = null;
+    if (route === "textbook") {
+      state.textbookLesson = null;
+      state.textbookVisibleFeedback = {};
+    }
   } else if (route.startsWith("lesson-")) {
     const lessonId = Number(route.slice(7));
     if (!Number.isInteger(lessonId) || !TEXTBOOK_LESSONS.some((lesson) => lesson.id === lessonId)) return false;
     state.view = "textbook";
     state.textbookLesson = lessonId;
+    state.textbookVisibleFeedback = {};
     appStorage.set("msg:textbookLesson", lessonId);
   } else if (route.startsWith("verb-")) {
     const verb = route.slice(5);
@@ -10841,6 +10846,7 @@ function setView(view, { updateRoute = true } = {}) {
   } else if (view === "textbook") {
     state.view = view;
     state.textbookLesson = null;
+    state.textbookVisibleFeedback = {};
     clearVerbSearchContext();
   } else {
     state.view = view;
@@ -14844,10 +14850,10 @@ function textbookFeedback(item, checked) {
   return `<p class="textbook-feedback" tabindex="-1"><strong>${escapeHTML(textbookUi("Проверьте ещё раз.", "Revísalo otra vez."))}</strong> ${escapeHTML(textbookUi("Правильный ответ", "Respuesta correcta"))}: <span lang="es">${escapeHTML(answer)}</span>.</p>`;
 }
 
-function renderTextbookQuestion(exercise, item, index, saved) {
+function renderTextbookQuestion(exercise, item, index, saved, showFeedback = false) {
   const key = textbookQuestionKey(exercise.id, index);
   const answer = saved.answers[key] || "";
-  const checked = saved.checked[key];
+  const checked = showFeedback ? saved.checked[key] : null;
   const stateClass = checked ? (checked.correct ? " is-correct" : " is-wrong") : "";
   const prompt = escapeHTML(item.prompt);
   const options = exercise.options.map((option) => '<button class="small-button ' + (answer === option ? "is-selected" : "") + '" type="button" data-textbook-choice="' + escapeHTML(key) + '" data-textbook-value="' + escapeHTML(option) + '" aria-pressed="' + (answer === option) + '">' + escapeHTML(option) + "</button>").join("");
@@ -14892,7 +14898,12 @@ function renderTextbookLesson(content, lesson) {
   }).join("");
   const exercises = lesson.exercises.map((exercise) => {
     const checkedCount = exercise.items.filter((_, index) => Object.hasOwn(saved.checked, textbookQuestionKey(exercise.id, index))).length;
-    return `<article class="textbook-exercise" data-textbook-exercise="${exercise.id}"><div class="textbook-exercise-head"><div><h4>${escapeHTML(textbookUi("Упражнение", "Ejercicio"))} ${exercise.id}</h4><p>${escapeHTML(textbookText(exercise.instruction))}</p></div><span class="textbook-exercise-meta">${checkedCount}/${exercise.items.length}</span></div>${textbookScene(exercise.scene)}<ol class="textbook-question-list">${exercise.items.map((item, index) => renderTextbookQuestion(exercise, item, index, saved)).join("")}</ol><div class="textbook-actions"><button class="small-button primary" type="button" data-textbook-check="${exercise.id}">${escapeHTML(textbookUi("Проверить упражнение", "Comprobar ejercicio"))}</button></div></article>`;
+    const feedbackKey = lesson.id + ":" + exercise.id;
+    const showFeedback = Boolean(state.textbookVisibleFeedback[feedbackKey]);
+    const buttonLabel = showFeedback
+      ? textbookUi("Скрыть разбор", "Ocultar corrección")
+      : textbookUi("Проверить упражнение", "Comprobar ejercicio");
+    return `<article class="textbook-exercise" data-textbook-exercise="${exercise.id}"><div class="textbook-exercise-head"><div><h4>${escapeHTML(textbookUi("Упражнение", "Ejercicio"))} ${exercise.id}</h4><p>${escapeHTML(textbookText(exercise.instruction))}</p></div><span class="textbook-exercise-meta">${checkedCount}/${exercise.items.length}</span></div>${textbookScene(exercise.scene)}<ol class="textbook-question-list">${exercise.items.map((item, index) => renderTextbookQuestion(exercise, item, index, saved, showFeedback)).join("")}</ol><div class="textbook-actions"><button class="small-button primary" type="button" data-textbook-check="${exercise.id}" aria-pressed="${showFeedback}">${escapeHTML(buttonLabel)}</button></div></article>`;
   }).join("");
   const remaining = progress.total - progress.checked;
   const summary = progress.done
@@ -14919,6 +14930,21 @@ function renderTextbook() {
   else renderTextbookCatalog(content);
 }
 
+function hideTextbookExerciseFeedback(lessonId, questionKey, question) {
+  const exerciseId = questionKey.replace(/:\d+$/u, "");
+  delete state.textbookVisibleFeedback[lessonId + ":" + exerciseId];
+  const exercise = question?.closest("[data-textbook-exercise]");
+  $all(".textbook-question", exercise).forEach((item) => {
+    item.classList.remove("is-correct", "is-wrong");
+    item.querySelector(".textbook-feedback")?.remove();
+  });
+  const checkButton = exercise?.querySelector("[data-textbook-check]");
+  if (checkButton) {
+    checkButton.textContent = textbookUi("Проверить упражнение", "Comprobar ejercicio");
+    checkButton.setAttribute("aria-pressed", "false");
+  }
+}
+
 function bindTextbookControls(root, activeLesson = null) {
   bindClickAll(root, "[data-textbook-language]", (event) => {
     state.textbookLanguage = event.currentTarget.dataset.textbookLanguage === "es" ? "es" : "ru";
@@ -14935,8 +14961,7 @@ function bindTextbookControls(root, activeLesson = null) {
     delete saved.checked[key];
     saveTextbookProgress();
     const question = event.currentTarget.closest("[data-textbook-question]");
-    question?.classList.remove("is-correct", "is-wrong");
-    question?.querySelector(".textbook-feedback")?.remove();
+    hideTextbookExerciseFeedback(activeLesson.id, key, question);
   }));
   bindClickAll(root, "[data-textbook-choice]", (event) => {
     if (!activeLesson) return;
@@ -14951,18 +14976,25 @@ function bindTextbookControls(root, activeLesson = null) {
       button.classList.toggle("is-selected", selected);
       button.setAttribute("aria-pressed", String(selected));
     });
-    question?.classList.remove("is-correct", "is-wrong");
-    question?.querySelector(".textbook-feedback")?.remove();
+    hideTextbookExerciseFeedback(activeLesson.id, key, question);
   });
   bindClickAll(root, "[data-textbook-check]", (event) => {
     if (!activeLesson) return;
     const exercise = activeLesson.exercises.find((item) => item.id === event.currentTarget.dataset.textbookCheck);
+    const feedbackKey = activeLesson.id + ":" + exercise.id;
+    if (state.textbookVisibleFeedback[feedbackKey]) {
+      delete state.textbookVisibleFeedback[feedbackKey];
+      renderTextbook();
+      requestAnimationFrame(() => document.querySelector('[data-textbook-check="' + exercise.id + '"]')?.focus({ preventScroll: true }));
+      return;
+    }
     const saved = textbookLessonState(activeLesson.id);
     exercise.items.forEach((item, index) => {
       const key = textbookQuestionKey(exercise.id, index);
       saved.checked[key] = { correct: textbookCorrect(saved.answers[key], item.answer) };
       saved.attempts[key] = (Number(saved.attempts[key]) || 0) + 1;
     });
+    state.textbookVisibleFeedback[feedbackKey] = true;
     saveTextbookProgress();
     renderTextbook();
     requestAnimationFrame(() => {
@@ -14980,12 +15012,14 @@ function bindTextbookControls(root, activeLesson = null) {
         delete saved.checked[key];
       }
     }));
+    state.textbookVisibleFeedback = {};
     saveTextbookProgress();
     renderTextbook();
   });
   bindClickAll(root, "[data-textbook-reset]", () => {
     if (!activeLesson || !window.confirm(textbookUi("Сбросить ответы и результат этого урока?", "¿Reiniciar las respuestas y el resultado de esta lección?"))) return;
     delete state.textbookProgress.lessons[String(activeLesson.id)];
+    state.textbookVisibleFeedback = {};
     saveTextbookProgress();
     renderTextbook();
   });
@@ -14993,6 +15027,7 @@ function bindTextbookControls(root, activeLesson = null) {
 
 function openTextbookCatalog() {
   state.textbookLesson = null;
+  state.textbookVisibleFeedback = {};
   state.view = "textbook";
   syncActiveTab("textbook");
   updateRouteHash("textbook");
@@ -15002,6 +15037,7 @@ function openTextbookCatalog() {
 function openTextbookLesson(id, { updateRoute = true } = {}) {
   if (!TEXTBOOK_LESSONS.some((lesson) => lesson.id === id)) return;
   state.textbookLesson = id;
+  state.textbookVisibleFeedback = {};
   state.view = "textbook";
   appStorage.set("msg:textbookLesson", id);
   syncActiveTab("textbook");

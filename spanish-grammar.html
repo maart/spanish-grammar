@@ -240,7 +240,7 @@ input[type="search"] {
   top: 8px;
   z-index: 15;
   display: grid;
-  grid-template-columns: repeat(6, minmax(72px, 1fr));
+  grid-template-columns: repeat(7, minmax(72px, 1fr));
   gap: 6px;
   margin: 12px 0 0;
   padding: 8px 0 6px;
@@ -3061,6 +3061,39 @@ td.irregular {
   justify-content: flex-end;
 }
 
+/* Учебник: интерактивные уроки остаются частью автономного HTML-файла. */
+.textbook-dashboard, .textbook-lesson { display: grid; gap: 12px; }
+.textbook-toolbar, .textbook-lesson-nav, .textbook-summary, .textbook-actions, .textbook-language-switch, .textbook-choice-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.textbook-toolbar, .textbook-summary { justify-content: space-between; }
+.textbook-language-switch .small-button.is-active { border-color: var(--accent); background: var(--accent); color: var(--on-accent); }
+.textbook-progress { display: grid; gap: 6px; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); }
+.textbook-progress p, .textbook-theory p, .textbook-exercise p, .textbook-result p { margin: 0; }
+.textbook-catalog { display: grid; gap: 10px; }
+.textbook-lesson-card { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; width: 100%; padding: 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--text); text-align: left; cursor: pointer; }
+.textbook-lesson-card:hover, .textbook-lesson-card:focus-visible { border-color: var(--accent); box-shadow: var(--shadow); }
+.textbook-lesson-number { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 900; }
+.textbook-lesson-card strong, .textbook-lesson-card small { display: block; }
+.textbook-lesson-card small, .textbook-status, .textbook-exercise-meta, .textbook-feedback { color: var(--muted); }
+.textbook-status.is-done { color: var(--success); font-weight: 900; }
+.textbook-theory-grid { display: grid; gap: 12px; }
+.textbook-theory, .textbook-exercise, .textbook-result { padding: 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2); }
+.textbook-theory, .textbook-exercise, .textbook-result { display: grid; gap: 10px; }
+.textbook-attention { padding: 10px; border-left: 4px solid var(--accent-2); border-radius: 6px; background: var(--accent-soft); }
+.textbook-example-list { display: grid; gap: 6px; margin: 0; padding-left: 20px; }
+.textbook-scene { width: min(100%, 460px); margin: 2px auto 4px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.textbook-exercise-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.textbook-question-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.textbook-question { padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.textbook-question.is-correct { border-color: var(--success); }
+.textbook-question.is-wrong { border-color: var(--danger); }
+.textbook-question label, .textbook-question .textbook-prompt { display: block; margin-bottom: 8px; font-weight: 800; }
+.textbook-answer-input { width: min(100%, 340px); }
+.textbook-choice-row .small-button { min-width: 72px; }
+.textbook-choice-row .small-button.is-selected { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+.textbook-feedback { margin-top: 8px; font-size: 13px; }
+.textbook-feedback strong { color: var(--text); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
 .verb-list.is-suggestions .verb-pick {
   min-height: 52px;
 }
@@ -3149,7 +3182,7 @@ select {
   }
 
   .tabs {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     overflow: visible;
   }
 
@@ -3171,7 +3204,7 @@ select {
     position: fixed;
     inset: auto 10px max(8px, env(safe-area-inset-bottom));
     z-index: 30;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     gap: 3px;
     width: auto;
     margin: 0;
@@ -3198,7 +3231,7 @@ select {
     padding: 0 2px;
     border-color: transparent;
     background: transparent;
-    font-size: 10px;
+    font-size: 9px;
     line-height: 1.05;
     white-space: nowrap;
   }
@@ -3793,13 +3826,14 @@ select {
         <button class="tab" data-view="tenses" type="button" aria-label="Времена"><span class="tab-label-full">Времена</span><span class="tab-label-mobile">Времена</span></button>
         <button class="tab" data-view="moods" type="button" aria-label="Наклонения"><span class="tab-label-full">Наклонения</span><span class="tab-label-mobile">Наклон.</span></button>
         <button class="tab" data-view="tables" type="button" aria-label="Шпаргалки"><span class="tab-label-full">Шпаргалки</span><span class="tab-label-mobile">Шпаргалки</span></button>
+        <button class="tab" data-view="textbook" type="button" aria-label="Учебник"><span class="tab-label-full">Учебник</span><span class="tab-label-mobile">Курс</span></button>
         <button class="tab" data-view="learning-plan" type="button" aria-label="План обучения"><span class="tab-label-full">План обучения</span><span class="tab-label-mobile">План</span></button>
         <button class="tab" data-view="cards" type="button" aria-label="Избранное"><span class="tab-label-full">Избранное</span><span class="tab-label-mobile">Избранное</span></button>
       </nav>
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.87 · обновлено: 22.08.2026 20:58 CEST</span>
+        <span>Версия MVP 0.88 · обновлено: 25.09.2026 10:52 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -9531,6 +9565,23 @@ function readStoredJSON(key, fallback) {
   }
 }
 
+function readTextbookProgress() {
+  const fallback = { version: 1, lessons: {} };
+  const stored = readStoredJSON("msg:textbookProgress", fallback);
+  if (!stored || stored.version !== 1 || typeof stored.lessons !== "object" || Array.isArray(stored.lessons)) return fallback;
+  const allowedLessonIds = new Set(["1", "2", "3", "4", "5"]);
+  const lessons = {};
+  Object.entries(stored.lessons).forEach(([lessonId, lesson]) => {
+    if (!allowedLessonIds.has(lessonId) || !lesson || typeof lesson !== "object") return;
+    lessons[lessonId] = {
+      answers: lesson.answers && typeof lesson.answers === "object" && !Array.isArray(lesson.answers) ? lesson.answers : {},
+      checked: lesson.checked && typeof lesson.checked === "object" && !Array.isArray(lesson.checked) ? lesson.checked : {},
+      attempts: lesson.attempts && typeof lesson.attempts === "object" && !Array.isArray(lesson.attempts) ? lesson.attempts : {}
+    };
+  });
+  return { version: 1, lessons };
+}
+
 const state = {
   view: "verbs",
   learningLevel: LEARNING_LEVELS.some((level) => level.id === appStorage.get("msg:learningLevel"))
@@ -9605,7 +9656,12 @@ const state = {
   cardQuizAttempts: [],
   cardQuizSnapshot: [],
   cardQuizAllVerbs: [],
-  dark: appStorage.get("msg:theme") === "dark"
+  dark: appStorage.get("msg:theme") === "dark",
+  textbookLanguage: appStorage.get("msg:textbookLanguage") === "es" ? "es" : "ru",
+  textbookLesson: Number.isInteger(Number(appStorage.get("msg:textbookLesson"))) && Number(appStorage.get("msg:textbookLesson")) >= 1 && Number(appStorage.get("msg:textbookLesson")) <= 5
+    ? Number(appStorage.get("msg:textbookLesson"))
+    : null,
+  textbookProgress: readTextbookProgress()
 };
 
 // Frequency order from the Spain press subcorpus of CORPES 1.0.
@@ -9668,6 +9724,84 @@ const IMPERATIVO_EXAMPLES = [
   ["ustedes", "Escuchen atentamente.", "Слушайте внимательно."],
   ["призыв nosotros", "Hablemos mañana.", "Давайте поговорим завтра."],
   ["возвратный vosotros", "Sentaos aquí.", "Садитесь здесь."]
+];
+
+// Первые пять unidades Gramatica de uso del espanol A1-B2.
+// Текст адаптирован для самостоятельного интерактивного прохождения.
+const tb = (ru, es) => ({ ru, es });
+const tbExercise = (id, kind, instruction, items, options = [], scene = "") => ({ id, kind, instruction, items: items.map(([prompt, answer, note = ""]) => ({ prompt, answer, note })), options, scene });
+const TEXTBOOK_LESSONS = [
+  {
+    id: 1, title: tb("Род существительных: люди", "Género de los nombres: personas"),
+    subtitle: tb("Masculino, femenino (1)", "Masculino, femenino (1)"),
+    goal: tb("Определять род названий людей и образовывать женский род.", "Identificar el género de los nombres de persona y formar el femenino."),
+    theory: [
+      { title: tb("Люди: masculino и femenino", "Personas: masculino y femenino"), body: tb("Названия мужчин обычно мужского рода, а женщин — женского. Многие пары различаются окончанием.", "Los nombres de hombres suelen ser masculinos y los de mujeres, femeninos. Muchas parejas se distinguen por la terminación."), examples: ["el hijo — la hija", "el padre — la madre", "el camarero — la camarera"] },
+      { title: tb("Как образуется женский род", "Cómo se forma el femenino"), body: tb("Часто меняется -o на -a; после согласной добавляется -a. Слова на -ante и -ista обычно имеют одну форму для обоих родов.", "A menudo cambia -o por -a; después de consonante se añade -a. Los nombres en -ante y -ista suelen tener una sola forma para ambos géneros."), attention: tb("Есть формы, которые нужно запомнить: hombre/mujer, padre/madre, rey/reina. Прилагательные согласуются с существительным.", "Hay formas que se deben memorizar: hombre/mujer, padre/madre, rey/reina. Los adjetivos concuerdan con el nombre."), examples: ["el profesor — la profesora", "el estudiante — la estudiante", "un chico rubio — una chica rubia"] }
+    ],
+    exercises: [
+      tbExercise("1.1", "choice", tb("Выберите род каждого названия профессии.", "Elige el género de cada profesión."), [["la periodista", "F"], ["el cocinero", "M"], ["el rey", "M"], ["la estudiante", "F"], ["la señora", "F"], ["el taxista", "M"], ["la piloto", "F"], ["el cantante", "M"], ["la escritora", "F"], ["la bailarina", "F"]], ["M", "F"], "people"),
+      tbExercise("1.2", "text", tb("Напишите женскую форму.", "Escribe la forma femenina."), [["señor", "señora"], ["jefe", "jefa"], ["marido", "mujer"], ["pintor", "pintora"], ["turista", "turista"], ["escritor", "escritora"], ["modelo", "modelo"], ["rey", "reina"], ["dependiente", "dependienta"], ["joven", "joven"], ["hombre", "mujer"], ["niño", "niña"], ["amigo", "amiga"], ["médico", "médica"], ["actor", "actriz"]]),
+      tbExercise("1.3", "text", tb("Заполните семейные связи одним словом.", "Completa las relaciones familiares con una palabra."), [["Luis es el padre de Ana.", "padre"], ["Ana es la hija de Luis.", "hija"], ["Laura es la hermana de Pedro.", "hermana"], ["Pedro es el hijo de Laura.", "hijo"], ["Raúl es el tío de Ana.", "tío"], ["Ana es la sobrina de Raúl.", "sobrina"], ["Lucía es la madre de Raúl.", "madre"], ["Raúl es el hermano de Lucía.", "hermano"], ["Juli es el abuelo de Raúl.", "abuelo"], ["Rosa es la tía de Ana.", "tía"]], [], "family")
+    ]
+  },
+  {
+    id: 2, title: tb("Род предметов и животных", "Género de objetos y animales"),
+    subtitle: tb("Masculino, femenino (2)", "Masculino, femenino (2)"),
+    goal: tb("Узнавать род частых существительных и замечать исключения.", "Reconocer el género de nombres frecuentes y detectar excepciones."),
+    theory: [
+      { title: tb("Окончания помогают, но не решают всё", "Las terminaciones ayudan, pero no lo deciden todo"), body: tb("Часто слова на -o мужского рода, а на -a — женского. Однако la mano, la foto и la moto — женского рода; el día, el problema и el mapa — мужского.", "A menudo los nombres en -o son masculinos y los terminados en -a, femeninos. Sin embargo, la mano, la foto y la moto son femeninos; el día, el problema y el mapa son masculinos."), examples: ["el libro, el museo, el teléfono", "la casa, la mesa, la ciudad"] },
+      { title: tb("Предметы и животные", "Objetos y animales"), body: tb("Существительные на согласную могут быть любого рода. Для животных часть пар имеет разные слова, а некоторые меняются по окончанию.", "Los nombres acabados en consonante pueden ser de cualquier género. En los animales, unas parejas tienen palabras diferentes y otras cambian de terminación."), attention: tb("Учите слово сразу с артиклем: el lápiz, la habitación. Так род запоминается надёжнее.", "Aprende cada nombre con su artículo: el lápiz, la habitación. Así se recuerda mejor el género."), examples: ["el caballo — la yegua", "el león — la leona", "el gato — la gata"] }
+    ],
+    exercises: [
+      tbExercise("2.1", "choice", tb("Выберите артикль для каждого существительного.", "Elige el artículo de cada nombre."), [["atención", "la"], ["cama", "la"], ["casa", "la"], ["cine", "el"], ["ciudad", "la"], ["cuaderno", "el"], ["cumpleaños", "el"], ["día", "el"], ["expresión", "la"], ["foto", "la"], ["habitación", "la"], ["hotel", "el"], ["idioma", "el"], ["lámpara", "la"], ["lápiz", "el"], ["leche", "la"], ["libro", "el"], ["luz", "la"], ["mano", "la"], ["minuto", "el"], ["museo", "el"], ["noche", "la"], ["página", "la"], ["planeta", "el"], ["problema", "el"], ["radio", "la"], ["teatro", "el"], ["teléfono", "el"], ["universidad", "la"], ["vaso", "el"], ["ventana", "la"], ["viernes", "el"]], ["el", "la"]),
+      tbExercise("2.2", "text", tb("Напишите недостающую форму животного.", "Escribe la forma que falta del animal."), [["el gato", "gata"], ["la yegua", "caballo"], ["el gallo", "gallina"], ["la perra", "perro"], ["el león", "leona"], ["la vaca", "toro"]]),
+      tbExercise("2.3", "text", tb("Назовите предмет с артиклем.", "Nombra el objeto con su artículo."), [["árbol", "el árbol"], ["diccionario", "el diccionario"], ["gorila", "el gorila"], ["hospital", "el hospital"], ["llave", "la llave"], ["mariposa", "la mariposa"], ["nariz", "la nariz"], ["pez", "el pez"], ["tenedor", "el tenedor"], ["tren", "el tren"]], [], "objects")
+    ]
+  },
+  {
+    id: 3, title: tb("Единственное и множественное число", "Singular y plural"),
+    subtitle: tb("Libro, libros", "Libro, libros"),
+    goal: tb("Образовывать множественное число и использовать обобщающий мужской род.", "Formar el plural y usar el masculino genérico."),
+    theory: [
+      { title: tb("Правила множественного числа", "Reglas del plural"), body: tb("После безударной гласной обычно добавляется -s; после согласной — -es. Слова на -z меняют z на c перед -es.", "Después de vocal átona se añade normalmente -s; después de consonante, -es. Los nombres en -z cambian z por c antes de -es."), examples: ["casa → casas", "reloj → relojes", "lápiz → lápices"] },
+      { title: tb("Слова только во множественном числе", "Palabras solo en plural"), body: tb("Некоторые предметы обычно употребляются во множественном числе: las tijeras, las gafas, los pantalones.", "Algunos objetos se usan normalmente en plural: las tijeras, las gafas, los pantalones."), attention: tb("Группа мужчин и женщин обозначается формой мужского рода во множественном числе: padres, hijos, amigos.", "Un grupo de hombres y mujeres se expresa con el masculino plural: padres, hijos, amigos."), examples: ["papá + mamá = padres", "rey + reina = reyes"] }
+    ],
+    exercises: [
+      tbExercise("3.1", "text", tb("Напишите множественное число.", "Escribe el plural."), [["mujer", "mujeres"], ["pez", "peces"], ["hotel", "hoteles"], ["mamá", "mamás"], ["habitación", "habitaciones"], ["pantalón", "pantalones"], ["reloj", "relojes"], ["universidad", "universidades"], ["foto", "fotos"], ["televisión", "televisiones"], ["niño", "niños"], ["clase", "clases"], ["león", "leones"], ["día", "días"], ["banano", "bananos"], ["jueves", "jueves"], ["autobús", "autobuses"], ["lápiz", "lápices"]]),
+      tbExercise("3.2", "text", tb("Продолжите описание: напишите количество и предмет.", "Continúa la descripción: escribe la cantidad y el objeto."), [["una mesa", "1 mesa"], ["dos botellas", "2 botellas"], ["una lámpara", "1 lámpara"], ["tres sillas", "3 sillas"], ["dos libros", "2 libros"], ["unas gafas", "2 gafas"], ["un lápiz", "1 lápiz"], ["unas tijeras", "2 tijeras"], ["un vaso", "1 vaso"], ["una postal", "1 postal"]], [], "table"),
+      tbExercise("3.3", "text", tb("Замените подчёркнутые слова формой множественного числа.", "Sustituye las palabras por el plural."), [["mi padre y mi madre", "padres"], ["el abuelo y la abuela", "abuelos"], ["un amigo y una amiga", "amigos"], ["mi hermano y mi hermana", "hermanos"], ["el rey y la reina", "reyes"], ["tres alumnos y cinco alumnas", "alumnos"], ["un profesor y dos profesoras", "profesores"], ["mi tío y mi tía", "tíos"], ["un bailarín y dos bailarinas", "bailarines"], ["un niño y una niña", "niños"]])
+    ]
+  },
+  {
+    id: 4, title: tb("Неопределённый артикль", "El artículo indeterminado"),
+    subtitle: tb("un, una, unos, unas", "un, una, unos, unas"),
+    goal: tb("Выбирать форму неопределённого артикля и различать значение «один» и «несколько».", "Elegir la forma del artículo indeterminado y distinguir entre «uno» y «varios»."),
+    theory: [
+      { title: tb("Четыре формы", "Cuatro formas"), body: tb("un / una употребляются с единственным числом, unos / unas — с множественным. Артикль показывает род и число.", "un / una se usan en singular y unos / unas en plural. El artículo muestra el género y el número."), examples: ["un chico, una chica", "unos libros, unas casas"] },
+      { title: tb("Особое un перед ударным a", "Un especial ante a tónica"), body: tb("Перед существительным женского рода в единственном числе, начинающимся с ударного a- или ha-, используется un: un águila, un aula, un hacha.", "Ante un nombre femenino singular que empieza por a- o ha- tónica se usa un: un águila, un aula, un hacha."), attention: tb("Прилагательное остаётся женским: un águila blanca, una pequeña hacha.", "El adjetivo sigue siendo femenino: un águila blanca, una pequeña hacha."), examples: ["¿Qué es eso? — Es un reloj.", "Necesito una entrada."] }
+    ],
+    exercises: [
+      tbExercise("4.1", "choice", tb("Выберите un, una, unos или unas.", "Elige un, una, unos o unas."), [["flor", "una"], ["sillas", "unas"], ["relojes", "unos"], ["paraguas", "unos"], ["alumnos", "unos"], ["cine", "un"], ["habitación", "una"], ["lápices", "unos"], ["chica", "una"], ["aulas", "unas"], ["ciudad", "una"], ["aula", "un"], ["profesora", "una"], ["pantalones", "unos"], ["camarero", "un"]], ["un", "una", "unos", "unas"]),
+      tbExercise("4.2", "choice", tb("Выберите подходящий артикль в ответе.", "Elige el artículo adecuado en la respuesta."), [["baloncesto", "un"], ["Sevilla", "una"], ["Colombia", "un"], ["rosa", "una"], ["mango", "una"], ["Ronaldo", "un"], ["Isabel Allende", "una"], ["Frida Kahlo", "una"], ["Amenábar", "un"], ["Stephen Hawking", "un"]], ["un", "una"]),
+      tbExercise("4.3", "choice", tb("Выберите артикль для предмета на оригинальной схеме.", "Elige el artículo para el objeto de la escena."), [["coche", "un"], ["niños", "unos"], ["hacha", "un"], ["libros", "unos"], ["casa", "una"], ["gato", "un"], ["vacas", "unas"], ["chicas", "unas"], ["televisión", "una"], ["árboles", "unos"], ["gafas", "unas"], ["caballo", "un"]], ["un", "una", "unos", "unas"], "market"),
+      tbExercise("4.4", "choice", tb("Заполните пропуск артиклем.", "Completa el hueco con un artículo."), [["__ melón, por favor", "un"], ["El Orinoco es __ río", "un"], ["¡Mira! __ águila", "un"], ["Quiero __ vaqueros", "unos"], ["__ cine es muy bonito", "un"], ["Es __ radio", "una"], ["Tienes __ mapa", "un"], ["Rosa tiene __ hija", "una"], ["Necesitamos __ tijeras", "unas"], ["Tengo __ zapatos cómodos", "unos"]], ["un", "una", "unos", "unas"])
+    ]
+  },
+  {
+    id: 5, title: tb("Отсутствие артикля", "Ausencia de artículo"),
+    subtitle: tb("un coche / coche", "un coche / coche"),
+    goal: tb("Понимать, когда после ser, hacerse и с прямым дополнением артикль не нужен.", "Comprender cuándo no se usa artículo después de ser, hacerse y con el complemento directo."),
+    theory: [
+      { title: tb("Профессии, национальность, идеология", "Profesiones, nacionalidad e ideología"), body: tb("После ser и hacerse артикль обычно не ставится, если речь идёт о профессии, национальности, религии или идеологии без уточнения.", "Después de ser y hacerse no se usa normalmente artículo ante profesión, nacionalidad, religión o ideología sin especificación."), examples: ["Soy estudiante.", "Chantal es francesa.", "Alberto se ha hecho budista."] },
+      { title: tb("Общее значение", "Sentido general"), body: tb("С прямым дополнением артикль часто отсутствует, когда говорится о классе предметов вообще или о неисчисляемом веществе.", "Con complemento directo suele faltar el artículo cuando se habla de una clase de objetos en general o de una materia no contable."), attention: tb("Артикль появляется при уточнении, количестве или прилагательном: una novela, unos sellos muy raros, un café.", "El artículo aparece con especificación, cantidad o adjetivo: una novela, unos sellos muy raros, un café."), examples: ["Colecciono sellos.", "Necesito gafas.", "Tengo unos sellos muy raros."] }
+    ],
+    exercises: [
+      tbExercise("5.1", "text", tb("Напишите профессию без артикля.", "Escribe la profesión sin artículo."), [["Eva", "abogada"], ["José Luis", "estudiante"], ["Mar", "actriz"], ["Félix", "camarero"], ["Roberto", "médico"], ["Adrián", "cocinero"], ["Eloísa", "fotógrafa"], ["Leonor", "profesora"]], [], "people"),
+      tbExercise("5.2", "choice", tb("Выберите вариант с артиклем или без него.", "Elige la opción con artículo o sin él."), [["Luis Miguel es cantante", "Ø"], ["Ramírez es médica", "Ø"], ["El marido es abogado", "Ø"], ["Tomás se ha hecho musulmán", "Ø"], ["Los tíos son protestantes", "Ø"], ["El hermano es actor", "Ø"], ["Vargas Llosa es escritor", "Ø"], ["Alberto y Lola son estudiantes", "Ø"], ["Sarita quiere ser bailarina", "Ø"], ["García Márquez es un escritor de éxito", "un"]], ["Ø", "un"]),
+      tbExercise("5.3", "choice", tb("Выберите артикль, если он нужен; Ø означает «без артикля».", "Elige el artículo si es necesario; Ø significa «sin artículo»."), [["¿Quieres carne?", "Ø"], ["Colecciono monedas.", "Ø"], ["Alberto tiene un apartamento.", "un"], ["¿Tomas café?", "Ø"], ["No tomo azúcar.", "Ø"], ["¿Tenéis hijos?", "Ø"], ["Chelo canta ópera.", "Ø"], ["Ernesto es músico.", "Ø"], ["¿Necesitas dinero?", "Ø"], ["¿Quieres queso?", "Ø"], ["Es un queso muy fuerte.", "un"], ["Carolina es vendedora.", "Ø"]], ["Ø", "un", "una", "unos", "unas"])
+    ]
+  }
 ];
 
 const DISPLAY_INFINITIVES = {
@@ -9781,7 +9915,7 @@ function applyRouteHash() {
     route = "";
   }
 
-  const views = ["verbs", "tenses", "moods", "tables", "learning-plan", "cards"];
+  const views = ["verbs", "tenses", "moods", "tables", "textbook", "learning-plan", "cards"];
   if (route !== "verbs" && !route.startsWith("verb-")) clearVerbSearchContext();
   if (!route || route === "verbs") {
     resetVerbLanding();
@@ -9792,6 +9926,13 @@ function applyRouteHash() {
       state.focusedTable = null;
       state.tableReturnVerb = null;
     }
+    if (route === "textbook") state.textbookLesson = null;
+  } else if (route.startsWith("lesson-")) {
+    const lessonId = Number(route.slice(7));
+    if (!Number.isInteger(lessonId) || !TEXTBOOK_LESSONS.some((lesson) => lesson.id === lessonId)) return false;
+    state.view = "textbook";
+    state.textbookLesson = lessonId;
+    appStorage.set("msg:textbookLesson", lessonId);
   } else if (route.startsWith("verb-")) {
     const verb = route.slice(5);
     if (!BASE_VERBS.includes(verb)) return false;
@@ -9826,7 +9967,7 @@ function applyRouteHash() {
 
   syncActiveTab();
   render();
-  if (route.startsWith("verb-") || route.startsWith("tense-") || route.startsWith("table-") || route.startsWith("mood-")) {
+  if (route.startsWith("verb-") || route.startsWith("tense-") || route.startsWith("table-") || route.startsWith("mood-") || route.startsWith("lesson-")) {
     requestAnimationFrame(() => scrollToCard("content"));
   }
   return true;
@@ -10694,6 +10835,10 @@ function setView(view, { updateRoute = true } = {}) {
     state.view = view;
     state.focusedTable = null;
     state.tableReturnVerb = null;
+    clearVerbSearchContext();
+  } else if (view === "textbook") {
+    state.view = view;
+    state.textbookLesson = null;
     clearVerbSearchContext();
   } else {
     state.view = view;
@@ -14636,6 +14781,226 @@ function renderLearningPlan() {
   });
 }
 
+function textbookText(value) {
+  if (value && typeof value === "object" && ("ru" in value || "es" in value)) return value[state.textbookLanguage] || value.ru || value.es || "";
+  return String(value ?? "");
+}
+
+function textbookUi(ru, es) {
+  return state.textbookLanguage === "es" ? es : ru;
+}
+
+function textbookQuestionKey(exerciseId, index) {
+  return `${exerciseId}:${index}`;
+}
+
+function textbookLessonState(lessonId) {
+  const id = String(lessonId);
+  if (!state.textbookProgress.lessons[id]) state.textbookProgress.lessons[id] = { answers: {}, checked: {}, attempts: {} };
+  return state.textbookProgress.lessons[id];
+}
+
+function saveTextbookProgress() {
+  appStorage.set("msg:textbookProgress", JSON.stringify(state.textbookProgress));
+}
+
+function normalizeTextbookAnswer(value) {
+  return String(value ?? "").trim().replace(/[.?!]+$/u, "").replace(/\s+/gu, " ").toLocaleLowerCase("es-ES");
+}
+
+function textbookCorrect(answer, expected) {
+  const submitted = normalizeTextbookAnswer(answer);
+  const expectedAnswers = Array.isArray(expected) ? expected : [expected];
+  return submitted !== "" && expectedAnswers.some((value) => submitted === normalizeTextbookAnswer(value));
+}
+
+function textbookProgressFor(lesson) {
+  const saved = textbookLessonState(lesson.id);
+  const questions = lesson.exercises.flatMap((exercise) => exercise.items.map((item, index) => ({ exercise, item, index })));
+  const checked = questions.filter(({ exercise, index }) => Object.hasOwn(saved.checked, textbookQuestionKey(exercise.id, index)));
+  const correct = checked.filter(({ exercise, index }) => saved.checked[textbookQuestionKey(exercise.id, index)]?.correct).length;
+  return { total: questions.length, checked: checked.length, correct, done: questions.length > 0 && checked.length === questions.length };
+}
+
+function textbookScene(name) {
+  if (!name) return "";
+  const label = escapeHTML(textbookUi("Оригинальная учебная схема", "Esquema didáctico original"));
+  const captions = { people: "periodista · cocinero · médica", family: "abuelo · padre · madre · hija", objects: "diccionario · hospital · tren", table: "libros · botellas · mesa", market: "casa · televisión · gafas" };
+  return `<svg class="textbook-scene" viewBox="0 0 460 130" role="img" aria-label="${label}"><rect x="10" y="10" width="440" height="110" rx="10" fill="currentColor" opacity=".05"/><g fill="none" stroke="currentColor" stroke-width="3" opacity=".7"><circle cx="100" cy="55" r="24"/><circle cx="230" cy="55" r="24"/><circle cx="360" cy="55" r="24"/><path d="M55 102h350M100 79v23M230 79v23M360 79v23"/></g><text x="230" y="116" text-anchor="middle" fill="currentColor" font-size="14" font-family="system-ui">${captions[name] || ""}</text></svg>`;
+}
+
+function textbookFeedback(item, checked) {
+  if (!checked) return "";
+  if (checked.correct) return `<p class="textbook-feedback" tabindex="-1"><strong>${escapeHTML(textbookUi("Верно.", "Correcto."))}</strong> ${escapeHTML(textbookUi("Продолжайте.", "Continúa."))}</p>`;
+  const answer = Array.isArray(item.answer) ? item.answer[0] : item.answer;
+  return `<p class="textbook-feedback" tabindex="-1"><strong>${escapeHTML(textbookUi("Проверьте ещё раз.", "Revísalo otra vez."))}</strong> ${escapeHTML(textbookUi("Правильный ответ", "Respuesta correcta"))}: <span lang="es">${escapeHTML(answer)}</span>.</p>`;
+}
+
+function renderTextbookQuestion(exercise, item, index, saved) {
+  const key = textbookQuestionKey(exercise.id, index);
+  const answer = saved.answers[key] || "";
+  const checked = saved.checked[key];
+  const stateClass = checked ? (checked.correct ? " is-correct" : " is-wrong") : "";
+  const prompt = escapeHTML(item.prompt);
+  const options = exercise.options.map((option) => '<button class="small-button ' + (answer === option ? "is-selected" : "") + '" type="button" data-textbook-choice="' + escapeHTML(key) + '" data-textbook-value="' + escapeHTML(option) + '" aria-pressed="' + (answer === option) + '">' + escapeHTML(option) + "</button>").join("");
+  const control = exercise.kind === "choice"
+    ? '<div class="textbook-choice-row" role="group" aria-label="' + prompt + '">' + options + "</div>"
+    : '<label><span class="sr-only">' + prompt + '</span><input class="textbook-answer-input" type="text" autocomplete="off" spellcheck="false" lang="es" value="' + escapeHTML(answer) + '" data-textbook-answer="' + escapeHTML(key) + '" aria-label="' + prompt + '"></label>';
+  return '<li class="textbook-question' + stateClass + '" data-textbook-question="' + escapeHTML(key) + '"><span class="textbook-prompt"><span lang="es">' + prompt + "</span></span>" + control + textbookFeedback(item, checked) + "</li>";
+}
+
+function textbookLanguageButtons() {
+  return `<div class="textbook-language-switch" role="group" aria-label="${escapeHTML(textbookUi("Язык учебника", "Idioma del curso"))}"><button class="small-button ${state.textbookLanguage === "ru" ? "is-active" : ""}" type="button" data-textbook-language="ru" aria-pressed="${state.textbookLanguage === "ru"}">RU</button><button class="small-button ${state.textbookLanguage === "es" ? "is-active" : ""}" type="button" data-textbook-language="es" aria-pressed="${state.textbookLanguage === "es"}">ES</button></div>`;
+}
+
+function renderTextbookCatalog(content) {
+  const completed = TEXTBOOK_LESSONS.filter((lesson) => textbookProgressFor(lesson).done).length;
+  const lastLesson = TEXTBOOK_LESSONS.find((lesson) => lesson.id === Number(appStorage.get("msg:textbookLesson")));
+  const next = (lastLesson && !textbookProgressFor(lastLesson).done ? lastLesson : null) || TEXTBOOK_LESSONS.find((lesson) => !textbookProgressFor(lesson).done) || TEXTBOOK_LESSONS[0];
+  const cards = TEXTBOOK_LESSONS.map((lesson) => {
+    const progress = textbookProgressFor(lesson);
+    const status = progress.done ? textbookUi("Пройден", "Completada") : `${progress.checked}/${progress.total}`;
+    return `<button class="textbook-lesson-card" type="button" data-textbook-open="${lesson.id}"><span class="textbook-lesson-number">${lesson.id}</span><span><strong>${escapeHTML(textbookText(lesson.title))}</strong><small>${escapeHTML(textbookText(lesson.subtitle))} · ${escapeHTML(textbookText(lesson.goal))}</small></span><span class="textbook-status ${progress.done ? "is-done" : ""}">${escapeHTML(status)}</span></button>`;
+  }).join("");
+  const header = infoSection({ className: "info-card textbook-dashboard", html: `
+    <div class="textbook-toolbar"><div><h2>${escapeHTML(textbookUi("Учебник", "Curso"))}</h2><p class="muted">${escapeHTML(textbookUi("Первые пять интерактивных уроков по базовой грамматике.", "Las primeras cinco lecciones interactivas de gramática básica."))}</p></div>${textbookLanguageButtons()}</div>
+    <div class="textbook-progress"><p><strong>${escapeHTML(textbookUi("Пройдено", "Completado"))}: ${completed}/5</strong></p><progress max="5" value="${completed}" aria-label="${escapeHTML(textbookUi("Прогресс учебника", "Progreso del curso"))}"></progress><div class="textbook-actions"><button class="small-button primary" type="button" data-textbook-open="${next.id}">${escapeHTML(textbookUi("Продолжить", "Continuar"))}: ${next.id}</button><span class="muted">${escapeHTML(textbookUi("Все уроки доступны сразу.", "Todas las lecciones están disponibles."))}</span></div></div>
+    <div class="textbook-catalog">${cards}</div>
+  ` });
+  content.appendChild(header);
+  bindTextbookControls(header);
+}
+
+function renderTextbookLesson(content, lesson) {
+  const progress = textbookProgressFor(lesson);
+  const saved = textbookLessonState(lesson.id);
+  const previous = TEXTBOOK_LESSONS.find((item) => item.id === lesson.id - 1);
+  const next = TEXTBOOK_LESSONS.find((item) => item.id === lesson.id + 1);
+  const theory = lesson.theory.map((block) => {
+    const attention = block.attention ? '<p class="textbook-attention"><strong>' + escapeHTML(textbookUi("Внимание:", "Atención:")) + '</strong> ' + escapeHTML(textbookText(block.attention)) + '</p>' : "";
+    const examples = block.examples.map((example) => '<li lang="es">' + escapeHTML(example) + '</li>').join("");
+    return '<section class="textbook-theory"><h3>' + escapeHTML(textbookText(block.title)) + '</h3><p>' + escapeHTML(textbookText(block.body)) + '</p>' + attention + '<ul class="textbook-example-list">' + examples + '</ul></section>';
+  }).join("");
+  const exercises = lesson.exercises.map((exercise) => {
+    const checkedCount = exercise.items.filter((_, index) => Object.hasOwn(saved.checked, textbookQuestionKey(exercise.id, index))).length;
+    return `<article class="textbook-exercise" data-textbook-exercise="${exercise.id}"><div class="textbook-exercise-head"><div><h4>${escapeHTML(textbookUi("Упражнение", "Ejercicio"))} ${exercise.id}</h4><p>${escapeHTML(textbookText(exercise.instruction))}</p></div><span class="textbook-exercise-meta">${checkedCount}/${exercise.items.length}</span></div>${textbookScene(exercise.scene)}<ol class="textbook-question-list">${exercise.items.map((item, index) => renderTextbookQuestion(exercise, item, index, saved)).join("")}</ol><div class="textbook-actions"><button class="small-button primary" type="button" data-textbook-check="${exercise.id}">${escapeHTML(textbookUi("Проверить упражнение", "Comprobar ejercicio"))}</button></div></article>`;
+  }).join("");
+  const remaining = progress.total - progress.checked;
+  const summary = progress.done
+    ? textbookUi("Все задания проверены. Верно " + progress.correct + " из " + progress.total + ".", "Todos los ejercicios están comprobados. Correctas: " + progress.correct + " de " + progress.total + ".")
+    : textbookUi("Проверьте ещё " + remaining + " заданий, чтобы завершить урок.", "Comprueba " + remaining + " respuestas más para completar la lección.");
+  const previousButton = previous ? '<button class="small-button" type="button" data-textbook-open="' + previous.id + '">← ' + previous.id + ". " + escapeHTML(textbookText(previous.title)) + "</button>" : "";
+  const nextButton = next ? '<button class="small-button" type="button" data-textbook-open="' + next.id + '">' + next.id + ". " + escapeHTML(textbookText(next.title)) + " →</button>" : "";
+  const section = infoSection({ className: "info-card textbook-lesson", html: `
+    <div class="textbook-toolbar"><div><button class="small-button" type="button" data-textbook-catalog>← ${escapeHTML(textbookUi("К оглавлению", "Índice"))}</button><h2>${lesson.id}. ${escapeHTML(textbookText(lesson.title))}</h2><p class="muted">${escapeHTML(textbookText(lesson.goal))}</p></div>${textbookLanguageButtons()}</div>
+    <div class="textbook-summary"><span><strong>${escapeHTML(textbookUi("Результат", "Resultado"))}: ${progress.correct}/${progress.total}</strong> · ${progress.checked}/${progress.total}</span><span class="textbook-status ${progress.done ? "is-done" : ""}">${escapeHTML(progress.done ? textbookUi("Урок пройден", "Lección completada") : textbookUi("В работе", "En curso"))}</span></div>
+    <div class="textbook-theory-grid">${theory}</div>
+    <section><h3>${escapeHTML(textbookUi("Практика", "Práctica"))}</h3>${exercises}</section>
+    <section class="textbook-result" aria-live="polite"><h3>${escapeHTML(textbookUi("Итог урока", "Resultado de la lección"))}</h3><p>${escapeHTML(summary)}</p><div class="textbook-actions"><button class="small-button" type="button" data-textbook-retry="${lesson.id}" ${progress.correct === progress.checked ? "disabled" : ""}>${escapeHTML(textbookUi("Повторить ошибки", "Repetir errores"))}</button><button class="small-button danger" type="button" data-textbook-reset="${lesson.id}">${escapeHTML(textbookUi("Сбросить урок", "Reiniciar lección"))}</button></div></section>
+    <nav class="textbook-lesson-nav" aria-label="${escapeHTML(textbookUi("Навигация по урокам", "Navegación de lecciones"))}">${previousButton}${nextButton}</nav>
+  ` });
+  content.appendChild(section);
+  bindTextbookControls(section, lesson);
+}
+
+function renderTextbook() {
+  const content = clearContent();
+  const lesson = TEXTBOOK_LESSONS.find((item) => item.id === state.textbookLesson);
+  if (lesson) renderTextbookLesson(content, lesson);
+  else renderTextbookCatalog(content);
+}
+
+function bindTextbookControls(root, activeLesson = null) {
+  bindClickAll(root, "[data-textbook-language]", (event) => {
+    state.textbookLanguage = event.currentTarget.dataset.textbookLanguage === "es" ? "es" : "ru";
+    appStorage.set("msg:textbookLanguage", state.textbookLanguage);
+    renderTextbook();
+  });
+  bindClickAll(root, "[data-textbook-open]", (event) => openTextbookLesson(Number(event.currentTarget.dataset.textbookOpen)));
+  root.querySelector("[data-textbook-catalog]")?.addEventListener("click", openTextbookCatalog);
+  $all("[data-textbook-answer]", root).forEach((input) => input.addEventListener("input", (event) => {
+    if (!activeLesson) return;
+    const saved = textbookLessonState(activeLesson.id);
+    const key = event.currentTarget.dataset.textbookAnswer;
+    saved.answers[key] = event.currentTarget.value;
+    delete saved.checked[key];
+    saveTextbookProgress();
+    const question = event.currentTarget.closest("[data-textbook-question]");
+    question?.classList.remove("is-correct", "is-wrong");
+    question?.querySelector(".textbook-feedback")?.remove();
+  }));
+  bindClickAll(root, "[data-textbook-choice]", (event) => {
+    if (!activeLesson) return;
+    const saved = textbookLessonState(activeLesson.id);
+    const key = event.currentTarget.dataset.textbookChoice;
+    saved.answers[key] = event.currentTarget.dataset.textbookValue;
+    delete saved.checked[key];
+    saveTextbookProgress();
+    const question = event.currentTarget.closest("[data-textbook-question]");
+    $all("[data-textbook-choice]", question).forEach((button) => {
+      const selected = button.dataset.textbookValue === saved.answers[key];
+      button.classList.toggle("is-selected", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
+    question?.classList.remove("is-correct", "is-wrong");
+    question?.querySelector(".textbook-feedback")?.remove();
+  });
+  bindClickAll(root, "[data-textbook-check]", (event) => {
+    if (!activeLesson) return;
+    const exercise = activeLesson.exercises.find((item) => item.id === event.currentTarget.dataset.textbookCheck);
+    const saved = textbookLessonState(activeLesson.id);
+    exercise.items.forEach((item, index) => {
+      const key = textbookQuestionKey(exercise.id, index);
+      saved.checked[key] = { correct: textbookCorrect(saved.answers[key], item.answer) };
+      saved.attempts[key] = (Number(saved.attempts[key]) || 0) + 1;
+    });
+    saveTextbookProgress();
+    renderTextbook();
+    requestAnimationFrame(() => {
+      const target = document.querySelector('[data-textbook-exercise="' + exercise.id + '"] .textbook-feedback');
+      target?.focus({ preventScroll: true });
+    });
+  });
+  bindClickAll(root, "[data-textbook-retry]", () => {
+    if (!activeLesson) return;
+    const saved = textbookLessonState(activeLesson.id);
+    activeLesson.exercises.forEach((exercise) => exercise.items.forEach((_, index) => {
+      const key = textbookQuestionKey(exercise.id, index);
+      if (!saved.checked[key]?.correct) {
+        delete saved.answers[key];
+        delete saved.checked[key];
+      }
+    }));
+    saveTextbookProgress();
+    renderTextbook();
+  });
+  bindClickAll(root, "[data-textbook-reset]", () => {
+    if (!activeLesson || !window.confirm(textbookUi("Сбросить ответы и результат этого урока?", "¿Reiniciar las respuestas y el resultado de esta lección?"))) return;
+    delete state.textbookProgress.lessons[String(activeLesson.id)];
+    saveTextbookProgress();
+    renderTextbook();
+  });
+}
+
+function openTextbookCatalog() {
+  state.textbookLesson = null;
+  state.view = "textbook";
+  syncActiveTab("textbook");
+  updateRouteHash("textbook");
+  renderTextbook();
+}
+
+function openTextbookLesson(id, { updateRoute = true } = {}) {
+  if (!TEXTBOOK_LESSONS.some((lesson) => lesson.id === id)) return;
+  state.textbookLesson = id;
+  state.view = "textbook";
+  appStorage.set("msg:textbookLesson", id);
+  syncActiveTab("textbook");
+  if (updateRoute) updateRouteHash("lesson-" + id);
+  renderTextbook();
+  requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "auto" }));
+}
+
 function renderCards() {
   const content = clearContent();
   if (state.cardQuiz.length > 0) {
@@ -15402,6 +15767,24 @@ function validateData() {
   DATA.usefulTables.forEach((item) => {
     if (!tableGroups.has(item.group)) issues.push(`Нет группы шпаргалок для ${item.title}: ${item.group}`);
   });
+  const textbookIds = new Set();
+  TEXTBOOK_LESSONS.forEach((lesson) => {
+    if (!Number.isInteger(lesson.id) || textbookIds.has(lesson.id)) issues.push("Некорректный или повторяющийся урок учебника: " + lesson.id);
+    textbookIds.add(lesson.id);
+    ["title", "subtitle", "goal"].forEach((key) => {
+      if (!lesson[key]?.ru || !lesson[key]?.es) issues.push("Нет перевода " + key + " для урока " + lesson.id);
+    });
+    lesson.theory.forEach((block, index) => {
+      if (!block.title?.ru || !block.title?.es || !block.body?.ru || !block.body?.es) issues.push("Нет перевода теории " + (index + 1) + " для урока " + lesson.id);
+    });
+    lesson.exercises.forEach((exercise) => {
+      if (!exercise.id || !exercise.instruction?.ru || !exercise.instruction?.es || exercise.items.length === 0) issues.push("Некорректное упражнение " + (exercise.id || "без id") + " в уроке " + lesson.id);
+      exercise.items.forEach((item, index) => {
+        if (!item.prompt || !item.answer) issues.push("Нет вопроса или ответа в " + exercise.id + ", пункт " + (index + 1));
+      });
+      if (exercise.kind === "choice" && exercise.options.length === 0) issues.push("Нет вариантов ответа в " + exercise.id);
+    });
+  });
   return issues;
 }
 
@@ -15799,6 +16182,7 @@ const VIEW_RENDERERS = {
   tenses: renderTenses,
   tables: renderTables,
   moods: renderMoods,
+  textbook: renderTextbook,
   "learning-plan": renderLearningPlan,
   cards: renderCards
 };
@@ -15922,8 +16306,8 @@ document.addEventListener("keydown", (e) => {
     return;
   }
 
-  if (!isInput && /^[1-6]$/.test(e.key)) {
-    const views = ["verbs", "tenses", "moods", "tables", "learning-plan", "cards"];
+  if (!isInput && /^[1-7]$/.test(e.key)) {
+    const views = ["verbs", "tenses", "moods", "tables", "textbook", "learning-plan", "cards"];
     setView(views[parseInt(e.key) - 1]);
     e.preventDefault();
     return;

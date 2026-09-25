@@ -3069,6 +3069,8 @@ td.irregular {
 .textbook-progress { display: grid; gap: 6px; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); }
 .textbook-progress p, .textbook-theory p, .textbook-exercise p, .textbook-result p { margin: 0; }
 .textbook-catalog { display: grid; gap: 10px; }
+.textbook-catalog-group { display: grid; gap: 8px; }
+.textbook-catalog-group h3 { margin: 8px 0 0; font-size: 15px; }
 .textbook-lesson-card { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; width: 100%; padding: 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--text); text-align: left; cursor: pointer; }
 .textbook-lesson-card:hover, .textbook-lesson-card:focus-visible { border-color: var(--accent); box-shadow: var(--shadow); }
 .textbook-lesson-number { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 900; }
@@ -3091,12 +3093,14 @@ td.irregular {
 .textbook-question { padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
 .textbook-question.is-correct { border-color: var(--success); }
 .textbook-question.is-wrong { border-color: var(--danger); }
+.textbook-question.is-unanswered { border-color: var(--accent-2); }
 .textbook-question label, .textbook-question .textbook-prompt { display: block; margin-bottom: 8px; font-weight: 800; }
 .textbook-answer-input { width: min(100%, 340px); }
 .textbook-choice-row .small-button { min-width: 72px; }
 .textbook-choice-row .small-button.is-selected { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
 .textbook-feedback { margin-top: 8px; font-size: 13px; }
 .textbook-feedback strong { color: var(--text); }
+.textbook-feedback-note { display: block; margin-top: 4px; }
 .textbook-exercise-toggle:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 @media (max-width: 560px) {
   .textbook-exercise-head > div { flex: 1 1 100%; }
@@ -3843,7 +3847,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 0.95 · обновлено: 25.09.2026 13:47 CEST</span>
+        <span>Версия MVP 0.96 · обновлено: 25.09.2026 14:00 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -9576,10 +9580,10 @@ function readStoredJSON(key, fallback) {
 }
 
 function readTextbookProgress() {
-  const fallback = { version: 1, lessons: {} };
+  const fallback = { version: 2, lessons: {} };
   const stored = readStoredJSON("msg:textbookProgress", fallback);
-  if (!stored || stored.version !== 1 || typeof stored.lessons !== "object" || Array.isArray(stored.lessons)) return fallback;
-  const allowedLessonIds = new Set(["1", "2", "3", "4", "5"]);
+  if (!stored || ![1, 2].includes(stored.version) || typeof stored.lessons !== "object" || Array.isArray(stored.lessons)) return fallback;
+  const allowedLessonIds = new Set(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]);
   const lessons = {};
   Object.entries(stored.lessons).forEach(([lessonId, lesson]) => {
     if (!allowedLessonIds.has(lessonId) || !lesson || typeof lesson !== "object") return;
@@ -9589,7 +9593,7 @@ function readTextbookProgress() {
       attempts: lesson.attempts && typeof lesson.attempts === "object" && !Array.isArray(lesson.attempts) ? lesson.attempts : {}
     };
   });
-  return { version: 1, lessons };
+  return { version: 2, lessons };
 }
 
 const state = {
@@ -9888,6 +9892,19 @@ tbExercise("5.1", "text", tb("Дополните сообщение о чело�
     ]
   }
 ];
+
+const TEXTBOOK_LESSON_FEEDBACK = {
+  1: tb("Сверяйте род по артиклю и запоминайте пары слов вместе: окончание не всегда показывает род.", "Comprueba el género con el artículo y aprende las parejas juntas: la terminación no siempre lo indica."),
+  2: tb("У предметов род лучше запоминать вместе с артиклем: окончания помогают, но у них есть исключения.", "En los objetos conviene aprender el género con el artículo: las terminaciones ayudan, pero tienen excepciones."),
+  3: tb("Выбирайте -s после безударной гласной и -es после согласной или ударной гласной; -z cambia a -ces.", "Usa -s tras vocal átona y -es tras consonante o vocal tónica; -z cambia a -ces."),
+  4: tb("Форма un перед ударным a-/ha- не меняет женский род слова: un aula, pero unas aulas.", "La forma un ante a-/ha- tónica no cambia el género femenino: un aula, pero unas aulas."),
+  5: tb("После ser и hacerse профессия обычно идёт без артикля; артикль появляется, когда есть уточнение или количество.", "Después de ser y hacerse, la profesión suele ir sin artículo; el artículo aparece con especificación o cantidad."),
+  6: tb("Определённый артикль называют конкретный, известный или единственный предмет; a + el = al, de + el = del.", "El artículo determinado nombra un objeto concreto, conocido o único; a + el = al, de + el = del."),
+  7: tb("Используйте un/una при первом упоминании, а el/la — когда предмет уже известен собеседнику.", "Usa un/una en la primera mención y el/la cuando el objeto ya es conocido por el interlocutor."),
+  8: tb("У обращений, учреждений и географических названий артикль зависит от типа названия: запоминайте его как часть формы.", "Con tratamientos, instituciones y nombres geográficos, el artículo depende del tipo de nombre: apréndelo como parte de la forma."),
+  9: tb("La/las употребляются с часами; el — с конкретной датой, los — с регулярным днём недели; месяц сам по себе без артикля.", "La/las se usan con horas; el, con una fecha concreta; los, con un día habitual; el mes solo va sin artículo."),
+  10: tb("После tocar и jugar часто нужен артикль, а после estudiar/hablar названия предметов и языков обычно идут без него.", "Después de tocar y jugar suele hacer falta artículo; después de estudiar/hablar, las asignaturas y lenguas suelen ir sin él.")
+};
 
 const DISPLAY_INFINITIVES = {
   oir: "oír",
@@ -14907,47 +14924,80 @@ function textbookCorrect(answer, expected) {
   return submitted !== "" && expectedAnswers.some((value) => submitted === normalizeTextbookAnswer(value));
 }
 
+function textbookExerciseProgress(exercise, saved) {
+  const items = exercise.items.map((item, index) => {
+    const key = textbookQuestionKey(exercise.id, index);
+    const answered = normalizeTextbookAnswer(saved.answers[key]) !== "";
+    const checked = saved.checked[key];
+    return { item, index, key, answered, checked };
+  });
+  const answered = items.filter((item) => item.answered).length;
+  const checked = items.filter((item) => item.checked).length;
+  const correct = items.filter((item) => item.checked?.correct).length;
+  return { total: items.length, answered, checked, correct, wrong: checked - correct, unanswered: items.length - answered, items };
+}
+
 function textbookProgressFor(lesson) {
   const saved = textbookLessonState(lesson.id);
-  const questions = lesson.exercises.flatMap((exercise) => exercise.items.map((item, index) => ({ exercise, item, index })));
-  const checked = questions.filter(({ exercise, index }) => Object.hasOwn(saved.checked, textbookQuestionKey(exercise.id, index)));
-  const correct = checked.filter(({ exercise, index }) => saved.checked[textbookQuestionKey(exercise.id, index)]?.correct).length;
-  return { total: questions.length, checked: checked.length, correct, done: questions.length > 0 && checked.length === questions.length };
+  const exercises = lesson.exercises.map((exercise) => textbookExerciseProgress(exercise, saved));
+  const total = exercises.reduce((sum, exercise) => sum + exercise.total, 0);
+  const answered = exercises.reduce((sum, exercise) => sum + exercise.answered, 0);
+  const checked = exercises.reduce((sum, exercise) => sum + exercise.checked, 0);
+  const correct = exercises.reduce((sum, exercise) => sum + exercise.correct, 0);
+  return { total, answered, checked, correct, wrong: checked - correct, unanswered: total - answered, done: total > 0 && checked === total && answered === total };
 }
 
-function textbookFeedback(item, checked) {
-  if (!checked) return "";
+function textbookFeedback(item, checked, showFeedback, lesson) {
+  if (!showFeedback) return "";
+  if (!checked) return `<p class="textbook-feedback" role="status" tabindex="-1"><strong>${escapeHTML(textbookUi("Ответьте на этот пункт.", "Responde a este apartado."))}</strong> ${escapeHTML(textbookUi("Он не будет засчитан, пока поле пустое.", "No se contará mientras esté vacío."))}</p>`;
   if (checked.correct) return `<p class="textbook-feedback" tabindex="-1"><strong>${escapeHTML(textbookUi("Верно.", "Correcto."))}</strong> ${escapeHTML(textbookUi("Продолжайте.", "Continúa."))}</p>`;
   const answer = Array.isArray(item.answer) ? item.answer[0] : item.answer;
-  return `<p class="textbook-feedback" tabindex="-1"><strong>${escapeHTML(textbookUi("Проверьте ещё раз.", "Revísalo otra vez."))}</strong> ${escapeHTML(textbookUi("Правильный ответ", "Respuesta correcta"))}: <span lang="es">${escapeHTML(answer)}</span>.</p>`;
+  const note = textbookText(item.note) || textbookText(TEXTBOOK_LESSON_FEEDBACK[lesson.id]);
+  const noteMarkup = note ? `<span class="textbook-feedback-note"><strong>${escapeHTML(textbookUi("Правило:", "Regla:"))}</strong> ${escapeHTML(note)}</span>` : "";
+  return `<p class="textbook-feedback" role="status" tabindex="-1"><strong>${escapeHTML(textbookUi("Проверьте ещё раз.", "Revísalo otra vez."))}</strong> ${escapeHTML(textbookUi("Правильный ответ", "Respuesta correcta"))}: <span lang="es">${escapeHTML(answer)}</span>.${noteMarkup}</p>`;
 }
 
-function renderTextbookQuestion(exercise, item, index, saved, showFeedback = false) {
+function renderTextbookQuestion(lesson, exercise, item, index, saved, showFeedback = false) {
   const key = textbookQuestionKey(exercise.id, index);
   const answer = saved.answers[key] || "";
   const checked = showFeedback ? saved.checked[key] : null;
-  const stateClass = checked ? (checked.correct ? " is-correct" : " is-wrong") : "";
+  const unanswered = showFeedback && normalizeTextbookAnswer(answer) === "";
+  const stateClass = unanswered ? " is-unanswered" : checked ? (checked.correct ? " is-correct" : " is-wrong") : "";
   const prompt = escapeHTML(item.prompt);
   const options = exercise.options.map((option) => '<button class="small-button ' + (answer === option ? "is-selected" : "") + '" type="button" data-textbook-choice="' + escapeHTML(key) + '" data-textbook-value="' + escapeHTML(option) + '" aria-pressed="' + (answer === option) + '">' + escapeHTML(option) + "</button>").join("");
   const control = exercise.kind === "choice"
     ? '<div class="textbook-choice-row" role="group" aria-label="' + prompt + '">' + options + "</div>"
     : '<label><span class="sr-only">' + prompt + '</span><input class="textbook-answer-input" type="text" autocomplete="off" spellcheck="false" lang="es" value="' + escapeHTML(answer) + '" data-textbook-answer="' + escapeHTML(key) + '" aria-label="' + prompt + '"></label>';
-  return '<li class="textbook-question' + stateClass + '" data-textbook-question="' + escapeHTML(key) + '"><span class="textbook-prompt"><span lang="es">' + prompt + "</span></span>" + control + textbookFeedback(item, checked) + "</li>";
+  return '<li class="textbook-question' + stateClass + '" data-textbook-question="' + escapeHTML(key) + '"><span class="textbook-prompt"><span lang="es">' + prompt + "</span></span>" + control + textbookFeedback(item, checked, showFeedback, lesson) + "</li>";
 }
 
 function textbookLanguageButtons() {
   return `<div class="textbook-language-switch" role="group" aria-label="${escapeHTML(textbookUi("Язык учебника", "Idioma del curso"))}"><button class="small-button ${state.textbookLanguage === "ru" ? "is-active" : ""}" type="button" data-textbook-language="ru" aria-pressed="${state.textbookLanguage === "ru"}">RU</button><button class="small-button ${state.textbookLanguage === "es" ? "is-active" : ""}" type="button" data-textbook-language="es" aria-pressed="${state.textbookLanguage === "es"}">ES</button></div>`;
 }
 
+const TEXTBOOK_COURSE_GROUPS = [
+  { ids: [1, 2, 3], title: tb("Существительные: род и число", "Sustantivos: género y número") },
+  { ids: [4, 5], title: tb("Неопределённый артикль и отсутствие артикля", "Artículo indeterminado y ausencia de artículo") },
+  { ids: [6, 7, 8, 9, 10], title: tb("Определённый артикль", "Artículo determinado") }
+];
+
 function renderTextbookCatalog(content) {
   const lessonCount = TEXTBOOK_LESSONS.length;
   const completed = TEXTBOOK_LESSONS.filter((lesson) => textbookProgressFor(lesson).done).length;
   const lastLesson = TEXTBOOK_LESSONS.find((lesson) => lesson.id === Number(appStorage.get("msg:textbookLesson")));
   const next = (lastLesson && !textbookProgressFor(lastLesson).done ? lastLesson : null) || TEXTBOOK_LESSONS.find((lesson) => !textbookProgressFor(lesson).done) || TEXTBOOK_LESSONS[0];
-  const cards = TEXTBOOK_LESSONS.map((lesson) => {
+  const card = (lesson) => {
     const progress = textbookProgressFor(lesson);
-    const status = progress.done ? textbookUi("Пройден", "Completada") : `${progress.checked}/${progress.total}`;
-    return `<button class="textbook-lesson-card" type="button" data-textbook-open="${lesson.id}"><span class="textbook-lesson-number">${lesson.id}</span><span><strong>${escapeHTML(textbookText(lesson.title))}</strong><small>${escapeHTML(textbookText(lesson.subtitle))} · ${escapeHTML(textbookText(lesson.goal))}</small></span><span class="textbook-status ${progress.done ? "is-done" : ""}">${escapeHTML(status)}</span></button>`;
+    const duration = Math.max(5, Math.ceil(progress.total / 5));
+    const status = progress.done
+      ? `${textbookUi("Пройден", "Completada")} · ✓ ${progress.correct}/${progress.total}`
+      : `${textbookUi("Заполнено", "Respondidas")} ${progress.answered}/${progress.total} · ✓ ${progress.correct}`;
+    const meta = `${textbookText(lesson.subtitle)} · ${progress.total} ${textbookUi("зад.", "preg.")} · ~${duration} ${textbookUi("мин.", "min.")}`;
+    return `<button class="textbook-lesson-card" type="button" data-textbook-open="${lesson.id}"><span class="textbook-lesson-number">${lesson.id}</span><span><strong>${escapeHTML(textbookText(lesson.title))}</strong><small>${escapeHTML(meta)}</small></span><span class="textbook-status ${progress.done ? "is-done" : ""}">${escapeHTML(status)}</span></button>`;
+  };
+  const cards = TEXTBOOK_COURSE_GROUPS.map((group) => {
+    const lessons = group.ids.map((id) => TEXTBOOK_LESSONS.find((lesson) => lesson.id === id)).filter(Boolean);
+    return `<section class="textbook-catalog-group"><h3>${escapeHTML(textbookText(group.title))}</h3>${lessons.map(card).join("")}</section>`;
   }).join("");
   const header = infoSection({ className: "info-card textbook-dashboard", html: `
     <div class="textbook-toolbar"><div><h2>${escapeHTML(textbookUi("Учебник", "Curso"))}</h2><p class="muted">${escapeHTML(textbookUi("Десять интерактивных уроков по базовой грамматике.", "Diez lecciones interactivas de gramática básica."))}</p></div>${textbookLanguageButtons()}</div>
@@ -14970,32 +15020,35 @@ function renderTextbookLesson(content, lesson) {
     return '<section class="textbook-theory"><h3>' + escapeHTML(textbookText(block.title)) + '</h3><p>' + escapeHTML(textbookText(block.body)) + '</p>' + (rules ? '<ul class="textbook-rule-list">' + rules + '</ul>' : "") + attention + '<ul class="textbook-example-list">' + examples + '</ul></section>';
   }).join("");
   const exercises = lesson.exercises.map((exercise) => {
-    const checkedCount = exercise.items.filter((_, index) => Object.hasOwn(saved.checked, textbookQuestionKey(exercise.id, index))).length;
+    const exerciseProgress = textbookExerciseProgress(exercise, saved);
     const feedbackKey = lesson.id + ":" + exercise.id;
     const showFeedback = Boolean(state.textbookVisibleFeedback[feedbackKey]);
     const buttonLabel = showFeedback
       ? textbookUi("Скрыть разбор", "Ocultar corrección")
-      : textbookUi("Проверить упражнение", "Comprobar ejercicio");
+      : textbookUi("Проверить заполненное", "Comprobar respuestas");
     const openKey = lesson.id + ":" + exercise.id;
     const isOpen = Boolean(state.textbookOpenExercises[openKey]);
     const bodyId = "textbook-exercise-" + lesson.id + "-" + exercise.id.replace(".", "-");
     const toggleLabel = isOpen
       ? textbookUi("Свернуть упражнение", "Cerrar ejercicio")
       : textbookUi("Раскрыть упражнение", "Abrir ejercicio");
-    return `<article class="textbook-exercise" data-textbook-exercise="${exercise.id}"><div class="textbook-exercise-head"><div><h4>${escapeHTML(textbookUi("Упражнение", "Ejercicio"))} ${exercise.id}</h4><p>${escapeHTML(textbookText(exercise.instruction))}</p></div><span class="textbook-exercise-meta">${checkedCount}/${exercise.items.length}</span><button class="small-button textbook-exercise-toggle" type="button" data-textbook-toggle="${exercise.id}" aria-expanded="${isOpen}" aria-controls="${bodyId}">${escapeHTML(toggleLabel)}</button></div><div class="textbook-exercise-body" id="${bodyId}"${isOpen ? "" : " hidden"}><ol class="textbook-question-list">${exercise.items.map((item, index) => renderTextbookQuestion(exercise, item, index, saved, showFeedback)).join("")}</ol><div class="textbook-actions"><button class="small-button primary" type="button" data-textbook-check="${exercise.id}" aria-pressed="${showFeedback}">${escapeHTML(buttonLabel)}</button></div></div></article>`;
+    const exerciseMeta = `${textbookUi("Заполнено", "Respondidas")} ${exerciseProgress.answered}/${exerciseProgress.total}${showFeedback ? ` · ✓ ${exerciseProgress.correct}/${exerciseProgress.checked}` : ""}`;
+    return `<article class="textbook-exercise" data-textbook-exercise="${exercise.id}"><div class="textbook-exercise-head"><div><h4>${escapeHTML(textbookUi("Упражнение", "Ejercicio"))} ${exercise.id}</h4><p>${escapeHTML(textbookText(exercise.instruction))}</p></div><span class="textbook-exercise-meta">${escapeHTML(exerciseMeta)}</span><button class="small-button textbook-exercise-toggle" type="button" data-textbook-toggle="${exercise.id}" aria-expanded="${isOpen}" aria-controls="${bodyId}">${escapeHTML(toggleLabel)}</button></div><div class="textbook-exercise-body" id="${bodyId}"${isOpen ? "" : " hidden"}><ol class="textbook-question-list">${exercise.items.map((item, index) => renderTextbookQuestion(lesson, exercise, item, index, saved, showFeedback)).join("")}</ol><div class="textbook-actions"><button class="small-button primary" type="button" data-textbook-check="${exercise.id}" aria-pressed="${showFeedback}">${escapeHTML(buttonLabel)}</button></div></div></article>`;
   }).join("");
   const remaining = progress.total - progress.checked;
   const summary = progress.done
     ? textbookUi("Все задания проверены. Верно " + progress.correct + " из " + progress.total + ".", "Todos los ejercicios están comprobados. Correctas: " + progress.correct + " de " + progress.total + ".")
-    : textbookUi("Проверьте ещё " + remaining + " заданий, чтобы завершить урок.", "Comprueba " + remaining + " respuestas más para completar la lección.");
+    : progress.unanswered > 0
+      ? textbookUi("Заполните ещё " + progress.unanswered + " заданий, затем проверьте ответы.", "Responde " + progress.unanswered + " apartados más y después comprueba las respuestas.")
+      : textbookUi("Проверьте ещё " + remaining + " ответов, чтобы завершить урок.", "Comprueba " + remaining + " respuestas más para completar la lección.");
   const previousButton = previous ? '<button class="small-button" type="button" data-textbook-open="' + previous.id + '">← ' + previous.id + ". " + escapeHTML(textbookText(previous.title)) + "</button>" : "";
   const nextButton = next ? '<button class="small-button" type="button" data-textbook-open="' + next.id + '">' + next.id + ". " + escapeHTML(textbookText(next.title)) + " →</button>" : "";
   const section = infoSection({ className: "info-card textbook-lesson", html: `
     <div class="textbook-toolbar"><div><button class="small-button" type="button" data-textbook-catalog>← ${escapeHTML(textbookUi("К оглавлению", "Índice"))}</button><h2>${lesson.id}. ${escapeHTML(textbookText(lesson.title))}</h2><p class="muted">${escapeHTML(textbookText(lesson.goal))}</p></div>${textbookLanguageButtons()}</div>
-    <div class="textbook-summary"><span><strong>${escapeHTML(textbookUi("Результат", "Resultado"))}: ${progress.correct}/${progress.total}</strong> · ${progress.checked}/${progress.total}</span><span class="textbook-status ${progress.done ? "is-done" : ""}">${escapeHTML(progress.done ? textbookUi("Урок пройден", "Lección completada") : textbookUi("В работе", "En curso"))}</span></div>
+    <div class="textbook-summary"><span><strong>${escapeHTML(textbookUi("Верно", "Correctas"))}: ${progress.correct}/${progress.checked}</strong> · ${escapeHTML(textbookUi("Заполнено", "Respondidas"))}: ${progress.answered}/${progress.total}</span><span class="textbook-status ${progress.done ? "is-done" : ""}">${escapeHTML(progress.done ? textbookUi("Урок пройден", "Lección completada") : textbookUi("В работе", "En curso"))}</span></div>
     <div class="textbook-theory-grid">${theory}</div>
     <section><h3>${escapeHTML(textbookUi("Практика", "Práctica"))}</h3>${exercises}</section>
-    <section class="textbook-result" aria-live="polite"><h3>${escapeHTML(textbookUi("Итог урока", "Resultado de la lección"))}</h3><p>${escapeHTML(summary)}</p><div class="textbook-actions"><button class="small-button" type="button" data-textbook-retry="${lesson.id}" ${progress.correct === progress.checked ? "disabled" : ""}>${escapeHTML(textbookUi("Повторить ошибки", "Repetir errores"))}</button><button class="small-button danger" type="button" data-textbook-reset="${lesson.id}">${escapeHTML(textbookUi("Сбросить урок", "Reiniciar lección"))}</button></div></section>
+    <section class="textbook-result" aria-live="polite"><h3>${escapeHTML(textbookUi("Итог урока", "Resultado de la lección"))}</h3><p>${escapeHTML(summary)}</p><div class="textbook-actions"><button class="small-button" type="button" data-textbook-retry="${lesson.id}" ${progress.wrong === 0 ? "disabled" : ""}>${escapeHTML(textbookUi("Повторить ошибки", "Repetir errores"))}</button><button class="small-button danger" type="button" data-textbook-reset="${lesson.id}">${escapeHTML(textbookUi("Сбросить урок", "Reiniciar lección"))}</button></div></section>
     <nav class="textbook-lesson-nav" aria-label="${escapeHTML(textbookUi("Навигация по урокам", "Navegación de lecciones"))}">${previousButton}${nextButton}</nav>
   ` });
   content.appendChild(section);
@@ -15019,7 +15072,7 @@ function hideTextbookExerciseFeedback(lessonId, questionKey, question) {
   });
   const checkButton = exercise?.querySelector("[data-textbook-check]");
   if (checkButton) {
-    checkButton.textContent = textbookUi("Проверить упражнение", "Comprobar ejercicio");
+    checkButton.textContent = textbookUi("Проверить заполненное", "Comprobar respuestas");
     checkButton.setAttribute("aria-pressed", "false");
   }
 }
@@ -15029,6 +15082,7 @@ function bindTextbookControls(root, activeLesson = null) {
     state.textbookLanguage = event.currentTarget.dataset.textbookLanguage === "es" ? "es" : "ru";
     appStorage.set("msg:textbookLanguage", state.textbookLanguage);
     renderTextbook();
+    requestAnimationFrame(() => document.querySelector('[data-textbook-language="' + state.textbookLanguage + '"]')?.focus({ preventScroll: true }));
   });
   bindClickAll(root, "[data-textbook-open]", (event) => openTextbookLesson(Number(event.currentTarget.dataset.textbookOpen)));
   bindClickAll(root, "[data-textbook-toggle]", (event) => {
@@ -15049,6 +15103,12 @@ function bindTextbookControls(root, activeLesson = null) {
     saveTextbookProgress();
     const question = event.currentTarget.closest("[data-textbook-question]");
     hideTextbookExerciseFeedback(activeLesson.id, key, question);
+  }));
+  $all("[data-textbook-answer]", root).forEach((input) => input.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" || event.isComposing) return;
+    event.preventDefault();
+    const exerciseId = event.currentTarget.closest("[data-textbook-exercise]")?.dataset.textbookExercise;
+    root.querySelector('[data-textbook-check="' + exerciseId + '"]')?.click();
   }));
   bindClickAll(root, "[data-textbook-choice]", (event) => {
     if (!activeLesson) return;
@@ -15078,6 +15138,10 @@ function bindTextbookControls(root, activeLesson = null) {
     const saved = textbookLessonState(activeLesson.id);
     exercise.items.forEach((item, index) => {
       const key = textbookQuestionKey(exercise.id, index);
+      if (normalizeTextbookAnswer(saved.answers[key]) === "") {
+        delete saved.checked[key];
+        return;
+      }
       saved.checked[key] = { correct: textbookCorrect(saved.answers[key], item.answer) };
       saved.attempts[key] = (Number(saved.attempts[key]) || 0) + 1;
     });
@@ -15085,12 +15149,17 @@ function bindTextbookControls(root, activeLesson = null) {
     saveTextbookProgress();
     renderTextbook();
     requestAnimationFrame(() => {
-      const target = document.querySelector('[data-textbook-exercise="' + exercise.id + '"] .textbook-feedback');
+      const exerciseRoot = document.querySelector('[data-textbook-exercise="' + exercise.id + '"]');
+      const issue = exerciseRoot?.querySelector(".textbook-question.is-unanswered, .textbook-question.is-wrong");
+      const target = issue?.classList.contains("is-unanswered")
+        ? issue.querySelector("[data-textbook-answer], [data-textbook-choice]")
+        : issue?.querySelector(".textbook-feedback") || exerciseRoot?.querySelector(".textbook-feedback");
       target?.focus({ preventScroll: true });
     });
   });
   bindClickAll(root, "[data-textbook-retry]", () => {
     if (!activeLesson) return;
+    if (!window.confirm(textbookUi("Очистить неверные ответы, чтобы повторить их?", "¿Borrar las respuestas incorrectas para repetirlas?"))) return;
     const saved = textbookLessonState(activeLesson.id);
     activeLesson.exercises.forEach((exercise) => exercise.items.forEach((_, index) => {
       const key = textbookQuestionKey(exercise.id, index);
@@ -15908,6 +15977,7 @@ function validateData() {
     ["title", "subtitle", "goal"].forEach((key) => {
       if (!lesson[key]?.ru || !lesson[key]?.es) issues.push("Нет перевода " + key + " для урока " + lesson.id);
     });
+    if (!TEXTBOOK_LESSON_FEEDBACK[lesson.id]?.ru || !TEXTBOOK_LESSON_FEEDBACK[lesson.id]?.es) issues.push("Нет перевода разбора ошибок для урока " + lesson.id);
     lesson.theory.forEach((block, index) => {
       if (!block.title?.ru || !block.title?.es || !block.body?.ru || !block.body?.es) issues.push("Нет перевода теории " + (index + 1) + " для урока " + lesson.id);
       (block.rules || []).forEach((rule, ruleIndex) => {

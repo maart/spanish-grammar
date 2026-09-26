@@ -3091,9 +3091,10 @@ td.irregular {
 .textbook-example-list { display: grid; gap: 6px; margin: 0; padding-left: 20px; }
 .textbook-rule-list { display: grid; gap: 6px; margin: 0; padding: 10px 10px 10px 28px; border-radius: 8px; background: var(--surface); }
 .textbook-rule-list li::marker { color: var(--accent); font-weight: 900; }
-.textbook-exercise-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
-.textbook-exercise-head > div { min-width: 0; }
-.textbook-exercise-toggle { flex: 0 0 auto; min-width: 152px; margin-left: auto; }
+.textbook-exercise-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "heading heading" "toggle meta"; align-items: center; gap: 8px; }
+.textbook-exercise-head > div { grid-area: heading; min-width: 0; }
+.textbook-exercise-meta { grid-area: meta; justify-self: end; }
+.textbook-exercise-toggle { grid-area: toggle; justify-self: start; min-width: 152px; margin-left: 0; }
 .textbook-exercise-body { display: grid; gap: 10px; }
 .textbook-exercise-body[hidden] { display: none; }
 .textbook-question-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
@@ -3110,8 +3111,9 @@ td.irregular {
 .textbook-feedback-note { display: block; margin-top: 4px; }
 .textbook-exercise-toggle:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 @media (max-width: 560px) {
-  .textbook-exercise-head > div { flex: 1 1 100%; }
-  .textbook-exercise-toggle { width: 100%; margin-left: 0; }
+  .textbook-exercise-head { grid-template-columns: 1fr; grid-template-areas: "heading" "toggle" "meta"; }
+  .textbook-exercise-meta { justify-self: start; }
+  .textbook-exercise-toggle { width: 100%; }
 }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
@@ -3854,7 +3856,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.04 · обновлено: 26.09.2026 19:43 CEST</span>
+        <span>Версия MVP 1.05 · обновлено: 26.09.2026 19:52 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>

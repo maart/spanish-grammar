@@ -3861,7 +3861,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.12 · обновлено: 27.09.2026 12:56 CEST</span>
+        <span>Версия MVP 1.13 · обновлено: 27.09.2026 13:02 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -9584,6 +9584,15 @@ const appStorage = (() => {
   };
 })();
 
+const SYSTEM_DARK_QUERY = globalThis.matchMedia?.("(prefers-color-scheme: dark)");
+
+// Явный выбор в переключателе важнее системной темы; без него следуем настройке ОС.
+function initialDarkTheme() {
+  const stored = appStorage.get("msg:theme");
+  if (stored === "dark" || stored === "light") return stored === "dark";
+  return Boolean(SYSTEM_DARK_QUERY?.matches);
+}
+
 function readStoredJSON(key, fallback) {
   try {
     const value = appStorage.get(key);
@@ -9684,7 +9693,7 @@ const state = {
   cardQuizAttempts: [],
   cardQuizSnapshot: [],
   cardQuizAllVerbs: [],
-  dark: appStorage.get("msg:theme") === "dark",
+  dark: initialDarkTheme(),
   textbookLanguage: appStorage.get("msg:textbookLanguage") === "es" ? "es" : "ru",
   textbookLesson: Number.isInteger(Number(appStorage.get("msg:textbookLesson"))) && Number(appStorage.get("msg:textbookLesson")) >= 1 && Number(appStorage.get("msg:textbookLesson")) <= 50
     ? Number(appStorage.get("msg:textbookLesson"))
@@ -17104,13 +17113,17 @@ const VIEW_RENDERERS = {
   cards: renderCards
 };
 
-function render() {
+function applyTheme() {
   document.body.classList.toggle("dark", state.dark);
   document.querySelector('meta[name="theme-color"]')?.setAttribute("content", state.dark ? "#191a17" : "#f6f3ee");
   const themeToggle = $(SELECTORS.themeToggle);
   const themeLabel = state.dark ? "Включить светлую тему" : "Включить тёмную тему";
   themeToggle.setAttribute("aria-label", themeLabel);
   themeToggle.title = themeLabel;
+}
+
+function render() {
+  applyTheme();
   syncActiveTab();
   (VIEW_RENDERERS[state.view] || renderVerbs)();
 }
@@ -17166,7 +17179,14 @@ $(SELECTORS.homeTitle).addEventListener("click", () => {
 $(SELECTORS.themeToggle).addEventListener("click", () => {
   state.dark = !state.dark;
   appStorage.set("msg:theme", state.dark ? "dark" : "light");
-  render();
+  applyTheme();
+});
+
+SYSTEM_DARK_QUERY?.addEventListener?.("change", (event) => {
+  const stored = appStorage.get("msg:theme");
+  if (stored === "dark" || stored === "light") return;
+  state.dark = event.matches;
+  applyTheme();
 });
 
 $(SELECTORS.printButton).addEventListener("click", () => {

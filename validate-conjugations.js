@@ -38,7 +38,7 @@ const sandbox = {
 // Execute the JS in the sandbox
 const fn = new Function(
   ...Object.keys(sandbox),
-  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, TENSE_EXAMPLES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, VERB_TENSE_GROUPS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize, generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer, cardAccuracy, isCardMastered, cardNeedsReview, cardsForFilter, studyCardCounts };"
+  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, TENSE_EXAMPLES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, VERB_TENSE_GROUPS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize, generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer, cardAccuracy, isCardMastered, cardNeedsReview, cardsForFilter, studyCardCounts, validateData };"
 );
 const api = fn(...Object.values(sandbox));
 
@@ -59,6 +59,7 @@ const {
   isReflexive, baseVerb, state, filteredVerbs,
   generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer,
   cardAccuracy, isCardMastered, cardNeedsReview, cardsForFilter, studyCardCounts,
+  validateData,
 } = api;
 
 // ─── Reference data: known correct conjugations ─────────────────────────────
@@ -1157,6 +1158,12 @@ const SEARCH_CASES = [
   { query: "уходить", first: "irse" },
   { query: "tenre", first: "tener" },
   { query: "sd", count: 0 },
+  // Частичный запрос не должен совпадать со вспомогательным haber и местоимениями составных форм.
+  { query: "hab", first: "haber", maxCount: 10 },
+  { query: "habl", first: "hablar", count: 1 },
+  { query: "hemos", first: "haber", count: 1 },
+  { query: "ha sido", first: "ser", count: 1 },
+  { query: "me voy", first: "irse", count: 1 },
 ];
 
 for (const testCase of SEARCH_CASES) {
@@ -1169,6 +1176,16 @@ for (const testCase of SEARCH_CASES) {
       person: "first result",
       expected: testCase.first,
       actual: results[0] || "(none)",
+      severity: "high",
+    });
+  }
+  if (Number.isInteger(testCase.maxCount) && results.length > testCase.maxCount) {
+    issues.push({
+      verb: testCase.query,
+      tense: "search",
+      person: "result count",
+      expected: `не больше ${testCase.maxCount}`,
+      actual: String(results.length),
       severity: "high",
     });
   }
@@ -1692,6 +1709,20 @@ for (const [verb, expectedTu] of Object.entries(imperativoChecks)) {
   checkedVerbs.add(verb);
   const info = verbInfo(verb);
   check(verb, "imperativo_afirmativo", 1, expectedTu, info.forms.imperativo_afirmativo[1], "high");
+}
+
+// ─── In-app data checks (validateData) ──────────────────────────────────────
+// Те же проверки, что приложение выполняет при загрузке и выводит в console.warn:
+// учебник, переводы, шпаргалки, наклонения и связи между ними.
+for (const message of validateData()) {
+  issues.push({
+    verb: "validateData",
+    tense: "app_data",
+    person: "-",
+    expected: "нет замечаний",
+    actual: message,
+    severity: "high",
+  });
 }
 
 // ─── Output report ──────────────────────────────────────────────────────────

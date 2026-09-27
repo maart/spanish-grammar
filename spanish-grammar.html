@@ -3861,7 +3861,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.11 · обновлено: 27.09.2026 12:52 CEST</span>
+        <span>Версия MVP 1.12 · обновлено: 27.09.2026 12:56 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -11365,11 +11365,19 @@ function generatedTags(verb) {
   return Array.from(new Set(tags));
 }
 
+let lastVerbSearch = { query: null, verbs: [] };
+
 function filteredVerbs() {
   const query = normalize(state.query);
   if (!query) {
     return COMMON_VERB_SUGGESTIONS.filter((verb) => BASE_VERBS.includes(verb));
   }
+  if (lastVerbSearch.query === query) return lastVerbSearch.verbs;
+  lastVerbSearch = { query, verbs: searchVerbs(query) };
+  return lastVerbSearch.verbs;
+}
+
+function searchVerbs(query) {
   const matches = BASE_VERBS
     .map((verb, index) => ({ verb, index, match: searchMatchFor(verb, query) }))
     .filter((item) => item.match)
@@ -11399,14 +11407,49 @@ function levenshtein(a, b) {
   return prev[n];
 }
 
+const VERB_SEARCH_INDEX_CACHE = new Map();
+
+// Нормализованные строки глагола и всех его форм считаются один раз: поиск идёт по 2000 глаголам на каждое нажатие.
+function verbSearchIndex(info) {
+  if (VERB_SEARCH_INDEX_CACHE.has(info.infinitive)) return VERB_SEARCH_INDEX_CACHE.get(info.infinitive);
+  const ru = normalize(info.ru);
+  const forms = [];
+  TENSES.forEach((tense) => {
+    (info.forms[tense.id] || []).forEach((form, index) => {
+      const full = normalize(form);
+      if (!full || full === "-") return;
+      forms.push({ tense, index, form, full, lexical: full.split(" ").pop() });
+    });
+  });
+  const entry = {
+    infinitive: normalize(info.infinitive),
+    display: normalize(info.displayInfinitive),
+    ru,
+    ruWords: normalizedWords(ru),
+    forms
+  };
+  VERB_SEARCH_INDEX_CACHE.set(info.infinitive, entry);
+  return entry;
+}
+
+// Строит индекс небольшими порциями в простое браузера, чтобы первое нажатие в поиске не ждало ~200 мс.
+function warmVerbSearchIndex(start = 0) {
+  const schedule = window.requestIdleCallback || ((callback) => setTimeout(() => callback({ timeRemaining: () => 8 }), 50));
+  schedule((deadline) => {
+    let index = start;
+    while (index < BASE_VERBS.length && deadline.timeRemaining() > 1) {
+      verbSearchIndex(verbInfo(BASE_VERBS[index]));
+      index += 1;
+    }
+    if (index < BASE_VERBS.length) warmVerbSearchIndex(index);
+  });
+}
+
 function searchMatchFor(verb, rawQuery) {
   const query = normalize(rawQuery);
   if (!query) return null;
   const info = verbInfo(verb);
-  const infinitive = normalize(info.infinitive);
-  const display = normalize(info.displayInfinitive);
-  const ru = normalize(info.ru);
-  const ruWords = normalizedWords(ru);
+  const { infinitive, display, ru, ruWords } = verbSearchIndex(info);
 
   if (infinitive === query || display === query) {
     return { score: 0, reason: "Точное совпадение по инфинитиву" };
@@ -12261,25 +12304,19 @@ function findFormMatch(info, query, mode = "exact") {
   // Частичный запрос из одного слова сверяется только с последним словом формы:
   // иначе «hab» или «me» совпадают со вспомогательным haber и местоимениями почти у всех глаголов.
   const matchLexicalWord = mode !== "exact" && !/\s/.test(query);
-  for (const tense of TENSES) {
-    const forms = info.forms[tense.id] || [];
-    const index = forms.findIndex((form) => {
-      const n = normalize(form);
-      if (!n || n === "-") return false;
-      const target = matchLexicalWord ? n.split(/\s+/).pop() : n;
-      if (mode === "prefix") return target.startsWith(query);
-      if (mode === "contains") return target.includes(query);
-      return n === query;
-    });
-    if (index >= 0) {
-      const nonPersonalLabels = ["infinitivo", "gerundio", "participio"];
-      const person = tense.id === "formas_no_personales"
-        ? (nonPersonalLabels[index] || "forma no personal")
-        : (PEOPLE[index] || "forma");
-      return { form: forms[index], person, tense: tense.name };
-    }
-  }
-  return null;
+  const match = verbSearchIndex(info).forms.find((item) => {
+    const target = matchLexicalWord ? item.lexical : item.full;
+    if (mode === "prefix") return target.startsWith(query);
+    if (mode === "contains") return target.includes(query);
+    return item.full === query;
+  });
+  if (!match) return null;
+  const { tense, index, form } = match;
+  const nonPersonalLabels = ["infinitivo", "gerundio", "participio"];
+  const person = tense.id === "formas_no_personales"
+    ? (nonPersonalLabels[index] || "forma no personal")
+    : (PEOPLE[index] || "forma");
+  return { form, person, tense: tense.name };
 }
 
 function highlightSearchMatch(value) {
@@ -17254,6 +17291,7 @@ if (!applyRouteHash()) {
   render();
 }
 updateFloatingTopButton();
+warmVerbSearchIndex();
 
     </script>
   </body>

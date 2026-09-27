@@ -469,8 +469,9 @@ const REFERENCE = {
   },
   reir: {
     presente: ["río", "ríes", "ríe", "reímos", "reís", "ríen"],
-    indefinido: ["reí", "reíste", "rió", "reímos", "reísteis", "rieron"],
-    subjuntivo_presente: ["ría", "rías", "ría", "riamos", "riáis", "rían"],
+    // RAE, Ortografía 2010: односложные rio, riais пишутся без тильды.
+    indefinido: ["reí", "reíste", "rio", "reímos", "reísteis", "rieron"],
+    subjuntivo_presente: ["ría", "rías", "ría", "riamos", "riais", "rían"],
     gerund: "riendo",
   },
   sonreir: {
@@ -481,8 +482,8 @@ const REFERENCE = {
   },
   freir: {
     presente: ["frío", "fríes", "fríe", "freímos", "freís", "fríen"],
-    indefinido: ["freí", "freíste", "frió", "freímos", "freísteis", "frieron"],
-    subjuntivo_presente: ["fría", "frías", "fría", "friamos", "friáis", "frían"],
+    indefinido: ["freí", "freíste", "frio", "freímos", "freísteis", "frieron"],
+    subjuntivo_presente: ["fría", "frías", "fría", "friamos", "friais", "frían"],
     gerund: "friendo",
     participle: "frito",
   },
@@ -703,10 +704,102 @@ const REFERENCE = {
     gerund: "destruyendo",
   },
   huir: {
-    presente: ["huyo", "huyes", "huye", "huimos", "huís", "huyen"],
-    indefinido: ["huí", "huiste", "huyó", "huimos", "huisteis", "huyeron"],
+    // RAE, Ortografía 2010: односложные huis, hui пишутся без тильды.
+    presente: ["huyo", "huyes", "huye", "huimos", "huis", "huyen"],
+    indefinido: ["hui", "huiste", "huyó", "huimos", "huisteis", "huyeron"],
     subjuntivo_presente: ["huya", "huyas", "huya", "huyamos", "huyáis", "huyan"],
     gerund: "huyendo",
+  },
+  // ─── Регрессии, найденные во втором анализе (DLE/DPD, Ortografía 2010) ───
+  vencer: {
+    presente: ["venzo", "vences", "vence", "vencemos", "vencéis", "vencen"],
+    subjuntivo_presente: ["venza", "venzas", "venza", "venzamos", "venzáis", "venzan"],
+  },
+  ejercer: {
+    presente: ["ejerzo", "ejerces", "ejerce", "ejercemos", "ejercéis", "ejercen"],
+  },
+  esparcir: {
+    subjuntivo_presente: ["esparza", "esparzas", "esparza", "esparzamos", "esparzáis", "esparzan"],
+  },
+  mecer: {
+    presente: ["mezo", "meces", "mece", "mecemos", "mecéis", "mecen"],
+  },
+  adormecer: {
+    presente: ["adormezco", "adormeces", "adormece", "adormecemos", "adormecéis", "adormecen"],
+  },
+  torcer: {
+    presente: ["tuerzo", "tuerces", "tuerce", "torcemos", "torcéis", "tuercen"],
+    subjuntivo_presente: ["tuerza", "tuerzas", "tuerza", "torzamos", "torzáis", "tuerzan"],
+    imperativo_afirmativo: ["-", "tuerce", "tuerza", "torzamos", "torced", "tuerzan"],
+  },
+  predecir: {
+    presente: ["predigo", "predices", "predice", "predecimos", "predecís", "predicen"],
+    participle: "predicho",
+  },
+  contradecir: {
+    presente: ["contradigo", "contradices", "contradice", "contradecimos", "contradecís", "contradicen"],
+  },
+  deshacer: {
+    presente: ["deshago", "deshaces", "deshace", "deshacemos", "deshacéis", "deshacen"],
+    futuro: ["desharé", "desharás", "deshará", "desharemos", "desharéis", "desharán"],
+    condicional: ["desharía", "desharías", "desharía", "desharíamos", "desharíais", "desharían"],
+  },
+  satisfacer: {
+    presente: ["satisfago", "satisfaces", "satisface", "satisfacemos", "satisfacéis", "satisfacen"],
+    futuro: ["satisfaré", "satisfarás", "satisfará", "satisfaremos", "satisfaréis", "satisfarán"],
+    condicional: ["satisfaría", "satisfarías", "satisfaría", "satisfaríamos", "satisfaríais", "satisfarían"],
+    participle: "satisfecho",
+  },
+  prohibir: {
+    presente: ["prohíbo", "prohíbes", "prohíbe", "prohibimos", "prohibís", "prohíben"],
+    subjuntivo_presente: ["prohíba", "prohíbas", "prohíba", "prohibamos", "prohibáis", "prohíban"],
+  },
+  aislar: {
+    presente: ["aíslo", "aíslas", "aísla", "aislamos", "aisláis", "aíslan"],
+  },
+  enraizar: {
+    presente: ["enraízo", "enraízas", "enraíza", "enraizamos", "enraizáis", "enraízan"],
+    subjuntivo_presente: ["enraíce", "enraíces", "enraíce", "enraicemos", "enraicéis", "enraícen"],
+  },
+  aunar: {
+    presente: ["aúno", "aúnas", "aúna", "aunamos", "aunáis", "aúnan"],
+  },
+  rehusar: {
+    presente: ["rehúso", "rehúsas", "rehúsa", "rehusamos", "rehusáis", "rehúsan"],
+  },
+  reunir: {
+    presente: ["reúno", "reúnes", "reúne", "reunimos", "reunís", "reúnen"],
+  },
+  errar: {
+    presente: ["yerro", "yerras", "yerra", "erramos", "erráis", "yerran"],
+    subjuntivo_presente: ["yerre", "yerres", "yerre", "erremos", "erréis", "yerren"],
+  },
+  guiar: {
+    presente: ["guío", "guías", "guía", "guiamos", "guiais", "guían"],
+    indefinido: ["guie", "guiaste", "guio", "guiamos", "guiasteis", "guiaron"],
+    subjuntivo_presente: ["guíe", "guíes", "guíe", "guiemos", "guieis", "guíen"],
+  },
+  criar: {
+    indefinido: ["crie", "criaste", "crio", "criamos", "criasteis", "criaron"],
+  },
+  enfriar: {
+    indefinido: ["enfrié", "enfriaste", "enfrió", "enfriamos", "enfriasteis", "enfriaron"],
+  },
+  creer: {
+    indefinido: ["creí", "creíste", "creyó", "creímos", "creísteis", "creyeron"],
+    subjuntivo_presente: ["crea", "creas", "crea", "creamos", "creáis", "crean"],
+    participle: "creído",
+    gerund: "creyendo",
+  },
+  roer: {
+    indefinido: ["roí", "roíste", "royó", "roímos", "roísteis", "royeron"],
+    participle: "roído",
+    gerund: "royendo",
+  },
+  poseer: {
+    participle: "poseído",
+    indefinido: ["poseí", "poseíste", "poseyó", "poseímos", "poseísteis", "poseyeron"],
+    gerund: "poseyendo",
   },
   incluir: {
     presente: ["incluyo", "incluyes", "incluye", "incluimos", "incluís", "incluyen"],
@@ -804,25 +897,17 @@ const REFERENCE = {
   cubrir: { participle: "cubierto" },
   descubrir: { participle: "descubierto" },
   escribir: { participle: "escrito" },
-  hacer: { participle: "hecho" },
-  decir: { participle: "dicho" },
-  poner: { participle: "puesto" },
   romper: { participle: "roto" },
-  ver: { participle: "visto" },
-  volver: { participle: "vuelto" },
   resolver: { participle: "resuelto" },
-  morir: { participle: "muerto" },
-  freir: { participle: "frito" },
   imprimir: { participle: "impreso" },
   pudrir: { participle: "podrido" },
-  satisfacer: { participle: "satisfecho" },
   absolver: { participle: "absuelto" },
   // caído/oído need accent on í (stem ends in vowel) - app bug: generates "caido"/"oido"
-  caer: { participle: "caído" },
-  oir: { participle: "oído" },
-  creer: { participle: "creído" },
-  leer: { participle: "leído" },
-  traer: { participle: "traído" },
+  leer: {
+    participle: "leído",
+    indefinido: ["leí", "leíste", "leyó", "leímos", "leísteis", "leyeron"],
+    gerund: "leyendo",
+  },
 
   // === More compound verbs with poner/venir/tener ===
   suponer: {
@@ -855,10 +940,6 @@ const REFERENCE = {
   },
 
   // === deshacer ===
-  deshacer: {
-    futuro: ["desharé", "desharás", "deshará", "desharemos", "desharéis", "desharán"],
-    condicional: ["desharía", "desharías", "desharía", "desharíamos", "desharíais", "desharían"],
-  },
 
   // === salir ===
   salir: {
@@ -869,18 +950,6 @@ const REFERENCE = {
   },
 
   // === verbs with gerund irregularities ===
-  leer: {
-    indefinido: ["leí", "leíste", "leyó", "leímos", "leísteis", "leyeron"],
-    gerund: "leyendo",
-  },
-  creer: {
-    indefinido: ["creí", "creíste", "creyó", "creímos", "creísteis", "creyeron"],
-    gerund: "creyendo",
-  },
-  poseer: {
-    indefinido: ["poseí", "poseíste", "poseyó", "poseímos", "poseísteis", "poseyeron"],
-    gerund: "poseyendo",
-  },
   proveer: {
     indefinido: ["proveí", "proveíste", "proveyó", "proveímos", "proveísteis", "proveyeron"],
     gerund: "proveyendo",

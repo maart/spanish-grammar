@@ -3065,6 +3065,10 @@ td.irregular {
 .textbook-dashboard, .textbook-lesson { display: grid; gap: 12px; }
 .textbook-toolbar, .textbook-lesson-nav, .textbook-summary, .textbook-actions, .textbook-language-switch, .textbook-choice-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
 .textbook-toolbar, .textbook-summary { justify-content: space-between; }
+.textbook-lesson-toolbar { display: grid; justify-items: start; gap: 8px; }
+.textbook-lesson-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.textbook-lesson-heading h2 { margin: 0 0 4px; }
+.textbook-lesson-heading p { margin: 0; }
 .textbook-language-switch .small-button.is-active { border-color: var(--accent); background: var(--accent); color: var(--on-accent); }
 .textbook-progress { display: grid; gap: 6px; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); }
 .textbook-progress p, .textbook-theory p, .textbook-exercise p, .textbook-result p { margin: 0; }
@@ -3856,7 +3860,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.07 · обновлено: 27.09.2026 12:13 CEST</span>
+        <span>Версия MVP 1.08 · обновлено: 27.09.2026 12:17 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -15501,7 +15505,7 @@ function renderTextbookLesson(content, lesson) {
   const previousButton = previous ? '<button class="small-button" type="button" data-textbook-open="' + previous.id + '">← ' + previous.id + ". " + escapeHTML(textbookText(previous.title)) + "</button>" : "";
   const nextButton = next ? '<button class="small-button" type="button" data-textbook-open="' + next.id + '">' + next.id + ". " + escapeHTML(textbookText(next.title)) + " →</button>" : "";
   const section = infoSection({ className: "info-card textbook-lesson", html: `
-    <div class="textbook-toolbar"><div><button class="small-button" type="button" data-textbook-catalog>← ${escapeHTML(textbookUi("К оглавлению", "Índice"))}</button><h2>${lesson.id}. ${escapeHTML(textbookText(lesson.title))}</h2><p class="muted">${escapeHTML(textbookText(lesson.goal))}</p></div>${textbookLanguageButtons()}</div>
+    <div class="textbook-lesson-toolbar"><div class="textbook-lesson-controls"><button class="small-button" type="button" data-textbook-catalog>← ${escapeHTML(textbookUi("К оглавлению", "Índice"))}</button>${textbookLanguageButtons()}</div><div class="textbook-lesson-heading"><h2>${lesson.id}. ${escapeHTML(textbookText(lesson.title))}</h2><p class="muted">${escapeHTML(textbookText(lesson.goal))}</p></div></div>
     <div class="textbook-summary"><span><strong>${escapeHTML(textbookUi("Верно", "Correctas"))}: ${progress.correct}/${progress.checked}</strong> · ${escapeHTML(textbookUi("Заполнено", "Respondidas"))}: ${progress.answered}/${progress.total}</span><span class="textbook-status ${progress.done ? "is-done" : ""}">${escapeHTML(progress.done ? textbookUi("Урок пройден", "Lección completada") : textbookUi("В работе", "En curso"))}</span></div>
     <div class="textbook-theory-grid">${theory}</div>
     <section><h3>${escapeHTML(textbookUi("Практика", "Práctica"))}</h3>${exercises}</section>

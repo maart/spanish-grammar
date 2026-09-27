@@ -212,6 +212,38 @@ h3 {
   cursor: pointer;
 }
 
+.verb-tense-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* Название времени и кнопка озвучки не помещаются в равную седьмую часть ширины:
+   на широком экране первый столбец шире, на среднем кнопка стоит под названием. */
+@media (min-width: 900px) {
+  .conjugation-table thead th:first-child {
+    width: 158px;
+  }
+}
+
+@media (min-width: 561px) and (max-width: 899px) {
+  .verb-tense-cell {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .verb-tense-cell .speak-button {
+    margin-left: 0;
+  }
+}
+
+.verb-tense-cell .verb-link-button {
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
+
 .speak-button:hover,
 .speak-button.is-speaking {
   border-color: var(--accent-2);
@@ -220,6 +252,20 @@ h3 {
 
 body:not(.can-speak) .speak-button {
   display: none;
+}
+
+.table-search {
+  display: grid;
+  gap: 6px;
+  margin: 12px 0 10px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.table-search input {
+  width: 100%;
+  font-size: 16px;
 }
 
 .search-panel {
@@ -292,6 +338,12 @@ input[type="search"] {
 }
 
 .tab-label-mobile {
+  display: none;
+}
+
+.tab-icon,
+.tab-more-button,
+.tab-more-menu {
   display: none;
 }
 
@@ -2212,6 +2264,19 @@ td.irregular {
   gap: 8px;
 }
 
+/* Основное действие квиза — сплошная заливка, «Не знаю» — второстепенная кнопка. */
+.study-actions .small-button.primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.study-actions .small-button.danger {
+  border-color: var(--line);
+  background: transparent;
+  color: var(--muted);
+}
+
 .quiz-config {
   display: grid;
   gap: 16px;
@@ -3273,10 +3338,10 @@ select {
 
   .tabs {
     position: fixed;
-    inset: auto 10px max(8px, env(safe-area-inset-bottom));
+    inset: auto 8px max(8px, env(safe-area-inset-bottom));
     z-index: 30;
-    grid-template-columns: repeat(7, minmax(0, 1fr));
-    gap: 3px;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 2px;
     width: auto;
     margin: 0;
     border: 1px solid var(--line);
@@ -3288,23 +3353,101 @@ select {
   }
 
   .topbar {
-    align-items: start;
-    padding: 14px 14px 13px 20px;
+    align-items: center;
+    padding: 10px 12px 10px 20px;
+  }
+
+  /* На телефоне шапка — одна строка: подзаголовок и плашки уже не помогают ориентироваться. */
+  .brand-kicker,
+  .brand-stats {
+    display: none;
+  }
+
+  .brand-block {
+    min-width: 0;
+  }
+
+  .header-actions {
+    flex-shrink: 0;
+  }
+
+  h1 {
+    font-size: 19px;
+    white-space: nowrap;
   }
 
   .brand-block {
     gap: 8px;
   }
 
-  .tab {
+  .tab,
+  .tab-more-button {
+    display: grid;
+    justify-items: center;
+    align-content: center;
+    gap: 2px;
     min-width: 0;
-    min-height: 48px;
-    padding: 0 2px;
-    border-color: transparent;
+    min-height: 52px;
+    padding: 0 1px;
+    border: 1px solid transparent;
+    border-radius: 8px;
     background: transparent;
-    font-size: 9px;
+    color: var(--muted);
+    font: inherit;
+    font-size: 10.5px;
+    font-weight: 800;
     line-height: 1.05;
     white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .tab[data-mobile-more] {
+    display: none;
+  }
+
+  .tab-icon {
+    display: block;
+  }
+
+  .tab-more-button.is-active {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+
+  .tab-more-menu:not([hidden]) {
+    position: absolute;
+    right: 4px;
+    bottom: calc(100% + 8px);
+    display: grid;
+    gap: 4px;
+    min-width: 210px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 6px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+
+  .tab-more-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 0 12px;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-weight: 800;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .tab-more-item[aria-current="page"] {
+    border-color: var(--accent);
+    color: var(--accent);
   }
 
   .tab-label-full {
@@ -3431,7 +3574,11 @@ select {
   }
 
   .forms-line {
-    grid-template-columns: 1fr;
+    margin: 8px 0 10px;
+  }
+
+  .forms-line div {
+    padding: 7px 9px;
   }
 
   .verb-pick {
@@ -3754,6 +3901,23 @@ select {
   font-size: 12px;
 }
 
+@media (max-width: 360px) {
+  .tabs {
+    inset-inline: 4px;
+    padding: 3px;
+  }
+
+  .tab,
+  .tab-more-button {
+    font-size: 9.5px;
+  }
+
+  h1 {
+    font-size: 17px;
+    white-space: normal;
+  }
+}
+
 @media print {
   :root,
   body.dark {
@@ -3894,18 +4058,24 @@ select {
       </header>
 
       <nav class="tabs" aria-label="Разделы">
-        <button class="tab is-active" data-view="verbs" type="button" aria-label="Глаголы"><span class="tab-label-full">Глаголы</span><span class="tab-label-mobile">Глаголы</span></button>
-        <button class="tab" data-view="tenses" type="button" aria-label="Времена"><span class="tab-label-full">Времена</span><span class="tab-label-mobile">Времена</span></button>
-        <button class="tab" data-view="moods" type="button" aria-label="Наклонения"><span class="tab-label-full">Наклонения</span><span class="tab-label-mobile">Наклон.</span></button>
-        <button class="tab" data-view="tables" type="button" aria-label="Шпаргалки"><span class="tab-label-full">Шпаргалки</span><span class="tab-label-mobile">Шпаргалки</span></button>
-        <button class="tab" data-view="textbook" type="button" aria-label="Учебник"><span class="tab-label-full">Учебник</span><span class="tab-label-mobile">Курс</span></button>
-        <button class="tab" data-view="learning-plan" type="button" aria-label="План"><span class="tab-label-full">План</span><span class="tab-label-mobile">План</span></button>
-        <button class="tab" data-view="cards" type="button" aria-label="Избранное"><span class="tab-label-full">Избранное</span><span class="tab-label-mobile">Избранное</span></button>
+        <button class="tab is-active" data-view="verbs" type="button" aria-label="Глаголы"><svg class="tab-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h13"/></svg><span class="tab-label-full">Глаголы</span><span class="tab-label-mobile">Глаголы</span></button>
+        <button class="tab" data-view="tenses" type="button" aria-label="Времена"><svg class="tab-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg><span class="tab-label-full">Времена</span><span class="tab-label-mobile">Времена</span></button>
+        <button class="tab" data-view="moods" data-mobile-more type="button" aria-label="Наклонения"><svg class="tab-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg><span class="tab-label-full">Наклонения</span><span class="tab-label-mobile">Наклонения</span></button>
+        <button class="tab" data-view="tables" data-mobile-more type="button" aria-label="Шпаргалки"><svg class="tab-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16M10 10v10"/></svg><span class="tab-label-full">Шпаргалки</span><span class="tab-label-mobile">Шпаргалки</span></button>
+        <button class="tab" data-view="textbook" type="button" aria-label="Учебник"><svg class="tab-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3H19v15H7.5A2.5 2.5 0 0 0 5 20.5z"/><path d="M5 20.5V5.5"/></svg><span class="tab-label-full">Учебник</span><span class="tab-label-mobile">Курс</span></button>
+        <button class="tab" data-view="learning-plan" data-mobile-more type="button" aria-label="План"><svg class="tab-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg><span class="tab-label-full">План</span><span class="tab-label-mobile">План</span></button>
+        <button class="tab" data-view="cards" type="button" aria-label="Избранное"><svg class="tab-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 4 2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 16.3l-4.8 2.6.9-5.4-3.9-3.8 5.4-.8z"/></svg><span class="tab-label-full">Избранное</span><span class="tab-label-mobile">Избранное</span></button>
+        <button class="tab-more-button" id="tabMoreButton" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="tabMoreMenu"><svg class="tab-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="18" cy="12" r="1.3"/></svg><span>Ещё</span></button>
+        <div class="tab-more-menu" id="tabMoreMenu" role="menu" aria-label="Другие разделы" hidden>
+          <button class="tab-more-item" type="button" role="menuitem" data-more-view="moods"><svg class="tab-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg><span>Наклонения</span></button>
+          <button class="tab-more-item" type="button" role="menuitem" data-more-view="tables"><svg class="tab-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16M10 10v10"/></svg><span>Шпаргалки</span></button>
+          <button class="tab-more-item" type="button" role="menuitem" data-more-view="learning-plan"><svg class="tab-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg><span>План</span></button>
+        </div>
       </nav>
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.16 · обновлено: 27.09.2026 13:29 CEST</span>
+        <span>Версия MVP 1.17 · обновлено: 27.09.2026 13:53 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -5589,9 +5759,9 @@ abrochar disecar desligar opacar recalentar alborotar apacentar desenganchar des
 const BASE_VERBS = Array.from(new Set(["irse", ...RAW_VERBS])).slice(0, 2000);
 
 const DEFAULT_SIGNAL_SECTIONS = [
-  ["Основные маркеры", "Смотри на союзы, наречия времени и вводные конструкции рядом с глаголом."],
+  ["Основные маркеры", "Смотрите на союзы, наречия времени и вводные конструкции рядом с глаголом."],
   ["Контекст", "Форма выбирается не только по одному слову, но и по смыслу всей фразы."],
-  ["Проверка", "Задай вопрос: действие подано как факт, условие, желание, команда или фон?"]
+  ["Проверка", "Задайте вопрос: действие подано как факт, условие, желание, команда или фон?"]
 ];
 
 const HABER_FORMS = {
@@ -5952,7 +6122,7 @@ const TENSES = [
   }
 ];
 
-const MAIN_VERB_TENSE_IDS = ["presente", "perfecto", "indefinido", "imperfecto", "futuro", "condicional"];
+const MAIN_VERB_TENSE_IDS = ["presente", "perfecto", "indefinido", "imperfecto", "futuro", "condicional", "subjuntivo_presente", "imperativo_afirmativo"];
 const VERB_TENSE_GROUPS = [
   {
     title: "Indicativo",
@@ -6936,7 +7106,7 @@ const USEFUL_TABLES = [
     subgroup: "Прошедшее",
     title: "Imperfecto vs Indefinido: фон или событие",
     description: "Как отличать описание/фон в прошлом от завершенного события.",
-    table: `<table><thead><tr><th>Если нужно сказать...</th><th>Выбирай</th><th>Пример</th></tr></thead><tbody>
+    table: `<table><thead><tr><th>Если нужно сказать...</th><th>Выбирайте</th><th>Пример</th></tr></thead><tbody>
       <tr><th>фон, описание, состояние</th><td>Pretérito Imperfecto</td><td>Era tarde y hacía frío.</td></tr>
       <tr><th>привычку в прошлом</th><td>Pretérito Imperfecto</td><td>Antes estudiaba por la noche.</td></tr>
       <tr><th>действие без важной границы</th><td>Pretérito Imperfecto</td><td>Mientras leía, escuchaba música.</td></tr>
@@ -7324,7 +7494,7 @@ const USEFUL_TABLES = [
       <tr><th>c → qu</th><td>для сохранения звука /k/ перед i</td><td>poco → poquito</td></tr>
       <tr><th>g → gu</th><td>для сохранения звука /g/ перед i</td><td>amigo → amiguito</td></tr>
       <tr><th>⚠️ род</th><td>суффикс меняет окончание, но род остаётся</td><td>la casa → la casita (ж.р.)</td></tr>
-      <tr><th>⚠️ форма</th><td>единого механического правила для -ito/-cito/-ecito нет</td><td>Проверяй употребительную форму: panecillo/panecito, florecita.</td></tr>
+      <tr><th>⚠️ форма</th><td>единого механического правила для -ito/-cito/-ecito нет</td><td>Проверяйте употребительную форму: panecillo/panecito, florecita.</td></tr>
     </tbody></table>`
   },
 
@@ -7396,7 +7566,7 @@ const USEFUL_TABLES = [
     group: "Живой испанский",
     subgroup: "Междометия",
     title: "Expresiones coloquiales de España",
-    description: "Разговорные выражения, типичные для Испании. Некоторые неформальные — используй с осторожностью.",
+    description: "Разговорные выражения, типичные для Испании. Некоторые неформальные — используйте с осторожностью.",
     table: `<table><thead><tr><th>Выражение</th><th>Смысл</th><th>Пример</th></tr></thead><tbody>
       <tr><th>¡qué guay!</th><td>круто! / класс!</td><td>¡Qué guay! ¿Te has comprado un coche?</td></tr>
       <tr><th>¡mola!</th><td>круто / нравится</td><td>Esta película mola mucho.</td></tr>
@@ -7409,7 +7579,7 @@ const USEFUL_TABLES = [
       <tr><th>¡joder!</th><td>блин! / чёрт! (неформ.)</td><td>¡Joder! Se me ha olvidado.</td></tr>
       <tr><th>¡de puta madre!</th><td>охренительно! (грубо)</td><td>Este restaurante es de puta madre.</td></tr>
       <tr><th>¡qué fuerte!</th><td>ого! / жесть!</td><td>¡Qué fuerte! ¿De verdad pasó eso?</td></tr>
-      <tr><th>⚠️ регистр</th><td>hostia, joder, de puta madre — неформальные</td><td>Не используй в официальной обстановке.</td></tr>
+      <tr><th>⚠️ регистр</th><td>hostia, joder, de puta madre — неформальные</td><td>Не используйте в официальной обстановке.</td></tr>
     </tbody></table>`
   },
 
@@ -7920,7 +8090,7 @@ const USEFUL_TABLES = [
     subgroup: "Сложное предложение",
     title: "Infinitivo или que + subjuntivo: один или разные субъекты",
     description: "При одном исполнителе обычно используется infinitivo; при разных субъектах желание, просьба, оценка или цель оформляются через que + subjuntivo.",
-    summary: "Quiero salir — выйти хочу я. Quiero que salgas — выйти должен ты. Сначала сравни субъект главного и зависимого действия.",
+    summary: "Quiero salir — выйти хочу я. Quiero que salgas — выйти должен ты. Сначала сравните субъект главного и зависимого действия.",
     mistake: "Quiero que salir и Quiero tú salir неверны: при разных субъектах нужна личная форма subjuntivo — Quiero que salgas.",
     table: `<table><thead><tr><th>Значение</th><th>Один субъект</th><th>Разные субъекты</th><th>Перевод</th></tr></thead><tbody>
       <tr><th>желание</th><td>Quiero descansar.</td><td>Quiero que descanses.</td><td>Я хочу отдохнуть / хочу, чтобы ты отдохнул.</td></tr>
@@ -8021,9 +8191,9 @@ const USEFUL_TABLES = [
     group: "Произношение, орфография и письмо",
     subgroup: "Ударение",
     title: "Agudas, llanas, esdrújulas: основные правила ударения",
-    description: "Сначала выучи два стандартных места ударения в словах без tilde. Затем сравни их с реальным произношением: если ударение стоит не там, где ожидается, его отмечают tilde.",
+    description: "Сначала выучи два стандартных места ударения в словах без tilde. Затем сравните их с реальным произношением: если ударение стоит не там, где ожидается, его отмечают tilde.",
     summary: "Без tilde: окончание на гласную, n или s обычно даёт ударение на предпоследний слог; другое окончание — на последний. Tilde показывает отклонение от этого ожидания. Esdrújulas всегда пишутся с tilde.",
-    mistake: "Последняя буква не отвечает на вопрос о tilde сама по себе. Сначала найди реально ударный слог, затем сравни его с ожидаемым местом ударения.",
+    mistake: "Последняя буква не отвечает на вопрос о tilde сама по себе. Сначала найдите реально ударный слог, затем сравните его с ожидаемым местом ударения.",
     related: [91, 92],
     table: `<p><strong>Шаг 1. Как прочитать обычное слово без tilde</strong></p>
     <p class="muted">Жирным выделен ударный слог. Это две отправные модели, с которыми сравниваются остальные слова.</p>
@@ -8032,13 +8202,13 @@ const USEFUL_TABLES = [
       <tr><th>другая согласная, включая y</th><td>последний слог</td><td><span>re-<strong>loj</strong>, ciu-<strong>dad</strong>, pa-<strong>pel</strong>, con-<strong>voy</strong></span></td></tr>
     </tbody></table>
     <p><strong>Шаг 2. Если реальное ударение не совпадает с этой моделью, появляется tilde</strong></p>
-    <table><thead><tr><th>Название</th><th>Где ударение</th><th>Когда нужна tilde</th><th>Сравни</th></tr></thead><tbody>
+    <table><thead><tr><th>Название</th><th>Где ударение</th><th>Когда нужна tilde</th><th>Сравните</th></tr></thead><tbody>
       <tr><th>aguda</th><td>последний слог</td><td>если слово заканчивается на гласную, n или s</td><td><span>ca-<strong>fé</strong>, can-<strong>ción</strong>, com-<strong>pás</strong>; но re-<strong>loj</strong></span></td></tr>
       <tr><th>llana или grave</th><td>предпоследний слог</td><td>если слово заканчивается не на гласную, n или s</td><td><span><strong>ár</strong>-bol, <strong>lá</strong>-piz, <strong>fá</strong>-cil; но <strong>ca</strong>-sa</span></td></tr>
       <tr><th>esdrújula</th><td>третий слог с конца</td><td>всегда</td><td><span><strong>mú</strong>-si-ca, te-<strong>lé</strong>-fo-no, <strong>mé</strong>-di-co</span></td></tr>
       <tr><th>sobresdrújula</th><td>раньше третьего слога с конца</td><td>всегда</td><td><span><strong>dí</strong>-ga-me-lo, ex-<strong>plí</strong>-ca-se-lo</span></td></tr>
     </tbody></table>
-    <p><strong>Шаг 3. Проверь себя</strong>: <span lang="es">canción</span> — aguda и заканчивается на n, поэтому нужна tilde; <span lang="es">joven</span> — llana и заканчивается на n, поэтому tilde не нужна.</p>
+    <p><strong>Шаг 3. Проверьте себя</strong>: <span lang="es">canción</span> — aguda и заканчивается на n, поэтому нужна tilde; <span lang="es">joven</span> — llana и заканчивается на n, поэтому tilde не нужна.</p>
     <p class="muted">Односложные слова обычно пишутся без tilde: fue, dio, vi. Формы tú, él, sé получают отдельную диакритическую tilde, чтобы отличаться от tu, el, se.</p>`
   },
 
@@ -8734,7 +8904,7 @@ const USEFUL_TABLES = [
     title: "Aun / Aún, solo / sólo и este / éste",
     description: "Aún получает tilde в значении todavía; aun без tilde означает incluso или aunque. Solo и указательные обычно пишутся без tilde.",
     summary: "Aún no ha llegado = todavía no; Aun cansado, siguió = aunque estaba cansado. Рекомендация RAE: solo, este, ese, aquel без tilde.",
-    mistake: "Не ставь tilde в sólo и éste автоматически по старому правилу; современная норма рекомендует форму без tilde и допускает знак лишь для устранения реально воспринятой неоднозначности.",
+    mistake: "Не ставьте tilde в sólo и éste автоматически по старому правилу; современная норма рекомендует форму без tilde и допускает знак лишь для устранения реально воспринятой неоднозначности.",
     table: `<table><thead><tr><th>Форма</th><th>Значение</th><th>Пример</th><th>Проверка</th></tr></thead><tbody>
       <tr><th>aún</th><td>todavía: ещё, всё ещё</td><td>Aún no ha llegado.</td><td>можно заменить на todavía</td></tr>
       <tr><th>aún</th><td>усиление сравнения</td><td>Es aún más difícil.</td><td>ещё более</td></tr>
@@ -9390,7 +9560,7 @@ const MOODS = [
     description: "Subjuntivo показывает отношение говорящего к ситуации: желание, влияние, эмоцию, оценку, сомнение, возможность, цель или ожидаемое будущее событие. Его часто выбирает управляющее слово или конструкция.",
     tags: ["отношение", "желание", "сомнение", "оценка", "цель"],
     when: "После выражений воли, влияния, эмоции, оценки, сомнения, необходимости и возможности; в целях, некоторых придаточных времени и гипотетических условиях. Возможны и независимые употребления: Ojalá venga; Que te vaya bien.",
-    signals: "Ищи не само que, а элемент, который управляет наклонением: quiero que, me alegra que, dudo que, es importante que, para que, antes de que, cuando + еще не наступившее действие.",
+    signals: "Ищите не само que, а элемент, который управляет наклонением: quiero que, me alegra que, dudo que, es importante que, para que, antes de que, cuando + еще не наступившее действие.",
     remember: "Subjuntivo не равен 'нереальности'. В Me alegra que estés aquí событие может быть фактом, но говорящий прежде всего выражает эмоциональную реакцию.",
     tenses: "В современной речи регулярно используются четыре времени. Futuro Simple и Futuro Compuesto нужны главным образом для узнавания юридических, книжных и устойчивых формул.",
     tenseGroups: [
@@ -9720,6 +9890,7 @@ const state = {
   showImperativoIrregulars: false,
   showImperativoPronouns: false,
   showMoodMoreExamples: false,
+  tableQuery: "",
   tableFilter: appStorage.get("msg:tableFilter") || "all",
   tableSubgroup: appStorage.get("msg:tableSubgroup") || "",
   tableLevel: TABLE_LEVELS.some((level) => level.id === appStorage.get("msg:tableLevel"))
@@ -10366,7 +10537,7 @@ tbExercise("5.1", "text", tb("Дополните сообщение о чело�
     goal: tb("Выбирать ser для обычной характеристики и места события, estar — для временного состояния, изменения и положения; различать значения прилагательных.", "Elegir ser para características habituales y lugar de acontecimientos, estar para estados temporales, cambios y ubicación; distinguir significados de adjetivos."),
     theory: [
       { title: tb("Характеристика и состояние", "Característica y estado"), body: tb("Ser представляет качество как обычное, устойчивое или определяющее свойство; estar показывает необычное, временное либо актуальное состояние. Это не сводится к механическому противопоставлению «постоянное/временное»: выбирайте значение и точку зрения говорящего.", "Ser presenta una cualidad como habitual, estable o definitoria; estar muestra un estado anormal, temporal o actual. No se reduce a la oposición mecánica «permanente/temporal»: elige según el significado y el punto de vista."), rules: [tb("María es activa; hoy está cansada. Julián es alegre; hoy no está alegre.", "María es activa; hoy está cansada. Julián es alegre; hoy no está alegre."), tb("Для изменения: Estás muy delgado (сейчас/стал таким); для акцента на моменте: Estás muy elegante con ese vestido.", "Para un cambio: Estás muy delgado; para destacar el momento: Estás muy elegante con ese vestido."), tb("Ser также указывает место/время события; estar — местонахождение человека/предмета: La boda es en la iglesia; la iglesia está en la plaza.", "Ser también indica lugar/hora de un acontecimiento; estar, la ubicación de una persona/cosa: La boda es en la iglesia; la iglesia está en la plaza.")], examples: ["El hielo es frío.", "Este café está frío.", "La tienda está abierta."] },
-      { title: tb("Прилагательные с разным значением", "Adjetivos con distinto significado"), body: tb("С некоторыми прилагательными ser и estar меняют смысл выражения. Запомните пару значений, а не только связку: один вариант описывает характер, качество или свойство, другой — состояние, готовность или вкус.", "Con algunos adjetivos, ser y estar cambian el significado. Aprende cada pareja: una opción describe carácter, cualidad o propiedad; la otra, estado, preparación o sabor."), rules: [tb("ser malo — плохой/дурной; estar malo — больной. ser aburrido — скучный; estar aburrido — испытывать скуку.", "ser malo — de mal comportamiento/calidad; estar malo — enfermo. ser aburrido — aburrir; estar aburrido — sentir aburrimiento."), tb("ser bueno — добрый/хороший; estar bueno — вкусный или выздоровевший. ser listo — умный; estar listo — готовый.", "ser bueno — de buen comportamiento/calidad; estar bueno — sabroso o recuperado. ser listo — inteligente; estar listo — preparado."), tb("ser moreno — темноволосый/смуглый от природы; estar moreno — загорелый. ser rico — богатый; estar rico — вкусный.", "ser moreno — de pelo oscuro/tez morena; estar moreno — bronceado. ser rico — tener dinero; estar rico — sabroso."), tb("ser muerto не используйте как обычное состояние: нормативно estar muerto/estar muerta.", "No se usa ser muerto para el estado normal: la forma es estar muerto/estar muerta.")], attention: tb("Estar + прилагательное не всегда значит, что состояние временное: estar muerto — устойчивый результат; сер/эстар выбирайте по конструкции и значению.", "Estar + adjetivo no siempre significa que el estado sea temporal: estar muerto expresa un resultado; elige ser/estar según la construcción y el sentido."), examples: ["Este perro es muy malo. (Es travieso.)", "Pepe está malo. (Está enfermo.)", "La sopa está buena."] }
+      { title: tb("Прилагательные с разным значением", "Adjetivos con distinto significado"), body: tb("С некоторыми прилагательными ser и estar меняют смысл выражения. Запомните пару значений, а не только связку: один вариант описывает характер, качество или свойство, другой — состояние, готовность или вкус.", "Con algunos adjetivos, ser y estar cambian el significado. Aprende cada pareja: una opción describe carácter, cualidad o propiedad; la otra, estado, preparación o sabor."), rules: [tb("ser malo — плохой/дурной; estar malo — больной. ser aburrido — скучный; estar aburrido — испытывать скуку.", "ser malo — de mal comportamiento/calidad; estar malo — enfermo. ser aburrido — aburrir; estar aburrido — sentir aburrimiento."), tb("ser bueno — добрый/хороший; estar bueno — вкусный или выздоровевший. ser listo — умный; estar listo — готовый.", "ser bueno — de buen comportamiento/calidad; estar bueno — sabroso o recuperado. ser listo — inteligente; estar listo — preparado."), tb("ser moreno — темноволосый/смуглый от природы; estar moreno — загорелый. ser rico — богатый; estar rico — вкусный.", "ser moreno — de pelo oscuro/tez morena; estar moreno — bronceado. ser rico — tener dinero; estar rico — sabroso."), tb("ser muerto не используйте как обычное состояние: нормативно estar muerto/estar muerta.", "No se usa ser muerto para el estado normal: la forma es estar muerto/estar muerta.")], attention: tb("Estar + прилагательное не всегда значит, что состояние временное: estar muerto — устойчивый результат; ser/estar выбирайте по конструкции и значению.", "Estar + adjetivo no siempre significa que el estado sea temporal: estar muerto expresa un resultado; elige ser/estar según la construcción y el sentido."), examples: ["Este perro es muy malo. (Es travieso.)", "Pepe está malo. (Está enfermo.)", "La sopa está buena."] }
     ],
     exercises: [
       tbExercise("44.1", "choice", tb("Выберите ser или estar в заданном значении.", "Elige ser o estar según el sentido."), [["___ cansado. (сейчас)", "estoy"], ["Este café ___ muy caliente ahora.", "está"], ["Las rosas ___ blancas. (обычное свойство)", "son"], ["Los cristales ___ sucios. (состояние сейчас)", "están"], ["Este árbol ___ muerto.", "está"], ["Hoy no ___ alegre. (сейчас)", "estoy"], ["¿Qué guapa ___ con ese sombrero! (сейчас выглядишь)", "estás"]], ["soy", "eres", "es", "somos", "sois", "son", "estoy", "estás", "está", "estamos", "estáis", "están"]),
@@ -10432,7 +10603,7 @@ tbExercise("5.1", "text", tb("Дополните сообщение о чело�
     goal: tb("Спрягать глаголы с чередованием гласной в основе и учитывать формы nosotros/as и vosotros/as.", "Conjugar verbos con cambio vocálico en la raíz y tener en cuenta las formas de nosotros/as y vosotros/as."),
     theory: [
       { title: tb("Три модели чередования", "Tres modelos de cambio vocálico"), body: tb("В настоящем времени у многих глаголов меняется гласная основы во всех формах, кроме nosotros/as и vosotros/as. Окончания остаются окончаниями исходной группы -ar, -er или -ir.", "En presente, muchos verbos cambian la vocal de la raíz en todas las formas excepto nosotros/as y vosotros/as. Las terminaciones siguen siendo las de su grupo -ar, -er o -ir."), rules: [tb("e → ie: querer → quiero, quieres, quiere, queremos, queréis, quieren. Модели: -ar empezar, fregar, pensar, regar, cerrar; -er entender, perder; -ir mentir, preferir.", "e → ie: querer → quiero, quieres, quiere, queremos, queréis, quieren. Modelos: -ar empezar, fregar, pensar, regar, cerrar; -er entender, perder; -ir mentir, preferir."), tb("e → i: pedir → pido, pides, pide, pedimos, pedís, piden. Другие: elegir, conseguir, freír, medir, reír, repetir, seguir, sonreír.", "e → i: pedir → pido, pides, pide, pedimos, pedís, piden. Otros: elegir, conseguir, freír, medir, reír, repetir, seguir, sonreír."), tb("o → ue: dormir → duermo, duermes, duerme, dormimos, dormís, duermen. u → ue: jugar → juego, juegas, juega, jugamos, jugáis, juegan.", "o → ue: dormir → duermo, duermes, duerme, dormimos, dormís, duermen. u → ue: jugar → juego, juegas, juega, jugamos, jugáis, juegan.")], examples: ["¿Qué prefieres? — Prefiero el pescado.", "Luis y Pili juegan al golf.", "Siempre pierde."] },
-      { title: tb("Списки и особые формы", "Listas y formas especiales"), body: tb("Модели нужно узнавать в новых глаголах; кроме типовых таблиц, запомните отдельно venir, decir и oler. Уvenir combines stem change with first-person irregularity; decir has a special yo form.", "Hay que reconocer los modelos en verbos nuevos; además de las tablas, memoriza aparte venir, decir y oler. Venir combina el cambio de raíz con una forma irregular de yo; decir también presenta un yo especial."), rules: [tb("o → ue: -ar comprobar, contar, costar, encontrar, recordar, sonar, volar; -er morder, mover, volver, poder; -ir morir.", "o → ue: -ar comprobar, contar, costar, encontrar, recordar, sonar, volar; -er morder, mover, volver, poder; -ir morir."), tb("venir: vengo, vienes, viene, viene, venimos, venís, vienen, vienen; decir: digo, dices, dice, dice, decimos, decís, dicen, dicen.", "venir: vengo, vienes, viene, viene, venimos, venís, vienen, vienen; decir: digo, dices, dice, dice, decimos, decís, dicen, dicen."), tb("oler: huelo, hueles, huele, huele, olemos, oléis, huelen, huelen: появляется h перед ue; nosotros и vosotros не меняют основу.", "oler: huelo, hueles, huele, huele, olemos, oléis, huelen, huelen: aparece h delante de ue; nosotros y vosotros no cambian la raíz.")], attention: tb("Не переносите чередование на nosotros/as и vosotros/as: queremos, pedís, dormimos, jugáis. Особые формы yo (vengo/digo) накладываются на соответствующую модель.", "No apliques el cambio a nosotros/as y vosotros/as: queremos, pedís, dormimos, jugáis. Las formas especiales de yo (vengo/digo) se combinan con el modelo correspondiente."), examples: ["No juego muy bien al tenis.", "¿En qué piensas?", "¿Qué hueles? — Huelo flores."] }
+      { title: tb("Списки и особые формы", "Listas y formas especiales"), body: tb("Модели нужно узнавать в новых глаголах; кроме типовых таблиц, запомните отдельно venir, decir и oler. У venir чередование совмещается с особой формой yo; у decir тоже особая форма yo.", "Hay que reconocer los modelos en verbos nuevos; además de las tablas, memoriza aparte venir, decir y oler. Venir combina el cambio de raíz con una forma irregular de yo; decir también presenta un yo especial."), rules: [tb("o → ue: -ar comprobar, contar, costar, encontrar, recordar, sonar, volar; -er morder, mover, volver, poder; -ir morir.", "o → ue: -ar comprobar, contar, costar, encontrar, recordar, sonar, volar; -er morder, mover, volver, poder; -ir morir."), tb("venir: vengo, vienes, viene, viene, venimos, venís, vienen, vienen; decir: digo, dices, dice, dice, decimos, decís, dicen, dicen.", "venir: vengo, vienes, viene, viene, venimos, venís, vienen, vienen; decir: digo, dices, dice, dice, decimos, decís, dicen, dicen."), tb("oler: huelo, hueles, huele, huele, olemos, oléis, huelen, huelen: появляется h перед ue; nosotros и vosotros не меняют основу.", "oler: huelo, hueles, huele, huele, olemos, oléis, huelen, huelen: aparece h delante de ue; nosotros y vosotros no cambian la raíz.")], attention: tb("Не переносите чередование на nosotros/as и vosotros/as: queremos, pedís, dormimos, jugáis. Особые формы yo (vengo/digo) накладываются на соответствующую модель.", "No apliques el cambio a nosotros/as y vosotros/as: queremos, pedís, dormimos, jugáis. Las formas especiales de yo (vengo/digo) se combinan con el modelo correspondiente."), examples: ["No juego muy bien al tenis.", "¿En qué piensas?", "¿Qué hueles? — Huelo flores."] }
     ],
     exercises: [
       tbExercise("49.1", "text", tb("Поставьте глагол в скобках в нужную форму.", "Escribe el verbo entre paréntesis en la forma adecuada."), [["Antonio (querer) ___ ser médico.", "quiere"], ["En verano yo (regar) ___ las plantas.", "riego"], ["La clase (empezar) ___ a las ocho.", "empieza"], ["Luis y Pili (jugar) ___ al golf.", "juegan"], ["Luis y Pili siempre (perder) ___.", "pierden"], ["Los bancos (cerrar) ___ a las dos.", "cierran"], ["Algunos alumnos (venir) ___ mucho a la biblioteca.", "vienen"], ["Antonia no (mentir) ___ nunca.", "miente"], ["Antonia siempre (decir) ___ la verdad.", "dice"], ["No (poder, yo) ___ dormir.", "puedo"]]),
@@ -10498,15 +10669,15 @@ const TEXTBOOK_THEORY_SUPPLEMENTS = {
   39: [{ title: tb("Ударение при присоединении местоимений", "Acentuación al añadir pronombres"), body: tb("Глагольная форма сохраняет своё произношение, но после присоединения одного или двух местоимений меняется число слогов и иногда требуется письменная тильда. Тильда не факультативна, если её требуют правила орфографии.", "La forma verbal conserva su pronunciación, pero al añadir uno o dos pronombres cambia el número de sílabas y a veces hace falta una tilde. La tilde no es opcional cuando la exige la ortografía."), rules: [tb("ama + me → ámame; da + me + lo → dámelo; vende + lo → véndelo.", "ama + me → ámame; da + me + lo → dámelo; vende + lo → véndelo."), tb("Инфинитивы с местоимением: dárnosla, prestármelo, deciros; герундии: arreglándola, preguntándote, leyéndomela.", "Infinitivos con pronombre: dárnosla, prestármelo, deciros; gerundios: arreglándola, preguntándote, leyéndomela."), tb("При выборе позиции не меняется порядок двух местоимений: decir + me + lo → decírmelo; не *decirlo me.", "La posición no cambia el orden de los dos pronombres: decir + me + lo → decírmelo; no *decirlo me.")], examples: ["Dámelo mañana.", "Estoy preparándoselo.", "Queremos enseñároslas."] }],
   40: [{ title: tb("Как определить возвратность", "Cómo reconocer el valor reflexivo"), body: tb("Сопоставьте субъект, действие и его объект: если участник сам является затронутым объектом действия, употребляется соответствующее местоимение. Сравнивайте значение всей конструкции, а не только перевод отдельного глагола.", "Compara el sujeto, la acción y su objeto: si el participante es también quien recibe la acción, se usa el pronombre correspondiente. Compara el sentido de toda la construcción, no solo la traducción aislada del verbo."), rules: [tb("afeitarse — бриться самому; afeitar a alguien — брить другого; vestirse — одеваться; vestir a alguien — одевать другого.", "afeitarse — afeitarse uno mismo; afeitar a alguien — afeitar a otra persona; vestirse — vestirse; vestir a alguien — vestir a otra persona."), tb("Для частей тела возвратное местоимение согласуется с человеком, а существительное ставится с el/la/los/las: Me lavo las manos.", "Con partes del cuerpo, el pronombre concuerda con la persona y el nombre lleva el/la/los/las: Me lavo las manos."), tb("При взаимном прочтении субъект обязательно множественный; уточнение el uno al otro / mutuamente помогает снять двусмысленность.", "En la lectura recíproca, el sujeto es plural; el uno al otro / mutuamente ayuda a eliminar ambigüedades.")], attention: tb("Некоторые глаголы лексически употребляются с -se и приобретают отдельный оттенок значения; не выводите наличие местоимения только из того, что действие совершается человеком.", "Algunos verbos se usan léxicamente con -se y adquieren un matiz propio; no deduzcas que hace falta el pronombre solo porque la acción la realiza una persona."), examples: ["Me acuesto pronto.", "Nos miramos el uno al otro.", "Viste a su hijo antes de salir."] }],
   41: [{ title: tb("Составные предлоги и повтор предлога", "Locuciones prepositivas y preposición repetida"), body: tb("Сочетания junto a, delante de, detrás de, cerca de, encima de заканчиваются обычным предлогом, поэтому после них ставятся mí и ti. Если после menos или excepto повторяется предлог, форму местоимения определяет этот второй предлог.", "Las locuciones junto a, delante de, detrás de, cerca de, encima de terminan en una preposición normal; por eso después van mí y ti. Si tras menos o excepto se repite una preposición, la forma del pronombre depende de esa segunda preposición."), rules: [tb("junto a mí, delante de ti, cerca de nosotros, detrás de ella.", "junto a mí, delante de ti, cerca de nosotros, detrás de ella."), tb("Han aprobado todos menos yo — но: A todos les gusta el pescado menos a mí; hay regalos para todos menos para ti.", "Han aprobado todos menos yo; pero: A todos les gusta el pescado menos a mí; hay regalos para todos menos para ti."), tb("Для усиления добавляют mismo/misma: para mí mismo, contigo misma, con ella misma.", "Para reforzar se añade mismo/misma: para mí mismo, contigo misma, con ella misma.")], examples: ["Siéntate junto a mí.", "A todos les gusta el pescado menos a mí.", "Sebastián se sienta delante de mí."] }],
-  42: [{ title: tb("Согласование ser: час, число и цена", "Concordancia de ser: hora, número y precio"), body: tb("Ser согласуется с тем, что называется после него или с группой, к которой относится говорящий. Поэтому о часе, количестве людей и цене говорят то в единственном, то во множественном числе.", "Ser concuerda con lo que se nombra después o con el grupo al que pertenece el hablante. Por eso, al hablar de la hora, del número de personas o del precio, se usa a veces singular y a veces plural."), rules: [tb("Час: Es la una; son las dos; son las cinco y media. Вопрос всегда в единственном: ¿Qué hora es?", "Hora: Es la una; son las dos; son las cinco y media. La pregunta va siempre en singular: ¿Qué hora es?"), tb("Число участников: En mi clase somos veintidós (говорящий входит в группу); en su clase son veinte.", "Número de personas: En mi clase somos veintidós (el hablante forma parte del grupo); en su clase son veinte."), tb("Цена: ¿Cuánto es? — Son sesenta euros / Es un euro. День: ¿Qué día es hoy? — Es martes.", "Precio: ¿Cuánto es? — Son sesenta euros / Es un euro. Día: ¿Qué día es hoy? — Es martes.")], examples: ["¿Qué hora es? — Es la una.", "En mi clase somos veintidós.", "¿Cuánto es esto? — Son sesenta euros."] }],
-  43: [{ title: tb("Состояние сейчас и обычное положение дел", "Estado actual frente a lo habitual"), body: tb("Estar описывает, как обстоят дела в данный момент, часто в сравнении с обычным состоянием. Прилагательное согласуется с предметом или человеком.", "Estar describe cómo están las cosas en este momento, a menudo en contraste con lo habitual. El adjetivo concuerda con la cosa o la persona."), rules: [tb("La casa está sucia (обычно она чистая); la sopa está caliente; las tiendas están abiertas / cerradas.", "La casa está sucia (normalmente está limpia); la sopa está caliente; las tiendas están abiertas / cerradas."), tb("Физические и душевные состояния из книги: enfermo, resfriado, cansado, agotado, contento, triste, aburrido; estar de buen / mal humor.", "Estados físicos y anímicos del libro: enfermo, resfriado, cansado, agotado, contento, triste, aburrido; estar de buen / mal humor."), tb("Географическое положение тоже через estar: ¿Dónde está Monterrey? — Está en el norte de México.", "La situación geográfica también se expresa con estar: ¿Dónde está Monterrey? — Está en el norte de México.")], examples: ["El jefe está de mal humor hoy.", "Las tiendas están cerradas.", "Mis padres están en Caracas."] }],
-  44: [{ title: tb("Estar для перемены и для момента", "Estar para cambios y para el momento"), body: tb("Кроме временных состояний, estar выбирают, когда говорящий замечает перемену или подчёркивает, как человек или предмет выглядит именно сейчас. Ser в тех же фразах описал бы обычный признак.", "Además de los estados temporales, se elige estar cuando el hablante nota un cambio o subraya cómo es alguien o algo en ese momento. Ser, en las mismas frases, describiría una cualidad habitual."), rules: [tb("Перемена: Estás muy delgado, Pedro (раньше был другим). Сравните: Sofía es delgada (всегда такая).", "Cambio: Estás muy delgado, Pedro (antes no lo estaba). Compare: Sofía es delgada (es así siempre)."), tb("Акцент на моменте: Estás muy elegante con ese vestido; hoy no está alegre. Сравните: Ana es muy elegante; Julián es alegre.", "Énfasis en el momento: Estás muy elegante con ese vestido; hoy no está alegre. Compare: Ana es muy elegante; Julián es alegre."), tb("Событие и место: La boda es en la iglesia de Santa Marta (где проходит); la iglesia está en la Plaza de Córdoba (где находится).", "Acontecimiento y lugar: La boda es en la iglesia de Santa Marta (dónde tiene lugar); la iglesia está en la Plaza de Córdoba (dónde se encuentra).")], attention: tb("Estar muerto — устойчивое исключение: состояние окончательное, но связка всё равно estar: Esta planta está muerta.", "Estar muerto es una excepción fija: el estado es definitivo, pero el verbo sigue siendo estar: Esta planta está muerta."), examples: ["Estás muy delgado, Pedro.", "Hoy está cansada, pero es muy activa.", "El hielo es frío; este café está frío."] }],
-  45: [{ title: tb("Tener без артикля и с количеством", "Tener sin artículo y con cantidad"), body: tb("В вопросах и отрицаниях о наличии вообще исчисляемое существительное часто стоит без артикля. Un/una появляется, когда речь идёт об одном конкретном экземпляре, например в просьбе.", "En preguntas y negaciones sobre la posesión en general, el nombre contable suele ir sin artículo. Un/una aparece cuando se habla de un ejemplar concreto, por ejemplo al pedir algo."), rules: [tb("Наличие вообще: ¿Tienes coche? Luis no tiene coche. Adela y Jorge no tienen hijos. Mi casa no tiene jardín.", "Posesión en general: ¿Tienes coche? Luis no tiene coche. Adela y Jorge no tienen hijos. Mi casa no tiene jardín."), tb("Просьба: ¿Tienes un lápiz? — Sí, pero lo necesito.", "Petición: ¿Tienes un lápiz? — Sí, pero lo necesito."), tb("Сила ощущения выражается через mucho/mucha по роду существительного: mucha hambre, mucha sed; mucho frío, mucho calor, mucho miedo, mucho sueño.", "La intensidad se expresa con mucho/mucha según el género del nombre: mucha hambre, mucha sed; mucho frío, mucho calor, mucho miedo, mucho sueño.")], attention: tb("Hambre — женского рода, хотя говорят el hambre (ударное a-): tengo mucha hambre, а не *mucho hambre.", "Hambre es femenino aunque se dice el hambre (a tónica): tengo mucha hambre, no *mucho hambre."), examples: ["¿Tienes coche? — No, no tengo coche.", "¿Tenéis frío? — No, tenemos miedo.", "Tengo mucha sed."] }],
-  46: [{ title: tb("Hay без определителя и вопрос «где есть»", "Hay sin determinante y la pregunta dónde hay"), body: tb("Множественное и неисчисляемое существительное после hay может стоять совсем без определителя, если количество неважно. В отрицании так же ведёт себя исчисляемое существительное в единственном числе. Вопрос ¿Dónde hay…? задают, когда не знают, существует ли такой объект поблизости.", "El nombre plural o no contable puede ir después de hay sin ningún determinante si la cantidad no importa. En negación, lo mismo ocurre con el nombre contable singular. La pregunta ¿Dónde hay…? se hace cuando no se sabe si ese objeto existe cerca."), rules: [tb("Hay naranjas en la nevera; hay agua en el suelo; ¿Hay pan (en casa)? — Sí, hay dos barras.", "Hay naranjas en la nevera; hay agua en el suelo; ¿Hay pan (en casa)? — Sí, hay dos barras."), tb("En mi calle no hay árboles; en Santa Marta no hay aeropuerto; ¿Hay pan? — No, no hay mucho.", "En mi calle no hay árboles; en Santa Marta no hay aeropuerto; ¿Hay pan? — No, no hay mucho."), tb("¿Dónde hay un estanco? — Hay uno en esa esquina (не знаю района и не знаю, есть ли estanco).", "¿Dónde hay un estanco? — Hay uno en esa esquina (no conozco el barrio y no sé si hay un estanco).")], examples: ["Hay naranjas en la nevera.", "En Santa Marta no hay aeropuerto.", "Perdone, ¿dónde hay un buzón?"] }],
-  47: [{ title: tb("Единственные объекты и мои вещи", "Objetos únicos y cosas propias"), body: tb("Если объект единственный, назван по имени или уже принадлежит кому-то, говорят о его местонахождении через estar. Hay с el/la/los/las и с mi/tu/su в этом значении не употребляется.", "Si el objeto es único, tiene nombre propio o ya pertenece a alguien, su situación se expresa con estar. Hay no se usa en este sentido con el/la/los/las ni con mi/tu/su."), rules: [tb("El Museo del Prado está en Madrid; el cine América está en la calle Monterrey. Но: En Madrid hay muchos museos.", "El Museo del Prado está en Madrid; el cine América está en la calle Monterrey. Pero: En Madrid hay muchos museos."), tb("¿Dónde hay herramientas? (не знаю, есть ли они) — ¿Dónde están mis herramientas? (они у меня есть, но не знаю где).", "¿Dónde hay herramientas? (no sé si hay) — ¿Dónde están mis herramientas? (tengo herramientas, pero no sé dónde están)."), tb("Hay un señor que quiere hablar con usted. — ¿Dónde está? — Está en la recepción.", "Hay un señor que quiere hablar con usted. — ¿Dónde está? — Está en la recepción.")], examples: ["Hay un museo en la Hacienda Paranillo.", "El Museo del Táchira está en la Hacienda Paranillo.", "¿Dónde está la parada de autobús más próxima?"] }],
-  48: [{ title: tb("Частотность и форма ver", "Frecuencia y la forma de ver"), body: tb("Presente часто сопровождают слова частотности: todos los días, una vez a la semana, siempre, normalmente, nunca. Nunca перед глаголом отрицает сам; после глагола ему нужен no.", "El presente suele ir con expresiones de frecuencia: todos los días, una vez a la semana, siempre, normalmente, nunca. Nunca delante del verbo niega por sí mismo; detrás del verbo necesita no."), rules: [tb("Normalmente pasamos el fin de semana en el campo; Cristina lleva siempre vaqueros; ¿Trabajas los domingos?", "Normalmente pasamos el fin de semana en el campo; Cristina lleva siempre vaqueros; ¿Trabajas los domingos?"), tb("Nunca bebo vino = No bebo vino nunca.", "Nunca bebo vino = No bebo vino nunca."), tb("ver: veo, ves, ve, vemos, veis, ven — veis пишется без тильды, потому что это односложная форма.", "ver: veo, ves, ve, vemos, veis, ven — veis se escribe sin tilde porque es monosílabo.")], examples: ["En mi casa cenamos muy temprano.", "La Tierra gira alrededor del Sol.", "Una chica. Lleva una gorra de béisbol."] }],
-  49: [{ title: tb("Полные списки книги и орфография основы", "Listas completas del libro y ortografía de la raíz"), body: tb("Запоминайте глаголы с чередованием списками по модели. Чередование e→i встречается только у глаголов на -ir. У части глаголов меняется и написание согласной, чтобы сохранить произношение.", "Memoriza los verbos con cambio vocálico en listas por modelo. El cambio e→i solo aparece en verbos en -ir. En algunos verbos también cambia la consonante escrita para mantener la pronunciación."), rules: [tb("e→ie: -ar empezar, fregar, pensar, regar, cerrar; -er entender, perder; -ir mentir, preferir.", "e→ie: -ar empezar, fregar, pensar, regar, cerrar; -er entender, perder; -ir mentir, preferir."), tb("Орфография: empezar → empiezo; elegir → elijo; seguir → sigo, conseguir → consigo.", "Ortografía: empezar → empiezo; elegir → elijo; seguir → sigo, conseguir → consigo."), tb("reír и sonreír получают тильду на i: río, ríes, ríe, reímos, reís, ríen; sonrío, sonríes.", "reír y sonreír llevan tilde en la i: río, ríes, ríe, reímos, reís, ríen; sonrío, sonríes.")], attention: tb("E→i не бывает у глаголов на -ar и -er: pensar даёт pienso, а не *pinso.", "El cambio e→i no aparece en verbos en -ar ni en -er: pensar da pienso, no *pinso."), examples: ["No juego muy bien al tenis.", "Las gallinas no vuelan.", "¿En qué piensas?"] }],
-  50: [{ title: tb("Полные парадигмы глаголов с особым yo", "Paradigmas completos con yo irregular"), body: tb("У глаголов этой группы неправильна только форма yo, остальные лица строятся по обычной модели. Глаголы на -cer и -cir после гласной получают -zco в yo.", "En los verbos de este grupo solo la forma yo es irregular; las demás personas siguen el modelo normal. Los verbos en -cer y -cir precedidos de vocal toman -zco en yo."), rules: [tb("dar: doy, das, da, damos, dais, dan; traer: traigo, traes, trae, traemos, traéis, traen.", "dar: doy, das, da, damos, dais, dan; traer: traigo, traes, trae, traemos, traéis, traen."), tb("-zco: conocer → conozco, parecer → parezco, conducir → conduzco, traducir → traduzco; далее conoces, conduces…", "-zco: conocer → conozco, parecer → parezco, conducir → conduzco, traducir → traduzco; después conoces, conduces…"), tb("saber: sé, sabes, sabe, sabemos, sabéis, saben; poner: pongo; salir: salgo; hacer: hago.", "saber: sé, sabes, sabe, sabemos, sabéis, saben; poner: pongo; salir: salgo; hacer: hago.")], attention: tb("Sé (от saber) пишется с тильдой, в отличие от местоимения se. Dais, vais и huis односложны и пишутся без тильды: в учебнике 2007 года стоит huís, но по орфографии RAE 2010 правильно huis.", "Sé (de saber) lleva tilde, a diferencia del pronombre se. Dais, vais y huis son monosílabos y se escriben sin tilde: el libro de 2007 escribe huís, pero según la Ortografía de la RAE de 2010 lo correcto es huis."), examples: ["Los domingos doy una vuelta por el parque.", "No sé conducir.", "Las cigüeñas hacen nidos en las torres."] }]
+  42: [{ title: tb("Согласование ser: час, число и цена", "Concordancia de ser: hora, número y precio"), body: tb("Ser согласуется с тем, что называется после него, или с группой, к которой относится говорящий. Поэтому о часе, количестве людей и цене говорят то в единственном, то во множественном числе.", "Ser concuerda con lo que se nombra después o con el grupo al que pertenece el hablante. Por eso, al hablar de la hora, del número de personas o del precio, se usa a veces singular y a veces plural."), rules: [tb("Час: Es la una y cuarto — но son las dos menos diez. Вопрос о времени всегда в единственном числе.", "Hora: Es la una y cuarto, pero son las dos menos diez. La pregunta por la hora va siempre en singular."), tb("Число людей: ¿Cuántos sois? — Somos seis (говорящий входит в группу); en el equipo son once.", "Número de personas: ¿Cuántos sois? — Somos seis (el hablante forma parte del grupo); en el equipo son once."), tb("Цена: Es un euro, но son dos euros con cincuenta céntimos.", "Precio: Es un euro, pero son dos euros con cincuenta céntimos.")], examples: ["Es la una y media.", "¿Cuántos sois en casa? — Somos cuatro.", "Son dos euros con cincuenta céntimos."] }],
+  43: [{ title: tb("Estar bien/mal и estar de…", "Estar bien/mal y estar de…"), body: tb("О самочувствии и о том, как обстоят дела, часто говорят наречиями bien, mal, regular: они не согласуются с подлежащим. Конструкция estar de + существительное описывает временную ситуацию.", "Para hablar de cómo se encuentra alguien o de cómo van las cosas se usan a menudo los adverbios bien, mal, regular, que no concuerdan con el sujeto. La construcción estar de + sustantivo describe una situación temporal."), rules: [tb("¿Qué tal estás? — Bien, gracias / Regular. Bien и mal не меняются: Estamos bien; las fotos están mal.", "¿Qué tal estás? — Bien, gracias / Regular. Bien y mal no cambian: Estamos bien; las fotos están mal."), tb("estar de vacaciones, de viaje, de pie, de acuerdo: Mis padres están de viaje.", "estar de vacaciones, de viaje, de pie, de acuerdo: Mis padres están de viaje."), tb("Está bien (всё в порядке) — не то же, что es bueno (хороший по качеству).", "Está bien (todo en orden) no equivale a es bueno (de buena calidad).")], attention: tb("В значении «хорошо себя чувствую» говорят Estoy bien, а не *Estoy bueno: estar bueno значит «вкусный», «выздоровевший» или, разговорно, «привлекательный».", "Para decir que uno se encuentra bien se usa Estoy bien, no *Estoy bueno: estar bueno significa sabroso, recuperado o, coloquialmente, atractivo."), examples: ["¿Qué tal estáis? — Estamos bien.", "Esta semana estoy de vacaciones.", "¿Estás de acuerdo conmigo?"] }],
+  44: [{ title: tb("Выбор связки: три вопроса", "Elegir el verbo: tres preguntas"), body: tb("Перед выбором задайте вопросы по порядку: первый подходящий ответ определяет связку.", "Antes de elegir, hazte estas preguntas por orden: la primera respuesta afirmativa decide el verbo."), rules: [tb("1. Это событие (урок, концерт, свадьба) и речь о его месте или времени? → ser: La clase es en el aula 3.", "1. ¿Es un acontecimiento (clase, concierto, boda) y se habla de su lugar o su hora? → ser: La clase es en el aula 3."), tb("2. Речь о том, где находится человек или предмет? → estar: El aula 3 está en el primer piso.", "2. ¿Se habla de dónde se encuentra una persona o un objeto? → estar: El aula 3 está en el primer piso."), tb("3. Признак — обычное свойство или состояние сейчас? → ser или estar: Mi hermano es tranquilo, pero hoy está nervioso.", "3. ¿La característica es habitual o es un estado actual? → ser o estar: Mi hermano es tranquilo, pero hoy está nervioso.")], attention: tb("Оценка действия строится с ser: Es importante dormir bien; es difícil aprender idiomas.", "La valoración de una acción se construye con ser: Es importante dormir bien; es difícil aprender idiomas."), examples: ["El examen es a las nueve.", "Tus gafas están en la mesa.", "Laura es muy simpática, pero hoy está enfadada."] }],
+  45: [{ title: tb("Tener: наличие вообще и сила ощущения", "Tener: posesión en general e intensidad"), body: tb("В вопросах и отрицаниях о наличии вообще исчисляемое существительное часто стоит без артикля. Un/una появляется, когда речь идёт о конкретном экземпляре.", "En preguntas y negaciones sobre la posesión en general, el nombre contable suele ir sin artículo. Un/una aparece cuando se habla de un ejemplar concreto."), rules: [tb("Наличие вообще: ¿Tienes coche? — No, no tengo coche. ¿Tenéis perro? — Sí, tenemos uno.", "Posesión en general: ¿Tienes coche? — No, no tengo coche. ¿Tenéis perro? — Sí, tenemos uno."), tb("Конкретный экземпляр: Tengo un coche rojo y una moto vieja.", "Ejemplar concreto: Tengo un coche rojo y una moto vieja."), tb("Сила ощущения выражается через mucho/mucha по роду существительного: mucha hambre, mucha sed; mucho frío, mucho calor, mucho miedo, mucho sueño.", "La intensidad se expresa con mucho/mucha según el género del nombre: mucha hambre, mucha sed; mucho frío, mucho calor, mucho miedo, mucho sueño.")], attention: tb("Hambre — женского рода, хотя говорят el hambre (ударное a-): tengo mucha hambre, а не *mucho hambre.", "Hambre es femenino aunque se dice el hambre (a tónica): tengo mucha hambre, no *mucho hambre."), examples: ["¿Tienes coche? — No, no tengo coche.", "Tengo un coche rojo y una moto vieja.", "Tengo mucha sed."] }],
+  46: [{ title: tb("Hay без определителя и вопрос «где есть»", "Hay sin determinante y la pregunta dónde hay"), body: tb("Множественное и неисчисляемое существительное после hay может стоять совсем без определителя, если количество неважно. В отрицании так же ведёт себя исчисляемое существительное в единственном числе. Вопрос ¿Dónde hay…? задают, когда не знают, существует ли такой объект поблизости.", "El nombre plural o no contable puede ir después de hay sin ningún determinante si la cantidad no importa. En negación, lo mismo ocurre con el nombre contable singular. La pregunta ¿Dónde hay…? se hace cuando no se sabe si ese objeto existe cerca."), rules: [tb("Hay naranjas en la nevera; hay azúcar en el armario; ¿Hay pan (en casa)? — Sí, hay dos barras.", "Hay naranjas en la nevera; hay azúcar en el armario; ¿Hay pan (en casa)? — Sí, hay dos barras."), tb("En mi calle no hay árboles; en Santa Marta no hay aeropuerto.", "En mi calle no hay árboles; en Santa Marta no hay aeropuerto."), tb("¿Dónde hay un estanco? — Hay uno en esa esquina (не знаю района и не знаю, есть ли estanco).", "¿Dónde hay un estanco? — Hay uno en esa esquina (no conozco el barrio y no sé si hay un estanco).")], examples: ["Hay naranjas en la nevera.", "En Santa Marta no hay aeropuerto.", "Perdone, ¿dónde hay un buzón?"] }],
+  47: [{ title: tb("Единственные объекты, мои вещи и alguien", "Objetos únicos, cosas propias y alguien"), body: tb("Если объект единственный, назван по имени или уже принадлежит кому-то, говорят о его местонахождении через estar. Когда спрашивают, есть ли вообще кто-то или что-то, нужен hay.", "Si el objeto es único, tiene nombre propio o ya pertenece a alguien, su situación se expresa con estar. Cuando se pregunta si existe alguien o algo, se usa hay."), rules: [tb("Имена собственные и единственные объекты: El Museo del Prado está en Madrid; la catedral está en el centro.", "Nombres propios y objetos únicos: El Museo del Prado está en Madrid; la catedral está en el centro."), tb("¿Dónde hay herramientas? (не знаю, есть ли они) — ¿Dónde están mis herramientas? (они у меня есть, но не знаю где).", "¿Dónde hay herramientas? (no sé si hay) — ¿Dónde están mis herramientas? (tengo herramientas, pero no sé dónde están)."), tb("С alguien/nadie спрашивают о наличии людей, поэтому нужен hay: ¿Hay alguien en casa? — No, no hay nadie.", "Con alguien/nadie se pregunta por la existencia de personas, por eso se usa hay: ¿Hay alguien en casa? — No, no hay nadie.")], examples: ["Hay un museo en la Hacienda Paranillo.", "El Museo del Táchira está en la Hacienda Paranillo.", "¿Hay alguien en la oficina? — No, no hay nadie."] }],
+  48: [{ title: tb("Частотность и форма ver", "Frecuencia y la forma de ver"), body: tb("Presente часто сопровождают выражения частотности. Nunca перед глаголом отрицает сам; после глагола ему нужен no.", "El presente suele ir con expresiones de frecuencia. Nunca delante del verbo niega por sí mismo; detrás del verbo necesita no."), rules: [tb("todos los días, a menudo, a veces, dos veces a la semana, casi nunca: Voy al gimnasio dos veces a la semana; a veces comemos fuera.", "todos los días, a menudo, a veces, dos veces a la semana, casi nunca: Voy al gimnasio dos veces a la semana; a veces comemos fuera."), tb("Nunca bebo vino = No bebo vino nunca.", "Nunca bebo vino = No bebo vino nunca."), tb("ver: veo, ves, ve, vemos, veis, ven — veis пишется без тильды, потому что это односложная форма.", "ver: veo, ves, ve, vemos, veis, ven — veis se escribe sin tilde porque es monosílabo.")], examples: ["En mi casa cenamos muy temprano.", "A menudo leo en el tren.", "Casi nunca vemos la televisión."] }],
+  49: [{ title: tb("Производные глаголы и орфография основы", "Verbos derivados y ortografía de la raíz"), body: tb("Производный глагол спрягается по модели исходного. У части глаголов при спряжении меняется и написание согласной, чтобы сохранить произношение.", "Un verbo derivado se conjuga según el modelo del verbo base. En algunos verbos también cambia la consonante escrita para mantener la pronunciación."), rules: [tb("volver → devolver, envolver: devuelvo; contar → recontar: recuento; pedir → despedir, impedir: despido.", "volver → devolver, envolver: devuelvo; contar → recontar: recuento; pedir → despedir, impedir: despido."), tb("Орфография: empezar → empiezo; elegir → elijo; seguir → sigo, conseguir → consigo.", "Ortografía: empezar → empiezo; elegir → elijo; seguir → sigo, conseguir → consigo."), tb("reír и sonreír получают тильду на i: río, ríes, ríe, reímos, reís, ríen; sonrío, sonríes.", "reír y sonreír llevan tilde en la i: río, ríes, ríe, reímos, reís, ríen; sonrío, sonríes.")], attention: tb("E→i не бывает у глаголов на -ar и -er: pensar даёт pienso, а не *pinso.", "El cambio e→i no aparece en verbos en -ar ni en -er: pensar da pienso, no *pinso."), examples: ["Devuelvo el libro mañana.", "Las gallinas no vuelan.", "Elijo el menú del día."] }],
+  50: [{ title: tb("Полные парадигмы и -zo после согласной", "Paradigmas completos y -zo tras consonante"), body: tb("У глаголов этой группы неправильна только форма yo, остальные лица строятся по обычной модели. Модель -zco работает только после гласной.", "En los verbos de este grupo solo la forma yo es irregular; las demás personas siguen el modelo normal. El modelo -zco solo funciona tras vocal."), rules: [tb("dar: doy, das, da, damos, dais, dan; traer: traigo, traes, trae, traemos, traéis, traen.", "dar: doy, das, da, damos, dais, dan; traer: traigo, traes, trae, traemos, traéis, traen."), tb("После согласной -cer/-cir дают -zo, а не -zco: vencer → venzo, ejercer → ejerzo, esparcir → esparzo; torcer → tuerzo.", "Tras consonante, -cer/-cir dan -zo, no -zco: vencer → venzo, ejercer → ejerzo, esparcir → esparzo; torcer → tuerzo."), tb("saber: sé, sabes, sabe, sabemos, sabéis, saben.", "saber: sé, sabes, sabe, sabemos, sabéis, saben.")], attention: tb("Sé (от saber) пишется с тильдой, в отличие от местоимения se. Dais, vais и huis односложны и пишутся без тильды: в учебнике 2007 года стоит huís, но по орфографии RAE 2010 правильно huis.", "Sé (de saber) lleva tilde, a diferencia del pronombre se. Dais, vais y huis son monosílabos y se escriben sin tilde: el libro de 2007 escribe huís, pero según la Ortografía de la RAE de 2010 lo correcto es huis."), examples: ["Traigo el postre.", "Siempre venzo a mi hermano al ajedrez.", "Las cigüeñas hacen nidos en las torres."] }]
 };
 
 // Детальные модели преобразования для unidades 21–50, где книга вводит несколько контрастов на одной странице.
@@ -10705,6 +10876,21 @@ function syncActiveTab(view = state.view) {
     if (active) tab.setAttribute("aria-current", "page");
     else tab.removeAttribute("aria-current");
   });
+  // На телефоне часть разделов живёт в меню «Ещё»: кнопка подсвечивается, если открыт один из них.
+  $all("[data-more-view]").forEach((item) => {
+    if (item.dataset.moreView === view) item.setAttribute("aria-current", "page");
+    else item.removeAttribute("aria-current");
+  });
+  $("#tabMoreButton")?.classList.toggle("is-active", $all("[data-more-view]").some((item) => item.dataset.moreView === view));
+}
+
+function setTabMoreMenu(open) {
+  const button = $("#tabMoreButton");
+  const menu = $("#tabMoreMenu");
+  if (!button || !menu) return;
+  menu.hidden = !open;
+  button.setAttribute("aria-expanded", String(open));
+  if (open) menu.querySelector("[aria-current]") ? menu.querySelector("[aria-current]").focus() : menu.querySelector("button")?.focus();
 }
 
 function updateRouteHash(route, { replace = false } = {}) {
@@ -11826,9 +12012,10 @@ function renderVerbCard(verb) {
     line.appendChild(item);
   });
 
+  // Спряжение — главное в карточке, поэтому связанные шпаргалки идут после таблицы.
   const cheatsheets = verbCheatsheetsMarkup(verb);
   if (cheatsheets) {
-    line.insertAdjacentHTML("afterend", cheatsheets);
+    node.querySelector(".table-wrap").insertAdjacentHTML("afterend", cheatsheets);
     node.querySelectorAll("[data-verb-cheatsheet]").forEach((button) => {
       button.addEventListener("click", () => openCheatsheetFromVerb(verb, Number(button.dataset.verbCheatsheet)));
     });
@@ -12031,6 +12218,7 @@ function verbExceptionLabels(verb) {
 
 function conjugationTable(info, tenseIds = MAIN_VERB_TENSE_IDS) {
   const table = document.createElement("table");
+  table.className = "conjugation-table";
   const head = document.createElement("thead");
   head.innerHTML = `<tr><th>Время</th>${PEOPLE.map((person) => `<th>${person}</th>`).join("")}</tr>`;
   table.appendChild(head);
@@ -12039,7 +12227,8 @@ function conjugationTable(info, tenseIds = MAIN_VERB_TENSE_IDS) {
   tenseIds.map(tenseById).filter(Boolean).forEach((tense) => {
     const row = document.createElement("tr");
     const forms = info.forms[tense.id];
-    row.innerHTML = `<th><button class="verb-link-button" type="button" data-open-tense="${tense.id}">${verbTenseLabel(tense)}</button></th>${forms.map((form, index) => {
+    const spokenForms = forms.filter((form) => form && form !== "-").join(", ");
+    row.innerHTML = `<th><span class="verb-tense-cell"><button class="verb-link-button" type="button" data-open-tense="${tense.id}">${verbTenseLabel(tense)}</button>${speakButtonMarkup(spokenForms)}</span></th>${forms.map((form, index) => {
       const cls = isIrregularForm(info.infinitive, tense.id, form, index) ? " class=\"irregular\"" : "";
       const formMarkup = cls
         ? `<button class="irregular-form-link" type="button" data-open-exception="${tense.id}" title="Показать правило и исключения">${form}</button>`
@@ -12257,7 +12446,7 @@ function renderVerbResults(content, results, selectedPanel) {
     <div class="card-head">
       <div>
         <h2>${state.query ? `Найдено: ${verbs.length}` : showingAllVerbs ? "Все глаголы" : "Частые глаголы"}</h2>
-        <p class="muted">${state.query ? (matchedForm ? `Введенная форма относится к ${displayInfinitive(verbs[0])}: ${matchedForm.person}, ${matchedForm.tense}.` : "Выбери глагол, чтобы открыть карточку с основными временами.") : "Рейтинг по письменной прессе Испании. Кликни по глаголу или найди другой через поиск."}</p>
+        <p class="muted">${state.query ? (matchedForm ? `Введенная форма относится к ${displayInfinitive(verbs[0])}: ${matchedForm.person}, ${matchedForm.tense}.` : "Выберите глагол, чтобы открыть карточку с основными временами.") : "Рейтинг по письменной прессе Испании. Нажмите на глагол или найдите другой через поиск."}</p>
       </div>
     </div>
     <div class="verb-list" ${isDefaultSuggestionPage ? `id="commonVerbList"` : ""}></div>
@@ -12339,10 +12528,10 @@ function renderEmptyVerbSearch(rawQuery) {
   card.innerHTML = `
     <div>
       <h2>Ничего не найдено</h2>
-      <p class="muted">Нет совпадений для «${escapeHTML(query)}». Ищи испанский инфинитив, любую форму или русский перевод. Ударения можно не ставить.</p>
+      <p class="muted">Нет совпадений для «${escapeHTML(query)}». Ищите испанский инфинитив, любую форму или русский перевод. Ударения можно не ставить.</p>
     </div>
     <div>
-      <h3>Попробуй эти глаголы</h3>
+      <h3>Попробуйте эти глаголы</h3>
       <div class="search-suggestions">
         ${suggestions.map((verb) => {
           const info = verbInfo(verb);
@@ -12561,9 +12750,9 @@ function renderTenses() {
     id: "tensesTop",
     html: `
     <h2>Все времена</h2>
-    <p class="muted">Времена сгруппированы по смыслу. Начинай с базовых и частых, а редкие книжные формы используй как справку.</p>
+    <p class="muted">Времена сгруппированы по смыслу. Начинайте с базовых и частых, а редкие книжные формы используйте как справку.</p>
     <p class="muted">Для полноты системы здесь также показаны Imperativo и formas no personales: строго говоря, это не времена, а повелительное наклонение и неличные формы глагола.</p>
-    <p class="muted"><strong>Важно:</strong> слова-маркеры — это подсказки, а не автоматическое правило. Сначала определи точку отсчета, завершенность действия и отношение говорящего к сообщению.</p>
+    <p class="muted"><strong>Важно:</strong> слова-маркеры — это подсказки, а не автоматическое правило. Сначала определите точку отсчета, завершенность действия и отношение говорящего к сообщению.</p>
     <details class="table-sources">
       <summary>Нормативные источники раздела</summary>
       <div class="table-source-links">
@@ -12924,7 +13113,7 @@ function renderTables() {
     id: "tablesTop",
     html: `
     <h2>Шпаргалки</h2>
-    <p class="muted">Выбери раздел, затем открой нужную шпаргалку. На экране будет показан только один материал.</p>
+    <p class="muted">Выберите раздел, затем откройте нужную шпаргалку. На экране будет показан только один материал.</p>
     <details class="table-sources">
       <summary>Нормативные источники</summary>
       <div class="table-source-links">
@@ -12934,6 +13123,10 @@ function renderTables() {
         <a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/indice.htm" target="_blank" rel="noreferrer">Instituto Cervantes: Plan curricular</a>
       </div>
     </details>
+    <label class="table-search">
+      <span>Поиск по шпаргалкам</span>
+      <input id="tableSearchInput" type="search" placeholder="Например: gustar, por/para" value="${escapeHTML(state.tableQuery)}" autocomplete="off" autocapitalize="none" spellcheck="false" enterkeyhint="search">
+    </label>
     <div class="table-filter-controls">
       <label class="table-filter-control">
         <span>Раздел</span>
@@ -12963,7 +13156,7 @@ function renderTables() {
         </label>
       `}
     </div>
-    <p class="table-filter-summary">Показано: ${visibleTables.length} из ${INDEXED_TABLES.length}. Уровень — ориентир по Plan Curricular Instituto Cervantes; A0 является внутренней стартовой ступенью справочника.</p>
+    <p class="table-filter-summary" aria-live="polite"><span data-table-shown>Показано: ${visibleTables.length} из ${INDEXED_TABLES.length}.</span> Уровень — ориентир по Plan Curricular Instituto Cervantes; A0 является внутренней стартовой ступенью справочника.</p>
   `});
   content.appendChild(nav);
   nav.querySelector("[data-table-filter]")?.addEventListener("change", (event) => {
@@ -12996,42 +13189,72 @@ function renderTables() {
   const catalog = document.createElement("div");
   catalog.className = "table-catalog";
   catalog.setAttribute("aria-label", "Оглавление шпаргалок");
-  TABLE_GROUPS.forEach((group) => {
-    const groupTables = visibleTables.filter((item) => item.group === group.title);
-    if (groupTables.length === 0) return;
-    const section = infoSection({
-      className: "info-card table-catalog-group",
-      html: `
-        <header>
-          <h2>${group.title} <span class="filter-count">${groupTables.length}</span></h2>
-          <p class="muted">${group.description}</p>
-        </header>
-        <div class="table-catalog-links">
-          ${groupTables.map((item) => `
-            <button class="table-catalog-link" type="button" data-table-open="${item.index}">
-              <span class="table-catalog-title"><span>${item.title}</span>${tableLevelBadge(item)}</span>
-              <small>${item.subgroup ? `<strong>${item.subgroup}.</strong> ` : ""}${item.summary || tableSummary(item)}</small>
-            </button>
-          `).join("")}
-        </div>
-      `
-    });
-    catalog.appendChild(section);
+  content.appendChild(catalog);
+  fillTableCatalog(catalog, visibleTables);
+  nav.querySelector("#tableSearchInput").addEventListener("input", (event) => {
+    state.tableQuery = event.target.value;
+    const matches = INDEXED_TABLES.filter((item) => tableMatchesFilter(item));
+    nav.querySelector("[data-table-shown]").textContent = `Показано: ${matches.length} из ${INDEXED_TABLES.length}.`;
+    fillTableCatalog(catalog, matches);
   });
+}
+
+// При поиске: сначала совпадения в названии, затем в теме и описании, затем в тексте таблицы.
+function tableSearchRank(item, query) {
+  const words = normalize(query).split(" ").filter(Boolean);
+  const title = normalize(item.title);
+  if (words.every((word) => title.includes(word))) return 0;
+  const summary = normalize([item.subgroup, item.description, item.summary].filter(Boolean).join(" "));
+  if (words.every((word) => title.includes(word) || summary.includes(word))) return 1;
+  return 2;
+}
+
+function tableCatalogSection(title, description, tables) {
+  return infoSection({
+    className: "info-card table-catalog-group",
+    html: `
+      <header>
+        <h2>${title} <span class="filter-count">${tables.length}</span></h2>
+        ${description ? `<p class="muted">${description}</p>` : ""}
+      </header>
+      <div class="table-catalog-links">
+        ${tables.map((item) => `
+          <button class="table-catalog-link" type="button" data-table-open="${item.index}">
+            <span class="table-catalog-title"><span>${item.title}</span>${tableLevelBadge(item)}</span>
+            <small>${item.subgroup ? `<strong>${item.subgroup}.</strong> ` : ""}${item.summary || tableSummary(item)}</small>
+          </button>
+        `).join("")}
+      </div>
+    `
+  });
+}
+
+function fillTableCatalog(catalog, visibleTables) {
+  catalog.innerHTML = "";
+  const query = normalize(state.tableQuery);
+  if (query && visibleTables.length > 0) {
+    const ranked = [...visibleTables].sort((a, b) => tableSearchRank(a, query) - tableSearchRank(b, query) || a.index - b.index);
+    catalog.appendChild(tableCatalogSection("Результаты поиска", "Сначала совпадения в названии, затем в описании и тексте шпаргалок.", ranked));
+  } else {
+    TABLE_GROUPS.forEach((group) => {
+      const groupTables = visibleTables.filter((item) => item.group === group.title);
+      if (groupTables.length > 0) catalog.appendChild(tableCatalogSection(group.title, group.description, groupTables));
+    });
+  }
   if (visibleTables.length === 0) {
     catalog.appendChild(infoSection({
       html: `
         <h2>Нет шпаргалок с такими фильтрами</h2>
-        <p class="muted">Выбери другой уровень или покажи весь каталог.</p>
+        <p class="muted">Измените запрос, выберите другой уровень или покажите весь каталог.</p>
         <button class="small-button" type="button" data-reset-table-filters>Сбросить фильтры</button>
       `
     }));
   }
-  content.appendChild(catalog);
   bindClickAll(catalog, "[data-table-open]", (event) => {
     openTableByIndex(Number(event.currentTarget.dataset.tableOpen));
   });
   bindClickAll(catalog, "[data-reset-table-filters]", () => {
+    state.tableQuery = "";
     state.tableFilter = "all";
     state.tableSubgroup = "";
     state.tableLevel = "all";
@@ -13128,7 +13351,26 @@ function relatedTablesMarkup(indices) {
   `;
 }
 
+const TABLE_SEARCH_TEXT_CACHE = new Map();
+
+// Поиск идёт по названию, теме, описанию и тексту самой таблицы.
+function tableSearchText(item) {
+  if (!TABLE_SEARCH_TEXT_CACHE.has(item.index)) {
+    const tableText = String(item.table || "").replace(/<[^>]*>/g, " ");
+    TABLE_SEARCH_TEXT_CACHE.set(item.index, normalize([item.title, item.subgroup, item.group, item.description, item.summary, tableText].filter(Boolean).join(" ")));
+  }
+  return TABLE_SEARCH_TEXT_CACHE.get(item.index);
+}
+
+function tableMatchesQuery(item, query = state.tableQuery) {
+  const words = normalize(query).split(" ").filter(Boolean);
+  if (words.length === 0) return true;
+  const text = tableSearchText(item);
+  return words.every((word) => text.includes(word));
+}
+
 function tableMatchesFilter(item) {
+  if (!tableMatchesQuery(item)) return false;
   if (!tableMatchesSection(item, state.tableFilter)) return false;
   if (!tableMatchesLevel(item, state.tableLevel, state.tableLevelCumulative)) return false;
   if (state.tableSubgroup && item.subgroup !== state.tableSubgroup) return false;
@@ -13270,7 +13512,7 @@ function tableMistake(item) {
     "Gustar и похожие глаголы": "Me gusto el café неверно: Me gusta el café.",
     "Algo/nada/alguien/nadie: кто-то или никто": "No hay nadie часто уже содержит отрицание; не надо добавлять alguien.",
     "Porque/aunque/si/cuando: частые союзы": "Si tendré tiempo неверно: Si tengo tiempo. Для будущего после когда: cuando llegue.",
-    "Futuro: ir a + infinitivo или Futuro Simple": "Не выбирай форму только по расстоянию во времени: Voy a viajar el año que viene и Te llamaré ahora mismo нормативны.",
+    "Futuro: ir a + infinitivo или Futuro Simple": "Не выбирайте форму только по расстоянию во времени: Voy a viajar el año que viene и Te llamaré ahora mismo нормативны.",
     "Estar + gerundio / Llevar + gerundio": "Estoy trabajando desde las ocho неверно: нужно Llevo trabajando desde las ocho.",
     "Deber / Tener que / Hay que — долженствование": "Hay que estudiar безличное, но Debo estudiar — личное; не путай.",
     "Глаголы с предлогами: pensar en, soñar con...": "Pienso de ti неверно: нужно Pienso en ti.",
@@ -13835,7 +14077,7 @@ function evaluateAnswer(userInput, question) {
   }
   const accentless = quizAnswerKey(userInput, true);
   if (accentless && candidates.some((answer) => accentless === quizAnswerKey(answer, true))) {
-    return { status: "almost", message: "Почти верно: проверь ударение или диакритический знак." };
+    return { status: "almost", message: "Почти верно: проверьте ударение или диакритический знак." };
   }
   if (question.type === "conjugation" && question.verb.endsWith("se")) {
     const base = question.verb.slice(0, -2);
@@ -15414,7 +15656,7 @@ function learningLevelResourcesMarkup(levelId) {
     ["Закрепить", links.slice(4, 8)],
     ["Расширить", links.slice(8)]
   ].filter(([, items]) => items.length > 0);
-  return `<section class="learning-level-resources" aria-label="Шпаргалки уровня"><p><strong>Шпаргалки уровня</strong></p><p class="muted">Сначала открой опорные материалы для текущего этапа, затем переходи к следующим.</p><div class="learning-resource-groups">${groups.map(([title, items]) => `<div class="learning-resource-group"><strong>${title}</strong><div class="learning-item-links">${items.map((link) => `<a class="small-button" href="${link.href}">${link.label}</a>`).join("")}</div></div>`).join("")}</div></section>`;
+  return `<section class="learning-level-resources" aria-label="Шпаргалки уровня"><p><strong>Шпаргалки уровня</strong></p><p class="muted">Сначала откройте опорные материалы для текущего этапа, затем переходите к следующим.</p><div class="learning-resource-groups">${groups.map(([title, items]) => `<div class="learning-resource-group"><strong>${title}</strong><div class="learning-item-links">${items.map((link) => `<a class="small-button" href="${link.href}">${link.label}</a>`).join("")}</div></div>`).join("")}</div></section>`;
 }
 
 function learningDetailMarkup(detail) {
@@ -15567,9 +15809,9 @@ function learningSectionDependency(sectionId) {
   return {
     can: "Стартовый раздел: проходи пункты сверху вниз.",
     grammar: "Опора: цели и базовое чтение из предыдущего раздела.",
-    topics: "Опора: используй правила из блока «Грамматика».",
+    topics: "Опора: используйте правила из блока «Грамматика».",
     practice: "Опора: собери фразы из тем и лексики.",
-    checklist: "Финал: проверь после остальных блоков."
+    checklist: "Финал: проверьте после остальных блоков."
   }[sectionId] || "Продолжай после предыдущего раздела.";
 }
 
@@ -16173,7 +16415,7 @@ function renderCards() {
           <button class="small-button" type="button" data-tense-action="clear">Очистить</button>
         </div>
         <div class="quiz-config-options">${tenseButtons}</div>
-        ${cfg.tenses.length === 0 ? `<p class="quiz-config-help">Выбери хотя бы одно время.</p>` : ""}
+        ${cfg.tenses.length === 0 ? `<p class="quiz-config-help">Выберите хотя бы одно время.</p>` : ""}
       </fieldset>
       <fieldset class="quiz-config-fieldset">
         <legend class="quiz-config-label">Лица</legend>
@@ -16182,7 +16424,7 @@ function renderCards() {
           <button class="small-button" type="button" data-person-action="clear">Очистить</button>
         </div>
         <div class="quiz-config-options">${personButtons}</div>
-        ${cfg.persons.length === 0 ? `<p class="quiz-config-help">Выбери хотя бы одно лицо.</p>` : ""}
+        ${cfg.persons.length === 0 ? `<p class="quiz-config-help">Выберите хотя бы одно лицо.</p>` : ""}
       </fieldset>` : ""}
       <fieldset class="quiz-config-fieldset">
         <legend class="quiz-config-label">Количество вопросов</legend>
@@ -16262,7 +16504,7 @@ function renderCards() {
     const suggestedCards = COMMON_VERB_SUGGESTIONS.filter((verb) => BASE_VERBS.includes(verb)).slice(0, 5);
     emptyCard.innerHTML = `
       <h2>Избранное пока пусто</h2>
-      <p class="muted">Добавь базовый набор для первой проверки. Отдельные глаголы можно выбирать звездочкой в разделе «Глаголы».</p>
+      <p class="muted">Добавьте базовый набор для первой проверки. Отдельные глаголы можно выбирать звездочкой в разделе «Глаголы».</p>
       <button class="small-button primary" type="button" data-add-starter>Добавить 5 базовых глаголов</button>
       <div class="starter-verb-links" aria-label="Посмотреть базовые глаголы">
         ${suggestedCards.map((verb) => `<button class="starter-verb-link" type="button" data-starter-verb="${verb}" lang="es">${escapeHTML(displayInfinitive(verb))}</button>`).join("")}
@@ -16523,8 +16765,8 @@ function renderCardQuiz(content) {
   const progress = Math.round(((state.cardQuizIndex + 1) / state.cardQuiz.length) * 100);
   const isConjugation = question.type === "conjugation";
   const isMeaning = question.type === "meaning";
-  const eyebrow = isConjugation ? "Проспрягай" : isMeaning ? "Переведи на русский" : "Переведи на испанский";
-  const placeholder = isConjugation ? "Введи форму..." : isMeaning ? "Введи перевод..." : "Введи инфинитив...";
+  const eyebrow = isConjugation ? "Проспрягайте" : isMeaning ? "Переведите на русский" : "Переведите на испанский";
+  const placeholder = isConjugation ? "Введите форму..." : isMeaning ? "Введите перевод..." : "Введите инфинитив...";
   const questionHeading = isConjugation ? question.question : isMeaning ? question.question : info.ru;
 
   let answerHTML;
@@ -16700,7 +16942,7 @@ function renderCardQuizResults(content) {
         <div class="quiz-mistake-row">
           <strong class="quiz-mistake-question">${escapeHTML(quizQuestionLabel(attempt.question))}</strong>
           <div class="quiz-answer-comparison">
-            <span>Твой ответ<strong>${attempt.userAnswer ? escapeHTML(attempt.userAnswer) : "Нет ответа"}</strong></span>
+            <span>Ваш ответ<strong>${attempt.userAnswer ? escapeHTML(attempt.userAnswer) : "Нет ответа"}</strong></span>
             <span>Правильно<strong>${escapeHTML(attempt.question.answer)}</strong></span>
           </div>
           <div class="quiz-result-links">
@@ -17372,11 +17614,30 @@ function prepareResponsiveTables(root) {
 
 const dataIssues = validateData();
 if (dataIssues.length > 0) {
-  console.warn("Проверь данные справочника:", dataIssues);
+  console.warn("Проверьте данные справочника:", dataIssues);
 }
 
 $all(SELECTORS.tabs).forEach((tab) => {
   tab.addEventListener("click", () => setView(tab.dataset.view));
+});
+
+$("#tabMoreButton").addEventListener("click", () => setTabMoreMenu($("#tabMoreMenu").hidden));
+$all("[data-more-view]").forEach((item) => {
+  item.addEventListener("click", () => {
+    setTabMoreMenu(false);
+    setView(item.dataset.moreView);
+  });
+});
+document.addEventListener("click", (event) => {
+  if (!$("#tabMoreMenu").hidden && !event.target.closest("#tabMoreMenu, #tabMoreButton")) setTabMoreMenu(false);
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !$("#tabMoreMenu").hidden) {
+    // Escape только закрывает меню и не запускает глобальный переход к «Глаголам».
+    event.stopImmediatePropagation();
+    setTabMoreMenu(false);
+    $("#tabMoreButton").focus();
+  }
 });
 
 new MutationObserver((mutations) => {
@@ -17536,6 +17797,8 @@ document.addEventListener("keydown", (e) => {
   }
 
   if (e.key === "Escape") {
+    // В непустом поиске по шпаргалкам Escape очищает ввод и не уводит со страницы.
+    if (e.target.id === "tableSearchInput" && e.target.value) return;
     if (state.view !== "verbs") {
       setView("verbs");
       e.preventDefault();

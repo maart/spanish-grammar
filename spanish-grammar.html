@@ -3066,7 +3066,8 @@ td.irregular {
 .textbook-toolbar, .textbook-lesson-nav, .textbook-summary, .textbook-actions, .textbook-language-switch, .textbook-choice-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
 .textbook-toolbar, .textbook-summary { justify-content: space-between; }
 .textbook-lesson-toolbar { display: grid; justify-items: start; gap: 8px; }
-.textbook-lesson-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.textbook-lesson-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; width: 100%; }
+.textbook-lesson-controls .textbook-language-switch { margin-left: auto; }
 .textbook-lesson-heading h2 { margin: 0 0 4px; }
 .textbook-lesson-heading p { margin: 0; }
 .textbook-language-switch .small-button.is-active { border-color: var(--accent); background: var(--accent); color: var(--on-accent); }
@@ -3860,7 +3861,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.08 · обновлено: 27.09.2026 12:17 CEST</span>
+        <span>Версия MVP 1.09 · обновлено: 27.09.2026 12:19 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>

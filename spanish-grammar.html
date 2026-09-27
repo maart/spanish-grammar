@@ -191,6 +191,33 @@ h3 {
   cursor: pointer;
 }
 
+.speak-button {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  margin-left: 6px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: var(--muted);
+  line-height: 1;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+.speak-button:hover,
+.speak-button.is-speaking {
+  border-color: var(--accent-2);
+  color: var(--accent-2);
+}
+
+body:not(.can-speak) .speak-button {
+  display: none;
+}
+
 .search-panel {
   padding: 14px;
   border-radius: 8px;
@@ -3764,6 +3791,7 @@ select {
   .table-card-actions,
   .table-related,
   .brand-stats,
+  .speak-button,
   .app-footer {
     display: none !important;
   }
@@ -3861,7 +3889,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.13 · обновлено: 27.09.2026 13:02 CEST</span>
+        <span>Версия MVP 1.14 · обновлено: 27.09.2026 13:07 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
       </footer>
     </main>
@@ -11646,6 +11674,7 @@ function renderVerbCard(verb) {
   const info = verbInfo(verb);
   node.querySelector("h2").textContent = info.displayInfinitive;
   node.querySelector("h2").lang = "es";
+  node.querySelector("h2").insertAdjacentHTML("beforeend", speakButtonMarkup(info.displayInfinitive));
   node.querySelector(".muted").textContent = info.ru;
 
   const favoriteButton = node.querySelector(".favorite-button");
@@ -12610,7 +12639,7 @@ function tenseExamplesMarkup(id) {
   return `<div class="example-grid ${expanded ? "is-expanded" : ""}">
     ${visibleExamples.map(([es, ru, context]) => `<div class="example-card">
       ${context ? `<small class="example-context">${context}</small>` : ""}
-      <strong lang="es">${es}</strong>
+      <strong lang="es">${es}${speakButtonMarkup(es)}</strong>
       <span>${ru}</span>
     </div>`).join("")}
   </div>
@@ -15284,7 +15313,7 @@ function learningDetailMarkup(detail) {
     ? `<ul class="learning-detail-points">${detail.points.map((point) => `<li>${point}</li>`).join("")}</ul>`
     : "";
   const examples = detail.examples?.length
-    ? `<div class="learning-detail-examples" aria-label="Примеры">${detail.examples.map(([spanish, russian]) => `<div class="learning-detail-example"><span lang="es">${spanish}</span><span>${russian}</span></div>`).join("")}</div>`
+    ? `<div class="learning-detail-examples" aria-label="Примеры">${detail.examples.map(([spanish, russian]) => `<div class="learning-detail-example"><span lang="es">${spanish}${speakButtonMarkup(spanish)}</span><span>${russian}</span></div>`).join("")}</div>`
     : "";
   const note = detail.note ? `<p class="learning-detail-note">${detail.note}</p>` : "";
   return `<p class="learning-detail-lead">${detail.guidance}</p>${points}${examples}<p class="learning-detail-task"><strong>Мини-проверка.</strong> ${detail.task}</p>${note}`;
@@ -15634,6 +15663,11 @@ function textbookFeedback(item, checked, showFeedback, lesson) {
   return `<p class="textbook-feedback" role="status" tabindex="-1"><strong>${escapeHTML(textbookUi("Проверьте ещё раз.", "Revísalo otra vez."))}</strong> ${escapeHTML(textbookUi("Правильный ответ", "Respuesta correcta"))}: <span lang="es">${escapeHTML(answer)}</span>.${noteMarkup}</p>`;
 }
 
+// Подсказки в скобках вроде «(ты)» или «(сейчас)» внутри испанского задания помечаются как русский текст.
+function markRussianHints(html) {
+  return html.replace(/\(([^()]*[а-яё][^()]*)\)/gi, '<span lang="ru">($1)</span>');
+}
+
 function renderTextbookQuestion(lesson, exercise, item, index, saved, showFeedback = false) {
   const key = textbookQuestionKey(exercise.id, index);
   const answer = saved.answers[key] || "";
@@ -15645,7 +15679,7 @@ function renderTextbookQuestion(lesson, exercise, item, index, saved, showFeedba
   const control = exercise.kind === "choice"
     ? '<div class="textbook-choice-row" role="group" aria-label="' + prompt + '">' + options + "</div>"
     : '<label><span class="sr-only">' + prompt + '</span><input class="textbook-answer-input" type="text" autocomplete="off" spellcheck="false" lang="es" value="' + escapeHTML(answer) + '" data-textbook-answer="' + escapeHTML(key) + '" aria-label="' + prompt + '"></label>';
-  return '<li class="textbook-question' + stateClass + '" data-textbook-question="' + escapeHTML(key) + '"><span class="textbook-prompt"><span lang="es">' + prompt + "</span></span>" + control + textbookFeedback(item, checked, showFeedback, lesson) + "</li>";
+  return '<li class="textbook-question' + stateClass + '" data-textbook-question="' + escapeHTML(key) + '"><span class="textbook-prompt"><span lang="es">' + markRussianHints(prompt) + "</span></span>" + control + textbookFeedback(item, checked, showFeedback, lesson) + "</li>";
 }
 
 function textbookLanguageButtons() {
@@ -15715,7 +15749,7 @@ function renderTextbookLesson(content, lesson) {
   const theory = theoryBlocks.map((block) => {
     const attention = block.attention ? '<p class="textbook-attention"><strong>' + escapeHTML(textbookUi("Внимание:", "Atención:")) + '</strong> ' + escapeHTML(textbookText(block.attention)) + '</p>' : "";
     const rules = (block.rules || []).map((rule) => '<li>' + escapeHTML(textbookText(rule)) + '</li>').join("");
-    const examples = block.examples.map((example) => '<li lang="es">' + escapeHTML(example) + '</li>').join("");
+    const examples = block.examples.map((example) => '<li lang="es">' + escapeHTML(example) + speakButtonMarkup(example) + '</li>').join("");
     return '<section class="textbook-theory"><h3>' + escapeHTML(textbookText(block.title)) + '</h3><p>' + escapeHTML(textbookText(block.body)) + '</p>' + (rules ? '<ul class="textbook-rule-list">' + rules + '</ul>' : "") + attention + '<ul class="textbook-example-list">' + examples + '</ul></section>';
   }).join("");
   const exercises = lesson.exercises.map((exercise) => {
@@ -17128,6 +17162,60 @@ function render() {
   (VIEW_RENDERERS[state.view] || renderVerbs)();
 }
 
+// ─── Озвучка испанского через встроенный синтез речи браузера ───
+const speech = globalThis.speechSynthesis;
+let spanishVoice = null;
+
+function pickSpanishVoice() {
+  const voices = speech?.getVoices() || [];
+  const spanish = voices.filter((voice) => voice.lang.toLowerCase().replace("_", "-").startsWith("es"));
+  const isSpain = (voice) => voice.lang.toLowerCase().replace("_", "-") === "es-es";
+  spanishVoice = spanish.find((voice) => isSpain(voice) && voice.localService)
+    || spanish.find(isSpain)
+    || spanish.find((voice) => voice.localService)
+    || spanish[0]
+    || null;
+  document.body.classList.toggle("can-speak", Boolean(spanishVoice));
+}
+
+function speakSpanish(text, button) {
+  if (!speech || !spanishVoice || !text) return;
+  speech.cancel();
+  $all(".speak-button.is-speaking").forEach((item) => item.classList.remove("is-speaking"));
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.voice = spanishVoice;
+  utterance.lang = spanishVoice.lang;
+  utterance.rate = 0.9;
+  button?.classList.add("is-speaking");
+  utterance.onend = utterance.onerror = () => button?.classList.remove("is-speaking");
+  speech.speak(utterance);
+}
+
+function speakButtonMarkup(text) {
+  const plain = String(text).replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+  if (!plain) return "";
+  return `<button class="speak-button" type="button" lang="ru" data-speak="${escapeHTML(plain)}" aria-label="Прослушать: ${escapeHTML(plain)}" title="Прослушать"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M4 9v6h4l5 4V5L8 9H4z"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M16 9.5a3.5 3.5 0 0 1 0 5M18.5 7a7 7 0 0 1 0 10"/></svg></button>`;
+}
+
+// ─── Разметка языка: испанский текст без кириллицы получает lang="es" ───
+// Данные смешивают русский и испанский (шпаргалки, правила, готовые HTML-таблицы наклонений),
+// поэтому язык определяется по отрисованному тексту. Ссылки на источники не размечаются.
+const LANG_CANDIDATES = "h2, h3, h4, p, li, dt, dd, th, td, span, small, strong, em, b, button, label, option, figcaption";
+const SPANISH_WORD = /[a-záéíóúñü]{2,}/i;
+const CYRILLIC = /[а-яё]/i;
+
+function markSpanishText(root) {
+  const candidates = root.matches?.(LANG_CANDIDATES) ? [root, ...root.querySelectorAll(LANG_CANDIDATES)] : root.querySelectorAll(LANG_CANDIDATES);
+  candidates.forEach((element) => {
+    if (element.closest("a, .sr-only")) return;
+    const langOwner = element.closest("[lang]");
+    if (langOwner && langOwner !== document.documentElement) return;
+    const text = element.textContent;
+    if (CYRILLIC.test(text) || !SPANISH_WORD.test(text)) return;
+    element.lang = "es";
+  });
+}
+
 function prepareResponsiveTables(root) {
   root.querySelectorAll("table").forEach((table) => {
     const headRows = table.tHead?.rows;
@@ -17170,6 +17258,25 @@ if (dataIssues.length > 0) {
 $all(SELECTORS.tabs).forEach((tab) => {
   tab.addEventListener("click", () => setView(tab.dataset.view));
 });
+
+new MutationObserver((mutations) => {
+  mutations.forEach((mutation) => mutation.addedNodes.forEach((node) => {
+    if (node.nodeType === Node.ELEMENT_NODE) markSpanishText(node);
+  }));
+}).observe($(SELECTORS.content), { childList: true, subtree: true });
+
+document.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-speak]");
+  if (!button) return;
+  event.preventDefault();
+  event.stopPropagation();
+  speakSpanish(button.dataset.speak, button);
+}, true);
+
+if (speech) {
+  pickSpanishVoice();
+  speech.addEventListener?.("voiceschanged", pickSpanishVoice);
+}
 
 $(SELECTORS.homeTitle).addEventListener("click", () => {
   setView("verbs");

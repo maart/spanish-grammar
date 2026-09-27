@@ -3032,6 +3032,18 @@ td.irregular {
   text-align: center;
 }
 
+.footer-backup {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+
+.footer-backup .small-button {
+  min-height: 30px;
+  font-size: 12px;
+}
+
 .app-footer a {
   color: var(--accent-2);
   text-decoration-thickness: 1px;
@@ -3866,7 +3878,7 @@ select {
           </div>
           <p class="brand-kicker">Глаголы, времена, наклонения и шпаргалки в одном HTML-файле</p>
           <div class="brand-stats" aria-label="Кратко о справочнике">
-            <span>2000 глаголов</span>
+            <span id="verbCountStat">2000 глаголов</span>
             <span>квиз</span>
             <span>офлайн</span>
           </div>
@@ -3889,8 +3901,13 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.14 · обновлено: 27.09.2026 13:07 CEST</span>
+        <span>Версия MVP 1.15 · обновлено: 27.09.2026 13:10 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
+        <span class="footer-backup">
+          <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
+          <button class="small-button" id="importProgressButton" type="button" title="Восстановить данные из ранее сохранённого JSON-файла">Загрузить прогресс</button>
+          <input id="importProgressInput" type="file" accept=".json,application/json" hidden>
+        </span>
       </footer>
     </main>
     <button class="floating-top-button" id="floatingTopButton" type="button" aria-label="Наверх" aria-hidden="true" tabindex="-1" title="Наверх">↑</button>
@@ -9608,7 +9625,17 @@ const appStorage = (() => {
       } catch (_error) {
         // Удаление из резервной памяти уже выполнено.
       }
-    }
+    },
+    keys(prefix = "") {
+      const keys = new Set([...memory.keys()]);
+      try {
+        for (let index = 0; index < (backend?.length || 0); index += 1) keys.add(backend.key(index));
+      } catch (_error) {
+        // Остаются ключи из памяти текущей вкладки.
+      }
+      return [...keys].filter((key) => key?.startsWith(prefix)).sort();
+    },
+    persistent: Boolean(backend)
   };
 })();
 
@@ -17296,6 +17323,64 @@ SYSTEM_DARK_QUERY?.addEventListener?.("change", (event) => {
   applyTheme();
 });
 
+// ─── Резервная копия: все ключи msg:* из localStorage в одном JSON-файле ───
+const BACKUP_FORMAT = "spanish-grammar-backup";
+
+function exportProgress() {
+  const data = Object.fromEntries(appStorage.keys("msg:").map((key) => [key, appStorage.get(key)]));
+  const backup = { format: BACKUP_FORMAT, version: 1, exportedAt: new Date().toISOString(), data };
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `spanish-grammar-progress-${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+}
+
+function parseBackup(text) {
+  let backup;
+  try {
+    backup = JSON.parse(text);
+  } catch (_error) {
+    throw new Error("Файл не является JSON.");
+  }
+  if (backup?.format !== BACKUP_FORMAT || !backup.data || typeof backup.data !== "object") {
+    throw new Error("Это не файл резервной копии справочника.");
+  }
+  const entries = Object.entries(backup.data).filter(([key, value]) => key.startsWith("msg:") && typeof value === "string");
+  if (entries.length === 0) throw new Error("В файле нет сохранённых данных.");
+  return { entries, exportedAt: backup.exportedAt };
+}
+
+async function importProgress(file) {
+  if (!appStorage.persistent) {
+    window.alert("Браузер не разрешает этой странице сохранять данные (например, в приватном режиме), поэтому загрузить прогресс не получится.");
+    return;
+  }
+  let parsed;
+  try {
+    parsed = parseBackup(await file.text());
+  } catch (error) {
+    window.alert(`Не удалось загрузить прогресс: ${error.message}`);
+    return;
+  }
+  const date = parsed.exportedAt ? new Date(parsed.exportedAt).toLocaleString("ru-RU") : "неизвестной даты";
+  if (!window.confirm(`Загрузить копию от ${date}? Текущие избранное, статистика, прогресс и настройки будут заменены.`)) return;
+  appStorage.keys("msg:").forEach((key) => appStorage.remove(key));
+  parsed.entries.forEach(([key, value]) => appStorage.set(key, value));
+  window.location.reload();
+}
+
+$("#exportProgressButton").addEventListener("click", exportProgress);
+$("#importProgressButton").addEventListener("click", () => $("#importProgressInput").click());
+$("#importProgressInput").addEventListener("change", (event) => {
+  const [file] = event.target.files;
+  event.target.value = "";
+  if (file) importProgress(file);
+});
+
 $(SELECTORS.printButton).addEventListener("click", () => {
   window.print();
 });
@@ -17419,6 +17504,7 @@ if (!applyRouteHash()) {
 }
 updateFloatingTopButton();
 warmVerbSearchIndex();
+$("#verbCountStat").textContent = `${BASE_VERBS.length} ${pluralizeVerbs(BASE_VERBS.length)}`;
 
     </script>
   </body>

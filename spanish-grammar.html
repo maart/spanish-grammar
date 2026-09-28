@@ -195,63 +195,10 @@ h3 {
   cursor: pointer;
 }
 
-.speak-button {
-  display: inline-grid;
-  place-items: center;
-  flex: none;
-  width: 28px;
-  height: 28px;
-  margin-left: 6px;
-  padding: 0;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  background: var(--surface-2);
-  color: var(--muted);
-  line-height: 1;
-  vertical-align: middle;
-  cursor: pointer;
-}
-
-.verb-tense-cell {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-}
-
-/* Название времени и кнопка озвучки не помещаются в равную седьмую часть ширины:
-   на широком экране первый столбец шире, на среднем кнопка стоит под названием. */
-@media (min-width: 900px) {
-  .conjugation-table thead th:first-child {
-    width: 158px;
-  }
-}
-
-@media (min-width: 561px) and (max-width: 899px) {
-  .verb-tense-cell {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-  }
-
-  .verb-tense-cell .speak-button {
-    margin-left: 0;
-  }
-}
-
-.verb-tense-cell .verb-link-button {
+.conjugation-table tbody th .verb-link-button {
   overflow-wrap: normal;
   word-break: normal;
   hyphens: none;
-}
-
-.speak-button:hover,
-.speak-button.is-speaking {
-  border-color: var(--accent-2);
-  color: var(--accent-2);
-}
-
-body:not(.can-speak) .speak-button {
-  display: none;
 }
 
 .table-search {
@@ -3971,7 +3918,6 @@ select {
   .table-card-actions,
   .table-related,
   .brand-stats,
-  .speak-button,
   .app-footer {
     display: none !important;
   }
@@ -4075,7 +4021,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.21 · обновлено: 29.09.2026 00:41 CEST</span>
+        <span>Версия MVP 1.22 · обновлено: 29.09.2026 00:43 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -12191,7 +12137,6 @@ function renderVerbCard(verb) {
   const info = verbInfo(verb);
   node.querySelector("h2").textContent = info.displayInfinitive;
   node.querySelector("h2").lang = "es";
-  node.querySelector("h2").insertAdjacentHTML("beforeend", speakButtonMarkup(info.displayInfinitive));
   node.querySelector(".muted").textContent = info.ru;
 
   const favoriteButton = node.querySelector(".favorite-button");
@@ -12449,8 +12394,7 @@ function conjugationTable(info, tenseIds = MAIN_VERB_TENSE_IDS) {
   tenseIds.map(tenseById).filter(Boolean).forEach((tense) => {
     const row = document.createElement("tr");
     const forms = info.forms[tense.id];
-    const spokenForms = forms.filter((form) => form && form !== "-").join(", ");
-    row.innerHTML = `<th><span class="verb-tense-cell"><button class="verb-link-button" type="button" data-open-tense="${tense.id}">${verbTenseLabel(tense)}</button>${speakButtonMarkup(spokenForms)}</span></th>${forms.map((form, index) => {
+    row.innerHTML = `<th><button class="verb-link-button" type="button" data-open-tense="${tense.id}">${verbTenseLabel(tense)}</button></th>${forms.map((form, index) => {
       const cls = isIrregularForm(info.infinitive, tense.id, form, index) ? " class=\"irregular\"" : "";
       const formMarkup = cls
         ? `<button class="irregular-form-link" type="button" data-open-exception="${tense.id}" title="Показать правило и исключения">${form}</button>`
@@ -13159,7 +13103,7 @@ function tenseExamplesMarkup(id) {
   return `<div class="example-grid ${expanded ? "is-expanded" : ""}">
     ${visibleExamples.map(([es, ru, context]) => `<div class="example-card">
       ${context ? `<small class="example-context">${context}</small>` : ""}
-      <strong lang="es">${es}${speakButtonMarkup(es)}</strong>
+      <strong lang="es">${es}</strong>
       <span>${ru}</span>
     </div>`).join("")}
   </div>
@@ -15886,7 +15830,7 @@ function learningDetailMarkup(detail) {
     ? `<ul class="learning-detail-points">${detail.points.map((point) => `<li>${point}</li>`).join("")}</ul>`
     : "";
   const examples = detail.examples?.length
-    ? `<div class="learning-detail-examples" aria-label="Примеры">${detail.examples.map(([spanish, russian]) => `<div class="learning-detail-example"><span lang="es">${spanish}${speakButtonMarkup(spanish)}</span><span>${russian}</span></div>`).join("")}</div>`
+    ? `<div class="learning-detail-examples" aria-label="Примеры">${detail.examples.map(([spanish, russian]) => `<div class="learning-detail-example"><span lang="es">${spanish}</span><span>${russian}</span></div>`).join("")}</div>`
     : "";
   const note = detail.note ? `<p class="learning-detail-note">${detail.note}</p>` : "";
   return `<p class="learning-detail-lead">${detail.guidance}</p>${points}${examples}<p class="learning-detail-task"><strong>Мини-проверка.</strong> ${detail.task}</p>${note}`;
@@ -17752,41 +17696,6 @@ function render() {
   (VIEW_RENDERERS[state.view] || renderVerbs)();
 }
 
-// ─── Озвучка испанского через встроенный синтез речи браузера ───
-const speech = globalThis.speechSynthesis;
-let spanishVoice = null;
-
-function pickSpanishVoice() {
-  const voices = speech?.getVoices() || [];
-  const spanish = voices.filter((voice) => voice.lang.toLowerCase().replace("_", "-").startsWith("es"));
-  const isSpain = (voice) => voice.lang.toLowerCase().replace("_", "-") === "es-es";
-  spanishVoice = spanish.find((voice) => isSpain(voice) && voice.localService)
-    || spanish.find(isSpain)
-    || spanish.find((voice) => voice.localService)
-    || spanish[0]
-    || null;
-  document.body.classList.toggle("can-speak", Boolean(spanishVoice));
-}
-
-function speakSpanish(text, button) {
-  if (!speech || !spanishVoice || !text) return;
-  speech.cancel();
-  $all(".speak-button.is-speaking").forEach((item) => item.classList.remove("is-speaking"));
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.voice = spanishVoice;
-  utterance.lang = spanishVoice.lang;
-  utterance.rate = 0.9;
-  button?.classList.add("is-speaking");
-  utterance.onend = utterance.onerror = () => button?.classList.remove("is-speaking");
-  speech.speak(utterance);
-}
-
-function speakButtonMarkup(text) {
-  const plain = String(text).replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
-  if (!plain) return "";
-  return `<button class="speak-button" type="button" lang="ru" data-speak="${escapeHTML(plain)}" aria-label="Прослушать: ${escapeHTML(plain)}" title="Прослушать"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M4 9v6h4l5 4V5L8 9H4z"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M16 9.5a3.5 3.5 0 0 1 0 5M18.5 7a7 7 0 0 1 0 10"/></svg></button>`;
-}
-
 // ─── Разметка языка: испанский текст без кириллицы получает lang="es" ───
 // Данные смешивают русский и испанский (шпаргалки, правила, готовые HTML-таблицы наклонений),
 // поэтому язык определяется по отрисованному тексту. Ссылки на источники не размечаются.
@@ -17873,19 +17782,6 @@ new MutationObserver((mutations) => {
     if (node.nodeType === Node.ELEMENT_NODE) markSpanishText(node);
   }));
 }).observe($(SELECTORS.content), { childList: true, subtree: true });
-
-document.addEventListener("click", (event) => {
-  const button = event.target.closest("[data-speak]");
-  if (!button) return;
-  event.preventDefault();
-  event.stopPropagation();
-  speakSpanish(button.dataset.speak, button);
-}, true);
-
-if (speech) {
-  pickSpanishVoice();
-  speech.addEventListener?.("voiceschanged", pickSpanishVoice);
-}
 
 $(SELECTORS.homeTitle).addEventListener("click", () => {
   setView("verbs");

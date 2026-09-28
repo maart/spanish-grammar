@@ -4075,7 +4075,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.20 · обновлено: 29.09.2026 00:35 CEST</span>
+        <span>Версия MVP 1.21 · обновлено: 29.09.2026 00:41 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -16338,7 +16338,7 @@ function renderTextbookLesson(content, lesson) {
   const theory = theoryBlocks.map((block) => {
     const attention = block.attention ? '<p class="textbook-attention"><strong>' + escapeHTML(textbookUi("Внимание:", "Atención:")) + '</strong> ' + escapeHTML(textbookText(block.attention)) + '</p>' : "";
     const rules = (block.rules || []).map((rule) => '<li>' + escapeHTML(textbookText(rule)) + '</li>').join("");
-    const examples = block.examples.map((example) => '<li lang="es">' + escapeHTML(example) + speakButtonMarkup(example) + '</li>').join("");
+    const examples = block.examples.map((example) => '<li lang="es">' + escapeHTML(example) + '</li>').join("");
     return '<section class="textbook-theory"><h3>' + escapeHTML(textbookText(block.title)) + '</h3><p>' + escapeHTML(textbookText(block.body)) + '</p>' + (rules ? '<ul class="textbook-rule-list">' + rules + '</ul>' : "") + attention + '<ul class="textbook-example-list">' + examples + '</ul></section>';
   }).join("");
   const exercises = lesson.exercises.map((exercise) => {

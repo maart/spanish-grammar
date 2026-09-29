@@ -816,6 +816,148 @@ input[type="search"] {
   margin: 12px 0 0;
 }
 
+.learning-modules {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.learning-module {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.learning-module.is-current {
+  border-color: color-mix(in srgb, var(--accent-2) 55%, var(--line));
+}
+
+.learning-module summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.learning-module summary::-webkit-details-marker {
+  display: none;
+}
+
+.learning-module summary::after {
+  content: "▾";
+  color: var(--accent);
+  transition: transform 160ms ease;
+}
+
+.learning-module:not([open]) summary::after {
+  transform: rotate(-90deg);
+}
+
+.learning-module-title {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  margin-right: auto;
+}
+
+.learning-module-title small,
+.learning-module-count {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.learning-module-body {
+  display: grid;
+  gap: 12px;
+  padding: 0 14px 14px;
+}
+
+.learning-module-goal {
+  margin: 0;
+}
+
+.learning-module-part {
+  display: grid;
+  gap: 6px;
+}
+
+.learning-module-part h4 {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.learning-module-lessons {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 4px 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.learning-module-lesson {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  width: 100%;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.learning-module-lesson:hover span:last-child,
+.learning-module-lesson:focus-visible span:last-child {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.learning-module-mark {
+  flex: none;
+  width: 1.2em;
+  color: var(--muted);
+  font-weight: 900;
+}
+
+.learning-module-lesson.is-done .learning-module-mark {
+  color: var(--success);
+}
+
+.learning-module-lesson.is-started .learning-module-mark {
+  color: var(--accent-2);
+}
+
+.learning-module-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.learning-module-check input {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin: 2px 0 0;
+  accent-color: var(--success);
+}
+
+.learning-modules-note {
+  margin: 10px 0 0;
+  font-size: 12px;
+}
+
 .learning-item-title {
   min-width: 0;
 }
@@ -3908,7 +4050,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.31 · обновлено: 29.09.2026 17:59 CEST</span>
+        <span>Версия MVP 1.32 · обновлено: 29.09.2026 18:04 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -16865,6 +17007,118 @@ const LEARNING_DETAIL_PATTERNS = [
   }
 ];
 
+// Модули плана: уроки учебника по темам общения, 1–3 шпаргалки, одно задание на речь или письмо и самопроверка.
+// Статус урока берётся из прогресса учебника; задание и пункты «Могу» отмечаются вручную по ключам plan:<id>:….
+const LEARNING_MODULES = [
+  {
+    id: "a1-intro", level: "a1", title: "Знакомство",
+    goal: "Представиться и узнать у собеседника имя, страну, возраст и занятие.",
+    lessons: [34, 42, 1, 14, 25, 45, 30, 31, 116, 125],
+    tables: [["Личные местоимения: полная таблица", "Личные местоимения"], ["Tú vs Usted vs Vosotros", "Tú / usted / vosotros"], ["Gentilicios", "Национальности"]],
+    task: "Представьтесь вслух в 5–6 фразах: имя, страна и национальность, возраст, профессия, языки. Затем задайте те же вопросы собеседнику — сначала на tú, потом на usted.",
+    canDo: ["назвать имя, страну, возраст и профессию", "спросить то же у собеседника", "выбрать tú или usted по ситуации"]
+  },
+  {
+    id: "a1-shopping", level: "a1", title: "Вещи и покупки",
+    goal: "Назвать нужные вещи, спросить цену и купить.",
+    lessons: [2, 3, 4, 6, 7, 5, 26, 23, 35, 36],
+    tables: [["Артикли: el/la/los/las", "Артикли"], ["Род существительных: правила", "Род"], ["Числительные: количественные", "Числа"]],
+    task: "Разыграйте покупку в магазине из 6 реплик: попросите три вещи с un/una/unos, уточните цену и ответьте на вопрос продавца, заменив вещь на lo/la.",
+    canDo: ["назвать вещь с правильным артиклем", "спросить и понять цену", "заменить уже названную вещь на lo / la"]
+  },
+  {
+    id: "a1-describe", level: "a1", title: "Описание людей и вещей",
+    goal: "Описать человека и его вещи, сравнить двух людей или два предмета.",
+    lessons: [12, 13, 15, 18, 19, 43, 44, 8, 33],
+    tables: [["Прилагательные: согласование", "Прилагательные"], ["Ser/estar: сущность", "Ser / estar"], ["Mi/mío, tu/tuyo", "Притяжательные"]],
+    task: "Напишите 60–80 слов о знакомом человеке: внешность и характер (ser), как он себя сейчас чувствует (estar), какие у него вещи (mi, su, suyo) и одно сравнение с вами.",
+    canDo: ["описать внешность и характер человека", "сказать, как он себя чувствует и где находится", "сравнить двух людей или две вещи"]
+  },
+  {
+    id: "a1-places", level: "a1", title: "Дом и город",
+    goal: "Сказать, что где есть и где находится, спросить об этом.",
+    lessons: [46, 100, 47, 112, 27, 32],
+    tables: [["Hay / Está / Se encuentra", "Hay / está"], ["Preposiciones de lugar", "Предлоги места"], ["Aquí / Ahí / Allí", "Aquí / ahí / allí"]],
+    task: "Опишите вслух свою квартиру и улицу в 6–8 фразах: что там есть (hay), где что находится (está + предлог места), на каком этаже вы живёте. Затем спросите, где ближайшая аптека, и повторите ответ.",
+    canDo: ["сказать, что есть в доме или на улице", "сказать, где находится предмет или место", "спросить, где что-то находится, и понять ответ"]
+  },
+  {
+    id: "a1-day", level: "a1", title: "Мой день и вкусы",
+    goal: "Рассказать о своём дне, привычках и о том, что нравится.",
+    lessons: [48, 49, 50, 53, 55, 9, 110, 101, 103, 104, 108, 109],
+    tables: [["Gustar и похожие глаголы", "Gustar"], ["Siempre, nunca, a veces", "Частотность"], ["La hora y la fecha", "Время и дата"]],
+    task: "Расскажите вслух о своём обычном дне в 8–10 фразах: во сколько встаёте, что делаете и как часто, что любите и чего не любите. Спросите собеседника ¿Y a ti? и ответьте también / tampoco.",
+    canDo: ["рассказать о распорядке дня с указанием времени", "сказать, как часто что-то делаю", "сказать, что мне нравится и что нет"]
+  },
+  {
+    id: "a1-plans", level: "a1", title: "Сейчас, планы и вчера",
+    goal: "Сказать, что происходит сейчас, что вы собираетесь делать и что уже сделали; попросить о простом действии.",
+    lessons: [56, 69, 93, 73, 75, 99, 60, 58],
+    tables: [["Futuro: ir a + infinitivo", "Ir a + infinitivo"], ["Imperativo: tú, usted", "Imperativo"], ["Pretérito Perfecto vs Indefinido в Испании", "Perfecto / indefinido"]],
+    task: "Напишите сообщение другу из 5–6 фраз: что вы делаете сейчас, что уже сделали сегодня, что делали вчера и что собираетесь делать на выходных; закончите одной просьбой в imperativo.",
+    canDo: ["сказать, что делаю сейчас и что собираюсь делать", "рассказать, что сделал сегодня и вчера", "попросить о простом действии или дать инструкцию"]
+  }
+];
+
+function learningModulesFor(levelId) {
+  return LEARNING_MODULES.filter((module) => module.level === levelId);
+}
+
+function learningLessonStatus(lessonId) {
+  const lesson = TEXTBOOK_LESSONS.find((item) => item.id === lessonId);
+  if (!lesson) return "todo";
+  const progress = textbookProgressFor(lesson);
+  if (progress.done) return "done";
+  return progress.answered > 0 || progress.checked > 0 ? "started" : "todo";
+}
+
+function learningModuleSteps(module) {
+  const manual = (kind, key) => ({ kind, key, done: learningStatusFor(key) === "done" });
+  return [
+    ...module.lessons.map((id) => ({ kind: "lesson", id, done: learningLessonStatus(id) === "done" })),
+    manual("task", `plan:${module.id}:task`),
+    ...module.canDo.map((_, index) => manual("can", `plan:${module.id}:can:${index}`))
+  ];
+}
+
+function learningLevelCounts(level) {
+  const modules = learningModulesFor(level.id);
+  if (modules.length) {
+    const steps = modules.flatMap(learningModuleSteps);
+    return { done: steps.filter((step) => step.done).length, total: steps.length };
+  }
+  const total = [level.can, level.grammar, level.topics, level.practice, level.checklist].reduce((sum, list) => sum + (list?.length || 0), 0);
+  const done = Object.keys(state.learningProgress).filter((key) => key.startsWith(`${level.id}:`) && learningStatusFor(key) === "done").length;
+  return { done, total };
+}
+
+function learningModuleMarkup(module, index, isCurrent) {
+  const steps = learningModuleSteps(module);
+  const done = steps.filter((step) => step.done).length;
+  const marks = { done: "✓", started: "◐", todo: "○" };
+  const labels = { done: "пройден", started: "начат", todo: "не начат" };
+  const lessons = module.lessons.map((id) => {
+    const lesson = TEXTBOOK_LESSONS.find((item) => item.id === id);
+    const status = learningLessonStatus(id);
+    return `<li><button class="learning-module-lesson is-${status}" type="button" data-textbook-open="${id}" aria-label="Урок ${id}: ${escapeHTML(lesson.title.ru)} — ${labels[status]}"><span class="learning-module-mark" aria-hidden="true">${marks[status]}</span><span>${id}. ${escapeHTML(lesson.title.ru)}</span></button></li>`;
+  }).join("");
+  const tables = module.tables.map(([titlePart, label]) => learningTableResource(titlePart, label)).filter(Boolean)
+    .map((link) => `<a class="small-button" href="${link.href}">${link.label}</a>`).join("");
+  const check = (key, text) => `<label class="learning-module-check"><input type="checkbox" data-learning-done="${key}" ${learningStatusFor(key) === "done" ? "checked" : ""}><span>${text}</span></label>`;
+  const openKey = `plan:${module.id}`;
+  const isOpen = openKey in state.learningDetails ? state.learningDetails[openKey] : isCurrent;
+  return `<details class="learning-module ${isCurrent ? "is-current" : ""}" data-learning-module="${module.id}" ${isOpen ? "open" : ""}>
+    <summary><span class="learning-module-title"><small>Модуль ${index + 1}</small><strong>${module.title}</strong></span><span class="learning-module-count">${done}/${steps.length}</span></summary>
+    <div class="learning-module-body">
+      <p class="learning-module-goal">${module.goal}</p>
+      <div class="learning-module-part"><h4>Уроки учебника</h4><ol class="learning-module-lessons">${lessons}</ol></div>
+      ${tables ? `<div class="learning-module-part"><h4>Шпаргалки</h4><div class="learning-item-links">${tables}</div></div>` : ""}
+      <div class="learning-module-part"><h4>Задание</h4>${check(`plan:${module.id}:task`, module.task)}</div>
+      <div class="learning-module-part"><h4>Могу</h4>${module.canDo.map((item, canIndex) => check(`plan:${module.id}:can:${canIndex}`, item)).join("")}</div>
+    </div>
+  </details>`;
+}
+
 function learningTableResource(titlePart, label) {
   const table = INDEXED_TABLES.find((item) => item.title.includes(titlePart));
   return table ? { href: `#table-${table.index}`, label } : null;
@@ -17002,8 +17256,7 @@ function renderLearningPlan() {
   const level = LEARNING_LEVELS.find((item) => item.id === state.learningLevel) || LEARNING_LEVELS[0];
   const levelButtons = LEARNING_LEVELS.map((item) => {
     const selected = item.id === level.id;
-    const total = [item.can, item.grammar, item.topics, item.practice, item.checklist].reduce((sum, list) => sum + (list?.length || 0), 0);
-    const done = Object.keys(state.learningProgress).filter((key) => key.startsWith(`${item.id}:`) && learningStatusFor(key) === "done").length;
+    const { done, total } = learningLevelCounts(item);
     return `<button class="small-button ${selected ? "is-active" : ""}" id="learning-level-${item.id}" role="tab" tabindex="${selected ? "0" : "-1"}" type="button" data-learning-level="${item.id}" aria-selected="${selected}" aria-controls="learning-plan-panel">${item.label}${total ? ` · ${done}/${total}` : ""}</button>`;
   }).join("");
   const sections = [
@@ -17041,16 +17294,37 @@ function renderLearningPlan() {
   };
   const header = document.createElement("section");
   header.className = "info-card";
-  const nextStepMarkup = nextItem
+  const modules = learningModulesFor(level.id);
+  const levelCounts = learningLevelCounts(level);
+  const levelProgress = levelCounts.total ? Math.round(levelCounts.done / levelCounts.total * 100) : 0;
+  const currentModuleIndex = modules.findIndex((module) => learningModuleSteps(module).some((step) => !step.done));
+  const currentModule = modules[currentModuleIndex];
+  const currentStep = currentModule ? learningModuleSteps(currentModule).find((step) => !step.done) : null;
+  const doneMarkup = `<div class="plan-next-step"><div><p><strong>Уровень завершён</strong></p><small>Все пункты отмечены как освоенные.</small></div></div>`;
+  let nextStepMarkup = nextItem
     ? `<div class="plan-next-step"><div><p><strong>Следующий пункт</strong></p><small>${nextItem.item}</small></div><button class="small-button primary" type="button" data-open-learning-item="${nextKey}">Открыть пункт</button></div>`
-    : `<div class="plan-next-step"><div><p><strong>Уровень завершён</strong></p><small>Все пункты отмечены как освоенные.</small></div></div>`;
+    : doneMarkup;
+  if (modules.length) {
+    const lesson = currentStep?.kind === "lesson" ? TEXTBOOK_LESSONS.find((item) => item.id === currentStep.id) : null;
+    nextStepMarkup = !currentStep
+      ? doneMarkup
+      : lesson
+        ? `<div class="plan-next-step"><div><p><strong>Сейчас: модуль «${currentModule.title}»</strong></p><small>Урок ${lesson.id}. ${escapeHTML(lesson.title.ru)}</small></div><button class="small-button primary" type="button" data-textbook-open="${lesson.id}">Открыть урок</button></div>`
+        : `<div class="plan-next-step"><div><p><strong>Сейчас: модуль «${currentModule.title}»</strong></p><small>${currentStep.kind === "task" ? "Задание модуля" : "Самопроверка: пункты «Могу»"}</small></div><button class="small-button primary" type="button" data-open-learning-module="${currentModule.id}">Открыть модуль</button></div>`;
+  }
+  const summaryDone = modules.length ? levelCounts.done : doneCount;
+  const summaryTotal = modules.length ? levelCounts.total : allItems.length;
+  const summaryProgress = modules.length ? levelProgress : progress;
+  const planBody = modules.length
+    ? `<div class="learning-modules">${modules.map((module, index) => learningModuleMarkup(module, index, index === currentModuleIndex)).join("")}</div><p class="muted learning-modules-note">Уроки отмечаются сами, когда все их упражнения проверены в Учебнике. Задание и пункты «Могу» отмечайте сами.</p>`
+    : `<div class="learning-plan-filter-bar"><p><strong>Показывать пункты</strong> <span class="muted">${filteredItemCount} из ${allItems.length}</span></p><div class="learning-plan-filters" role="group" aria-label="Фильтр по типу пункта">${filterButtons}</div></div>
+      ${sections.map(([sectionId, title, items]) => list(sectionId, title, items)).join("")}`;
   header.innerHTML = `
     <div class="card-head"><div><h2>План обучения</h2><p class="muted">Практическая карта испанского по CEFR. A0 — внутренняя подготовительная ступень; A1–C2 — официальные уровни.</p></div></div>
     <div class="learning-level-tabs" role="tablist" aria-label="Выбор уровня">${levelButtons}</div>
     <div id="learning-plan-panel" role="tabpanel" tabindex="-1" aria-labelledby="learning-level-${level.id}">
-      <section class="learning-plan-summary" aria-live="polite"><p><strong>${level.label} · ${level.title}</strong></p><p>${level.description}</p><p><strong>Освоено: ${doneCount} из ${allItems.length} · ${progress}%</strong></p><progress max="100" value="${progress}" aria-label="Освоено на уровне ${level.label}"></progress>${nextStepMarkup}</section>
-      <div class="learning-plan-filter-bar"><p><strong>Показывать пункты</strong> <span class="muted">${filteredItemCount} из ${allItems.length}</span></p><div class="learning-plan-filters" role="group" aria-label="Фильтр по типу пункта">${filterButtons}</div></div>
-      ${sections.map(([sectionId, title, items]) => list(sectionId, title, items)).join("")}
+      <section class="learning-plan-summary" aria-live="polite"><p><strong>${level.label} · ${level.title}</strong></p><p>${level.description}</p><p><strong>Освоено: ${summaryDone} из ${summaryTotal} · ${summaryProgress}%</strong></p><progress max="100" value="${summaryProgress}" aria-label="Освоено на уровне ${level.label}"></progress>${nextStepMarkup}</section>
+      ${planBody}
       <p class="muted learning-plan-sources">Основа: <a href="https://www.coe.int/en/web/common-european-framework-reference-languages/companion-volume" target="_blank" rel="noopener">CEFR Companion Volume</a> и <a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/default.htm" target="_blank" rel="noopener">Plan Curricular del Instituto Cervantes</a>. A0 опирается на коммуникативные дескрипторы Pre-A1 и начальное содержание A1; планы A1–C2 соотнесены с официальными дескрипторами и инвентарями функций, грамматики, прагматики и учебных тем соответствующих уровней. Списки являются практической адаптацией для самостоятельного обучения, а не официальным экзаменационным силлабусом.</p>
       <p class="learning-plan-reset"><button class="small-button" type="button" data-reset-learning>Сбросить прогресс ${level.label}</button></p>
     </div>
@@ -17078,6 +17352,19 @@ function renderLearningPlan() {
   }));
   bindClickAll(header, "[data-learning-filter]", (event) => { state.learningFilter = event.currentTarget.dataset.learningFilter; appStorage.set("msg:learningFilter", state.learningFilter); renderLearningPlan(); requestAnimationFrame(() => $all("[data-learning-filter]").find((button) => button.dataset.learningFilter === state.learningFilter)?.focus({ preventScroll: true })); });
   $all("[data-learning-detail]", header).forEach((detail) => detail.addEventListener("toggle", () => { const key = detail.dataset.learningDetail; if (detail.open) state.learningDetails[key] = true; else delete state.learningDetails[key]; appStorage.set("msg:learningDetails", JSON.stringify(state.learningDetails)); }));
+  bindClickAll(header, "[data-textbook-open]", (event) => openTextbookLesson(Number(event.currentTarget.dataset.textbookOpen)));
+  $all("[data-learning-module]", header).forEach((detail) => detail.addEventListener("toggle", () => {
+    state.learningDetails[`plan:${detail.dataset.learningModule}`] = detail.open;
+    appStorage.set("msg:learningDetails", JSON.stringify(state.learningDetails));
+  }));
+  header.querySelector("[data-open-learning-module]")?.addEventListener("click", (event) => {
+    const detail = $all("[data-learning-module]", header).find((item) => item.dataset.learningModule === event.currentTarget.dataset.openLearningModule);
+    if (!detail) return;
+    detail.open = true;
+    const target = detail.querySelector("[data-learning-done]:not(:checked)") || detail.querySelector("summary");
+    target.scrollIntoView({ behavior: "smooth", block: "center" });
+    target.focus({ preventScroll: true });
+  });
   header.querySelector("[data-open-learning-item]")?.addEventListener("click", (event) => {
     const key = event.currentTarget.dataset.openLearningItem;
     const openTarget = () => {
@@ -17101,8 +17388,8 @@ function renderLearningPlan() {
     openTarget();
   });
   bindClickAll(header, "[data-reset-learning]", () => {
-    if (!window.confirm(`Сбросить прогресс уровня ${level.label}? Все статусы этого уровня будут удалены.`)) return;
-    Object.keys(state.learningProgress).filter((key) => key.startsWith(`${level.id}:`)).forEach((key) => delete state.learningProgress[key]);
+    if (!window.confirm(`Сбросить прогресс уровня ${level.label}? Все отметки этого уровня в плане будут удалены; прогресс уроков в Учебнике сохранится.`)) return;
+    Object.keys(state.learningProgress).filter((key) => key.startsWith(`${level.id}:`) || key.startsWith(`plan:${level.id}-`)).forEach((key) => delete state.learningProgress[key]);
     appStorage.set("msg:learningProgress", JSON.stringify(state.learningProgress));
     renderLearningPlan();
   });
@@ -18312,6 +18599,24 @@ function validateData() {
     if (!textbookLessonLevel(lesson.id)) issues.push("Нет уровня PCIC для урока " + lesson.id);
   });
   levelledLessonIds.filter((id) => !TEXTBOOK_LESSONS.some((lesson) => lesson.id === id)).forEach((id) => issues.push("TEXTBOOK_LESSON_LEVELS ссылается на несуществующий урок " + id));
+  const moduleIds = new Set();
+  const moduleLessonIds = new Set();
+  LEARNING_MODULES.forEach((module) => {
+    if (moduleIds.has(module.id) || !module.id.startsWith(`${module.level}-`)) issues.push("Некорректный или повторяющийся ID модуля плана: " + module.id);
+    moduleIds.add(module.id);
+    if (!module.title || !module.goal || !module.task || !module.canDo?.length) issues.push("Неполный модуль плана: " + module.id);
+    module.lessons.forEach((id) => {
+      if (moduleLessonIds.has(id)) issues.push(`Урок ${id} входит в несколько модулей плана`);
+      moduleLessonIds.add(id);
+      if (textbookLessonLevel(id) !== module.level) issues.push(`Урок ${id} в модуле ${module.id} не соответствует уровню ${module.level}`);
+    });
+    module.tables.forEach(([titlePart]) => {
+      if (INDEXED_TABLES.filter((table) => table.title.includes(titlePart)).length !== 1) issues.push(`Шпаргалка модуля ${module.id} не найдена однозначно: ${titlePart}`);
+    });
+  });
+  new Set(LEARNING_MODULES.map((module) => module.level)).forEach((level) => {
+    (TEXTBOOK_LESSON_LEVELS[level] || []).filter((id) => !moduleLessonIds.has(id)).forEach((id) => issues.push(`Урок ${id} уровня ${level} не входит ни в один модуль плана`));
+  });
   if (Math.max(...TEXTBOOK_LESSONS.map((lesson) => lesson.id)) !== TEXTBOOK_LAST_LESSON_ID) issues.push("TEXTBOOK_LAST_LESSON_ID не совпадает с последним уроком учебника");
   TEXTBOOK_LESSONS.forEach((lesson) => {
     if (!Number.isInteger(lesson.id) || textbookIds.has(lesson.id)) issues.push("Некорректный или повторяющийся урок учебника: " + lesson.id);

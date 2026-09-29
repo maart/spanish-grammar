@@ -4199,7 +4199,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.45 · обновлено: 29.09.2026 23:13 CEST</span>
+        <span>Версия MVP 1.46 · обновлено: 29.09.2026 23:15 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -10124,6 +10124,26 @@ function readStoredJSON(key, fallback) {
   }
 }
 
+function readStoredObject(key) {
+  const stored = readStoredJSON(key, {});
+  return stored && typeof stored === "object" && !Array.isArray(stored) ? stored : {};
+}
+
+function readStoredArray(key, isValidItem = () => true) {
+  const stored = readStoredJSON(key, []);
+  return Array.isArray(stored) ? stored.filter(isValidItem) : [];
+}
+
+// Поле state.<name> хранится под ключом msg:<name>; строки — как есть, остальное — в JSON.
+const STATE_STORAGE_KEYS = { learningChecks: "msg:learningLevelChecks" };
+
+function persist(...names) {
+  names.forEach((name) => {
+    const value = state[name];
+    appStorage.set(STATE_STORAGE_KEYS[name] || `msg:${name}`, typeof value === "string" ? value : JSON.stringify(value));
+  });
+}
+
 // Последний номер урока: границы восстановления прогресса и открытого урока. validateData сверяет его с TEXTBOOK_LESSONS.
 const TEXTBOOK_LAST_LESSON_ID = 125;
 
@@ -10160,8 +10180,7 @@ function migrateLearningProgress() {
 }
 
 function readLearningDetails() {
-  const stored = readStoredJSON("msg:learningDetails", {});
-  const details = stored && typeof stored === "object" && !Array.isArray(stored) ? stored : {};
+  const details = readStoredObject("msg:learningDetails");
   const current = Object.fromEntries(Object.entries(details).filter(([key]) => key.startsWith("plan:")));
   if (Object.keys(current).length !== Object.keys(details).length) appStorage.set("msg:learningDetails", JSON.stringify(current));
   appStorage.remove("msg:learningFilter");
@@ -10177,10 +10196,7 @@ const state = {
   })(),
   learningProgress: migrateLearningProgress(),
   learningDetails: readLearningDetails(),
-  learningChecks: (() => {
-    const stored = readStoredJSON("msg:learningLevelChecks", {});
-    return stored && typeof stored === "object" && !Array.isArray(stored) ? stored : {};
-  })(),
+  learningChecks: readStoredObject("msg:learningLevelChecks"),
   learningCheck: null,
   query: "",
   selectedVerb: null,
@@ -10234,8 +10250,8 @@ const state = {
   showQuizSettings: false,
   showQuizPanel: appStorage.get("msg:showQuizPanel") === "true",
   cardsQuery: "",
-  favoriteTables: (() => { const stored = readStoredJSON("msg:favoriteTables", []); return Array.isArray(stored) ? stored.filter((id) => typeof id === "string") : []; })(),
-  favoriteLessons: (() => { const stored = readStoredJSON("msg:favoriteLessons", []); return Array.isArray(stored) ? stored.filter(Number.isInteger) : []; })(),
+  favoriteTables: readStoredArray("msg:favoriteTables", (id) => typeof id === "string"),
+  favoriteLessons: readStoredArray("msg:favoriteLessons", Number.isInteger),
   cardsSort: appStorage.get("msg:cardsSort") || "recent",
   cardsFilter: ["all", "reviewed", "unreviewed", "mistakes", "mastered"].includes(appStorage.get("msg:cardsFilter"))
     ? appStorage.get("msg:cardsFilter")
@@ -10260,10 +10276,7 @@ const state = {
   textbookVisibleFeedback: {},
   textbookOpenExercises: {},
   textbookLevel: ["a1", "a2", "b1", "b2"].includes(appStorage.get("msg:textbookLevel")) ? appStorage.get("msg:textbookLevel") : "all",
-  textbookOpenGroups: (() => {
-    const stored = readStoredJSON("msg:textbookOpenGroups", {});
-    return stored && typeof stored === "object" && !Array.isArray(stored) ? stored : {};
-  })(),
+  textbookOpenGroups: readStoredObject("msg:textbookOpenGroups"),
   textbookProgress: readTextbookProgress()
 };
 
@@ -12564,6 +12577,21 @@ function disclosureButton({ open, target, label, hideLabel = `Скрыть ${lab
   </button>`;
 }
 
+// Экран перерисовывается целиком, поэтому после перерисовки фокус (и при необходимости прокрутка)
+// возвращаются на элемент, который пользователь только что нажал.
+function rerenderAndFocus(render, selector, { keepScroll = false } = {}) {
+  const scrollY = window.scrollY;
+  render();
+  requestAnimationFrame(() => {
+    if (keepScroll) window.scrollTo(0, scrollY);
+    document.querySelector(selector)?.focus({ preventScroll: true });
+  });
+}
+
+function attrSelector(name, value) {
+  return `[${name}="${CSS.escape(String(value))}"]`;
+}
+
 function bindClickAll(root, selector, handler) {
   $all(selector, root).forEach((element) => element.addEventListener("click", handler));
 }
@@ -13607,7 +13635,7 @@ function savedMaterialsCard() {
 }
 
 function saveCards() {
-  appStorage.set("msg:cards", JSON.stringify(state.cards));
+  persist("cards");
 }
 
 function toggleCard(verb) {
@@ -13646,7 +13674,7 @@ function restoreLastRemovedCard() {
 function rememberRecentVerb(verb) {
   const recent = Array.isArray(state.recentVerbs) ? state.recentVerbs : [];
   state.recentVerbs = [verb, ...recent.filter((item) => item !== verb && BASE_VERBS.includes(item))].slice(0, 8);
-  appStorage.set("msg:recentVerbs", JSON.stringify(state.recentVerbs));
+  persist("recentVerbs");
 }
 
 function selectVerb(verb, { keepReturnQuery = true, updateRoute = true } = {}) {
@@ -14488,7 +14516,7 @@ function renderTenses() {
     });
     bindClickAll(focusNav, "[data-return-mood]", (event) => {
       state.selectedMood = event.currentTarget.dataset.returnMood;
-      appStorage.set("msg:selectedMood", state.selectedMood);
+      persist("selectedMood");
       resetMoodDetailState();
       state.view = "moods";
       state.focusedTense = null;
@@ -14575,7 +14603,7 @@ function renderTenses() {
   bindClickAll(nav, "[data-tense-filter]", (event) => {
     const button = event.currentTarget;
     state.tenseFilter = button.dataset.tenseFilter;
-    appStorage.set("msg:tenseFilter", state.tenseFilter);
+    persist("tenseFilter");
     renderTenses();
     scrollToCard("tensesTop");
   });
@@ -14933,27 +14961,24 @@ function renderTables() {
   nav.querySelector("[data-table-filter]")?.addEventListener("change", (event) => {
     state.tableFilter = event.currentTarget.value;
     state.tableSubgroup = "";
-    appStorage.set("msg:tableFilter", state.tableFilter);
-    appStorage.set("msg:tableSubgroup", state.tableSubgroup);
+    persist("tableFilter", "tableSubgroup");
     renderTables();
   });
   nav.querySelector("[data-table-level]")?.addEventListener("change", (event) => {
     state.tableLevel = event.currentTarget.value;
     state.tableSubgroup = "";
-    appStorage.set("msg:tableLevel", state.tableLevel);
-    appStorage.set("msg:tableSubgroup", state.tableSubgroup);
+    persist("tableLevel", "tableSubgroup");
     renderTables();
   });
   nav.querySelector("[data-table-level-cumulative]")?.addEventListener("change", (event) => {
     state.tableLevelCumulative = event.currentTarget.checked;
     state.tableSubgroup = "";
-    appStorage.set("msg:tableLevelCumulative", String(state.tableLevelCumulative));
-    appStorage.set("msg:tableSubgroup", state.tableSubgroup);
+    persist("tableLevelCumulative", "tableSubgroup");
     renderTables();
   });
   nav.querySelector("[data-table-subgroup]")?.addEventListener("change", (event) => {
     state.tableSubgroup = event.currentTarget.value;
-    appStorage.set("msg:tableSubgroup", state.tableSubgroup);
+    persist("tableSubgroup");
     renderTables();
   });
 
@@ -15052,9 +15077,7 @@ function fillTableCatalog(catalog, visibleTables) {
     state.tableFilter = "all";
     state.tableSubgroup = "";
     state.tableLevel = "all";
-    appStorage.set("msg:tableFilter", state.tableFilter);
-    appStorage.set("msg:tableSubgroup", state.tableSubgroup);
-    appStorage.set("msg:tableLevel", state.tableLevel);
+    persist("tableFilter", "tableSubgroup", "tableLevel");
     renderTables();
   });
 }
@@ -15110,10 +15133,7 @@ function openTableCatalog({ filterId = "all", subgroup = "", levelId = "all", cu
   state.tableSubgroup = subgroup || "";
   state.tableLevel = TABLE_LEVELS.some((level) => level.id === levelId) ? levelId : "all";
   state.tableLevelCumulative = cumulative;
-  appStorage.set("msg:tableFilter", state.tableFilter);
-  appStorage.set("msg:tableSubgroup", state.tableSubgroup);
-  appStorage.set("msg:tableLevel", state.tableLevel);
-  appStorage.set("msg:tableLevelCumulative", String(state.tableLevelCumulative));
+  persist("tableFilter", "tableSubgroup", "tableLevel", "tableLevelCumulative");
   renderTables();
   updateRouteHash("tables");
   scrollToCard("tablesTop");
@@ -15777,7 +15797,7 @@ function selectedQuizPersons() {
 }
 
 function saveQuizConfig() {
-  appStorage.set("msg:quizConfig", JSON.stringify(state.quizConfig));
+  persist("quizConfig");
 }
 
 function getAllTenseIds() {
@@ -15946,7 +15966,7 @@ function cardDifficulty(verb) {
 }
 
 function saveCardStats() {
-  appStorage.set("msg:cardStats", JSON.stringify(state.cardStats));
+  persist("cardStats");
 }
 
 function difficultStudyCards() {
@@ -16238,9 +16258,9 @@ function openLearningPlanForLesson(lessonId) {
   const module = learningModuleForLesson(lessonId);
   if (!module) return;
   state.learningLevel = module.level;
-  appStorage.set("msg:learningLevel", state.learningLevel);
+  persist("learningLevel");
   state.learningDetails[`plan:${module.id}`] = true;
-  appStorage.set("msg:learningDetails", JSON.stringify(state.learningDetails));
+  persist("learningDetails");
   setView("learning-plan");
   setTimeout(() => {
     const detail = $all("[data-learning-module]").find((item) => item.dataset.learningModule === module.id);
@@ -16405,7 +16425,7 @@ function saveLearningCheckResult(levelId, percent) {
   record.best = Math.max(record.best || 0, percent);
   if (percent >= LEARNING_CHECK_PASS_SHARE * 100 && !record.passedAt) record.passedAt = new Date().toISOString().slice(0, 10);
   state.learningChecks[levelId] = record;
-  appStorage.set("msg:learningLevelChecks", JSON.stringify(state.learningChecks));
+  persist("learningChecks");
 }
 
 function learningCheckCardMarkup(level) {
@@ -16529,7 +16549,7 @@ function renderLearningPlanContent() {
     </div>
   `;
   content.appendChild(header);
-  const selectLevel = (levelId) => { state.learningCheck = null; state.learningLevel = levelId; appStorage.set("msg:learningLevel", state.learningLevel); renderLearningPlan(); };
+  const selectLevel = (levelId) => { state.learningCheck = null; state.learningLevel = levelId; persist("learningLevel"); renderLearningPlan(); };
   bindClickAll(header, "[data-learning-level]", (event) => selectLevel(event.currentTarget.dataset.learningLevel));
   $all("[data-learning-level]", header).forEach((button, index, buttons) => button.addEventListener("keydown", (event) => {
     const direction = event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : event.key === "Home" ? -Infinity : event.key === "End" ? Infinity : 0;
@@ -16557,12 +16577,7 @@ function renderLearningPlanContent() {
     const index = event.currentTarget.dataset.checkChoice;
     const value = event.currentTarget.dataset.checkValue;
     state.learningCheck.answers[index] = value;
-    const scrollY = window.scrollY;
-    renderLearningPlan();
-    requestAnimationFrame(() => {
-      window.scrollTo(0, scrollY);
-      $all(`[data-check-choice="${index}"]`).find((button) => button.dataset.checkValue === value)?.focus({ preventScroll: true });
-    });
+    rerenderAndFocus(renderLearningPlan, attrSelector("data-check-choice", index) + attrSelector("data-check-value", value), { keepScroll: true });
   });
   bindClickAll(header, "[data-check-submit]", () => {
     const check = state.learningCheck;
@@ -16582,19 +16597,14 @@ function renderLearningPlanContent() {
   bindClickAll(header, "[data-dismiss-learning-notice]", () => { appStorage.remove("msg:learningPlanNotice"); renderLearningPlan(); });
   $all("[data-learning-done]", header).forEach((input) => input.addEventListener("change", (event) => {
     const key = event.currentTarget.dataset.learningDone;
-    const scrollY = window.scrollY;
     if (event.currentTarget.checked) state.learningProgress[key] = "done";
     else delete state.learningProgress[key];
-    appStorage.set("msg:learningProgress", JSON.stringify(state.learningProgress));
-    renderLearningPlan();
-    requestAnimationFrame(() => {
-      window.scrollTo(0, scrollY);
-      $all("[data-learning-done]").find((item) => item.dataset.learningDone === key)?.focus({ preventScroll: true });
-    });
+    persist("learningProgress");
+    rerenderAndFocus(renderLearningPlan, attrSelector("data-learning-done", key), { keepScroll: true });
   }));
   $all("[data-learning-module]", header).forEach((detail) => detail.addEventListener("toggle", () => {
     state.learningDetails[`plan:${detail.dataset.learningModule}`] = detail.open;
-    appStorage.set("msg:learningDetails", JSON.stringify(state.learningDetails));
+    persist("learningDetails");
   }));
   bindClickAll(header, "[data-open-learning-module]", (event) => {
     const detail = $all("[data-learning-module]", header).find((item) => item.dataset.learningModule === event.currentTarget.dataset.openLearningModule);
@@ -16607,7 +16617,7 @@ function renderLearningPlanContent() {
   bindClickAll(header, "[data-reset-learning]", () => {
     if (!window.confirm(`Сбросить отметки уровня ${level.label}? Задания и пункты «Могу» станут неотмеченными; прогресс уроков в Учебнике сохранится.`)) return;
     Object.keys(state.learningProgress).filter((key) => key.startsWith(`plan:${level.id}-`)).forEach((key) => delete state.learningProgress[key]);
-    appStorage.set("msg:learningProgress", JSON.stringify(state.learningProgress));
+    persist("learningProgress");
     renderLearningPlan();
   });
 }
@@ -16632,7 +16642,7 @@ function textbookLessonState(lessonId) {
 }
 
 function saveTextbookProgress() {
-  appStorage.set("msg:textbookProgress", JSON.stringify(state.textbookProgress));
+  persist("textbookProgress");
 }
 
 function normalizeTextbookAnswer(value) {
@@ -16943,38 +16953,33 @@ function hideTextbookExerciseFeedback(lessonId, questionKey, question) {
 function bindTextbookControls(root, activeLesson = null) {
   bindClickAll(root, "[data-textbook-language]", (event) => {
     state.textbookLanguage = event.currentTarget.dataset.textbookLanguage === "es" ? "es" : "ru";
-    appStorage.set("msg:textbookLanguage", state.textbookLanguage);
-    renderTextbook();
-    requestAnimationFrame(() => document.querySelector('[data-textbook-language="' + state.textbookLanguage + '"]')?.focus({ preventScroll: true }));
+    persist("textbookLanguage");
+    rerenderAndFocus(renderTextbook, attrSelector("data-textbook-language", state.textbookLanguage));
   });
   bindClickAll(root, "[data-textbook-open]", (event) => openTextbookLesson(Number(event.currentTarget.dataset.textbookOpen)));
   bindClickAll(root, "[data-textbook-group-toggle]", (event) => {
     const groupIndex = event.currentTarget.dataset.textbookGroupToggle;
     state.textbookOpenGroups[groupIndex] = !state.textbookOpenGroups[groupIndex];
-    appStorage.set("msg:textbookOpenGroups", JSON.stringify(state.textbookOpenGroups));
-    renderTextbook();
-    requestAnimationFrame(() => document.querySelector('[data-textbook-group-toggle="' + groupIndex + '"]')?.focus({ preventScroll: true }));
+    persist("textbookOpenGroups");
+    rerenderAndFocus(renderTextbook, attrSelector("data-textbook-group-toggle", groupIndex));
   });
   bindClickAll(root, "[data-textbook-level]", (event) => {
     state.textbookLevel = event.currentTarget.dataset.textbookLevel;
-    appStorage.set("msg:textbookLevel", state.textbookLevel);
-    renderTextbook();
-    requestAnimationFrame(() => document.querySelector('[data-textbook-level="' + state.textbookLevel + '"]')?.focus({ preventScroll: true }));
+    persist("textbookLevel");
+    rerenderAndFocus(renderTextbook, attrSelector("data-textbook-level", state.textbookLevel));
   });
   bindClickAll(root, "[data-textbook-groups]", (event) => {
     const open = event.currentTarget.dataset.textbookGroups === "open";
     TEXTBOOK_COURSE_GROUPS.forEach((_group, index) => { state.textbookOpenGroups[index] = open; });
-    appStorage.set("msg:textbookOpenGroups", JSON.stringify(state.textbookOpenGroups));
-    renderTextbook();
-    requestAnimationFrame(() => document.querySelector('[data-textbook-groups="' + (open ? "open" : "close") + '"]')?.focus({ preventScroll: true }));
+    persist("textbookOpenGroups");
+    rerenderAndFocus(renderTextbook, attrSelector("data-textbook-groups", open ? "open" : "close"));
   });
   bindClickAll(root, "[data-textbook-toggle]", (event) => {
     if (!activeLesson) return;
     const exerciseId = event.currentTarget.dataset.textbookToggle;
     const openKey = activeLesson.id + ":" + exerciseId;
     state.textbookOpenExercises[openKey] = !state.textbookOpenExercises[openKey];
-    renderTextbook();
-    requestAnimationFrame(() => document.querySelector('[data-textbook-toggle="' + exerciseId + '"]')?.focus({ preventScroll: true }));
+    rerenderAndFocus(renderTextbook, attrSelector("data-textbook-toggle", exerciseId));
   });
   root.querySelector("[data-textbook-catalog]")?.addEventListener("click", openTextbookCatalog);
   bindFavoriteMaterialButtons(root);
@@ -17038,8 +17043,7 @@ function bindTextbookControls(root, activeLesson = null) {
     const feedbackKey = activeLesson.id + ":" + exercise.id;
     if (state.textbookVisibleFeedback[feedbackKey]) {
       delete state.textbookVisibleFeedback[feedbackKey];
-      renderTextbook();
-      requestAnimationFrame(() => document.querySelector('[data-textbook-check="' + exercise.id + '"]')?.focus({ preventScroll: true }));
+      rerenderAndFocus(renderTextbook, attrSelector("data-textbook-check", exercise.id));
       return;
     }
     const saved = textbookLessonState(activeLesson.id);
@@ -17238,7 +17242,7 @@ function renderCards() {
   header.querySelectorAll("[data-cards-dashboard-filter]").forEach((button) => button.addEventListener("click", () => {
     state.cardsFilter = button.dataset.cardsDashboardFilter;
     state.cardsQuery = "";
-    appStorage.set("msg:cardsFilter", state.cardsFilter);
+    persist("cardsFilter");
     renderCards();
     requestAnimationFrame(() => document.querySelector(".verb-list-card")?.scrollIntoView({ behavior: "smooth", block: "start" }));
   }));
@@ -17249,7 +17253,7 @@ function renderCards() {
   });
   header.querySelector("[data-toggle-quiz-panel]")?.addEventListener("click", () => {
     state.showQuizPanel = !state.showQuizPanel;
-    appStorage.set("msg:showQuizPanel", String(state.showQuizPanel));
+    persist("showQuizPanel");
     renderCards();
   });
   header.querySelector("[data-resume-quiz]")?.addEventListener("click", resumeCardQuiz);
@@ -17390,12 +17394,12 @@ function renderCards() {
   });
   listCard.querySelector("#cardsSort").addEventListener("change", (event) => {
     state.cardsSort = event.target.value;
-    appStorage.set("msg:cardsSort", state.cardsSort);
+    persist("cardsSort");
     renderCards();
   });
   listCard.querySelectorAll("[data-cards-filter]").forEach((button) => button.addEventListener("click", () => {
     state.cardsFilter = button.dataset.cardsFilter;
-    appStorage.set("msg:cardsFilter", state.cardsFilter);
+    persist("cardsFilter");
     renderCards();
   }));
   listCard.querySelector("[data-clear-cards-search]")?.addEventListener("click", () => {
@@ -17404,7 +17408,7 @@ function renderCards() {
   });
   listCard.querySelector("[data-show-all-cards]")?.addEventListener("click", () => {
     state.cardsFilter = "all";
-    appStorage.set("msg:cardsFilter", state.cardsFilter);
+    persist("cardsFilter");
     renderCards();
   });
   listCard.querySelectorAll("[data-quiz-verb]").forEach((button) => button.addEventListener("click", () => {

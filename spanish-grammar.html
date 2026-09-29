@@ -4050,7 +4050,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.32 · обновлено: 29.09.2026 18:04 CEST</span>
+        <span>Версия MVP 1.33 · обновлено: 29.09.2026 18:08 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -17057,6 +17057,134 @@ const LEARNING_MODULES = [
     tables: [["Futuro: ir a + infinitivo", "Ir a + infinitivo"], ["Imperativo: tú, usted", "Imperativo"], ["Pretérito Perfecto vs Indefinido в Испании", "Perfecto / indefinido"]],
     task: "Напишите сообщение другу из 5–6 фраз: что вы делаете сейчас, что уже сделали сегодня, что делали вчера и что собираетесь делать на выходных; закончите одной просьбой в imperativo.",
     canDo: ["сказать, что делаю сейчас и что собираюсь делать", "рассказать, что сделал сегодня и вчера", "попросить о простом действии или дать инструкцию"]
+  },
+  {
+    id: "a0-reading", level: "a0", title: "Чтение и ударение",
+    goal: "Читать незнакомые испанские слова по правилам и ставить ударение.",
+    lessons: [],
+    tables: [["Как читать b/v, c/z, g/j", "Правила чтения"], ["Agudas, llanas, esdrújulas", "Ударение"], ["Diptongo и hiato", "Дифтонги"]],
+    task: "Прочитайте вслух названия городов Испании: Zaragoza, Jaén, Girona, Cádiz, Valladolid, Guadalajara, Logroño, Málaga. Для каждого назовите ударный слог и объясните, почему тильда есть или её нет. Затем продиктуйте по буквам своё имя.",
+    canDo: ["читать слова с c/z, g/j, ll, ñ, r/rr", "находить ударный слог в незнакомом слове", "продиктовать по буквам своё имя"]
+  },
+  {
+    id: "a0-hello", level: "a0", title: "Первые фразы",
+    goal: "Поздороваться, представиться, попрощаться и справиться с непониманием.",
+    lessons: [],
+    tables: [["Tú vs Usted vs Vosotros", "Tú / usted / vosotros"], ["Вопросы: образование", "Вопросы"], ["Вежливые просьбы в Испании", "Вежливые просьбы"]],
+    task: "Разыграйте знакомство из 6 реплик: поздоровайтесь, назовите имя и страну (Me llamo…, Soy de…), спросите то же у собеседника и попрощайтесь. Повторите диалог на usted и добавьте просьбу повторить помедленнее.",
+    canDo: ["поздороваться и попрощаться в разное время дня", "назвать своё имя и страну", "попросить повторить или говорить медленнее"]
+  },
+  {
+    id: "a0-numbers", level: "a0", title: "Числа, дни и время",
+    goal: "Понимать и называть числа, цены, дни недели, даты и время.",
+    lessons: [],
+    tables: [["Числительные: количественные", "Числа"], ["La hora y la fecha", "Время и дата"], ["Деньги, дроби, проценты", "Цены и телефоны"]],
+    task: "Назовите вслух свой номер телефона, сегодняшний день недели, дату и сколько сейчас времени. Затем прочитайте три цены с чека или ценника и скажите, сколько стоит всё вместе.",
+    canDo: ["считать от 0 до 100", "назвать день недели, дату и время", "понять цену на слух"]
+  },
+  {
+    id: "a2-past", level: "a2", title: "Рассказ о прошлом",
+    goal: "Рассказать, что произошло, на каком фоне, и что уже сделано к сегодняшнему дню.",
+    lessons: [59, 61, 62, 63, 64, 65, 102, 123, 124],
+    tables: [["Imperfecto vs Indefinido: фон или событие", "Imperfecto / indefinido"], ["Pretérito Perfecto vs Indefinido в Испании", "Perfecto / indefinido"], ["Как рассказывать историю", "Как рассказывать историю"]],
+    task: "Напишите 100–120 слов о запомнившейся поездке: обстановка и привычки (imperfecto), события по порядку (indefinido) и чем эта поездка важна для вас сейчас (perfecto). Проверьте тильды в формах прошедшего времени.",
+    canDo: ["рассказать, что произошло вчера или в поездке", "описать обстоятельства и привычки в прошлом", "сказать, что уже сделал и чего ещё нет"]
+  },
+  {
+    id: "a2-routine", level: "a2", title: "Привычки и перемены",
+    goal: "Говорить о привычках, о том, что происходит в эти дни, и о том, сколько времени что-то длится.",
+    lessons: [40, 54, 51, 52, 98, 57, 106],
+    tables: [["Возвратные глаголы: обычный vs возвратный", "Возвратные глаголы"], ["Desde/hace/durante", "Desde / hace / durante"], ["Gerundio: образование", "Gerundio"]],
+    task: "Расскажите вслух за 2 минуты, как изменилась ваша жизнь за последний год: что вы делаете сейчас и с каких пор (desde hace, hace… que), чем заняты в эти дни (estar + gerundio) и как проходит ваше утро (возвратные глаголы).",
+    canDo: ["сказать, сколько времени что-то длится", "различить обычное действие и происходящее сейчас", "описать утро с возвратными глаголами"]
+  },
+  {
+    id: "a2-compare", level: "a2", title: "Сравнение и выбор",
+    goal: "Сравнить варианты, оценить количество и обосновать выбор.",
+    lessons: [10, 11, 16, 17, 24, 107, 20, 21, 22, 105],
+    tables: [["Сравнение: más, menos, tan, tanto", "Сравнение"], ["Todo, mucho, poco, bastante, demasiado", "Количество"], ["Muy/mucho: степень", "Muy / mucho"]],
+    task: "Выберите между двумя квартирами (или телефонами) и объясните выбор в 6–8 фразах: сравнение (más… que, tan… como, tanto… como), превосходная степень, чего слишком много или недостаточно.",
+    canDo: ["сравнить два предмета по нескольким признакам", "сказать, чего слишком много или недостаточно", "обосновать свой выбор"]
+  },
+  {
+    id: "a2-instructions", level: "a2", title: "Советы, инструкции и маршруты",
+    goal: "Объяснить дорогу, дать инструкцию, совет или запрет.",
+    lessons: [39, 76, 74, 77, 78, 111, 91],
+    tables: [["Imperativo: tú, usted, vosotros и ustedes", "Imperativo"], ["Местоимения при инфинитиве, герундии и императиве", "Местоимения с imperativo"], ["Транспорт и маршруты в Испании", "Транспорт и маршруты"]],
+    task: "Дайте другу 6–8 инструкций, как дойти от станции до вашего дома, и скажите, что делать, если он заблудится (si + presente). Включите два запрета (no vayas…, no cojas…) и одну команду с местоимением (llámame, díselo).",
+    canDo: ["объяснить простой маршрут", "дать совет или запрет", "сказать, что делать в случае проблемы"]
+  },
+  {
+    id: "a2-people", level: "a2", title: "Люди вокруг",
+    goal: "Уточнять, о ком идёт речь, и правильно указывать, кому и кого.",
+    lessons: [38, 41, 113, 28],
+    tables: [["Прямые и косвенные объекты: lo, la, le", "Lo / le"], ["Персональная a", "Персональная a"], ["Относительные: que, quien", "Относительные"]],
+    task: "Опишите трёх людей из своего окружения, каждого одной фразой с que / quien / donde (Es la chica que…), и расскажите, что вы им обычно пишете, дарите или говорите, заменяя их на le / les, а вещи — на lo / la.",
+    canDo: ["уточнить, о ком идёт речь (el chico que…)", "не путать lo / la и le / les", "ставить a перед людьми-дополнениями"]
+  },
+  {
+    id: "b1-future", level: "b1", title: "Будущее, предположения и вежливость",
+    goal: "Говорить о будущем, предполагать и вежливо просить.",
+    lessons: [67, 68, 70, 85, 71, 72],
+    tables: [["Futuro: ir a + infinitivo или Futuro Simple", "Futuro"], ["Предположение о настоящем и прошлом", "Предположение"], ["Вежливые просьбы в Испании", "Вежливые просьбы"]],
+    task: "Опишите вслух свою жизнь через 10 лет (futuro), сделайте три предположения о том, что сейчас делает ваш друг (estará…, puede que…), и вежливо попросите коллегу о двух вещах (¿Podrías…?, Me gustaría que…).",
+    canDo: ["говорить о будущем и планах", "делать предположения о настоящем", "вежливо просить и советовать с condicional"]
+  },
+  {
+    id: "b1-wishes", level: "b1", title: "Желания, чувства и советы",
+    goal: "Выражать пожелания, чувства и советы с presente de subjuntivo.",
+    lessons: [79, 80, 81, 84, 86, 97],
+    tables: [["Subjuntivo по смыслу", "Subjuntivo по смыслу"], ["Ojalá: venga", "Ojalá"], ["Infinitivo или que + subjuntivo", "Infinitivo / que + subj."]],
+    task: "Напишите другу сообщение поддержки на 80–100 слов: пожелания (que + subjuntivo, ojalá), ваши чувства (me alegra que…, siento que…) и два совета (te recomiendo que…).",
+    canDo: ["выразить пожелание", "сказать, что я чувствую по поводу чужих действий", "дать совет с que + subjuntivo"]
+  },
+  {
+    id: "b1-text", level: "b1", title: "Связный текст",
+    goal: "Связывать мысли: причина, цель, время, следствие.",
+    lessons: [119, 117, 118, 121, 114, 115],
+    tables: [["Причина, цель, уступка и следствие", "Связки смысла"], ["Por/para: причина или цель", "Por / para"], ["Cuando, hasta que, en cuanto", "Cuando + subj."]],
+    task: "Напишите 120–150 слов «за и против» работы из дома: причины (porque, ya que, como), цель (para que), время (cuando + subjuntivo о будущем) и вывод (así que, por eso).",
+    canDo: ["объяснить причину и цель", "связать события во времени", "сделать вывод из сказанного"]
+  },
+  {
+    id: "b1-opinion", level: "b1", title: "Мнение и гипотезы",
+    goal: "Высказывать мнение и сомнение, рассуждать о воображаемых ситуациях.",
+    lessons: [87, 82, 83, 92, 122],
+    tables: [["Условные предложения", "Условные предложения"], ["Неопределённый деятель", "Безличные конструкции"], ["Es que, lo que pasa es que", "Es que…"]],
+    task: "Выскажите мнение о туризме в вашем городе в 8–10 фразах: creo que / no creo que, es verdad que / no es cierto que, что бы вы изменили (si pudiera…, cambiaría…) и что об этом говорят (se dice que…).",
+    canDo: ["выразить мнение и сомнение", "рассуждать о воображаемой ситуации", "сослаться на общее мнение"]
+  },
+  {
+    id: "b1-retell", level: "b1", title: "Пересказ",
+    goal: "Передавать чужие слова и рассказывать, что случилось раньше.",
+    lessons: [66, 94, 95, 96, 37, 88, 89],
+    tables: [["Косвенная речь: полная таблица", "Косвенная речь"], ["Pluscuamperfecto: «я уже сделал", "Pluscuamperfecto"], ["Perífrasis verbales: сводная таблица", "Перифразы"]],
+    task: "Перескажите вчерашний разговор или новость в 8–10 фразах: что вам сказали, о чём спросили и что попросили (косвенная речь), что произошло до этого (pluscuamperfecto) и кому вы это передали (se lo dije).",
+    canDo: ["передать чужие слова и вопросы", "рассказать, что произошло раньше другого события", "начать, прекратить или повторить действие перифразами"]
+  },
+  {
+    id: "b2-complex", level: "b2", title: "Сложные предложения",
+    goal: "Строить точные сложные предложения: относительные, уступительные, передачу требований.",
+    lessons: [29, 120, 90],
+    tables: [["Относительные предложения: смысл запятых", "Относительные предложения"], ["Locuciones prepositivas", "Предложные обороты"], ["Косвенная речь: полная таблица", "Косвенная речь"]],
+    task: "Возьмите короткую новость (5–6 предложений) и перепишите её: объедините предложения с cuyo / donde, добавьте уступку с a pesar de que и передайте одно требование в косвенной речи (exigió que…).",
+    canDo: ["строить относительные предложения с cuyo", "выражать уступку с a pesar de que", "передавать приказы и требования"]
+  },
+  {
+    id: "b2-debate", level: "b2", title: "Дискуссия",
+    goal: "Аргументировать позицию, отвечать на возражения и управлять разговором.",
+    lessons: [],
+    tables: [["Conectores: все связки", "Связки текста"], ["Muletillas", "Muletillas"], ["Es que, lo que pasa es que", "Es que…"]],
+    task: "Запишите на диктофон 3-минутную речь по спорной теме: позиция, два аргумента с примерами, возможное возражение и ответ на него. Прослушайте запись и выпишите повторы и слова, которых не хватило.",
+    canDo: ["аргументировать позицию", "учитывать возражения", "вежливо перебивать и уточнять"]
+  },
+  {
+    id: "b2-formal", level: "b2", title: "Формальное письмо",
+    goal: "Писать формальные тексты и переключать регистр.",
+    lessons: [],
+    tables: [["Письма и сообщения: обращение", "Письма"], ["Abreviaturas", "Сокращения"], ["Concordancia de tiempos: полная таблица", "Согласование времён"]],
+    task: "Напишите формальную жалобу в компанию на 150–180 слов: обращение, суть проблемы, требование (le ruego que + subjuntivo) и вежливое завершение. Затем перескажите ту же ситуацию другу неформально.",
+    canDo: ["писать формальное письмо по структуре", "переключаться между бытовым и формальным тоном", "согласовывать времена в сложном тексте"]
   }
 ];
 
@@ -17111,7 +17239,7 @@ function learningModuleMarkup(module, index, isCurrent) {
     <summary><span class="learning-module-title"><small>Модуль ${index + 1}</small><strong>${module.title}</strong></span><span class="learning-module-count">${done}/${steps.length}</span></summary>
     <div class="learning-module-body">
       <p class="learning-module-goal">${module.goal}</p>
-      <div class="learning-module-part"><h4>Уроки учебника</h4><ol class="learning-module-lessons">${lessons}</ol></div>
+      ${lessons ? `<div class="learning-module-part"><h4>Уроки учебника</h4><ol class="learning-module-lessons">${lessons}</ol></div>` : ""}
       ${tables ? `<div class="learning-module-part"><h4>Шпаргалки</h4><div class="learning-item-links">${tables}</div></div>` : ""}
       <div class="learning-module-part"><h4>Задание</h4>${check(`plan:${module.id}:task`, module.task)}</div>
       <div class="learning-module-part"><h4>Могу</h4>${module.canDo.map((item, canIndex) => check(`plan:${module.id}:can:${canIndex}`, item)).join("")}</div>
@@ -17316,7 +17444,7 @@ function renderLearningPlan() {
   const summaryTotal = modules.length ? levelCounts.total : allItems.length;
   const summaryProgress = modules.length ? levelProgress : progress;
   const planBody = modules.length
-    ? `<div class="learning-modules">${modules.map((module, index) => learningModuleMarkup(module, index, index === currentModuleIndex)).join("")}</div><p class="muted learning-modules-note">Уроки отмечаются сами, когда все их упражнения проверены в Учебнике. Задание и пункты «Могу» отмечайте сами.</p>`
+    ? `<div class="learning-modules">${modules.map((module, index) => learningModuleMarkup(module, index, index === currentModuleIndex)).join("")}</div><p class="muted learning-modules-note">${modules.some((module) => module.lessons.length) ? "Уроки отмечаются сами, когда все их упражнения проверены в Учебнике. " : "Учебник начинается с A1, поэтому здесь опора — шпаргалки. "}Задание и пункты «Могу» отмечайте сами.</p>`
     : `<div class="learning-plan-filter-bar"><p><strong>Показывать пункты</strong> <span class="muted">${filteredItemCount} из ${allItems.length}</span></p><div class="learning-plan-filters" role="group" aria-label="Фильтр по типу пункта">${filterButtons}</div></div>
       ${sections.map(([sectionId, title, items]) => list(sectionId, title, items)).join("")}`;
   header.innerHTML = `
@@ -18604,7 +18732,7 @@ function validateData() {
   LEARNING_MODULES.forEach((module) => {
     if (moduleIds.has(module.id) || !module.id.startsWith(`${module.level}-`)) issues.push("Некорректный или повторяющийся ID модуля плана: " + module.id);
     moduleIds.add(module.id);
-    if (!module.title || !module.goal || !module.task || !module.canDo?.length) issues.push("Неполный модуль плана: " + module.id);
+    if (!module.title || !module.goal || !module.task || !module.canDo?.length || !Array.isArray(module.lessons) || !module.tables?.length) issues.push("Неполный модуль плана: " + module.id);
     module.lessons.forEach((id) => {
       if (moduleLessonIds.has(id)) issues.push(`Урок ${id} входит в несколько модулей плана`);
       moduleLessonIds.add(id);

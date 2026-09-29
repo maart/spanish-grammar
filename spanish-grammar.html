@@ -4199,7 +4199,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.49 · обновлено: 29.09.2026 23:20 CEST</span>
+        <span>Версия MVP 1.50 · обновлено: 29.09.2026 23:23 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -16763,12 +16763,11 @@ function renderTextbookQuestion(lesson, exercise, item, index, saved, showFeedba
   const checked = showFeedback ? saved.checked[key] : null;
   const unanswered = showFeedback && normalizeTextbookAnswer(answer) === "";
   const stateClass = unanswered ? " is-unanswered" : checked ? (checked.correct ? " is-correct" : " is-wrong") : "";
-  const prompt = escapeHTML(item.prompt);
-  const options = textbookItemOptions(exercise, item).map((option) => '<button class="small-button ' + (answer === option ? "is-selected" : "") + '" type="button" data-textbook-choice="' + escapeHTML(key) + '" data-textbook-value="' + escapeHTML(option) + '" aria-pressed="' + (answer === option) + '">' + escapeHTML(option) + "</button>").join("");
+  const options = textbookItemOptions(exercise, item).map((option) => html`<button class="small-button ${answer === option ? "is-selected" : ""}" type="button" data-textbook-choice="${key}" data-textbook-value="${option}" aria-pressed="${answer === option}">${option}</button>`);
   const control = exercise.kind === "choice"
-    ? '<div class="textbook-choice-row" role="group" aria-label="' + prompt + '">' + options + "</div>"
-    : '<label><span class="sr-only">' + prompt + '</span><input class="textbook-answer-input" type="text" autocomplete="off" spellcheck="false" lang="es" value="' + escapeHTML(answer) + '" data-textbook-answer="' + escapeHTML(key) + '" aria-label="' + prompt + '"></label>';
-  return '<li class="textbook-question' + stateClass + '" data-textbook-question="' + escapeHTML(key) + '"><span class="textbook-prompt"><span lang="es">' + markRussianHints(prompt) + "</span></span>" + control + textbookFeedback(item, checked, showFeedback, lesson, answer) + "</li>";
+    ? html`<div class="textbook-choice-row" role="group" aria-label="${item.prompt}">${options}</div>`
+    : html`<label><span class="sr-only">${item.prompt}</span><input class="textbook-answer-input" type="text" autocomplete="off" spellcheck="false" lang="es" value="${answer}" data-textbook-answer="${key}" aria-label="${item.prompt}"></label>`;
+  return html`<li class="textbook-question${stateClass}" data-textbook-question="${key}"><span class="textbook-prompt"><span lang="es">${rawHtml(markRussianHints(escapeHTML(item.prompt)))}</span></span>${control}${rawHtml(textbookFeedback(item, checked, showFeedback, lesson, answer))}</li>`;
 }
 
 function textbookLanguageButtons() {
@@ -16913,12 +16912,12 @@ function renderTextbookLesson(content, lesson) {
   const next = lessonById(lesson.id + 1);
   const theoryBlocks = [...lesson.theory, ...(TEXTBOOK_THEORY_SUPPLEMENTS[lesson.id] || []), ...(TEXTBOOK_THEORY_SOURCE_DETAILS[lesson.id] || [])];
   const theory = theoryBlocks.map((block) => {
-    const attention = block.attention ? '<p class="textbook-attention"><strong>' + escapeHTML(textbookUi("Внимание:", "Atención:")) + '</strong> ' + escapeHTML(textbookText(block.attention)) + '</p>' : "";
-    const rules = (block.rules || []).map((rule) => '<li>' + escapeHTML(textbookText(rule)) + '</li>').join("");
+    const attention = block.attention ? html`<p class="textbook-attention"><strong>${textbookUi("Внимание:", "Atención:")}</strong> ${textbookText(block.attention)}</p>` : "";
+    const rules = (block.rules || []).map((rule) => html`<li>${textbookText(rule)}</li>`);
     // Примеры, которые уже процитированы в строках правил выше, повторно не показываются.
     const ruleText = normalizeTheoryText((block.rules || []).map((rule) => typeof rule === "string" ? rule : `${rule.es || ""} ${rule.ru || ""}`).join(" "));
-    const examples = block.examples.filter((example) => !ruleText.includes(normalizeTheoryText(example))).map((example) => '<li lang="es">' + escapeHTML(example) + '</li>').join("");
-    return '<section class="textbook-theory"><h3>' + escapeHTML(textbookText(block.title)) + '</h3><p>' + escapeHTML(textbookText(block.body)) + '</p>' + (rules ? '<ul class="textbook-rule-list">' + rules + '</ul>' : "") + attention + (examples ? '<ul class="textbook-example-list">' + examples + '</ul>' : "") + '</section>';
+    const examples = block.examples.filter((example) => !ruleText.includes(normalizeTheoryText(example))).map((example) => html`<li lang="es">${example}</li>`);
+    return html`<section class="textbook-theory"><h3>${textbookText(block.title)}</h3><p>${textbookText(block.body)}</p>${rules.length ? html`<ul class="textbook-rule-list">${rules}</ul>` : ""}${attention}${examples.length ? html`<ul class="textbook-example-list">${examples}</ul>` : ""}</section>`;
   }).join("");
   const exercises = lesson.exercises.map((exercise) => {
     const exerciseProgress = textbookExerciseProgress(exercise, saved);
@@ -16934,7 +16933,8 @@ function renderTextbookLesson(content, lesson) {
       ? textbookUi("Свернуть упражнение", "Cerrar ejercicio")
       : textbookUi("Раскрыть упражнение", "Abrir ejercicio");
     const exerciseMeta = `${textbookUi("Заполнено", "Respondidas")} ${exerciseProgress.answered}/${exerciseProgress.total}${showFeedback ? ` · ✓ ${exerciseProgress.correct}/${exerciseProgress.checked}` : ""}`;
-    return `<article class="textbook-exercise" data-textbook-exercise="${exercise.id}"><div class="textbook-exercise-head"><div><h4>${escapeHTML(textbookUi("Упражнение", "Ejercicio"))} ${exercise.id}</h4><p>${escapeHTML(textbookText(exercise.instruction))}</p></div><span class="textbook-exercise-meta">${escapeHTML(exerciseMeta)}</span><button class="small-button textbook-exercise-toggle" type="button" data-textbook-toggle="${exercise.id}" aria-expanded="${isOpen}" aria-controls="${bodyId}">${escapeHTML(toggleLabel)}</button></div><div class="textbook-exercise-body" id="${bodyId}"${isOpen ? "" : " hidden"}><ol class="textbook-question-list">${exercise.items.map((item, index) => renderTextbookQuestion(lesson, exercise, item, index, saved, showFeedback)).join("")}</ol>${exercise.kind === "choice" ? "" : `<div class="textbook-accent-keys" role="group" aria-label="${escapeHTML(textbookUi("Вставить букву в поле ответа", "Insertar letra en la respuesta"))}">${QUIZ_CHARACTERS.map((char) => `<button class="small-button" type="button" data-textbook-char="${char}" lang="es">${char}</button>`).join("")}</div>`}<div class="textbook-actions"><button class="small-button primary" type="button" data-textbook-check="${exercise.id}" aria-pressed="${showFeedback}">${escapeHTML(buttonLabel)}</button></div></div></article>`;
+    const accentKeys = exercise.kind === "choice" ? "" : html`<div class="textbook-accent-keys" role="group" aria-label="${textbookUi("Вставить букву в поле ответа", "Insertar letra en la respuesta")}">${QUIZ_CHARACTERS.map((char) => html`<button class="small-button" type="button" data-textbook-char="${char}" lang="es">${char}</button>`)}</div>`;
+    return html`<article class="textbook-exercise" data-textbook-exercise="${exercise.id}"><div class="textbook-exercise-head"><div><h4>${textbookUi("Упражнение", "Ejercicio")} ${exercise.id}</h4><p>${textbookText(exercise.instruction)}</p></div><span class="textbook-exercise-meta">${exerciseMeta}</span><button class="small-button textbook-exercise-toggle" type="button" data-textbook-toggle="${exercise.id}" aria-expanded="${isOpen}" aria-controls="${bodyId}">${toggleLabel}</button></div><div class="textbook-exercise-body" id="${bodyId}"${isOpen ? "" : " hidden"}><ol class="textbook-question-list">${exercise.items.map((item, index) => renderTextbookQuestion(lesson, exercise, item, index, saved, showFeedback))}</ol>${accentKeys}<div class="textbook-actions"><button class="small-button primary" type="button" data-textbook-check="${exercise.id}" aria-pressed="${showFeedback}">${buttonLabel}</button></div></div></article>`;
   }).join("");
   const remaining = progress.total - progress.checked;
   const summary = progress.done
@@ -16942,12 +16942,12 @@ function renderTextbookLesson(content, lesson) {
     : progress.unanswered > 0
       ? textbookUi("Заполните ещё " + progress.unanswered + " заданий, затем проверьте ответы.", "Responde " + progress.unanswered + " apartados más y después comprueba las respuestas.")
       : textbookUi("Проверьте ещё " + remaining + " ответов, чтобы завершить урок.", "Comprueba " + remaining + " respuestas más para completar la lección.");
-  const previousButton = previous ? '<button class="small-button" type="button" data-textbook-open="' + previous.id + '">← ' + previous.id + ". " + escapeHTML(textbookText(previous.title)) + "</button>" : "";
-  const nextButton = next ? '<button class="small-button" type="button" data-textbook-open="' + next.id + '">' + next.id + ". " + escapeHTML(textbookText(next.title)) + " →</button>" : "";
+  const previousButton = previous ? html`<button class="small-button" type="button" data-textbook-open="${previous.id}">← ${previous.id}. ${textbookText(previous.title)}</button>` : "";
+  const nextButton = next ? html`<button class="small-button" type="button" data-textbook-open="${next.id}">${next.id}. ${textbookText(next.title)} →</button>` : "";
   const relatedLessons = (TEXTBOOK_RELATED_LESSONS[lesson.id] || []).map((id) => lessonById(id)).filter(Boolean);
   const lessonTables = INDEXED_TABLES.filter((table) => table.lessons?.includes(lesson.id));
-  const tablesMarkup = lessonTables.length ? '<section class="textbook-related"><h3>' + escapeHTML(textbookUi("Шпаргалки по теме", "Tablas de consulta")) + '</h3><div class="textbook-actions">' + lessonTables.map((table) => '<a class="small-button" href="#' + tableRoute(table) + '">' + escapeHTML(table.title) + "</a>").join("") + "</div></section>" : "";
-  const related = relatedLessons.length ? '<section class="textbook-related"><h3>' + escapeHTML(textbookUi("Связанные уроки", "Lecciones relacionadas")) + '</h3><div class="textbook-actions">' + relatedLessons.map((item) => '<button class="small-button" type="button" data-textbook-open="' + item.id + '">▶ ' + item.id + ". " + escapeHTML(textbookText(item.title)) + "</button>").join("") + "</div></section>" : "";
+  const tablesMarkup = lessonTables.length ? html`<section class="textbook-related"><h3>${textbookUi("Шпаргалки по теме", "Tablas de consulta")}</h3><div class="textbook-actions">${lessonTables.map((table) => html`<a class="small-button" href="#${tableRoute(table)}">${table.title}</a>`)}</div></section>` : "";
+  const related = relatedLessons.length ? html`<section class="textbook-related"><h3>${textbookUi("Связанные уроки", "Lecciones relacionadas")}</h3><div class="textbook-actions">${relatedLessons.map((item) => html`<button class="small-button" type="button" data-textbook-open="${item.id}">▶ ${item.id}. ${textbookText(item.title)}</button>`)}</div></section>` : "";
   const section = infoSection({ className: "info-card textbook-lesson", html: `
     <div class="textbook-lesson-toolbar"><div class="textbook-lesson-controls"><button class="small-button" type="button" data-textbook-catalog>← ${escapeHTML(textbookUi("К оглавлению", "Índice"))}</button>${learningModuleForLesson(lesson.id) ? `<button class="small-button" type="button" data-textbook-plan="${lesson.id}">← ${escapeHTML(textbookUi("К плану", "Al plan"))}</button>` : ""}${textbookLanguageButtons()}</div><div class="textbook-lesson-heading"><div class="material-title-row"><h2>${lesson.id}. ${escapeHTML(textbookText(lesson.title))} ${textbookLevelBadge(lesson.id)}</h2>${favoriteMaterialButton("lesson", lesson.id, textbookText(lesson.title))}</div><p class="muted">${escapeHTML(textbookText(lesson.goal))}</p></div></div>
     <div class="textbook-summary"><span><strong>${escapeHTML(textbookUi("Верно", "Correctas"))}: ${progress.correct}/${progress.checked}</strong> · ${escapeHTML(textbookUi("Заполнено", "Respondidas"))}: ${progress.answered}/${progress.total}</span><span class="textbook-status ${progress.done ? "is-done" : ""}">${escapeHTML(progress.done ? textbookUi("Урок пройден", "Lección completada") : textbookUi("В работе", "En curso"))}</span></div>
@@ -17890,6 +17890,34 @@ function escapeHTML(str) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+}
+
+// Шаблон html`…`: подставленные значения экранируются автоматически, поэтому забыть escapeHTML нельзя.
+// Готовую разметку (результат другого html`…` или rawHtml(...)) он вставляет как есть, массивы — склеивает.
+// null и undefined дают пустую строку; false печатается как "false" (нужно для aria-pressed и подобных).
+class RawHtml {
+  constructor(value) {
+    this.value = String(value);
+  }
+
+  toString() {
+    return this.value;
+  }
+}
+
+function rawHtml(value) {
+  return new RawHtml(value);
+}
+
+function htmlValue(value) {
+  if (value instanceof RawHtml) return value.value;
+  if (Array.isArray(value)) return value.map(htmlValue).join("");
+  if (value === null || value === undefined) return "";
+  return escapeHTML(value);
+}
+
+function html(strings, ...values) {
+  return rawHtml(strings.reduce((out, chunk, index) => out + chunk + (index < values.length ? htmlValue(values[index]) : ""), ""));
 }
 
 function shuffle(items) {

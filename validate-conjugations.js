@@ -1103,13 +1103,12 @@ const ACCENTED_MODEL_REFERENCE = {
 // ─── Validation logic ───────────────────────────────────────────────────────
 const issues = [];
 
-// Learning-plan tab: levels A0–B2 are built from modules linked to textbook lessons; C1–C2 are one «После B2» page.
+// Learning-plan tab: levels A1–B2 are built from modules linked to textbook lessons; C1–C2 are one «C1 и C2» page.
 const learningPlanScaffold = [
   ["navigation", 'data-view="learning-plan"'],
   ["renderer", "function renderLearningPlan()"],
   ["view renderer", '"learning-plan": renderLearningPlan'],
   ["levels", "const LEARNING_LEVELS = ["],
-  ["A0", 'id: "a0"'],
   ["A1", 'id: "a1"'],
   ["A2", 'id: "a2"'],
   ["B1", 'id: "b1"'],

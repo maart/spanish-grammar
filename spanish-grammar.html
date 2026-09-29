@@ -690,9 +690,15 @@ input[type="search"] {
 
 .learning-level-tabs {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 1.5fr);
   gap: 6px;
   margin: 16px 0;
+}
+
+/* «C1 и C2» — страница ориентиров без модулей и прогресса, поэтому вкладка приглушена. */
+.learning-level-tabs [data-learning-level="after"]:not(.is-active) {
+  border-style: dashed;
+  color: var(--muted);
 }
 
 .learning-level-tabs .small-button.is-active {
@@ -3650,7 +3656,12 @@ select {
   }
 
   .learning-level-tabs {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+  }
+
+  .learning-level-tabs [role="tab"] {
+    padding-inline: 4px;
+    white-space: nowrap;
   }
 
   .learning-level-tabs [role="tab"] small {
@@ -4199,7 +4210,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.51 · обновлено: 29.09.2026 23:28 CEST</span>
+        <span>Версия MVP 1.52 · обновлено: 29.09.2026 23:46 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -4230,7 +4241,7 @@ select {
 //  2. Данные: времена, уровни CEFR и связи с уроками
 //  3. Данные: шпаргалки
 //  4. Данные: наклонения
-//  5. Данные: уровни и страница «После B2» для Плана
+//  5. Данные: уровни и страница «C1 и C2» для Плана
 //  6. Хранилище (localStorage) и состояние приложения
 //  7. Данные: учебник (уроки, теория, связи, уровни, группы каталога)
 //  8. Утилиты: экранирование и шаблон html, делегированные события, перерисовка
@@ -6386,8 +6397,8 @@ const TENSE_FILTERS = {
 };
 
 // Единая шкала уровней: идентификаторы в данных — строчные ("a1"), подписи — через levelLabel ("A1").
-// A0 — внутренняя стартовая ступень справочника, A1–C2 — уровни CEFR / PCIC.
-const CEFR_LEVEL_IDS = Object.freeze(["a0", "a1", "a2", "b1", "b2", "c1", "c2"]);
+// Уровни CEFR / PCIC; учебник и справочник начинаются с A1.
+const CEFR_LEVEL_IDS = Object.freeze(["a1", "a2", "b1", "b2", "c1", "c2"]);
 
 function levelLabel(levelId) {
   return String(levelId || "").toUpperCase();
@@ -6806,7 +6817,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "voprositelnye-que-quien-cual-como", level: "a0", lessons: [30, 31, 32],
+    id: "voprositelnye-que-quien-cual-como", level: "a1", lessons: [30, 31, 32],
     group: "Местоимения и объекты",
     subgroup: "Вопросительные местоимения",
     title: "Вопросительные: qué, quién, cuál, cómo…",
@@ -6885,7 +6896,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "artikli-el-la-los-las-i-un-una", level: "a0", lessons: [4, 6, 7],
+    id: "artikli-el-la-los-las-i-un-una", level: "a1", lessons: [4, 6, 7],
     group: "Существительные и определители",
     subgroup: "Артикли",
     title: "Артикли: el/la/los/las и un/una",
@@ -6905,7 +6916,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "chislitelnye-kolichestvennye-poryadkovye", level: "a0", lessons: [25, 26, 27],
+    id: "chislitelnye-kolichestvennye-poryadkovye", level: "a1", lessons: [25, 26, 27],
     group: "Существительные и определители",
     subgroup: "Числительные",
     title: "Числительные: количественные, порядковые, собирательные",
@@ -6989,7 +7000,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "gentilicios-ano-eno-es-ino-ense", level: "a0", lessons: [14],
+    id: "gentilicios-ano-eno-es-ino-ense", level: "a1", lessons: [14],
     group: "Существительные и определители",
     subgroup: "Gentilicios",
     title: "Gentilicios: -ano, -eño, -és, -ino, -ense",
@@ -7009,7 +7020,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "ser-estar-suschnost-ili-sostoyanie", level: "a0", lessons: [42, 43, 44],
+    id: "ser-estar-suschnost-ili-sostoyanie", level: "a1", lessons: [42, 43, 44],
     group: "Глаголы и управление",
     subgroup: "Ser / Estar",
     title: "Ser/estar: сущность или состояние",
@@ -7432,7 +7443,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "voprosy-obrazovanie-inversiya-tag-voprosy", level: "a0", lessons: [30, 31],
+    id: "voprosy-obrazovanie-inversiya-tag-voprosy", level: "a1", lessons: [30, 31],
     group: "Синтаксис и порядок слов",
     subgroup: "Вопросы",
     title: "Вопросы: образование, инверсия, tag-вопросы",
@@ -7869,7 +7880,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "la-hora-y-la-fecha-vremya-dni-mesyatsy", level: "a0", lessons: [9],
+    id: "la-hora-y-la-fecha-vremya-dni-mesyatsy", level: "a1", lessons: [9],
     group: "Числа, время и даты",
     subgroup: "Время и даты",
     title: "La hora y la fecha: время, дни, месяцы",
@@ -7930,7 +7941,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "rod-suschestvitelnyh-pravila-i-isklyucheniya", level: "a0", lessons: [1, 2],
+    id: "rod-suschestvitelnyh-pravila-i-isklyucheniya", level: "a1", lessons: [1, 2],
     group: "Существительные и определители",
     subgroup: "Род",
     title: "Род существительных: правила и исключения",
@@ -8137,7 +8148,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "lichnye-mestoimeniya-polnaya-tablitsa", level: "a0", lessons: [34, 41],
+    id: "lichnye-mestoimeniya-polnaya-tablitsa", level: "a1", lessons: [34, 41],
     group: "Местоимения и объекты",
     subgroup: "Личные местоимения",
     title: "Личные местоимения: полная таблица + предлоги",
@@ -8177,7 +8188,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "mnozhestvennoe-chislo-pravila-obrazovaniya", level: "a0", lessons: [3],
+    id: "mnozhestvennoe-chislo-pravila-obrazovaniya", level: "a1", lessons: [3],
     group: "Существительные и определители",
     subgroup: "Множественное число",
     title: "Множественное число: правила образования",
@@ -8507,7 +8518,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "agudas-llanas-esdrujulas-osnovnye-pravila", level: "a0", lessons: [123],
+    id: "agudas-llanas-esdrujulas-osnovnye-pravila", level: "a1", lessons: [123],
     group: "Произношение, орфография и письмо",
     subgroup: "Ударение",
     title: "Agudas, llanas, esdrújulas: основные правила ударения",
@@ -8607,7 +8618,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "zapyatye-kavychki-i-propisnye-bukvy", level: "a0", lessons: [125],
+    id: "zapyatye-kavychki-i-propisnye-bukvy", level: "a1", lessons: [125],
     group: "Произношение, орфография и письмо",
     subgroup: "Пунктуация и регистр",
     title: "¿? ¡! Запятые, кавычки и прописные буквы",
@@ -8992,7 +9003,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "kak-chitat-b-v-c-z-g-j-h-r-rr-i-svyazannye", level: "a0",
+    id: "kak-chitat-b-v-c-z-g-j-h-r-rr-i-svyazannye", level: "a1",
     group: "Произношение, орфография и письмо",
     subgroup: "Произношение",
     title: "Как читать b/v, c/z, g/j, h, r/rr и связанные слова",
@@ -10043,14 +10054,13 @@ const MOODS = [
   }
 ];
 
-// ═══════ 5. Данные: уровни и страница «После B2» для Плана ═══════
+// ═══════ 5. Данные: уровни и страница «C1 и C2» для Плана ═══════
 const LEARNING_LEVELS = [
-  { id: "a0", label: levelLabel("a0"), title: "Старт с нуля", description: "Подготовительная ступень до A1: чтение, первые фразы, числа и время." },
   { id: "a1", label: levelLabel("a1"), title: "Базовое общение", description: "Простое взаимодействие в знакомых бытовых ситуациях." },
   { id: "a2", label: levelLabel("a2"), title: "Повседневная самостоятельность", description: "Общение в регулярно встречающихся ситуациях и рассказ о прошлом, настоящем и планах." },
   { id: "b1", label: levelLabel("b1"), title: "Уверенное самостоятельное общение", description: "Самостоятельное общение на знакомые темы, рассказ о событиях и объяснение мнения." },
   { id: "b2", label: levelLabel("b2"), title: "Свободное взаимодействие", description: "Уверенное взаимодействие с носителями языка и точное обсуждение широкого круга тем." },
-  { id: "after", label: "После B2", title: "C1 и C2", description: "Учебник заканчивается на B2, поэтому здесь нет модулей и прогресса — только ориентиры и официальные материалы." }
+  { id: "after", label: "C1 и C2", title: "За пределами учебника", description: "Учебник заканчивается на B2, поэтому здесь нет модулей и прогресса — только ориентиры и официальные материалы." }
 ];
 
 // C1–C2 не покрыты учебником: для них нет модулей и отметок, только ориентиры CEFR и официальные материалы.
@@ -10200,23 +10210,32 @@ function readTextbookProgress() {
 
 // До MVP 1.35 план хранил отметки по номеру пункта («a1:7»); модулям они не соответствуют.
 // Такие ключи переносятся в msg:learningProgressLegacy, а план один раз показывает уведомление.
+// Уровень A0 убран: модуль «Чтение и ударение» перешёл в A1 (a0-reading → a1-reading), отметки остальных модулей A0 больше не нужны.
+function renameRetiredPlanKeys(entries) {
+  return Object.fromEntries(Object.entries(entries).flatMap(([key, value]) => {
+    if (key === "plan:a0-reading" || key.startsWith("plan:a0-reading:")) return [[key.replace("plan:a0-reading", "plan:a1-reading"), value]];
+    return key.startsWith("plan:a0-") ? [] : [[key, value]];
+  }));
+}
+
 function migrateLearningProgress() {
   const stored = readStoredJSON("msg:learningProgress", {});
-  const progress = stored && typeof stored === "object" && !Array.isArray(stored) ? stored : {};
+  const progress = renameRetiredPlanKeys(stored && typeof stored === "object" && !Array.isArray(stored) ? stored : {});
   const legacy = Object.fromEntries(Object.entries(progress).filter(([key]) => !key.startsWith("plan:")));
-  if (!Object.keys(legacy).length) return progress;
-  const archived = readStoredJSON("msg:learningProgressLegacy", {});
   const current = Object.fromEntries(Object.entries(progress).filter(([key]) => key.startsWith("plan:")));
-  appStorage.set("msg:learningProgressLegacy", JSON.stringify({ ...(archived && typeof archived === "object" ? archived : {}), ...legacy }));
-  appStorage.set("msg:learningProgress", JSON.stringify(current));
-  appStorage.set("msg:learningPlanNotice", "1");
+  if (Object.keys(legacy).length) {
+    const archived = readStoredJSON("msg:learningProgressLegacy", {});
+    appStorage.set("msg:learningProgressLegacy", JSON.stringify({ ...(archived && typeof archived === "object" ? archived : {}), ...legacy }));
+    appStorage.set("msg:learningPlanNotice", "1");
+  }
+  if (JSON.stringify(current) !== JSON.stringify(stored)) appStorage.set("msg:learningProgress", JSON.stringify(current));
   return current;
 }
 
 function readLearningDetails() {
   const details = readStoredObject("msg:learningDetails");
-  const current = Object.fromEntries(Object.entries(details).filter(([key]) => key.startsWith("plan:")));
-  if (Object.keys(current).length !== Object.keys(details).length) appStorage.set("msg:learningDetails", JSON.stringify(current));
+  const current = renameRetiredPlanKeys(Object.fromEntries(Object.entries(details).filter(([key]) => key.startsWith("plan:"))));
+  if (JSON.stringify(current) !== JSON.stringify(details)) appStorage.set("msg:learningDetails", JSON.stringify(current));
   appStorage.remove("msg:learningFilter");
   return current;
 }
@@ -10226,7 +10245,7 @@ const state = {
   learningLevel: (() => {
     const stored = appStorage.get("msg:learningLevel");
     if (stored === "c1" || stored === "c2") return "after";
-    return LEARNING_LEVELS.some((level) => level.id === stored) ? stored : "a0";
+    return LEARNING_LEVELS.some((level) => level.id === stored) ? stored : "a1";
   })(),
   learningProgress: migrateLearningProgress(),
   learningDetails: readLearningDetails(),
@@ -10254,9 +10273,11 @@ const state = {
   tableQuery: "",
   tableFilter: appStorage.get("msg:tableFilter") || "all",
   tableSubgroup: appStorage.get("msg:tableSubgroup") || "",
-  tableLevel: TABLE_LEVELS.some((level) => level.id === appStorage.get("msg:tableLevel"))
-    ? appStorage.get("msg:tableLevel")
-    : "all",
+  tableLevel: (() => {
+    const stored = appStorage.get("msg:tableLevel");
+    if (stored === "a0") return "a1";
+    return TABLE_LEVELS.some((level) => level.id === stored) ? stored : "all";
+  })(),
   tableLevelCumulative: appStorage.get("msg:tableLevelCumulative") !== "false",
   focusedTable: null,
   tableOpenGroups: {},
@@ -15077,7 +15098,7 @@ function renderTables() {
         </label>
       `}
     </div>
-    <p class="table-filter-summary" aria-live="polite"><span data-table-shown>Показано: ${visibleTables.length} из ${INDEXED_TABLES.length}.</span> Уровни — по Plan Curricular del Instituto Cervantes: у шпаргалки, связанной с уроками, показан диапазон от её уровня до уровней этих уроков; A0 — внутренняя стартовая ступень справочника.</p>
+    <p class="table-filter-summary" aria-live="polite"><span data-table-shown>Показано: ${visibleTables.length} из ${INDEXED_TABLES.length}.</span> Уровни — по Plan Curricular del Instituto Cervantes: у шпаргалки, связанной с уроками, показан диапазон от её уровня до уровней этих уроков;</p>
   `});
   content.appendChild(nav);
   nav.querySelector("[data-table-filter]")?.addEventListener("change", (event) => {
@@ -15873,22 +15894,31 @@ function moodComparisonLabel(moodId) {
 // Статус урока берётся из прогресса учебника; задание и пункты «Могу» отмечаются вручную по ключам plan:<id>:….
 const LEARNING_MODULES = [
   {
+    id: "a1-reading", level: "a1", title: "Чтение и ударение",
+    goal: "Читать незнакомые испанские слова по правилам и ставить ударение.",
+    lessons: [],
+    tables: [["Как читать b/v, c/z, g/j", "Правила чтения"], ["Agudas, llanas, esdrújulas", "Ударение"], ["Diptongo и hiato", "Дифтонги"]],
+    task: "Прочитайте вслух названия городов Испании: Zaragoza, Jaén, Girona, Cádiz, Valladolid, Guadalajara, Logroño, Málaga. Для каждого назовите ударный слог и объясните, почему тильда есть или её нет. Затем продиктуйте по буквам своё имя.",
+    example: [["Zaragoza → za-ra-GO-za", "llana на гласную: тильда не нужна"], ["Cádiz → CÁ-diz", "llana на -z: тильда нужна"]],
+    canDo: ["читать слова с c/z, g/j, ll, ñ, r/rr", "находить ударный слог в незнакомом слове", "продиктовать по буквам своё имя"]
+  },
+  {
     id: "a1-intro", level: "a1", title: "Знакомство",
     goal: "Представиться и узнать у собеседника имя, страну, возраст и занятие.",
     lessons: [34, 42, 1, 14, 25, 45, 30, 31, 116, 125],
     tables: [["Личные местоимения: полная таблица", "Личные местоимения"], ["Tú vs Usted vs Vosotros", "Tú / usted / vosotros"], ["Gentilicios", "Национальности"]],
-    task: "Представьтесь вслух в 5–6 фразах: имя, страна и национальность, возраст, профессия, языки. Затем задайте те же вопросы собеседнику — сначала на tú, потом на usted.",
-    example: [["Me llamo Iván, soy ruso y tengo treinta años. Soy ingeniero y hablo ruso e inglés.", "Меня зовут Иван, я русский, мне тридцать лет. Я инженер, говорю по-русски и по-английски."], ["¿De dónde eres? / ¿De dónde es usted?", "Откуда ты? / Откуда вы?"]],
-    canDo: ["назвать имя, страну, возраст и профессию", "спросить то же у собеседника", "выбрать tú или usted по ситуации"]
+    task: "Представьтесь вслух в 5–6 фразах: имя, страна и национальность, возраст, профессия, языки. Затем задайте те же вопросы собеседнику — сначала на tú, потом на usted. Начните с приветствия, закончите прощанием и один раз попросите повторить помедленнее.",
+    example: [["Me llamo Iván, soy ruso y tengo treinta años. Soy ingeniero y hablo ruso e inglés.", "Меня зовут Иван, я русский, мне тридцать лет. Я инженер, говорю по-русски и по-английски."], ["¿De dónde eres? / ¿De dónde es usted?", "Откуда ты? / Откуда вы?"], ["Perdone, ¿puede hablar más despacio, por favor? Adiós, ¡hasta mañana!", "Простите, не могли бы вы говорить помедленнее? До свидания, до завтра!"]],
+    canDo: ["назвать имя, страну, возраст и профессию", "спросить то же у собеседника", "выбрать tú или usted по ситуации", "поздороваться, попрощаться и попросить повторить помедленнее"]
   },
   {
     id: "a1-shopping", level: "a1", title: "Вещи и покупки",
     goal: "Назвать нужные вещи, спросить цену и купить.",
     lessons: [2, 3, 4, 6, 7, 5, 26, 23, 35, 36],
     tables: [["Артикли: el/la/los/las", "Артикли"], ["Род существительных: правила", "Род"], ["Числительные: количественные", "Числа"]],
-    task: "Разыграйте покупку в магазине из 6 реплик: попросите три вещи с un/una/unos, уточните цену и ответьте на вопрос продавца, заменив вещь на lo/la.",
+    task: "Разыграйте покупку в магазине из 6 реплик: попросите три вещи с un/una/unos, уточните цену и ответьте на вопрос продавца, заменив вещь на lo/la. В конце назовите общую сумму и продиктуйте свой номер телефона для доставки.",
     example: [["Quiero unas manzanas y una botella de agua, por favor. ¿Cuánto cuesta el pan?", "Мне, пожалуйста, яблоки и бутылку воды. Сколько стоит хлеб?"], ["—¿Quiere la bolsa? —Sí, la quiero, gracias.", "— Пакет нужен? — Да, нужен, спасибо."]],
-    canDo: ["назвать вещь с правильным артиклем", "спросить и понять цену", "заменить уже названную вещь на lo / la"]
+    canDo: ["назвать вещь с правильным артиклем", "спросить и понять цену", "заменить уже названную вещь на lo / la", "считать до 100 и продиктовать номер телефона"]
   },
   {
     id: "a1-describe", level: "a1", title: "Описание людей и вещей",
@@ -15913,9 +15943,9 @@ const LEARNING_MODULES = [
     goal: "Рассказать о своём дне, привычках и о том, что нравится.",
     lessons: [48, 49, 50, 53, 55, 9, 110, 101, 103, 104, 108, 109],
     tables: [["Gustar и похожие глаголы", "Gustar"], ["Siempre, nunca, a veces", "Частотность"], ["La hora y la fecha", "Время и дата"]],
-    task: "Расскажите вслух о своём обычном дне в 8–10 фразах: во сколько встаёте, что делаете и как часто, что любите и чего не любите. Спросите собеседника ¿Y a ti? и ответьте también / tampoco.",
-    example: [["Me levanto a las siete y desayuno en casa. Los sábados nunca trabajo.", "Я встаю в семь и завтракаю дома. По субботам никогда не работаю."], ["—Me gusta mucho el cine. ¿Y a ti? —A mí también.", "— Я очень люблю кино. А ты? — Я тоже."]],
-    canDo: ["рассказать о распорядке дня с указанием времени", "сказать, как часто что-то делаю", "сказать, что мне нравится и что нет"]
+    task: "Расскажите вслух о своём обычном дне в 8–10 фразах: во сколько встаёте, что делаете и как часто, что любите и чего не любите. Спросите собеседника ¿Y a ti? и ответьте también / tampoco. Начните с того, какой сегодня день и дата.",
+    example: [["Me levanto a las siete y desayuno en casa. Los sábados nunca trabajo.", "Я встаю в семь и завтракаю дома. По субботам никогда не работаю."], ["—Me gusta mucho el cine. ¿Y a ti? —A mí también.", "— Я очень люблю кино. А ты? — Я тоже."], ["Hoy es martes, 29 de septiembre. Son las cinco y media.", "Сегодня вторник, 29 сентября. Сейчас половина шестого."]],
+    canDo: ["рассказать о распорядке дня с указанием времени", "сказать, как часто что-то делаю", "сказать, что мне нравится и что нет", "назвать день недели, дату и который час"]
   },
   {
     id: "a1-plans", level: "a1", title: "Сейчас, планы и вчера",
@@ -15925,33 +15955,6 @@ const LEARNING_MODULES = [
     task: "Напишите сообщение другу из 5–6 фраз: что вы делаете сейчас, что уже сделали сегодня, что делали вчера и что собираетесь делать на выходных; закончите одной просьбой в imperativo.",
     example: [["Ahora estoy escribiendo un mensaje. Hoy he ido al gimnasio.", "Сейчас я пишу сообщение. Сегодня я сходил в спортзал."], ["Ayer cené con mis padres y el sábado voy a ir a la playa. ¡Llámame!", "Вчера я ужинал с родителями, а в субботу собираюсь на пляж. Позвони мне!"]],
     canDo: ["сказать, что делаю сейчас и что собираюсь делать", "рассказать, что сделал сегодня и вчера", "попросить о простом действии или дать инструкцию"]
-  },
-  {
-    id: "a0-reading", level: "a0", title: "Чтение и ударение",
-    goal: "Читать незнакомые испанские слова по правилам и ставить ударение.",
-    lessons: [],
-    tables: [["Как читать b/v, c/z, g/j", "Правила чтения"], ["Agudas, llanas, esdrújulas", "Ударение"], ["Diptongo и hiato", "Дифтонги"]],
-    task: "Прочитайте вслух названия городов Испании: Zaragoza, Jaén, Girona, Cádiz, Valladolid, Guadalajara, Logroño, Málaga. Для каждого назовите ударный слог и объясните, почему тильда есть или её нет. Затем продиктуйте по буквам своё имя.",
-    example: [["Zaragoza → za-ra-GO-za", "llana на гласную: тильда не нужна"], ["Cádiz → CÁ-diz", "llana на -z: тильда нужна"]],
-    canDo: ["читать слова с c/z, g/j, ll, ñ, r/rr", "находить ударный слог в незнакомом слове", "продиктовать по буквам своё имя"]
-  },
-  {
-    id: "a0-hello", level: "a0", title: "Первые фразы",
-    goal: "Поздороваться, представиться, попрощаться и справиться с непониманием.",
-    lessons: [],
-    tables: [["Tú vs Usted vs Vosotros", "Tú / usted / vosotros"], ["Вопросы: образование", "Вопросы"], ["Вежливые просьбы в Испании", "Вежливые просьбы"]],
-    task: "Разыграйте знакомство из 6 реплик: поздоровайтесь, назовите имя и страну (Me llamo…, Soy de…), спросите то же у собеседника и попрощайтесь. Повторите диалог на usted и добавьте просьбу повторить помедленнее.",
-    example: [["¡Hola! Me llamo Ana. Soy de Rusia. ¿Y tú, cómo te llamas?", "Привет! Меня зовут Анна. Я из России. А тебя как зовут?"], ["Perdone, ¿puede hablar más despacio, por favor?", "Простите, не могли бы вы говорить помедленнее?"]],
-    canDo: ["поздороваться и попрощаться в разное время дня", "назвать своё имя и страну", "попросить повторить или говорить медленнее"]
-  },
-  {
-    id: "a0-numbers", level: "a0", title: "Числа, дни и время",
-    goal: "Понимать и называть числа, цены, дни недели, даты и время.",
-    lessons: [],
-    tables: [["Числительные: количественные", "Числа"], ["La hora y la fecha", "Время и дата"], ["Деньги, дроби, проценты", "Цены и телефоны"]],
-    task: "Назовите вслух свой номер телефона, сегодняшний день недели, дату и сколько сейчас времени. Затем прочитайте три цены с чека или ценника и скажите, сколько стоит всё вместе.",
-    example: [["Hoy es martes, 29 de septiembre. Son las cinco y media.", "Сегодня вторник, 29 сентября. Сейчас половина шестого."], ["Son tres euros con cincuenta.", "С вас три евро пятьдесят."]],
-    canDo: ["считать от 0 до 100", "назвать день недели, дату и время", "понять цену на слух"]
   },
   {
     id: "a2-past", level: "a2", title: "Рассказ о прошлом",
@@ -16349,7 +16352,7 @@ function learningAfterB2Markup() {
   const levels = LEARNING_AFTER_B2.levels.map((level) => `<section class="learning-after-level"><h3>${level.label} · ${level.title}</h3><p class="muted">${level.description}</p><ul>${level.can.map((item) => `<li>${item}</li>`).join("")}</ul></section>`).join("");
   const steps = LEARNING_AFTER_B2.steps.map((step) => `<li>${step}</li>`).join("");
   const resources = LEARNING_AFTER_B2.resources.map(([label, href]) => `<li><a href="${href}" target="_blank" rel="noopener">${label}</a></li>`).join("");
-  return `<section class="learning-plan-summary"><p><strong>После B2 · C1 и C2</strong></p><p class="muted">${LEARNING_LEVELS.find((level) => level.id === "after").description}</p></section>
+  return `<section class="learning-plan-summary"><p><strong>C1 и C2 · за пределами учебника</strong></p><p class="muted">${LEARNING_LEVELS.find((level) => level.id === "after").description}</p></section>
     <div class="learning-after-levels">${levels}</div>
     <div class="learning-module-part learning-after-part"><h4>Что делать дальше</h4><ol>${steps}</ol></div>
     <div class="learning-module-part learning-after-part"><h4>Официальные материалы</h4><ul>${resources}</ul></div>`;
@@ -16390,7 +16393,7 @@ function learningLevelTabsMarkup(level) {
   }).join("");
 }
 
-// Содержимое уровня: сводка и «Сейчас», «Повторить», модули, итоговая проверка; для «После B2» — страница ориентиров.
+// Содержимое уровня: сводка и «Сейчас», «Повторить», модули, итоговая проверка; для «C1 и C2» — страница ориентиров.
 function learningLevelBodyMarkup(level) {
   const modules = learningModulesFor(level.id);
   if (!modules.length) return learningAfterB2Markup();

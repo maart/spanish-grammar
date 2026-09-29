@@ -374,7 +374,6 @@ input[type="search"] {
   color: var(--accent);
 }
 
-.action-row,
 .quick-nav {
   display: flex;
   flex-wrap: wrap;
@@ -535,13 +534,6 @@ input[type="search"] {
 .table-mistake {
   border-color: color-mix(in srgb, var(--accent) 36%, var(--line));
   background: color-mix(in srgb, var(--accent-soft) 56%, var(--surface));
-}
-
-.table-card-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 10px;
 }
 
 .tense-card-head {
@@ -1229,7 +1221,6 @@ input[type="search"] {
   margin: 4px 0 0 26px;
 }
 
-
 .learning-module-example-body {
   display: grid;
   gap: 6px;
@@ -1814,20 +1805,6 @@ button.choice-card:focus-visible {
   font-weight: 800;
 }
 
-.state-note {
-  display: inline-flex;
-  align-items: center;
-  min-height: 28px;
-  margin-top: 2px;
-  padding: 4px 8px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--surface-2);
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 800;
-}
-
 .forms-line {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2098,12 +2075,6 @@ td.irregular {
 .verb-passport span.badge-stem {
   background: color-mix(in srgb, #e6a817 15%, transparent);
   color: color-mix(in srgb, var(--warning-text) 70%, var(--text));
-}
-
-.verb-passport span.badge-generated {
-  border: 1px dashed color-mix(in srgb, var(--muted) 55%, transparent);
-  background: transparent;
-  color: var(--muted);
 }
 
 .verb-row-meta span.badge-yo,
@@ -2423,42 +2394,6 @@ td.irregular {
   font-size: 38px;
   line-height: 1.1;
   overflow-wrap: anywhere;
-}
-
-.study-answer {
-  display: grid;
-  gap: 6px;
-  min-width: min(320px, 100%);
-  padding: 18px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--surface);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 12%, transparent);
-}
-
-.study-answer span {
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 900;
-  text-transform: uppercase;
-}
-
-.study-answer strong {
-  color: var(--accent);
-  font-size: 32px;
-  font-weight: 900;
-}
-
-.study-placeholder {
-  display: grid;
-  place-items: center;
-  width: 74px;
-  height: 74px;
-  border: 1px dashed color-mix(in srgb, var(--accent-2) 55%, var(--line));
-  border-radius: 50%;
-  color: var(--accent-2);
-  font-size: 36px;
-  font-weight: 900;
 }
 
 .study-actions {
@@ -2893,11 +2828,6 @@ td.irregular {
 .quiz-result-links .small-button {
   padding: 5px 8px;
   font-size: 12px;
-}
-
-.quiz-config-section {
-  display: grid;
-  gap: 8px;
 }
 
 .quiz-config-label {
@@ -3468,27 +3398,10 @@ td.irregular {
 .textbook-feedback strong { color: var(--text); }
 .textbook-feedback-note { display: block; margin-top: 4px; }
 .textbook-exercise-toggle:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
-@media (max-width: 560px) {
-  .textbook-exercise-head { grid-template-columns: 1fr; grid-template-areas: "heading" "toggle" "meta"; }
-  .textbook-exercise-meta { justify-self: start; }
-  .textbook-exercise-toggle { width: 100%; }
-}
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
 .verb-list.is-suggestions .verb-pick {
   min-height: 52px;
-}
-
-.control-row {
-  display: grid;
-  gap: 8px;
-  margin: 12px 0;
-}
-
-.control-row label {
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 800;
 }
 
 select {
@@ -3500,28 +3413,6 @@ select {
   background: var(--surface-2);
   color: var(--text);
   font: inherit;
-}
-
-.mini-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--surface-2);
-}
-
-.mini-row button {
-  min-width: 78px;
-  height: 34px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--surface);
-  color: var(--text);
-  cursor: pointer;
-  font-weight: 800;
 }
 
 @supports not (backdrop-filter: blur(12px)) {
@@ -3577,6 +3468,10 @@ select {
 }
 
 @media (max-width: 560px) {
+  .textbook-exercise-head { grid-template-columns: 1fr; grid-template-areas: "heading" "toggle" "meta"; }
+  .textbook-exercise-meta { justify-self: start; }
+  .textbook-exercise-toggle { width: 100%; }
+
   .app-shell {
     padding: 10px 10px calc(92px + env(safe-area-inset-bottom));
   }
@@ -3701,10 +3596,6 @@ select {
 
   .tab-label-mobile {
     display: inline;
-  }
-
-  .action-row .small-button {
-    flex: 1 1 140px;
   }
 
   .tense-card-head {
@@ -4203,7 +4094,6 @@ select {
   .filter-tabs,
   .toc-toggle,
   .tense-toc-toggle,
-  .table-card-actions,
   .table-related,
   .brand-stats,
   .app-footer {
@@ -4309,7 +4199,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.44 · обновлено: 29.09.2026 23:11 CEST</span>
+        <span>Версия MVP 1.45 · обновлено: 29.09.2026 23:13 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -12667,13 +12557,6 @@ function groupHeading(title, description) {
   });
 }
 
-function subgroupHeading(title) {
-  return infoSection({
-    className: "info-card subgroup-heading",
-    html: `<h3>${title}</h3>`
-  });
-}
-
 function disclosureButton({ open, target, label, hideLabel = `Скрыть ${label.toLowerCase()}`, action }) {
   return `<button class="small-button ${open ? "danger" : "success"}" type="button" data-${action}="${target}" aria-expanded="${open}">
     <span class="button-label-full">${open ? hideLabel : label}</span>
@@ -14159,21 +14042,6 @@ function verbTenseLabel(tense) {
     imperativo_negativo: "Imperativo -"
   };
   return labels[tense.id] || tense.name;
-}
-
-function singleTenseTable(verbs, tenseId) {
-  const table = document.createElement("table");
-  table.innerHTML = `<thead><tr><th>Глагол</th>${PEOPLE.map((person) => `<th>${person}</th>`).join("")}</tr></thead>`;
-  const body = document.createElement("tbody");
-  verbs.forEach((verb) => {
-    const info = verbInfo(verb);
-    const row = document.createElement("tr");
-    const forms = info.forms[tenseId] || [];
-    row.innerHTML = `<th lang="es">${info.displayInfinitive}</th>${PEOPLE.map((_, index) => `<td lang="es">${forms[index] || "-"}</td>`).join("")}`;
-    body.appendChild(row);
-  });
-  table.appendChild(body);
-  return table;
 }
 
 function selectedTenseOnlyTable(verb, tenseId) {
@@ -17988,13 +17856,6 @@ function shuffle(items) {
   return arr;
 }
 
-function infoCard(title, text) {
-  const card = document.createElement("article");
-  card.className = "info-card";
-  card.innerHTML = `<h2>${title}</h2><p class="muted">${text}</p>`;
-  return card;
-}
-
 function validateData() {
   const tenseIds = new Set(DATA.tenses.map((tense) => tense.id));
   const tableGroups = new Set(DATA.tableGroups.map((group) => group.title));
@@ -18086,11 +17947,6 @@ function validateData() {
     });
   });
   return issues;
-}
-
-function exceptionVerbsFor(tenseId) {
-  const key = exceptionKeyForTense(tenseId);
-  return BASE_VERBS.filter((verb) => isExceptionFor(verb, key));
 }
 
 function isExceptionFor(verb, key) {
@@ -18330,31 +18186,6 @@ function renderTenseSignals(tense) {
   wrap.appendChild(table);
   block.appendChild(wrap);
   return block;
-}
-
-function renderExceptionCard(verb, tenseId) {
-  const info = verbInfo(verb);
-  const card = document.createElement("article");
-  card.className = "verb-card";
-  const title = tenseId === "participio" ? "Participio irregular" : tenseById(tenseId).name;
-  card.innerHTML = `
-    <div class="card-head">
-      <div>
-        <h2>${info.displayInfinitive}</h2>
-        <p class="muted">${info.ru} · ${title}</p>
-      </div>
-    </div>
-    <div class="chips">${info.tags.map((tag) => `<span class="chip alert">${tag}</span>`).join("")}</div>
-  `;
-  if (tenseId === "participio") {
-    card.insertAdjacentHTML("beforeend", `<dl class="forms-line"><div><dt>Participio</dt><dd>${info.participle}</dd></div><div><dt>Infinitivo</dt><dd>${verb}</dd></div></dl>`);
-    return card;
-  }
-  const wrap = document.createElement("div");
-  wrap.className = "table-wrap";
-  wrap.appendChild(selectedTenseOnlyTable(verb, tenseId));
-  card.appendChild(wrap);
-  return card;
 }
 
 // Уровень шпаргалки — диапазон от её собственного уровня и уровней связанных уроков (PCIC):

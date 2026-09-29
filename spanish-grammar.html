@@ -709,6 +709,41 @@ input[type="search"] {
   margin: 0;
 }
 
+.learning-plan-summary-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.learning-plan-summary-head p:first-child {
+  display: grid;
+  gap: 2px;
+}
+
+.learning-plan-percent {
+  display: grid;
+  justify-items: end;
+  flex: none;
+}
+
+.learning-plan-percent strong {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.learning-plan-percent .muted {
+  font-size: 12px;
+}
+
+.learning-level-tabs [role="tab"] small {
+  margin-left: 6px;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0.8;
+}
+
 .learning-plan-filter-bar {
   display: grid;
   gap: 8px;
@@ -826,6 +861,11 @@ input[type="search"] {
   border: 1px solid var(--line);
   border-radius: 10px;
   background: var(--surface);
+}
+
+.learning-module,
+.textbook-exercise {
+  scroll-margin-top: 72px;
 }
 
 .learning-module.is-current {
@@ -3516,6 +3556,11 @@ select {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
+  .learning-level-tabs [role="tab"] small {
+    display: block;
+    margin: 1px 0 0;
+  }
+
   .learning-detail-example {
     grid-template-columns: 1fr;
     gap: 2px;
@@ -4050,7 +4095,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.33 · обновлено: 29.09.2026 18:08 CEST</span>
+        <span>Версия MVP 1.34 · обновлено: 29.09.2026 18:10 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -17192,6 +17237,45 @@ function learningModulesFor(levelId) {
   return LEARNING_MODULES.filter((module) => module.level === levelId);
 }
 
+function learningModuleForLesson(lessonId) {
+  return LEARNING_MODULES.find((module) => module.lessons.includes(lessonId)) || null;
+}
+
+// Из плана урок открывается сразу на первом упражнении, где есть пустые или непроверенные ответы.
+function openTextbookLessonFromPlan(lessonId) {
+  const lesson = TEXTBOOK_LESSONS.find((item) => item.id === lessonId);
+  if (!lesson) return;
+  openTextbookLesson(lessonId);
+  const saved = textbookLessonState(lessonId);
+  const exercise = lesson.exercises.find((item) => {
+    const progress = textbookExerciseProgress(item, saved);
+    return progress.answered < progress.total || progress.checked < progress.total;
+  });
+  if (!exercise) return;
+  state.textbookOpenExercises[`${lessonId}:${exercise.id}`] = true;
+  renderTextbook();
+  setTimeout(() => {
+    const target = document.querySelector(`[data-textbook-exercise="${exercise.id}"]`);
+    target?.scrollIntoView({ behavior: "auto", block: "start" });
+    target?.querySelector("input, select, button")?.focus({ preventScroll: true });
+  }, 50);
+}
+
+function openLearningPlanForLesson(lessonId) {
+  const module = learningModuleForLesson(lessonId);
+  if (!module) return;
+  state.learningLevel = module.level;
+  appStorage.set("msg:learningLevel", state.learningLevel);
+  state.learningDetails[`plan:${module.id}`] = true;
+  appStorage.set("msg:learningDetails", JSON.stringify(state.learningDetails));
+  setView("learning-plan");
+  setTimeout(() => {
+    const detail = $all("[data-learning-module]").find((item) => item.dataset.learningModule === module.id);
+    detail?.scrollIntoView({ behavior: "auto", block: "start" });
+    detail?.querySelector(`[data-textbook-open="${lessonId}"]`)?.focus({ preventScroll: true });
+  }, 50);
+}
+
 function learningLessonStatus(lessonId) {
   const lesson = TEXTBOOK_LESSONS.find((item) => item.id === lessonId);
   if (!lesson) return "todo";
@@ -17385,7 +17469,8 @@ function renderLearningPlan() {
   const levelButtons = LEARNING_LEVELS.map((item) => {
     const selected = item.id === level.id;
     const { done, total } = learningLevelCounts(item);
-    return `<button class="small-button ${selected ? "is-active" : ""}" id="learning-level-${item.id}" role="tab" tabindex="${selected ? "0" : "-1"}" type="button" data-learning-level="${item.id}" aria-selected="${selected}" aria-controls="learning-plan-panel">${item.label}${total ? ` · ${done}/${total}` : ""}</button>`;
+    const percent = total ? Math.round(done / total * 100) : 0;
+    return `<button class="small-button ${selected ? "is-active" : ""}" id="learning-level-${item.id}" role="tab" tabindex="${selected ? "0" : "-1"}" type="button" data-learning-level="${item.id}" aria-selected="${selected}" aria-controls="learning-plan-panel" aria-label="${item.label}: освоено ${percent}%">${item.label}<small>${percent}%</small></button>`;
   }).join("");
   const sections = [
     ["can", "Что нужно уметь", level.can], ["grammar", "Грамматика", level.grammar], ["topics", "Темы и лексика", level.topics],
@@ -17428,7 +17513,8 @@ function renderLearningPlan() {
   const currentModuleIndex = modules.findIndex((module) => learningModuleSteps(module).some((step) => !step.done));
   const currentModule = modules[currentModuleIndex];
   const currentStep = currentModule ? learningModuleSteps(currentModule).find((step) => !step.done) : null;
-  const doneMarkup = `<div class="plan-next-step"><div><p><strong>Уровень завершён</strong></p><small>Все пункты отмечены как освоенные.</small></div></div>`;
+  const nextLevel = LEARNING_LEVELS[LEARNING_LEVELS.findIndex((item) => item.id === level.id) + 1];
+  const doneMarkup = `<div class="plan-next-step"><div><p><strong>Уровень завершён</strong></p><small>Все пункты отмечены как освоенные.</small></div>${nextLevel ? `<button class="small-button primary" type="button" data-go-learning-level="${nextLevel.id}">Перейти к ${nextLevel.label}</button>` : ""}</div>`;
   let nextStepMarkup = nextItem
     ? `<div class="plan-next-step"><div><p><strong>Следующий пункт</strong></p><small>${nextItem.item}</small></div><button class="small-button primary" type="button" data-open-learning-item="${nextKey}">Открыть пункт</button></div>`
     : doneMarkup;
@@ -17437,8 +17523,8 @@ function renderLearningPlan() {
     nextStepMarkup = !currentStep
       ? doneMarkup
       : lesson
-        ? `<div class="plan-next-step"><div><p><strong>Сейчас: модуль «${currentModule.title}»</strong></p><small>Урок ${lesson.id}. ${escapeHTML(lesson.title.ru)}</small></div><button class="small-button primary" type="button" data-textbook-open="${lesson.id}">Открыть урок</button></div>`
-        : `<div class="plan-next-step"><div><p><strong>Сейчас: модуль «${currentModule.title}»</strong></p><small>${currentStep.kind === "task" ? "Задание модуля" : "Самопроверка: пункты «Могу»"}</small></div><button class="small-button primary" type="button" data-open-learning-module="${currentModule.id}">Открыть модуль</button></div>`;
+        ? `<div class="plan-next-step"><div><p><strong>Сейчас: модуль ${currentModuleIndex + 1} из ${modules.length} · ${currentModule.title}</strong></p><small>Следующий урок: ${lesson.id}. ${escapeHTML(lesson.title.ru)}</small></div><button class="small-button primary" type="button" data-textbook-open="${lesson.id}">Продолжить</button></div>`
+        : `<div class="plan-next-step"><div><p><strong>Сейчас: модуль ${currentModuleIndex + 1} из ${modules.length} · ${currentModule.title}</strong></p><small>${currentStep.kind === "task" ? "Следующий шаг: задание модуля" : "Следующий шаг: самопроверка «Могу»"}</small></div><button class="small-button primary" type="button" data-open-learning-module="${currentModule.id}">Продолжить</button></div>`;
   }
   const summaryDone = modules.length ? levelCounts.done : doneCount;
   const summaryTotal = modules.length ? levelCounts.total : allItems.length;
@@ -17448,10 +17534,10 @@ function renderLearningPlan() {
     : `<div class="learning-plan-filter-bar"><p><strong>Показывать пункты</strong> <span class="muted">${filteredItemCount} из ${allItems.length}</span></p><div class="learning-plan-filters" role="group" aria-label="Фильтр по типу пункта">${filterButtons}</div></div>
       ${sections.map(([sectionId, title, items]) => list(sectionId, title, items)).join("")}`;
   header.innerHTML = `
-    <div class="card-head"><div><h2>План обучения</h2><p class="muted">Практическая карта испанского по CEFR. A0 — внутренняя подготовительная ступень; A1–C2 — официальные уровни.</p></div></div>
+    <div class="card-head"><div><h2>План обучения</h2><p class="muted">Маршрут по Учебнику и Шпаргалкам по уровням CEFR.</p></div></div>
     <div class="learning-level-tabs" role="tablist" aria-label="Выбор уровня">${levelButtons}</div>
     <div id="learning-plan-panel" role="tabpanel" tabindex="-1" aria-labelledby="learning-level-${level.id}">
-      <section class="learning-plan-summary" aria-live="polite"><p><strong>${level.label} · ${level.title}</strong></p><p>${level.description}</p><p><strong>Освоено: ${summaryDone} из ${summaryTotal} · ${summaryProgress}%</strong></p><progress max="100" value="${summaryProgress}" aria-label="Освоено на уровне ${level.label}"></progress>${nextStepMarkup}</section>
+      <section class="learning-plan-summary" aria-live="polite"><div class="learning-plan-summary-head"><p><strong>${level.label} · ${level.title}</strong><span class="muted">${level.description}</span></p><p class="learning-plan-percent"><strong>${summaryProgress}%</strong><span class="muted">${summaryDone} из ${summaryTotal}</span></p></div><progress max="100" value="${summaryProgress}" aria-label="Освоено на уровне ${level.label}"></progress>${nextStepMarkup}</section>
       ${planBody}
       <p class="muted learning-plan-sources">Основа: <a href="https://www.coe.int/en/web/common-european-framework-reference-languages/companion-volume" target="_blank" rel="noopener">CEFR Companion Volume</a> и <a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/default.htm" target="_blank" rel="noopener">Plan Curricular del Instituto Cervantes</a>. A0 опирается на коммуникативные дескрипторы Pre-A1 и начальное содержание A1; планы A1–C2 соотнесены с официальными дескрипторами и инвентарями функций, грамматики, прагматики и учебных тем соответствующих уровней. Списки являются практической адаптацией для самостоятельного обучения, а не официальным экзаменационным силлабусом.</p>
       <p class="learning-plan-reset"><button class="small-button" type="button" data-reset-learning>Сбросить прогресс ${level.label}</button></p>
@@ -17480,7 +17566,8 @@ function renderLearningPlan() {
   }));
   bindClickAll(header, "[data-learning-filter]", (event) => { state.learningFilter = event.currentTarget.dataset.learningFilter; appStorage.set("msg:learningFilter", state.learningFilter); renderLearningPlan(); requestAnimationFrame(() => $all("[data-learning-filter]").find((button) => button.dataset.learningFilter === state.learningFilter)?.focus({ preventScroll: true })); });
   $all("[data-learning-detail]", header).forEach((detail) => detail.addEventListener("toggle", () => { const key = detail.dataset.learningDetail; if (detail.open) state.learningDetails[key] = true; else delete state.learningDetails[key]; appStorage.set("msg:learningDetails", JSON.stringify(state.learningDetails)); }));
-  bindClickAll(header, "[data-textbook-open]", (event) => openTextbookLesson(Number(event.currentTarget.dataset.textbookOpen)));
+  bindClickAll(header, "[data-go-learning-level]", (event) => { state.learningLevel = event.currentTarget.dataset.goLearningLevel; appStorage.set("msg:learningLevel", state.learningLevel); renderLearningPlan(); scrollAppTop(); });
+  bindClickAll(header, "[data-textbook-open]", (event) => openTextbookLessonFromPlan(Number(event.currentTarget.dataset.textbookOpen)));
   $all("[data-learning-module]", header).forEach((detail) => detail.addEventListener("toggle", () => {
     state.learningDetails[`plan:${detail.dataset.learningModule}`] = detail.open;
     appStorage.set("msg:learningDetails", JSON.stringify(state.learningDetails));
@@ -17773,7 +17860,7 @@ function renderTextbookLesson(content, lesson) {
   const relatedLessons = (TEXTBOOK_RELATED_LESSONS[lesson.id] || []).map((id) => TEXTBOOK_LESSONS.find((item) => item.id === id)).filter(Boolean);
   const related = relatedLessons.length ? '<section class="textbook-related"><h3>' + escapeHTML(textbookUi("Связанные уроки", "Lecciones relacionadas")) + '</h3><div class="textbook-actions">' + relatedLessons.map((item) => '<button class="small-button" type="button" data-textbook-open="' + item.id + '">▶ ' + item.id + ". " + escapeHTML(textbookText(item.title)) + "</button>").join("") + "</div></section>" : "";
   const section = infoSection({ className: "info-card textbook-lesson", html: `
-    <div class="textbook-lesson-toolbar"><div class="textbook-lesson-controls"><button class="small-button" type="button" data-textbook-catalog>← ${escapeHTML(textbookUi("К оглавлению", "Índice"))}</button>${textbookLanguageButtons()}</div><div class="textbook-lesson-heading"><h2>${lesson.id}. ${escapeHTML(textbookText(lesson.title))} ${textbookLevelBadge(lesson.id)}</h2><p class="muted">${escapeHTML(textbookText(lesson.goal))}</p></div></div>
+    <div class="textbook-lesson-toolbar"><div class="textbook-lesson-controls"><button class="small-button" type="button" data-textbook-catalog>← ${escapeHTML(textbookUi("К оглавлению", "Índice"))}</button>${learningModuleForLesson(lesson.id) ? `<button class="small-button" type="button" data-textbook-plan="${lesson.id}">← ${escapeHTML(textbookUi("К плану", "Al plan"))}</button>` : ""}${textbookLanguageButtons()}</div><div class="textbook-lesson-heading"><h2>${lesson.id}. ${escapeHTML(textbookText(lesson.title))} ${textbookLevelBadge(lesson.id)}</h2><p class="muted">${escapeHTML(textbookText(lesson.goal))}</p></div></div>
     <div class="textbook-summary"><span><strong>${escapeHTML(textbookUi("Верно", "Correctas"))}: ${progress.correct}/${progress.checked}</strong> · ${escapeHTML(textbookUi("Заполнено", "Respondidas"))}: ${progress.answered}/${progress.total}</span><span class="textbook-status ${progress.done ? "is-done" : ""}">${escapeHTML(progress.done ? textbookUi("Урок пройден", "Lección completada") : textbookUi("В работе", "En curso"))}</span></div>
     <div class="textbook-theory-grid">${theory}</div>
     ${related}
@@ -17844,6 +17931,7 @@ function bindTextbookControls(root, activeLesson = null) {
     requestAnimationFrame(() => document.querySelector('[data-textbook-toggle="' + exerciseId + '"]')?.focus({ preventScroll: true }));
   });
   root.querySelector("[data-textbook-catalog]")?.addEventListener("click", openTextbookCatalog);
+  root.querySelector("[data-textbook-plan]")?.addEventListener("click", (event) => openLearningPlanForLesson(Number(event.currentTarget.dataset.textbookPlan)));
   $all("[data-textbook-answer]", root).forEach((input) => input.addEventListener("input", (event) => {
     if (!activeLesson) return;
     const saved = textbookLessonState(activeLesson.id);

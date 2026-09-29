@@ -916,6 +916,61 @@ input[type="search"] {
   font-weight: 900;
 }
 
+.learning-check-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+}
+
+.learning-check-card h3,
+.learning-check-card p {
+  margin: 0 0 4px;
+}
+
+.learning-check-card p {
+  font-size: 13px;
+}
+
+.learning-check {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.learning-check h3 {
+  margin: 0;
+}
+
+.learning-check-summary {
+  display: grid;
+  gap: 8px;
+}
+
+.learning-check-summary p {
+  margin: 0;
+}
+
+.learning-check-score strong {
+  font-size: 18px;
+}
+
+.learning-check-score.is-passed strong {
+  color: var(--success);
+}
+
+.learning-check-context {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
 .learning-plan-notice {
   display: flex;
   align-items: center;
@@ -3978,7 +4033,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.36 · обновлено: 29.09.2026 18:20 CEST</span>
+        <span>Версия MVP 1.37 · обновлено: 29.09.2026 18:22 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -9771,6 +9826,11 @@ const state = {
   })(),
   learningProgress: migrateLearningProgress(),
   learningDetails: readLearningDetails(),
+  learningChecks: (() => {
+    const stored = readStoredJSON("msg:learningLevelChecks", {});
+    return stored && typeof stored === "object" && !Array.isArray(stored) ? stored : {};
+  })(),
+  learningCheck: null,
   query: "",
   selectedVerb: null,
   previousVerbQuery: null,
@@ -15763,6 +15823,85 @@ function learningStatusFor(key) {
   return stored === true || stored === "done" ? "done" : "todo";
 }
 
+// Итоговая проверка уровня: случайные пункты из упражнений его уроков, минимум по одному из каждого модуля.
+// Ответы проверки не записываются в уроки; сохраняется только результат в msg:learningLevelChecks.
+const LEARNING_CHECK_SIZE = 12;
+const LEARNING_CHECK_PASS_SHARE = 0.8;
+
+function learningCheckPool(module) {
+  return module.lessons.flatMap((lessonId) => {
+    const lesson = TEXTBOOK_LESSONS.find((item) => item.id === lessonId);
+    return lesson.exercises.flatMap((exercise) => exercise.items.map((_item, index) => ({ lessonId, exerciseId: exercise.id, index })));
+  });
+}
+
+function learningCheckEntry(entry) {
+  const lesson = TEXTBOOK_LESSONS.find((item) => item.id === entry.lessonId);
+  const exercise = lesson.exercises.find((item) => item.id === entry.exerciseId);
+  return { lesson, exercise, item: exercise.items[entry.index] };
+}
+
+function startLearningCheck(levelId) {
+  const pools = learningModulesFor(levelId).filter((module) => module.lessons.length).map((module) => shuffle(learningCheckPool(module)));
+  const picked = pools.map((pool) => pool[0]).filter(Boolean);
+  const rest = shuffle(pools.flatMap((pool) => pool.slice(1)));
+  const items = shuffle([...picked, ...rest.slice(0, Math.max(0, LEARNING_CHECK_SIZE - picked.length))]);
+  state.learningCheck = { level: levelId, items, answers: {}, submitted: false, message: "" };
+}
+
+function learningCheckResults() {
+  const check = state.learningCheck;
+  return check.items.map((entry, index) => textbookCorrect(check.answers[index] || "", learningCheckEntry(entry).item.answer));
+}
+
+function saveLearningCheckResult(levelId, percent) {
+  const record = { ...(state.learningChecks[levelId] || {}) };
+  record.last = percent;
+  record.best = Math.max(record.best || 0, percent);
+  if (percent >= LEARNING_CHECK_PASS_SHARE * 100 && !record.passedAt) record.passedAt = new Date().toISOString().slice(0, 10);
+  state.learningChecks[levelId] = record;
+  appStorage.set("msg:learningLevelChecks", JSON.stringify(state.learningChecks));
+}
+
+function learningCheckCardMarkup(level) {
+  if (!learningModulesFor(level.id).some((module) => module.lessons.length)) return "";
+  const record = state.learningChecks[level.id];
+  const passed = record?.passedAt ? ` Уровень подтверждён ${new Date(record.passedAt).toLocaleDateString("ru-RU")}.` : "";
+  const result = record ? `<p><strong>Лучший результат: ${record.best}%, последний: ${record.last}%.</strong>${passed}</p>` : "";
+  return `<section class="learning-check-card"><div><h3>Итоговая проверка ${level.label}</h3><p class="muted">${LEARNING_CHECK_SIZE} случайных заданий из уроков уровня, не меньше одного из каждого модуля; 5–10 минут. Уровень подтверждён при ${Math.round(LEARNING_CHECK_PASS_SHARE * 100)}% верных. Ответы не попадают в уроки.</p>${result}</div><button class="small-button primary" type="button" data-check-start>${record ? "Пройти ещё раз" : "Начать проверку"}</button></section>`;
+}
+
+function learningCheckMarkup(level) {
+  const check = state.learningCheck;
+  const results = check.submitted ? learningCheckResults() : [];
+  const questions = check.items.map((entry, index) => {
+    const { lesson, exercise, item } = learningCheckEntry(entry);
+    const answer = check.answers[index] || "";
+    const prompt = escapeHTML(item.prompt);
+    const control = exercise.kind === "choice"
+      ? `<div class="textbook-choice-row" role="group" aria-label="${prompt}">${textbookItemOptions(exercise, item).map((option) => `<button class="small-button ${answer === option ? "is-selected" : ""}" type="button" data-check-choice="${index}" data-check-value="${escapeHTML(option)}" aria-pressed="${answer === option}" ${check.submitted ? "disabled" : ""}>${escapeHTML(option)}</button>`).join("")}</div>`
+      : `<label><span class="sr-only">${prompt}</span><input class="textbook-answer-input" type="text" autocomplete="off" spellcheck="false" lang="es" value="${escapeHTML(answer)}" data-check-answer="${index}" aria-label="${prompt}" ${check.submitted ? "readonly" : ""}></label>`;
+    const expected = Array.isArray(item.answer) ? item.answer[0] : item.answer;
+    const feedback = !check.submitted ? "" : results[index]
+      ? `<p class="textbook-feedback"><strong>Верно.</strong></p>`
+      : `<p class="textbook-feedback"><strong>${answer ? "Неверно." : "Нет ответа."}</strong>${textbookAccentOnlyMistake(answer, item.answer) ? " Почти: проверьте тильду." : ""} Правильный ответ: <span lang="es">${escapeHTML(expected)}</span>.</p>`;
+    const stateClass = check.submitted ? (results[index] ? " is-correct" : " is-wrong") : "";
+    return `<li class="textbook-question${stateClass}" data-check-question="${index}"><small class="learning-check-context">Урок ${lesson.id} · ${escapeHTML(textbookText(exercise.instruction))}</small><span class="textbook-prompt"><span lang="es">${markRussianHints(prompt)}</span></span>${control}${feedback}</li>`;
+  }).join("");
+  let summary = `<p class="muted">Ответьте на все ${check.items.length} заданий и нажмите «Проверить». Нужно ${Math.round(LEARNING_CHECK_PASS_SHARE * 100)}% верных.</p>`;
+  let actions = `<button class="small-button primary" type="button" data-check-submit>Проверить</button><button class="small-button" type="button" data-check-exit>Выйти без результата</button>`;
+  if (check.submitted) {
+    const correct = results.filter(Boolean).length;
+    const percent = Math.round(correct / results.length * 100);
+    const passed = percent >= LEARNING_CHECK_PASS_SHARE * 100;
+    const lessonIds = [...new Set(check.items.filter((_entry, index) => !results[index]).map((entry) => entry.lessonId))];
+    const lessons = lessonIds.map((id) => `<button class="small-button" type="button" data-textbook-open="${id}">Урок ${id}</button>`).join("");
+    summary = `<p class="learning-check-score ${passed ? "is-passed" : ""}"><strong>${correct} из ${results.length} · ${percent}%</strong> — ${passed ? `уровень ${level.label} подтверждён.` : `нужно ${Math.round(LEARNING_CHECK_PASS_SHARE * 100)}%, повторите уроки с ошибками.`}</p>${lessons ? `<div class="learning-item-links" aria-label="Уроки с ошибками">${lessons}</div>` : ""}`;
+    actions = `<button class="small-button primary" type="button" data-check-restart>Пройти заново</button><button class="small-button" type="button" data-check-exit>К плану</button>`;
+  }
+  return `<section class="learning-check" aria-labelledby="learning-check-title"><h3 id="learning-check-title" tabindex="-1">Итоговая проверка ${level.label}</h3><div class="learning-check-summary" aria-live="polite">${summary}${check.message ? `<p class="textbook-feedback" role="status"><strong>${check.message}</strong></p>` : ""}</div><ol class="textbook-question-list">${questions}</ol><div class="textbook-actions">${actions}</div></section>`;
+}
+
 function learningPlanNoticeMarkup() {
   if (appStorage.get("msg:learningPlanNotice") !== "1") return "";
   return `<div class="learning-plan-notice" role="status"><p>План перестроен на модули. Старые отметки пунктов больше не показываются, но сохранены в резервной копии прогресса; прогресс уроков в Учебнике не изменился.</p><button class="small-button" type="button" data-dismiss-learning-notice>Понятно</button></div>`;
@@ -15785,7 +15924,8 @@ function renderLearningPlan() {
     const selected = item.id === level.id;
     const { done, total } = learningLevelCounts(item);
     const percent = total ? Math.round(done / total * 100) : 0;
-    return `<button class="small-button ${selected ? "is-active" : ""}" id="learning-level-${item.id}" role="tab" tabindex="${selected ? "0" : "-1"}" type="button" data-learning-level="${item.id}" aria-selected="${selected}" aria-controls="learning-plan-panel" aria-label="${total ? `${item.label}: освоено ${percent}%` : item.label}">${item.label}${total ? `<small>${percent}%</small>` : ""}</button>`;
+    const confirmed = Boolean(state.learningChecks[item.id]?.passedAt);
+    return `<button class="small-button ${selected ? "is-active" : ""}" id="learning-level-${item.id}" role="tab" tabindex="${selected ? "0" : "-1"}" type="button" data-learning-level="${item.id}" aria-selected="${selected}" aria-controls="learning-plan-panel" aria-label="${total ? `${item.label}: освоено ${percent}%${confirmed ? ", итоговая проверка пройдена" : ""}` : item.label}">${item.label}${total ? `<small>${percent}%${confirmed ? " ✓" : ""}</small>` : ""}</button>`;
   }).join("");
   const modules = learningModulesFor(level.id);
   let body = learningAfterB2Markup();
@@ -15807,8 +15947,10 @@ function renderLearningPlan() {
       ${learningReviewMarkup(level)}
       <div class="learning-modules">${modules.map((module, index) => learningModuleMarkup(module, index, index === currentModuleIndex)).join("")}</div>
       <p class="muted learning-modules-note">${modules.some((module) => module.lessons.length) ? "Уроки отмечаются сами, когда все их упражнения проверены в Учебнике. " : "Учебник начинается с A1, поэтому здесь опора — шпаргалки. "}Задание и пункты «Могу» отмечайте сами.</p>
+      ${learningCheckCardMarkup(level)}
       <p class="learning-plan-reset"><button class="small-button" type="button" data-reset-learning>Сбросить отметки ${level.label}</button></p>`;
   }
+  if (state.learningCheck?.level === level.id) body = learningCheckMarkup(level);
   const header = document.createElement("section");
   header.className = "info-card";
   header.innerHTML = `
@@ -15821,7 +15963,7 @@ function renderLearningPlan() {
     </div>
   `;
   content.appendChild(header);
-  const selectLevel = (levelId) => { state.learningLevel = levelId; appStorage.set("msg:learningLevel", state.learningLevel); renderLearningPlan(); };
+  const selectLevel = (levelId) => { state.learningCheck = null; state.learningLevel = levelId; appStorage.set("msg:learningLevel", state.learningLevel); renderLearningPlan(); };
   bindClickAll(header, "[data-learning-level]", (event) => selectLevel(event.currentTarget.dataset.learningLevel));
   $all("[data-learning-level]", header).forEach((button, index, buttons) => button.addEventListener("keydown", (event) => {
     const direction = event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : event.key === "Home" ? -Infinity : event.key === "End" ? Infinity : 0;
@@ -15833,6 +15975,44 @@ function renderLearningPlan() {
   bindClickAll(header, "[data-go-learning-level]", (event) => { selectLevel(event.currentTarget.dataset.goLearningLevel); scrollAppTop(); });
   bindClickAll(header, "[data-textbook-open]", (event) => openTextbookLessonFromPlan(Number(event.currentTarget.dataset.textbookOpen)));
   bindClickAll(header, "[data-textbook-review]", (event) => openTextbookLessonFromPlan(Number(event.currentTarget.dataset.textbookReview), { mistakes: true }));
+  const rerenderCheck = (focusSelector) => {
+    renderLearningPlan();
+    requestAnimationFrame(() => {
+      const target = focusSelector ? document.querySelector(focusSelector) : document.querySelector("#learning-check-title");
+      target?.scrollIntoView({ behavior: "auto", block: focusSelector ? "center" : "start" });
+      target?.focus({ preventScroll: true });
+    });
+  };
+  bindClickAll(header, "[data-check-start]", () => { startLearningCheck(level.id); rerenderCheck(); });
+  bindClickAll(header, "[data-check-restart]", () => { startLearningCheck(level.id); rerenderCheck(); });
+  bindClickAll(header, "[data-check-exit]", () => { state.learningCheck = null; renderLearningPlan(); requestAnimationFrame(() => document.querySelector("[data-check-start]")?.scrollIntoView({ behavior: "auto", block: "center" })); });
+  $all("[data-check-answer]", header).forEach((input) => input.addEventListener("input", (event) => { state.learningCheck.answers[event.currentTarget.dataset.checkAnswer] = event.currentTarget.value; }));
+  bindClickAll(header, "[data-check-choice]", (event) => {
+    const index = event.currentTarget.dataset.checkChoice;
+    const value = event.currentTarget.dataset.checkValue;
+    state.learningCheck.answers[index] = value;
+    const scrollY = window.scrollY;
+    renderLearningPlan();
+    requestAnimationFrame(() => {
+      window.scrollTo(0, scrollY);
+      $all(`[data-check-choice="${index}"]`).find((button) => button.dataset.checkValue === value)?.focus({ preventScroll: true });
+    });
+  });
+  bindClickAll(header, "[data-check-submit]", () => {
+    const check = state.learningCheck;
+    const blank = check.items.findIndex((_entry, index) => normalizeTextbookAnswer(check.answers[index]) === "");
+    if (blank >= 0) {
+      const left = check.items.filter((_entry, index) => normalizeTextbookAnswer(check.answers[index]) === "").length;
+      check.message = `Осталось без ответа: ${left}.`;
+      rerenderCheck(`[data-check-question="${blank}"] input, [data-check-question="${blank}"] button`);
+      return;
+    }
+    check.message = "";
+    check.submitted = true;
+    const results = learningCheckResults();
+    saveLearningCheckResult(level.id, Math.round(results.filter(Boolean).length / results.length * 100));
+    rerenderCheck();
+  });
   bindClickAll(header, "[data-dismiss-learning-notice]", () => { appStorage.remove("msg:learningPlanNotice"); renderLearningPlan(); });
   $all("[data-learning-done]", header).forEach((input) => input.addEventListener("change", (event) => {
     const key = event.currentTarget.dataset.learningDone;
@@ -17087,6 +17267,8 @@ function validateData() {
     });
   });
   new Set(LEARNING_MODULES.map((module) => module.level)).forEach((level) => {
+    const pool = learningModulesFor(level).flatMap(learningCheckPool);
+    if (pool.length && pool.length < LEARNING_CHECK_SIZE) issues.push(`Для итоговой проверки ${level} не хватает заданий: ${pool.length}`);
     (TEXTBOOK_LESSON_LEVELS[level] || []).filter((id) => !moduleLessonIds.has(id)).forEach((id) => issues.push(`Урок ${id} уровня ${level} не входит ни в один модуль плана`));
   });
   if (Math.max(...TEXTBOOK_LESSONS.map((lesson) => lesson.id)) !== TEXTBOOK_LAST_LESSON_ID) issues.push("TEXTBOOK_LAST_LESSON_ID не совпадает с последним уроком учебника");

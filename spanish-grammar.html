@@ -4199,7 +4199,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.48 · обновлено: 29.09.2026 23:19 CEST</span>
+        <span>Версия MVP 1.49 · обновлено: 29.09.2026 23:20 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -12588,7 +12588,7 @@ function disclosureButton({ open, target, label, hideLabel = `Скрыть ${lab
 // Делегированные обработчики: по одному слушателю на документ для каждого типа события.
 // Разметку можно перерисовывать сколько угодно — привязывать кнопки заново не нужно.
 // toggle у <details> не всплывает, поэтому его слушатель работает на фазе перехвата.
-const DELEGATED_HANDLERS = { click: [], change: [], input: [], keydown: [], toggle: [] };
+const DELEGATED_HANDLERS = { click: [], change: [], input: [], keydown: [], toggle: [], focusin: [], mousedown: [] };
 
 function onDelegated(type, selector, handler) {
   DELEGATED_HANDLERS[type].push([selector, handler]);
@@ -16900,7 +16900,6 @@ function renderTextbookCatalogContent(content) {
     <div class="textbook-catalog">${cards}</div>
   ` });
   content.appendChild(header);
-  bindTextbookControls(header);
 }
 
 function normalizeTheoryText(value) {
@@ -16960,7 +16959,6 @@ function renderTextbookLesson(content, lesson) {
     <nav class="textbook-lesson-nav" aria-label="${escapeHTML(textbookUi("Навигация по урокам", "Navegación de lecciones"))}">${previousButton}${nextButton}</nav>
   ` });
   content.appendChild(section);
-  bindTextbookControls(section, lesson);
 }
 
 function renderTextbook() {
@@ -16985,146 +16983,155 @@ function hideTextbookExerciseFeedback(lessonId, questionKey, question) {
   }
 }
 
-function bindTextbookControls(root, activeLesson = null) {
-  bindClickAll(root, "[data-textbook-language]", (event) => {
-    state.textbookLanguage = event.currentTarget.dataset.textbookLanguage === "es" ? "es" : "ru";
-    persist("textbookLanguage");
-    rerenderAndFocus(renderTextbook, attrSelector("data-textbook-language", state.textbookLanguage));
+// Обработчики Учебника: один набор для каталога (.textbook-dashboard) и урока (.textbook-lesson).
+function inTextbook(selector) {
+  return `.textbook-dashboard ${selector}, .textbook-lesson ${selector}`;
+}
+
+function activeTextbookLesson() {
+  return state.textbookLesson ? lessonById(state.textbookLesson) : null;
+}
+
+onDelegated("click", inTextbook("[data-textbook-language]"), (_event, target) => {
+  state.textbookLanguage = target.dataset.textbookLanguage === "es" ? "es" : "ru";
+  persist("textbookLanguage");
+  rerenderAndFocus(renderTextbook, attrSelector("data-textbook-language", state.textbookLanguage));
+});
+onDelegated("click", inTextbook("[data-textbook-open]"), (_event, target) => openTextbookLesson(Number(target.dataset.textbookOpen)));
+onDelegated("click", inTextbook("[data-textbook-group-toggle]"), (_event, target) => {
+  const groupIndex = target.dataset.textbookGroupToggle;
+  state.textbookOpenGroups[groupIndex] = !state.textbookOpenGroups[groupIndex];
+  persist("textbookOpenGroups");
+  rerenderAndFocus(renderTextbook, attrSelector("data-textbook-group-toggle", groupIndex));
+});
+onDelegated("click", inTextbook("[data-textbook-level]"), (_event, target) => {
+  state.textbookLevel = target.dataset.textbookLevel;
+  persist("textbookLevel");
+  rerenderAndFocus(renderTextbook, attrSelector("data-textbook-level", state.textbookLevel));
+});
+onDelegated("click", inTextbook("[data-textbook-groups]"), (_event, target) => {
+  const open = target.dataset.textbookGroups === "open";
+  TEXTBOOK_COURSE_GROUPS.forEach((_group, index) => { state.textbookOpenGroups[index] = open; });
+  persist("textbookOpenGroups");
+  rerenderAndFocus(renderTextbook, attrSelector("data-textbook-groups", open ? "open" : "close"));
+});
+onDelegated("click", inTextbook("[data-textbook-toggle]"), (_event, target) => {
+  const lesson = activeTextbookLesson();
+  if (!lesson) return;
+  const exerciseId = target.dataset.textbookToggle;
+  const openKey = lesson.id + ":" + exerciseId;
+  state.textbookOpenExercises[openKey] = !state.textbookOpenExercises[openKey];
+  rerenderAndFocus(renderTextbook, attrSelector("data-textbook-toggle", exerciseId));
+});
+onDelegated("click", inTextbook("[data-textbook-catalog]"), () => openTextbookCatalog());
+onDelegated("click", inTextbook("[data-textbook-plan]"), (_event, target) => openLearningPlanForLesson(Number(target.dataset.textbookPlan)));
+onDelegated("input", inTextbook("[data-textbook-answer]"), (_event, target) => {
+  const lesson = activeTextbookLesson();
+  if (!lesson) return;
+  const saved = textbookLessonState(lesson.id);
+  const key = target.dataset.textbookAnswer;
+  saved.answers[key] = target.value;
+  delete saved.checked[key];
+  saveTextbookProgress();
+  hideTextbookExerciseFeedback(lesson.id, key, target.closest("[data-textbook-question]"));
+});
+// Кнопки á é í ó ú ü ñ вставляют букву в активное поле упражнения, иначе в последнее активное или в первое пустое.
+let lastTextbookInput = null;
+onDelegated("focusin", inTextbook("[data-textbook-answer]"), (_event, target) => { lastTextbookInput = target; });
+onDelegated("mousedown", inTextbook("[data-textbook-char]"), (event) => event.preventDefault());
+onDelegated("click", inTextbook("[data-textbook-char]"), (_event, target) => {
+  const exercise = target.closest("[data-textbook-exercise]");
+  const active = document.activeElement;
+  const input = active?.matches?.("[data-textbook-answer]") && exercise.contains(active)
+    ? active
+    : lastTextbookInput && exercise.contains(lastTextbookInput)
+      ? lastTextbookInput
+      : $all("[data-textbook-answer]", exercise).find((item) => !item.value) || exercise.querySelector("[data-textbook-answer]");
+  if (!input) return;
+  const start = input.selectionStart ?? input.value.length;
+  const end = input.selectionEnd ?? start;
+  input.value = input.value.slice(0, start) + target.dataset.textbookChar + input.value.slice(end);
+  input.focus();
+  input.setSelectionRange(start + 1, start + 1);
+  input.dispatchEvent(new Event("input", { bubbles: true }));
+});
+onDelegated("keydown", inTextbook("[data-textbook-answer]"), (event, target) => {
+  if (event.key !== "Enter" || event.isComposing) return;
+  event.preventDefault();
+  target.closest("[data-textbook-exercise]")?.querySelector("[data-textbook-check]")?.click();
+});
+onDelegated("click", inTextbook("[data-textbook-choice]"), (_event, target) => {
+  const lesson = activeTextbookLesson();
+  if (!lesson) return;
+  const saved = textbookLessonState(lesson.id);
+  const key = target.dataset.textbookChoice;
+  saved.answers[key] = target.dataset.textbookValue;
+  delete saved.checked[key];
+  saveTextbookProgress();
+  const question = target.closest("[data-textbook-question]");
+  $all("[data-textbook-choice]", question).forEach((button) => {
+    const selected = button.dataset.textbookValue === saved.answers[key];
+    button.classList.toggle("is-selected", selected);
+    button.setAttribute("aria-pressed", String(selected));
   });
-  bindClickAll(root, "[data-textbook-open]", (event) => openTextbookLesson(Number(event.currentTarget.dataset.textbookOpen)));
-  bindClickAll(root, "[data-textbook-group-toggle]", (event) => {
-    const groupIndex = event.currentTarget.dataset.textbookGroupToggle;
-    state.textbookOpenGroups[groupIndex] = !state.textbookOpenGroups[groupIndex];
-    persist("textbookOpenGroups");
-    rerenderAndFocus(renderTextbook, attrSelector("data-textbook-group-toggle", groupIndex));
-  });
-  bindClickAll(root, "[data-textbook-level]", (event) => {
-    state.textbookLevel = event.currentTarget.dataset.textbookLevel;
-    persist("textbookLevel");
-    rerenderAndFocus(renderTextbook, attrSelector("data-textbook-level", state.textbookLevel));
-  });
-  bindClickAll(root, "[data-textbook-groups]", (event) => {
-    const open = event.currentTarget.dataset.textbookGroups === "open";
-    TEXTBOOK_COURSE_GROUPS.forEach((_group, index) => { state.textbookOpenGroups[index] = open; });
-    persist("textbookOpenGroups");
-    rerenderAndFocus(renderTextbook, attrSelector("data-textbook-groups", open ? "open" : "close"));
-  });
-  bindClickAll(root, "[data-textbook-toggle]", (event) => {
-    if (!activeLesson) return;
-    const exerciseId = event.currentTarget.dataset.textbookToggle;
-    const openKey = activeLesson.id + ":" + exerciseId;
-    state.textbookOpenExercises[openKey] = !state.textbookOpenExercises[openKey];
-    rerenderAndFocus(renderTextbook, attrSelector("data-textbook-toggle", exerciseId));
-  });
-  root.querySelector("[data-textbook-catalog]")?.addEventListener("click", openTextbookCatalog);
-  root.querySelector("[data-textbook-plan]")?.addEventListener("click", (event) => openLearningPlanForLesson(Number(event.currentTarget.dataset.textbookPlan)));
-  $all("[data-textbook-answer]", root).forEach((input) => input.addEventListener("input", (event) => {
-    if (!activeLesson) return;
-    const saved = textbookLessonState(activeLesson.id);
-    const key = event.currentTarget.dataset.textbookAnswer;
-    saved.answers[key] = event.currentTarget.value;
-    delete saved.checked[key];
-    saveTextbookProgress();
-    const question = event.currentTarget.closest("[data-textbook-question]");
-    hideTextbookExerciseFeedback(activeLesson.id, key, question);
-  }));
-  // Кнопки á é í ó ú ü ñ вставляют букву в последнее активное поле этого упражнения (или в первое пустое).
-  let lastTextbookInput = null;
-  $all("[data-textbook-answer]", root).forEach((input) => input.addEventListener("focus", (event) => { lastTextbookInput = event.currentTarget; }));
-  $all("[data-textbook-char]", root).forEach((button) => {
-    button.addEventListener("mousedown", (event) => event.preventDefault());
-    button.addEventListener("click", (event) => {
-      const exercise = event.currentTarget.closest("[data-textbook-exercise]");
-      const active = document.activeElement;
-      const input = active?.matches?.("[data-textbook-answer]") && exercise.contains(active)
-        ? active
-        : lastTextbookInput && exercise.contains(lastTextbookInput)
-          ? lastTextbookInput
-          : $all("[data-textbook-answer]", exercise).find((item) => !item.value) || exercise.querySelector("[data-textbook-answer]");
-      if (!input) return;
-      const start = input.selectionStart ?? input.value.length;
-      const end = input.selectionEnd ?? start;
-      input.value = input.value.slice(0, start) + event.currentTarget.dataset.textbookChar + input.value.slice(end);
-      input.focus();
-      input.setSelectionRange(start + 1, start + 1);
-      input.dispatchEvent(new Event("input", { bubbles: true }));
-    });
-  });
-  $all("[data-textbook-answer]", root).forEach((input) => input.addEventListener("keydown", (event) => {
-    if (event.key !== "Enter" || event.isComposing) return;
-    event.preventDefault();
-    const exerciseId = event.currentTarget.closest("[data-textbook-exercise]")?.dataset.textbookExercise;
-    root.querySelector('[data-textbook-check="' + exerciseId + '"]')?.click();
-  }));
-  bindClickAll(root, "[data-textbook-choice]", (event) => {
-    if (!activeLesson) return;
-    const saved = textbookLessonState(activeLesson.id);
-    const key = event.currentTarget.dataset.textbookChoice;
-    saved.answers[key] = event.currentTarget.dataset.textbookValue;
-    delete saved.checked[key];
-    saveTextbookProgress();
-    const question = event.currentTarget.closest("[data-textbook-question]");
-    $all("[data-textbook-choice]", question).forEach((button) => {
-      const selected = button.dataset.textbookValue === saved.answers[key];
-      button.classList.toggle("is-selected", selected);
-      button.setAttribute("aria-pressed", String(selected));
-    });
-    hideTextbookExerciseFeedback(activeLesson.id, key, question);
-  });
-  bindClickAll(root, "[data-textbook-check]", (event) => {
-    if (!activeLesson) return;
-    const exercise = activeLesson.exercises.find((item) => item.id === event.currentTarget.dataset.textbookCheck);
-    const feedbackKey = activeLesson.id + ":" + exercise.id;
-    if (state.textbookVisibleFeedback[feedbackKey]) {
-      delete state.textbookVisibleFeedback[feedbackKey];
-      rerenderAndFocus(renderTextbook, attrSelector("data-textbook-check", exercise.id));
+  hideTextbookExerciseFeedback(lesson.id, key, question);
+});
+onDelegated("click", inTextbook("[data-textbook-check]"), (_event, target) => {
+  const lesson = activeTextbookLesson();
+  if (!lesson) return;
+  const exercise = lesson.exercises.find((item) => item.id === target.dataset.textbookCheck);
+  const feedbackKey = lesson.id + ":" + exercise.id;
+  if (state.textbookVisibleFeedback[feedbackKey]) {
+    delete state.textbookVisibleFeedback[feedbackKey];
+    rerenderAndFocus(renderTextbook, attrSelector("data-textbook-check", exercise.id));
+    return;
+  }
+  const saved = textbookLessonState(lesson.id);
+  exercise.items.forEach((item, index) => {
+    const key = textbookQuestionKey(exercise.id, index);
+    if (normalizeTextbookAnswer(saved.answers[key]) === "") {
+      delete saved.checked[key];
       return;
     }
-    const saved = textbookLessonState(activeLesson.id);
-    exercise.items.forEach((item, index) => {
-      const key = textbookQuestionKey(exercise.id, index);
-      if (normalizeTextbookAnswer(saved.answers[key]) === "") {
-        delete saved.checked[key];
-        return;
-      }
-      saved.checked[key] = { correct: textbookCorrect(saved.answers[key], item.answer) };
-      saved.attempts[key] = (Number(saved.attempts[key]) || 0) + 1;
-    });
-    state.textbookVisibleFeedback[feedbackKey] = true;
-    saveTextbookProgress();
-    renderTextbook();
-    requestAnimationFrame(() => {
-      const exerciseRoot = document.querySelector('[data-textbook-exercise="' + exercise.id + '"]');
-      const issue = exerciseRoot?.querySelector(".textbook-question.is-unanswered, .textbook-question.is-wrong");
-      const target = issue?.classList.contains("is-unanswered")
-        ? issue.querySelector("[data-textbook-answer], [data-textbook-choice]")
-        : issue?.querySelector(".textbook-feedback") || exerciseRoot?.querySelector(".textbook-feedback");
-      target?.focus({ preventScroll: true });
-    });
+    saved.checked[key] = { correct: textbookCorrect(saved.answers[key], item.answer) };
+    saved.attempts[key] = (Number(saved.attempts[key]) || 0) + 1;
   });
-  bindClickAll(root, "[data-textbook-retry]", () => {
-    if (!activeLesson) return;
-    if (!window.confirm(textbookUi("Очистить неверные ответы, чтобы повторить их?", "¿Borrar las respuestas incorrectas para repetirlas?"))) return;
-    const saved = textbookLessonState(activeLesson.id);
-    activeLesson.exercises.forEach((exercise) => exercise.items.forEach((_, index) => {
-      const key = textbookQuestionKey(exercise.id, index);
-      if (!saved.checked[key]?.correct) {
-        delete saved.answers[key];
-        delete saved.checked[key];
-      }
-    }));
-    state.textbookVisibleFeedback = {};
-    saveTextbookProgress();
-    renderTextbook();
+  state.textbookVisibleFeedback[feedbackKey] = true;
+  saveTextbookProgress();
+  renderTextbook();
+  requestAnimationFrame(() => {
+    const exerciseRoot = document.querySelector(attrSelector("data-textbook-exercise", exercise.id));
+    const issue = exerciseRoot?.querySelector(".textbook-question.is-unanswered, .textbook-question.is-wrong");
+    const focusTarget = issue?.classList.contains("is-unanswered")
+      ? issue.querySelector("[data-textbook-answer], [data-textbook-choice]")
+      : issue?.querySelector(".textbook-feedback") || exerciseRoot?.querySelector(".textbook-feedback");
+    focusTarget?.focus({ preventScroll: true });
   });
-  bindClickAll(root, "[data-textbook-reset]", () => {
-    if (!activeLesson || !window.confirm(textbookUi("Сбросить ответы и результат этого урока?", "¿Reiniciar las respuestas y el resultado de esta lección?"))) return;
-    delete state.textbookProgress.lessons[String(activeLesson.id)];
-    state.textbookVisibleFeedback = {};
-    saveTextbookProgress();
-    renderTextbook();
-  });
-}
+});
+onDelegated("click", inTextbook("[data-textbook-retry]"), () => {
+  const lesson = activeTextbookLesson();
+  if (!lesson) return;
+  if (!window.confirm(textbookUi("Очистить неверные ответы, чтобы повторить их?", "¿Borrar las respuestas incorrectas para repetirlas?"))) return;
+  const saved = textbookLessonState(lesson.id);
+  lesson.exercises.forEach((exercise) => exercise.items.forEach((_, index) => {
+    const key = textbookQuestionKey(exercise.id, index);
+    if (!saved.checked[key]?.correct) {
+      delete saved.answers[key];
+      delete saved.checked[key];
+    }
+  }));
+  state.textbookVisibleFeedback = {};
+  saveTextbookProgress();
+  renderTextbook();
+});
+onDelegated("click", inTextbook("[data-textbook-reset]"), () => {
+  const lesson = activeTextbookLesson();
+  if (!lesson || !window.confirm(textbookUi("Сбросить ответы и результат этого урока?", "¿Reiniciar las respuestas y el resultado de esta lección?"))) return;
+  delete state.textbookProgress.lessons[String(lesson.id)];
+  state.textbookVisibleFeedback = {};
+  saveTextbookProgress();
+  renderTextbook();
+});
 
 function openTextbookCatalog() {
   state.textbookLesson = null;

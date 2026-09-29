@@ -3354,6 +3354,9 @@ td.irregular {
 .textbook-lesson-heading h2 { margin: 0 0 4px; }
 .textbook-lesson-heading p { margin: 0; }
 .textbook-language-switch .small-button.is-active { border-color: var(--accent); background: var(--accent); color: var(--on-accent); }
+.textbook-about { border: 1px solid var(--line); border-radius: 8px; padding: 0 12px; }
+.textbook-about summary { cursor: pointer; padding: 10px 0; font-weight: 700; }
+.textbook-about ul { margin: 0 0 12px; padding-left: 20px; display: grid; gap: 6px; }
 .textbook-progress { display: grid; gap: 6px; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); }
 .textbook-progress p, .textbook-theory p, .textbook-exercise p, .textbook-result p { margin: 0; }
 .textbook-catalog { display: grid; gap: 10px; }
@@ -4210,7 +4213,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.52 · обновлено: 29.09.2026 23:46 CEST</span>
+        <span>Версия MVP 1.53 · обновлено: 29.09.2026 23:51 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -16656,6 +16659,33 @@ function renderTextbookCatalog(content) {
   return withTextbookProgressCache(() => renderTextbookCatalogContent(content));
 }
 
+// Сворачиваемая справка об исходной книге: выходные данные, устройство и отличия интерактивной версии.
+function textbookAboutMarkup() {
+  const items = [
+    textbookUi(
+      "Источник — «Gramática de uso del español. Teoría y práctica» (nueva edición, con solucionario), авторы Luis Aragonés и Ramón Palencia, издательство Ediciones SM (SM ELE), уровни A1–B2.",
+      "Fuente: «Gramática de uso del español. Teoría y práctica» (nueva edición, con solucionario), de Luis Aragonés y Ramón Palencia, Ediciones SM (SM ELE), niveles A1–B2."
+    ),
+    textbookUi(
+      "В книге 126 unidades. Каждая занимает разворот: слева теория с примерами и блоками «Atención», справа упражнения; ответы собраны в solucionario в конце. Юниты независимы, их можно проходить в любом порядке.",
+      "El libro tiene 126 unidades. Cada una ocupa una doble página: a la izquierda, la teoría con ejemplos y cuadros de «Atención»; a la derecha, los ejercicios. Las soluciones están al final. Las unidades son independientes y se pueden trabajar en cualquier orden."
+    ),
+    textbookUi(
+      "Здесь уроки 1–125 совпадают с юнитами книги по номерам и темам. Unidad 126 (спряжение с vos) не включена: справочник ориентирован на испанский Испании.",
+      "Aquí las lecciones 1–125 coinciden con las unidades del libro en número y tema. La unidad 126 (conjugación con vos) no se incluye: esta guía se centra en el español de España."
+    ),
+    textbookUi(
+      "Теория пересказана на русском и испанском. Упражнения адаптированы под одно поле ответа и проверяются сразу.",
+      "La teoría está resumida en ruso y en español. Los ejercicios están adaptados a una sola respuesta y se corrigen al momento."
+    ),
+    textbookUi(
+      "Это учебный конспект, а не издание SM: иллюстрации и оригинальная вёрстка книги не воспроизводятся.",
+      "Es un resumen de estudio, no una edición de SM: no reproduce las ilustraciones ni la maquetación del libro."
+    )
+  ];
+  return html`<details class="textbook-about"><summary>${textbookUi("Что это за учебник", "Sobre este libro")}</summary><ul>${items.map((item) => html`<li>${item}</li>`)}</ul></details>`;
+}
+
 function renderTextbookCatalogContent(content) {
   if (!TEXTBOOK_LEVEL_IDS.includes(state.textbookLevel)) state.textbookLevel = "all";
   const lessonCount = TEXTBOOK_LESSONS.length;
@@ -16685,6 +16715,7 @@ function renderTextbookCatalogContent(content) {
   }).join("");
   const header = infoSection({ className: "info-card textbook-dashboard", html: `
     <div class="textbook-toolbar"><div><h2>${escapeHTML(textbookUi("Учебник", "Curso"))}</h2><p class="muted">${escapeHTML(textbookUi(`${TEXTBOOK_LESSONS.length} ${pluralizeInteractiveLessons(TEXTBOOK_LESSONS.length)} по базовой грамматике.`, `${TEXTBOOK_LESSONS.length} ${TEXTBOOK_LESSONS.length === 1 ? "lección interactiva" : "lecciones interactivas"} de gramática básica.`))}</p></div>${textbookLanguageButtons()}</div>
+    ${textbookAboutMarkup()}
     <div class="textbook-progress"><p><strong>${escapeHTML(textbookUi("Пройдено", "Completado"))}: ${completed}/${lessonCount}</strong></p><progress max="${lessonCount}" value="${completed}" aria-label="${escapeHTML(textbookUi("Прогресс учебника", "Progreso del curso"))}"></progress><div class="textbook-actions"><button class="small-button primary" type="button" data-textbook-open="${next.id}">${escapeHTML(planLesson ? textbookUi("Продолжить по плану", "Seguir el plan") : textbookUi("Продолжить", "Continuar"))}: ${next.id}</button><span class="muted">${escapeHTML(textbookUi("Все уроки доступны сразу.", "Todas las lecciones están disponibles."))}</span></div></div>
     <div class="textbook-level-filter" role="group" aria-label="${escapeHTML(textbookUi("Фильтр по уровню", "Filtro por nivel"))}">${["all", ...TEXTBOOK_LEVEL_IDS].map((level) => `<button class="small-button ${state.textbookLevel === level ? "is-active" : ""}" type="button" data-textbook-level="${level}" aria-pressed="${state.textbookLevel === level}">${level === "all" ? escapeHTML(textbookUi("Все уровни", "Todos los niveles")) : `${levelLabel(level)} · ${TEXTBOOK_LESSON_LEVELS[level].length}`}</button>`).join("")}<span class="muted">${escapeHTML(textbookUi("Уровни — по Plan Curricular del Instituto Cervantes: в книге их нет.", "Niveles según el Plan Curricular del Instituto Cervantes: el libro no los indica."))}</span></div>
     <div class="textbook-actions" role="group" aria-label="${escapeHTML(textbookUi("Управление темами", "Control de temas"))}"><button class="small-button" type="button" data-textbook-groups="open">${escapeHTML(textbookUi("Раскрыть все темы", "Abrir todos los temas"))}</button><button class="small-button" type="button" data-textbook-groups="close">${escapeHTML(textbookUi("Скрыть все темы", "Cerrar todos los temas"))}</button></div>

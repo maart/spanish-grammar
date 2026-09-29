@@ -3148,6 +3148,8 @@ td.irregular {
 .textbook-theory, .textbook-exercise, .textbook-result { padding: 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2); }
 .textbook-theory, .textbook-exercise, .textbook-result { display: grid; gap: 10px; }
 .textbook-attention { padding: 10px; border-left: 4px solid var(--accent-2); border-radius: 6px; background: var(--accent-soft); }
+.textbook-related .textbook-actions { flex-wrap: wrap; }
+.textbook-related .small-button { text-align: left; }
 .textbook-example-list { display: grid; gap: 6px; margin: 0; padding-left: 20px; }
 .textbook-rule-list { display: grid; gap: 6px; margin: 0; padding: 10px 10px 10px 28px; border-radius: 8px; background: var(--surface); }
 .textbook-rule-list li::marker { color: var(--accent); font-weight: 900; }
@@ -4021,7 +4023,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.28 · обновлено: 29.09.2026 08:13 CEST</span>
+        <span>Версия MVP 1.29 · обновлено: 29.09.2026 12:57 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -11962,6 +11964,35 @@ Object.assign(TEXTBOOK_THEORY_SOURCE_DETAILS, {
   50: [{ title: tb("Как запоминать неправильное presente", "Cómo memorizar el presente irregular"), body: tb("Сгруппируйте формы по тому, сколько лиц меняется: только yo; yo и другие формы с y; либо вся парадигма. Это помогает не распространять неправильную форму на все лица без основания.", "Agrupa las formas según cuántas personas cambian: solo yo; yo y otras formas con y; o toda la conjugación. Así se evita extender una irregularidad a todas las personas sin motivo."), rules: [tb("yo: hago, pongo, salgo, conozco; tu/él/ellos сохраняют знакомые формы hacer/poner/salir/conocer.", "yo: hago, pongo, salgo, conozco; tú/él/ellos conservan formas previsibles de hacer/poner/salir/conocer."), tb("huir/construir и oír показывают дополнительные изменения вне yo; nosotros/vosotros имеют формы huimos/huis, oímos/oís.", "huir/construir y oír muestran cambios también fuera de yo; nosotros/vosotros tienen huimos/huis, oímos/oís.")], examples: ["¿Qué hacéis? — Hacemos la cena.", "¿Oís el teléfono? — Sí, lo oímos."] }]
 });
 
+// Связанные по смыслу уроки: ссылки «▶ unidad N» из учебника плюс близкие темы.
+const TEXTBOOK_RELATED_LESSONS = {
+  1: [2, 3, 4, 6, 13, 14], 2: [1, 3, 4, 6, 13], 3: [1, 2, 4, 6, 13, 14], 4: [5, 6, 7, 11, 25], 5: [4, 7, 46],
+  6: [4, 7, 8, 9, 10, 18], 7: [4, 5, 6, 47], 8: [6, 9, 10, 125], 9: [6, 8, 25, 101, 110], 10: [6, 8, 9, 111],
+  11: [4, 6, 12, 19, 28], 12: [11, 19, 100], 13: [14, 15, 16, 17, 105], 14: [13, 125], 15: [16, 17, 24, 34, 107],
+  16: [15, 17, 24, 34, 107], 17: [15, 16, 105], 18: [19, 34, 40], 19: [11, 18], 20: [21, 22, 23],
+  21: [20, 22], 22: [20, 21, 24, 104], 23: [20, 104, 108], 24: [15, 16, 22, 34], 25: [9, 26, 27],
+  26: [25, 27], 27: [25, 26], 28: [11, 29, 87], 29: [28, 100], 30: [31, 32, 33, 89],
+  31: [30, 32], 32: [30, 31, 89], 33: [30, 32, 105], 34: [35, 36, 41, 42], 35: [36, 37, 38, 39, 78],
+  36: [35, 37, 38, 55], 37: [35, 36, 38, 39, 78], 38: [35, 36, 37], 39: [35, 37, 78, 93, 98], 40: [36, 53, 54, 77],
+  41: [34, 114], 42: [43, 44, 46], 43: [42, 44, 47, 56], 44: [42, 43], 45: [42, 95],
+  46: [5, 22, 47], 47: [43, 46], 48: [49, 50, 51, 52, 57], 49: [48, 50, 53, 80], 50: [48, 49, 81],
+  51: [48, 52, 70], 52: [48, 51, 96, 101], 53: [39, 49, 50, 54, 77], 54: [40, 53], 55: [36, 71, 86],
+  56: [53, 57, 65, 98], 57: [48, 56], 58: [59, 61, 62, 64], 59: [58, 62, 83], 60: [61, 62, 66, 99],
+  61: [58, 59, 60, 62, 102], 62: [58, 59, 60, 61], 63: [64, 65, 96], 64: [58, 63, 65], 65: [58, 59, 64, 98],
+  66: [60, 64, 99], 67: [68, 69, 70, 91, 118], 68: [67, 72, 91], 69: [67, 70, 94], 70: [51, 67, 68, 69],
+  71: [55, 72, 88, 89, 92], 72: [71, 88, 89, 92], 73: [74, 75, 76, 77, 78], 74: [73, 79, 80, 81], 75: [49, 73, 74],
+  76: [50, 73, 74], 77: [53, 73], 78: [35, 36, 37, 39, 73], 79: [80, 81, 84, 85, 86, 87], 80: [49, 79, 81],
+  81: [50, 79, 80], 82: [83, 84, 85, 86, 90, 92], 83: [59, 82], 84: [79, 82, 97], 85: [68, 79, 82],
+  86: [55, 79, 82], 87: [28, 79, 82], 88: [71, 72, 89, 90], 89: [30, 32, 88, 90], 90: [82, 88, 89, 97],
+  91: [67, 68, 92, 118], 92: [71, 72, 82, 91], 93: [39, 94, 95, 96, 97], 94: [69, 93, 96], 95: [93, 94, 122],
+  96: [52, 63, 93, 94], 97: [84, 90, 93], 98: [39, 56, 65, 99], 99: [60, 66, 98], 100: [29, 111, 112],
+  101: [9, 102, 103, 110], 102: [61, 66, 101], 103: [101, 102, 104], 104: [22, 103, 105], 105: [13, 17, 33, 104],
+  106: [104, 107], 107: [15, 16, 106], 108: [23, 109], 109: [55, 108], 110: [9, 101, 111],
+  111: [100, 110, 112, 113], 112: [100, 111], 113: [111, 114, 115], 114: [113, 115, 117], 115: [93, 113, 114],
+  116: [119, 120, 121], 117: [79, 97, 114], 118: [67, 79, 91, 101], 119: [116, 120, 121], 120: [82, 116, 119],
+  121: [116, 119], 122: [53, 95], 123: [124, 125], 124: [123, 125], 125: [8, 123, 124]
+};
+
 const TEXTBOOK_LESSON_FEEDBACK = {
   1: tb("Сверяйте род по артиклю и запоминайте пары слов вместе: окончание не всегда показывает род.", "Comprueba el género con el artículo y aprende las parejas juntas: la terminación no siempre lo indica."),
   2: tb("У предметов род лучше запоминать вместе с артиклем: окончания помогают, но у них есть исключения.", "En los objetos conviene aprender el género con el artículo: las terminaciones ayudan, pero tienen excepciones."),
@@ -17468,10 +17499,13 @@ function renderTextbookLesson(content, lesson) {
       : textbookUi("Проверьте ещё " + remaining + " ответов, чтобы завершить урок.", "Comprueba " + remaining + " respuestas más para completar la lección.");
   const previousButton = previous ? '<button class="small-button" type="button" data-textbook-open="' + previous.id + '">← ' + previous.id + ". " + escapeHTML(textbookText(previous.title)) + "</button>" : "";
   const nextButton = next ? '<button class="small-button" type="button" data-textbook-open="' + next.id + '">' + next.id + ". " + escapeHTML(textbookText(next.title)) + " →</button>" : "";
+  const relatedLessons = (TEXTBOOK_RELATED_LESSONS[lesson.id] || []).map((id) => TEXTBOOK_LESSONS.find((item) => item.id === id)).filter(Boolean);
+  const related = relatedLessons.length ? '<section class="textbook-related"><h3>' + escapeHTML(textbookUi("Связанные уроки", "Lecciones relacionadas")) + '</h3><div class="textbook-actions">' + relatedLessons.map((item) => '<button class="small-button" type="button" data-textbook-open="' + item.id + '">▶ ' + item.id + ". " + escapeHTML(textbookText(item.title)) + "</button>").join("") + "</div></section>" : "";
   const section = infoSection({ className: "info-card textbook-lesson", html: `
     <div class="textbook-lesson-toolbar"><div class="textbook-lesson-controls"><button class="small-button" type="button" data-textbook-catalog>← ${escapeHTML(textbookUi("К оглавлению", "Índice"))}</button>${textbookLanguageButtons()}</div><div class="textbook-lesson-heading"><h2>${lesson.id}. ${escapeHTML(textbookText(lesson.title))}</h2><p class="muted">${escapeHTML(textbookText(lesson.goal))}</p></div></div>
     <div class="textbook-summary"><span><strong>${escapeHTML(textbookUi("Верно", "Correctas"))}: ${progress.correct}/${progress.checked}</strong> · ${escapeHTML(textbookUi("Заполнено", "Respondidas"))}: ${progress.answered}/${progress.total}</span><span class="textbook-status ${progress.done ? "is-done" : ""}">${escapeHTML(progress.done ? textbookUi("Урок пройден", "Lección completada") : textbookUi("В работе", "En curso"))}</span></div>
     <div class="textbook-theory-grid">${theory}</div>
+    ${related}
     <section><h3>${escapeHTML(textbookUi("Практика", "Práctica"))}</h3>${exercises}</section>
     <section class="textbook-result" aria-live="polite"><h3>${escapeHTML(textbookUi("Итог урока", "Resultado de la lección"))}</h3><p>${escapeHTML(summary)}</p><div class="textbook-actions"><button class="small-button" type="button" data-textbook-retry="${lesson.id}" ${progress.wrong === 0 ? "disabled" : ""}>${escapeHTML(textbookUi("Повторить ошибки", "Repetir errores"))}</button><button class="small-button danger" type="button" data-textbook-reset="${lesson.id}">${escapeHTML(textbookUi("Сбросить урок", "Reiniciar lección"))}</button></div></section>
     <nav class="textbook-lesson-nav" aria-label="${escapeHTML(textbookUi("Навигация по урокам", "Navegación de lecciones"))}">${previousButton}${nextButton}</nav>
@@ -18420,6 +18454,10 @@ function validateData() {
     if (!TEXTBOOK_LESSON_FEEDBACK[lesson.id]?.ru || !TEXTBOOK_LESSON_FEEDBACK[lesson.id]?.es) issues.push("Нет перевода разбора ошибок для урока " + lesson.id);
     const theoryBlocks = [...lesson.theory, ...(TEXTBOOK_THEORY_SUPPLEMENTS[lesson.id] || []), ...(TEXTBOOK_THEORY_SOURCE_DETAILS[lesson.id] || [])];
     if (!TEXTBOOK_THEORY_SUPPLEMENTS[lesson.id]?.length) issues.push("Нет дополнительного теоретического блока для урока " + lesson.id);
+    if (!TEXTBOOK_RELATED_LESSONS[lesson.id]?.length) issues.push("Нет связанных уроков для урока " + lesson.id);
+    (TEXTBOOK_RELATED_LESSONS[lesson.id] || []).forEach((id) => {
+      if (id === lesson.id || !TEXTBOOK_LESSONS.some((item) => item.id === id)) issues.push("Некорректная ссылка на урок " + id + " в уроке " + lesson.id);
+    });
     theoryBlocks.forEach((block, index) => {
       if (!block.title?.ru || !block.title?.es || !block.body?.ru || !block.body?.es) issues.push("Нет перевода теории " + (index + 1) + " для урока " + lesson.id);
       (block.rules || []).forEach((rule, ruleIndex) => {

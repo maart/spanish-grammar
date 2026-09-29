@@ -732,6 +732,10 @@ input[type="search"] {
   line-height: 1;
 }
 
+.learning-plan-percent {
+  text-align: right;
+}
+
 .learning-plan-percent .muted {
   font-size: 12px;
 }
@@ -769,7 +773,7 @@ input[type="search"] {
   border-color: color-mix(in srgb, var(--accent-2) 55%, var(--line));
 }
 
-.learning-module summary {
+.learning-module > summary {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -779,17 +783,17 @@ input[type="search"] {
   list-style: none;
 }
 
-.learning-module summary::-webkit-details-marker {
+.learning-module > summary::-webkit-details-marker {
   display: none;
 }
 
-.learning-module summary::after {
+.learning-module > summary::after {
   content: "▾";
   color: var(--accent);
   transition: transform 160ms ease;
 }
 
-.learning-module:not([open]) summary::after {
+.learning-module:not([open]) > summary::after {
   transform: rotate(-90deg);
 }
 
@@ -832,8 +836,8 @@ input[type="search"] {
 
 .learning-module-lessons {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 4px 12px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -858,6 +862,84 @@ input[type="search"] {
 .learning-module-lesson:focus-visible span:last-child {
   color: var(--accent);
   text-decoration: underline;
+}
+
+.learning-module-step {
+  flex: none;
+  min-width: 1.6em;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-align: right;
+}
+
+.learning-module-lesson-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.learning-module-lesson small {
+  flex: none;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.learning-module-parts {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.learning-module-bar {
+  display: block;
+  width: min(220px, 100%);
+  height: 4px;
+  margin-top: 4px;
+  border-radius: 999px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.learning-module-bar span {
+  display: block;
+  height: 100%;
+  background: var(--success);
+}
+
+.learning-module-done summary,
+.learning-module-example summary {
+  width: fit-content;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.learning-module-done .learning-module-lessons {
+  margin-top: 4px;
+}
+
+.plan-next-extra,
+.learning-plan-skip {
+  margin: 6px 0 0;
+  font-size: 13px;
+}
+
+.plan-next-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.link-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-weight: 800;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .learning-module-mark {
@@ -1028,13 +1110,6 @@ input[type="search"] {
   margin: 4px 0 0 26px;
 }
 
-.learning-module-example summary {
-  width: fit-content;
-  color: var(--accent);
-  font-size: 13px;
-  font-weight: 800;
-  cursor: pointer;
-}
 
 .learning-module-example-body {
   display: grid;
@@ -3537,6 +3612,19 @@ select {
     margin: 1px 0 0;
   }
 
+  .learning-plan-summary-head {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .learning-plan-percent {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 10px;
+    text-align: left;
+  }
+
   .plan-next-step {
     align-items: stretch;
     flex-direction: column;
@@ -4066,7 +4154,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.38 · обновлено: 29.09.2026 18:26 CEST</span>
+        <span>Версия MVP 1.39 · обновлено: 29.09.2026 18:44 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -9945,6 +10033,12 @@ const state = {
   })(),
   textbookProgress: readTextbookProgress()
 };
+
+// Если сохранённый уровень уже подтверждён итоговой проверкой, план открывается на следующем неподтверждённом.
+if (state.learningChecks[state.learningLevel]?.passedAt) {
+  const levelIds = LEARNING_LEVELS.map((level) => level.id);
+  state.learningLevel = levelIds.slice(levelIds.indexOf(state.learningLevel) + 1).find((id) => !state.learningChecks[id]?.passedAt) || "after";
+}
 
 // Frequency order from the Spain press subcorpus of CORPES 1.0.
 const COMMON_VERB_SUGGESTIONS = [
@@ -15840,26 +15934,85 @@ function learningLevelCounts(level) {
   return { done: steps.filter((step) => step.done).length, total: steps.length };
 }
 
+// Та же оценка, что в каталоге Учебника: не меньше 5 минут, примерно 5 пунктов в минуту.
+function textbookLessonMinutes(lesson) {
+  return Math.max(5, Math.ceil(textbookProgressFor(lesson).total / 5));
+}
+
+function formatStudyMinutes(minutes) {
+  const rounded = Math.max(5, Math.round(minutes / 5) * 5);
+  const hours = Math.floor(rounded / 60);
+  const rest = rounded % 60;
+  return "≈ " + [hours ? `${hours} ч` : "", rest ? `${rest} мин` : ""].filter(Boolean).join(" ");
+}
+
+function learningLessonsLeftMinutes(lessonIds) {
+  return lessonIds.filter((id) => learningLessonStatus(id) !== "done")
+    .reduce((sum, id) => sum + textbookLessonMinutes(TEXTBOOK_LESSONS.find((lesson) => lesson.id === id)), 0);
+}
+
+// Следующий шаг уровня: сначала начатый урок, затем первый непройденный по порядку модулей.
+// Задание и «Могу» не блокируют уроки: модуль с пройденными уроками и неотмеченными пунктами — отдельное напоминание.
+function learningLevelNext(levelId) {
+  const modules = learningModulesFor(levelId);
+  const lessons = modules.flatMap((module, moduleIndex) => module.lessons.map((id) => ({ id, module, moduleIndex, status: learningLessonStatus(id) })));
+  const lesson = lessons.find((item) => item.status === "started") || lessons.find((item) => item.status === "todo") || null;
+  const pendingIndex = modules.findIndex((module, moduleIndex) =>
+    (!lesson || moduleIndex <= lesson.moduleIndex)
+    && module.lessons.every((id) => learningLessonStatus(id) === "done")
+    && learningModuleSteps(module).some((step) => step.kind !== "lesson" && !step.done));
+  const pending = pendingIndex >= 0 ? { module: modules[pendingIndex], moduleIndex: pendingIndex } : null;
+  return { modules, lesson, pending };
+}
+
+// «Продолжить» в Учебнике без начатого урока ведёт по плану, начиная с выбранного в плане уровня.
+function learningPlanNextLesson() {
+  const levelIds = LEARNING_LEVELS.map((level) => level.id);
+  for (const levelId of levelIds.slice(Math.max(0, levelIds.indexOf(state.learningLevel)))) {
+    if (state.learningChecks[levelId]?.passedAt) continue;
+    const next = learningLevelNext(levelId).lesson;
+    if (next) return TEXTBOOK_LESSONS.find((lesson) => lesson.id === next.id);
+  }
+  return null;
+}
+
+function learningPendingText(module) {
+  const steps = learningModuleSteps(module);
+  const parts = [steps.some((step) => step.kind === "task" && !step.done) ? "задание" : "", steps.some((step) => step.kind === "can" && !step.done) ? "«Могу»" : ""].filter(Boolean).join(" и ");
+  return `В модуле «${module.title}» не отмечено: ${parts}.`;
+}
+
 function learningModuleMarkup(module, index, isCurrent) {
   const steps = learningModuleSteps(module);
-  const done = steps.filter((step) => step.done).length;
+  const percent = Math.round(steps.filter((step) => step.done).length / steps.length * 100);
   const marks = { done: "✓", started: "◐", todo: "○" };
   const labels = { done: "пройден", started: "начат", todo: "не начат" };
-  const lessons = module.lessons.map((id) => {
+  const rows = module.lessons.map((id, lessonIndex) => {
     const lesson = TEXTBOOK_LESSONS.find((item) => item.id === id);
     const status = learningLessonStatus(id);
-    return `<li><button class="learning-module-lesson is-${status}" type="button" data-textbook-open="${id}" aria-label="Урок ${id}: ${escapeHTML(lesson.title.ru)} — ${labels[status]}"><span class="learning-module-mark" aria-hidden="true">${marks[status]}</span><span>${id}. ${escapeHTML(lesson.title.ru)}</span></button></li>`;
-  }).join("");
+    const minutes = status === "done" ? "" : `<small>≈ ${textbookLessonMinutes(lesson)} мин</small>`;
+    return { status, html: `<li><button class="learning-module-lesson is-${status}" type="button" data-textbook-open="${id}" aria-label="Шаг ${lessonIndex + 1}. Урок ${id}: ${escapeHTML(lesson.title.ru)} — ${labels[status]}"><span class="learning-module-step" aria-hidden="true">${lessonIndex + 1}.</span><span class="learning-module-mark" aria-hidden="true">${marks[status]}</span><span class="learning-module-lesson-title">Урок ${id}. ${escapeHTML(lesson.title.ru)}</span>${minutes}</button></li>` };
+  });
+  const openRows = rows.filter((row) => row.status !== "done").map((row) => row.html).join("");
+  const doneRows = rows.filter((row) => row.status === "done").map((row) => row.html).join("");
+  const doneCount = rows.filter((row) => row.status === "done").length;
+  const lessons = rows.length
+    ? `${openRows ? `<ol class="learning-module-lessons">${openRows}</ol>` : ""}${doneRows ? `<details class="learning-module-done"><summary>${openRows ? `Пройдено уроков: ${doneCount}` : `Все уроки пройдены: ${doneCount}`} — показать</summary><ol class="learning-module-lessons">${doneRows}</ol></details>` : ""}`
+    : "";
   const tables = module.tables.map(([titlePart, label]) => learningTableResource(titlePart, label)).filter(Boolean)
     .map((link) => `<a class="small-button" href="${link.href}">${link.label}</a>`).join("");
   const check = (key, text) => `<label class="learning-module-check"><input type="checkbox" data-learning-done="${key}" ${learningStatusFor(key) === "done" ? "checked" : ""}><span>${text}</span></label>`;
+  const taskDone = learningStatusFor(`plan:${module.id}:task`) === "done";
+  const canDone = module.canDo.filter((_item, canIndex) => learningStatusFor(`plan:${module.id}:can:${canIndex}`) === "done").length;
+  const left = learningLessonsLeftMinutes(module.lessons);
+  const parts = [module.lessons.length ? `уроки ${doneCount}/${module.lessons.length}` : "", `задание ${taskDone ? "✓" : "○"}`, `могу ${canDone}/${module.canDo.length}`, left ? formatStudyMinutes(left) : ""].filter(Boolean).join(" · ");
   const openKey = `plan:${module.id}`;
   const isOpen = openKey in state.learningDetails ? state.learningDetails[openKey] : isCurrent;
   return `<details class="learning-module ${isCurrent ? "is-current" : ""}" data-learning-module="${module.id}" ${isOpen ? "open" : ""}>
-    <summary><span class="learning-module-title"><small>Модуль ${index + 1}</small><strong>${module.title}</strong></span><span class="learning-module-count">${done}/${steps.length}</span></summary>
+    <summary><span class="learning-module-title"><small>Модуль ${index + 1}</small><strong>${module.title}</strong><span class="learning-module-parts">${parts}</span><span class="learning-module-bar" aria-hidden="true"><span style="width: ${percent}%"></span></span></span><span class="learning-module-count">${percent}%</span></summary>
     <div class="learning-module-body">
       <p class="learning-module-goal">${module.goal}</p>
-      ${lessons ? `<div class="learning-module-part"><h4>Уроки учебника</h4><ol class="learning-module-lessons">${lessons}</ol></div>` : ""}
+      ${lessons ? `<div class="learning-module-part"><h4>Уроки учебника</h4>${lessons}</div>` : ""}
       ${tables ? `<div class="learning-module-part"><h4>Шпаргалки</h4><div class="learning-item-links">${tables}</div></div>` : ""}
       <div class="learning-module-part"><h4>Задание</h4>${check(`plan:${module.id}:task`, module.task)}<details class="learning-module-example"><summary>Пример ответа</summary><div class="learning-module-example-body">${module.example.map(([spanish, russian]) => `<p><span lang="es">${spanish}</span><span>${russian}</span></p>`).join("")}</div></details></div>
       <div class="learning-module-part"><h4>Могу</h4>${module.canDo.map((item, canIndex) => check(`plan:${module.id}:can:${canIndex}`, item)).join("")}</div>
@@ -15952,7 +16105,8 @@ function learningCheckMarkup(level) {
     const lessonIds = [...new Set(check.items.filter((_entry, index) => !results[index]).map((entry) => entry.lessonId))];
     const lessons = lessonIds.map((id) => `<button class="small-button" type="button" data-textbook-open="${id}">Урок ${id}</button>`).join("");
     summary = `<p class="learning-check-score ${passed ? "is-passed" : ""}"><strong>${correct} из ${results.length} · ${percent}%</strong> — ${passed ? `уровень ${level.label} подтверждён.` : `нужно ${Math.round(LEARNING_CHECK_PASS_SHARE * 100)}%, повторите уроки с ошибками.`}</p>${lessons ? `<div class="learning-item-links" aria-label="Уроки с ошибками">${lessons}</div>` : ""}`;
-    actions = `<button class="small-button primary" type="button" data-check-restart>Пройти заново</button><button class="small-button" type="button" data-check-exit>К плану</button>`;
+    const nextLevel = LEARNING_LEVELS[LEARNING_LEVELS.findIndex((item) => item.id === level.id) + 1];
+    actions = `${passed && nextLevel ? `<button class="small-button primary" type="button" data-go-learning-level="${nextLevel.id}">Перейти к ${nextLevel.label}</button>` : ""}<button class="small-button ${passed && nextLevel ? "" : "primary"}" type="button" data-check-restart>Пройти заново</button><button class="small-button" type="button" data-check-exit>К плану</button>`;
   }
   return `<section class="learning-check" aria-labelledby="learning-check-title"><h3 id="learning-check-title" tabindex="-1">Итоговая проверка ${level.label}</h3><div class="learning-check-summary" aria-live="polite">${summary}${check.message ? `<p class="textbook-feedback" role="status"><strong>${check.message}</strong></p>` : ""}</div><ol class="textbook-question-list">${questions}</ol><div class="textbook-actions">${actions}</div></section>`;
 }
@@ -15980,25 +16134,41 @@ function renderLearningPlan() {
     const { done, total } = learningLevelCounts(item);
     const percent = total ? Math.round(done / total * 100) : 0;
     const confirmed = Boolean(state.learningChecks[item.id]?.passedAt);
-    return `<button class="small-button ${selected ? "is-active" : ""}" id="learning-level-${item.id}" role="tab" tabindex="${selected ? "0" : "-1"}" type="button" data-learning-level="${item.id}" aria-selected="${selected}" aria-controls="learning-plan-panel" aria-label="${total ? `${item.label}: освоено ${percent}%${confirmed ? ", итоговая проверка пройдена" : ""}` : item.label}">${item.label}${total ? `<small>${percent}%${confirmed ? " ✓" : ""}</small>` : ""}</button>`;
+    return `<button class="small-button ${selected ? "is-active" : ""}" id="learning-level-${item.id}" role="tab" tabindex="${selected ? "0" : "-1"}" type="button" data-learning-level="${item.id}" aria-selected="${selected}" aria-controls="learning-plan-panel" aria-label="${confirmed ? `${item.label}: подтверждён итоговой проверкой` : total ? `${item.label}: освоено ${percent}%` : item.label}">${item.label}${confirmed ? "<small>✓</small>" : total ? `<small>${percent}%</small>` : ""}</button>`;
   }).join("");
   const modules = learningModulesFor(level.id);
   let body = learningAfterB2Markup();
   if (modules.length) {
     const { done, total } = learningLevelCounts(level);
     const percent = total ? Math.round(done / total * 100) : 0;
-    const currentModuleIndex = modules.findIndex((module) => learningModuleSteps(module).some((step) => !step.done));
+    const { lesson: nextLesson, pending } = learningLevelNext(level.id);
+    const currentModuleIndex = nextLesson ? nextLesson.moduleIndex : pending ? pending.moduleIndex : -1;
     const currentModule = modules[currentModuleIndex];
-    const currentStep = currentModule ? learningModuleSteps(currentModule).find((step) => !step.done) : null;
-    const lesson = currentStep?.kind === "lesson" ? TEXTBOOK_LESSONS.find((item) => item.id === currentStep.id) : null;
+    const lesson = nextLesson ? TEXTBOOK_LESSONS.find((item) => item.id === nextLesson.id) : null;
     const nextLevel = LEARNING_LEVELS[LEARNING_LEVELS.findIndex((item) => item.id === level.id) + 1];
+    const record = state.learningChecks[level.id];
+    const levelLessons = modules.flatMap((module) => module.lessons);
+    const left = learningLessonsLeftMinutes(levelLessons);
     const nowTitle = currentModule ? `<p><strong>Сейчас: модуль ${currentModuleIndex + 1} из ${modules.length} · ${currentModule.title}</strong></p>` : "";
-    const nextStepMarkup = !currentStep
-      ? `<div class="plan-next-step"><div><p><strong>Уровень завершён</strong></p><small>Все пункты отмечены как освоенные.</small></div>${nextLevel ? `<button class="small-button primary" type="button" data-go-learning-level="${nextLevel.id}">Перейти к ${nextLevel.label}</button>` : ""}</div>`
-      : lesson
-        ? `<div class="plan-next-step"><div>${nowTitle}<small>Следующий урок: ${lesson.id}. ${escapeHTML(lesson.title.ru)}</small></div><button class="small-button primary" type="button" data-textbook-open="${lesson.id}">Продолжить</button></div>`
-        : `<div class="plan-next-step"><div>${nowTitle}<small>${currentStep.kind === "task" ? "Следующий шаг: задание модуля" : "Следующий шаг: самопроверка «Могу»"}</small></div><button class="small-button primary" type="button" data-open-learning-module="${currentModule.id}">Продолжить</button></div>`;
-    body = `<section class="learning-plan-summary" aria-live="polite"><div class="learning-plan-summary-head"><p><strong>${level.label} · ${level.title}</strong><span class="muted">${level.description}</span></p><p class="learning-plan-percent"><strong>${percent}%</strong><span class="muted">${done} из ${total}</span></p></div><progress max="100" value="${percent}" aria-label="Освоено на уровне ${level.label}"></progress>${nextStepMarkup}</section>
+    const lessonLine = lesson ? `<small>${nextLesson.status === "started" ? "Начатый урок" : "Следующий урок"}: ${lesson.id}. ${escapeHTML(lesson.title.ru)} · ≈ ${textbookLessonMinutes(lesson)} мин</small>` : "";
+    const pendingLine = pending && lesson ? `<p class="plan-next-extra">${learningPendingText(pending.module)} <button class="link-button" type="button" data-open-learning-module="${pending.module.id}">Открыть модуль</button></p>` : "";
+    const goNext = nextLevel ? `<button class="small-button primary" type="button" data-go-learning-level="${nextLevel.id}">Перейти к ${nextLevel.label}</button>` : "";
+    let nextStepMarkup;
+    if (record?.passedAt) {
+      nextStepMarkup = `<div class="plan-next-step"><div><p><strong>Уровень ${level.label} подтверждён итоговой проверкой</strong></p><small>${new Date(record.passedAt).toLocaleDateString("ru-RU")}, лучший результат ${record.best}%.${lesson ? " Оставшиеся уроки можно пройти для закрепления." : ""}</small></div><div class="plan-next-actions">${goNext}${lesson ? `<button class="small-button" type="button" data-textbook-open="${lesson.id}">Продолжить уроки</button>` : ""}</div></div>`;
+    } else if (lesson) {
+      nextStepMarkup = `<div class="plan-next-step"><div>${nowTitle}${lessonLine}${pendingLine}</div><button class="small-button primary" type="button" data-textbook-open="${lesson.id}">Продолжить</button></div>`;
+    } else if (pending) {
+      nextStepMarkup = `<div class="plan-next-step"><div>${nowTitle}<small>${learningPendingText(pending.module)}</small></div><button class="small-button primary" type="button" data-open-learning-module="${pending.module.id}">Продолжить</button></div>`;
+    } else {
+      nextStepMarkup = `<div class="plan-next-step"><div><p><strong>Уровень завершён</strong></p><small>Все пункты отмечены как освоенные.</small></div>${goNext}</div>`;
+    }
+    const lessonsDone = levelLessons.filter((id) => learningLessonStatus(id) === "done").length;
+    const skipMarkup = record?.passedAt ? ""
+      : levelLessons.length
+        ? (lessonsDone < levelLessons.length * 0.3 ? `<p class="learning-plan-skip">Уже знаете ${level.label}? <button class="link-button" type="button" data-check-start>Пройдите итоговую проверку</button>: при ${Math.round(LEARNING_CHECK_PASS_SHARE * 100)}% верных уровень будет подтверждён.</p>` : "")
+        : (nextLevel && done < total ? `<p class="learning-plan-skip">Уже читаете по-испански и можете представиться? <button class="link-button" type="button" data-go-learning-level="${nextLevel.id}">Начните с ${nextLevel.label}</button>.</p>` : "");
+    body = `<section class="learning-plan-summary" aria-live="polite"><div class="learning-plan-summary-head"><p><strong>${level.label} · ${level.title}</strong><span class="muted">${level.description}</span></p><p class="learning-plan-percent"><strong>${percent}%</strong><span class="muted">${done} из ${total}</span>${left ? `<span class="muted">уроки: ${formatStudyMinutes(left)}</span>` : ""}</p></div><progress max="100" value="${percent}" aria-label="Освоено на уровне ${level.label}"></progress>${nextStepMarkup}${skipMarkup}</section>
       ${learningReviewMarkup(level)}
       <div class="learning-modules">${modules.map((module, index) => learningModuleMarkup(module, index, index === currentModuleIndex)).join("")}</div>
       <p class="muted learning-modules-note">${modules.some((module) => module.lessons.length) ? "Уроки отмечаются сами, когда все их упражнения проверены в Учебнике. " : "Учебник начинается с A1, поэтому здесь опора — шпаргалки. "}Задание и пункты «Могу» отмечайте сами.</p>
@@ -16085,7 +16255,7 @@ function renderLearningPlan() {
     state.learningDetails[`plan:${detail.dataset.learningModule}`] = detail.open;
     appStorage.set("msg:learningDetails", JSON.stringify(state.learningDetails));
   }));
-  header.querySelector("[data-open-learning-module]")?.addEventListener("click", (event) => {
+  bindClickAll(header, "[data-open-learning-module]", (event) => {
     const detail = $all("[data-learning-module]", header).find((item) => item.dataset.learningModule === event.currentTarget.dataset.openLearningModule);
     if (!detail) return;
     detail.open = true;
@@ -16281,10 +16451,12 @@ function renderTextbookCatalog(content) {
   const lessonCount = TEXTBOOK_LESSONS.length;
   const completed = TEXTBOOK_LESSONS.filter((lesson) => textbookProgressFor(lesson).done).length;
   const lastLesson = TEXTBOOK_LESSONS.find((lesson) => lesson.id === Number(appStorage.get("msg:textbookLesson")));
-  const next = (lastLesson && !textbookProgressFor(lastLesson).done ? lastLesson : null) || TEXTBOOK_LESSONS.find((lesson) => !textbookProgressFor(lesson).done) || TEXTBOOK_LESSONS[0];
+  const lastStarted = lastLesson && !textbookProgressFor(lastLesson).done && textbookProgressFor(lastLesson).answered > 0 ? lastLesson : null;
+  const planLesson = lastStarted ? null : learningPlanNextLesson();
+  const next = lastStarted || planLesson || (lastLesson && !textbookProgressFor(lastLesson).done ? lastLesson : null) || TEXTBOOK_LESSONS.find((lesson) => !textbookProgressFor(lesson).done) || TEXTBOOK_LESSONS[0];
   const card = (lesson) => {
     const progress = textbookProgressFor(lesson);
-    const duration = Math.max(5, Math.ceil(progress.total / 5));
+    const duration = textbookLessonMinutes(lesson);
     const status = progress.done
       ? `${textbookUi("Пройден", "Completada")} · ✓ ${progress.correct}/${progress.total}`
       : `${textbookUi("Заполнено", "Respondidas")} ${progress.answered}/${progress.total} · ✓ ${progress.correct}`;
@@ -16303,7 +16475,7 @@ function renderTextbookCatalog(content) {
   }).join("");
   const header = infoSection({ className: "info-card textbook-dashboard", html: `
     <div class="textbook-toolbar"><div><h2>${escapeHTML(textbookUi("Учебник", "Curso"))}</h2><p class="muted">${escapeHTML(textbookUi(`${TEXTBOOK_LESSONS.length} ${pluralizeInteractiveLessons(TEXTBOOK_LESSONS.length)} по базовой грамматике.`, `${TEXTBOOK_LESSONS.length} ${TEXTBOOK_LESSONS.length === 1 ? "lección interactiva" : "lecciones interactivas"} de gramática básica.`))}</p></div>${textbookLanguageButtons()}</div>
-    <div class="textbook-progress"><p><strong>${escapeHTML(textbookUi("Пройдено", "Completado"))}: ${completed}/${lessonCount}</strong></p><progress max="${lessonCount}" value="${completed}" aria-label="${escapeHTML(textbookUi("Прогресс учебника", "Progreso del curso"))}"></progress><div class="textbook-actions"><button class="small-button primary" type="button" data-textbook-open="${next.id}">${escapeHTML(textbookUi("Продолжить", "Continuar"))}: ${next.id}</button><span class="muted">${escapeHTML(textbookUi("Все уроки доступны сразу.", "Todas las lecciones están disponibles."))}</span></div></div>
+    <div class="textbook-progress"><p><strong>${escapeHTML(textbookUi("Пройдено", "Completado"))}: ${completed}/${lessonCount}</strong></p><progress max="${lessonCount}" value="${completed}" aria-label="${escapeHTML(textbookUi("Прогресс учебника", "Progreso del curso"))}"></progress><div class="textbook-actions"><button class="small-button primary" type="button" data-textbook-open="${next.id}">${escapeHTML(planLesson ? textbookUi("Продолжить по плану", "Seguir el plan") : textbookUi("Продолжить", "Continuar"))}: ${next.id}</button><span class="muted">${escapeHTML(textbookUi("Все уроки доступны сразу.", "Todas las lecciones están disponibles."))}</span></div></div>
     <div class="textbook-level-filter" role="group" aria-label="${escapeHTML(textbookUi("Фильтр по уровню", "Filtro por nivel"))}">${["all", ...TEXTBOOK_LEVEL_IDS].map((level) => `<button class="small-button ${state.textbookLevel === level ? "is-active" : ""}" type="button" data-textbook-level="${level}" aria-pressed="${state.textbookLevel === level}">${level === "all" ? escapeHTML(textbookUi("Все уровни", "Todos los niveles")) : `${level.toUpperCase()} · ${TEXTBOOK_LESSON_LEVELS[level].length}`}</button>`).join("")}<span class="muted">${escapeHTML(textbookUi("Уровни — по Plan Curricular del Instituto Cervantes: в книге их нет.", "Niveles según el Plan Curricular del Instituto Cervantes: el libro no los indica."))}</span></div>
     <div class="textbook-actions" role="group" aria-label="${escapeHTML(textbookUi("Управление темами", "Control de temas"))}"><button class="small-button" type="button" data-textbook-groups="open">${escapeHTML(textbookUi("Раскрыть все темы", "Abrir todos los temas"))}</button><button class="small-button" type="button" data-textbook-groups="close">${escapeHTML(textbookUi("Скрыть все темы", "Cerrar todos los temas"))}</button></div>
     <div class="textbook-catalog">${cards}</div>

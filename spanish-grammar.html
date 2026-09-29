@@ -972,6 +972,38 @@ input[type="search"] {
   accent-color: var(--success);
 }
 
+.cross-links {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.cross-links h4 {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.cross-links-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cross-links-list .small-button {
+  text-align: left;
+  white-space: normal;
+}
+
+.cross-links-level {
+  margin-left: 4px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+}
+
 .learning-review {
   display: grid;
   gap: 6px;
@@ -4154,7 +4186,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.41 · обновлено: 29.09.2026 19:03 CEST</span>
+        <span>Версия MVP 1.42 · обновлено: 29.09.2026 19:06 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -6318,27 +6350,51 @@ const TENSE_FILTERS = {
   }
 };
 
+// Уроки учебника по времени: первый — урок, где вводятся формы; его уровень (PCIC) и есть уровень времени.
+const TENSE_LESSONS = {
+  presente: [48, 49, 50, 51, 52],
+  perfecto: [60, 61, 62],
+  indefinido: [58, 59, 62, 64],
+  imperfecto: [63, 64, 65],
+  pluscuamperfecto: [66],
+  futuro: [67, 68, 70, 85],
+  condicional: [71, 72, 92],
+  subjuntivo_presente: [79, 80, 81, 84, 86, 87],
+  subjuntivo_imperfecto: [82, 83, 92],
+  imperativo_afirmativo: [73, 75, 76, 77, 78],
+  imperativo_negativo: [74, 76, 77, 78],
+  formas_no_personales: [93, 98, 99]
+};
+
+// Уровни времён, которых нет в учебнике: ориентир по инвентарю PCIC.
 const TENSE_LEVELS = {
-  presente: "A0–A1",
-  perfecto: "A1",
-  indefinido: "A1",
-  imperfecto: "A2",
-  pluscuamperfecto: "A2",
   preterito_anterior: "B2",
-  futuro: "A2",
-  futuro_perfecto: "B1",
-  condicional: "B1",
+  futuro_perfecto: "B2",
   condicional_compuesto: "B2",
-  subjuntivo_presente: "A2–B1",
   subjuntivo_perfecto: "B1",
-  subjuntivo_imperfecto: "B1",
   subjuntivo_pluscuamperfecto: "B2",
   subjuntivo_futuro: "C1",
-  subjuntivo_futuro_perfecto: "C1",
-  imperativo_afirmativo: "A1",
-  imperativo_negativo: "A1",
-  formas_no_personales: "A0–A1"
+  subjuntivo_futuro_perfecto: "C1"
 };
+
+// Уроки учебника, посвящённые конкретному глаголу или конструкции с ним.
+const VERB_LESSONS = {
+  ser: [42, 44], estar: [43, 44, 47, 56], tener: [45, 95], haber: [46, 47, 60, 66],
+  gustar: [55], encantar: [55], ir: [69], deber: [95], poder: [95], llevar: [96],
+  volver: [96], dejar: [94, 97], acabar: [94], echar: [94], permitir: [97], prohibir: [97],
+  recordar: [97], olvidar: [97]
+};
+
+function tenseLevel(id) {
+  const lessonId = TENSE_LESSONS[id]?.[0];
+  return lessonId ? textbookLessonLevel(lessonId).toUpperCase() : TENSE_LEVELS[id] || "справка";
+}
+
+function lessonLinksMarkup(lessonIds = [], title = "Уроки учебника") {
+  const lessons = lessonIds.map((id) => TEXTBOOK_LESSONS.find((lesson) => lesson.id === id)).filter(Boolean);
+  if (!lessons.length) return "";
+  return `<section class="cross-links" aria-label="${title}"><h4>${title}</h4><div class="cross-links-list">${lessons.map((lesson) => `<button class="small-button" type="button" data-open-lesson="${lesson.id}">${lesson.id}. ${escapeHTML(lesson.title.ru)} <span class="cross-links-level">${textbookLessonLevel(lesson.id).toUpperCase()}</span></button>`).join("")}</div></section>`;
+}
 
 const TENSE_CONTRASTS = {
   presente: {
@@ -6571,7 +6627,7 @@ const TENSE_EXAMPLES = {
 const USEFUL_TABLES = [
 
   {
-    id: "pryamye-i-kosvennye-obekty-lo-la-le-les", level: "a2",
+    id: "pryamye-i-kosvennye-obekty-lo-la-le-les", level: "a2", lessons: [35, 36, 37, 38],
     group: "Местоимения и объекты",
     subgroup: "Прямые и косвенные объекты",
     title: "Прямые и косвенные объекты: lo, la, le, les, порядок",
@@ -6593,7 +6649,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "me-te-se-vozvratnye-mestoimeniya", level: "a1",
+    id: "me-te-se-vozvratnye-mestoimeniya", level: "a1", lessons: [40, 53],
     group: "Местоимения и объекты",
     subgroup: "Возвратные местоимения",
     title: "Me/te/se: возвратные местоимения",
@@ -6609,7 +6665,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "mi-mio-tu-tuyo-prityazhatelnye-mestoimeniya", level: "a2",
+    id: "mi-mio-tu-tuyo-prityazhatelnye-mestoimeniya", level: "a2", lessons: [18, 19],
     group: "Местоимения и объекты",
     subgroup: "Притяжательные местоимения",
     title: "Mi/mío, tu/tuyo: притяжательные местоимения",
@@ -6627,7 +6683,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "algo-nada-alguien-nadie-kto-to-ili-nikto", level: "a2",
+    id: "algo-nada-alguien-nadie-kto-to-ili-nikto", level: "a2", lessons: [23],
     group: "Местоимения и объекты",
     subgroup: "Неопределённые и отрицательные",
     title: "Algo/nada/alguien/nadie: кто-то или никто",
@@ -6642,7 +6698,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "ukazatelnye-este-ese-aquel-esto-eso-aquello", level: "a1",
+    id: "ukazatelnye-este-ese-aquel-esto-eso-aquello", level: "a1", lessons: [12],
     group: "Местоимения и объекты",
     subgroup: "Указательные местоимения",
     title: "Указательные: este/ese/aquel + esto/eso/aquello",
@@ -6656,7 +6712,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "voprositelnye-que-quien-cual-como", level: "a0",
+    id: "voprositelnye-que-quien-cual-como", level: "a0", lessons: [30, 31, 32],
     group: "Местоимения и объекты",
     subgroup: "Вопросительные местоимения",
     title: "Вопросительные: qué, quién, cuál, cómo…",
@@ -6674,7 +6730,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "otnositelnye-que-quien-el-cual-cuyo-donde", level: "a2",
+    id: "otnositelnye-que-quien-el-cual-cuyo-donde", level: "a2", lessons: [28, 29],
     group: "Местоимения и объекты",
     subgroup: "Относительные местоимения",
     title: "Относительные: que, quien, el cual, cuyo, donde",
@@ -6715,7 +6771,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "se-vozvratnost-vzaimnost-pasiva-refleja", level: "b2",
+    id: "se-vozvratnost-vzaimnost-pasiva-refleja", level: "b2", lessons: [40, 53, 122],
     group: "Синтаксис и порядок слов",
     subgroup: "Функции se",
     title: "Se: возвратность, взаимность, pasiva refleja и безличность",
@@ -6735,7 +6791,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "artikli-el-la-los-las-i-un-una", level: "a0",
+    id: "artikli-el-la-los-las-i-un-una", level: "a0", lessons: [4, 6, 7],
     group: "Существительные и определители",
     subgroup: "Артикли",
     title: "Артикли: el/la/los/las и un/una",
@@ -6755,7 +6811,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "chislitelnye-kolichestvennye-poryadkovye", level: "a0",
+    id: "chislitelnye-kolichestvennye-poryadkovye", level: "a0", lessons: [25, 26, 27],
     group: "Существительные и определители",
     subgroup: "Числительные",
     title: "Числительные: количественные, порядковые, собирательные",
@@ -6810,7 +6866,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "prilagatelnye-soglasovanie-pozitsiya", level: "a1",
+    id: "prilagatelnye-soglasovanie-pozitsiya", level: "a1", lessons: [13, 15, 16, 17],
     group: "Существительные и определители",
     subgroup: "Прилагательные",
     title: "Прилагательные: согласование, позиция, сравнение",
@@ -6839,7 +6895,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "gentilicios-ano-eno-es-ino-ense", level: "a0",
+    id: "gentilicios-ano-eno-es-ino-ense", level: "a0", lessons: [14],
     group: "Существительные и определители",
     subgroup: "Gentilicios",
     title: "Gentilicios: -ano, -eño, -és, -ino, -ense",
@@ -6859,7 +6915,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "ser-estar-suschnost-ili-sostoyanie", level: "a0",
+    id: "ser-estar-suschnost-ili-sostoyanie", level: "a0", lessons: [42, 43, 44],
     group: "Глаголы и управление",
     subgroup: "Ser / Estar",
     title: "Ser/estar: сущность или состояние",
@@ -6879,7 +6935,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "ser-estar-participio-deistvie-ili-sostoyanie", level: "b1",
+    id: "ser-estar-participio-deistvie-ili-sostoyanie", level: "b1", lessons: [99],
     group: "Глаголы и управление",
     subgroup: "Ser / Estar",
     title: "Ser/estar + participio: действие или состояние",
@@ -6896,7 +6952,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "gustar-i-pohozhie-glagoly", level: "a1",
+    id: "gustar-i-pohozhie-glagoly", level: "a1", lessons: [55],
     group: "Глаголы и управление",
     subgroup: "Частые пары",
     title: "Gustar и похожие глаголы",
@@ -6968,7 +7024,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "tener-sustantivo-tener-hambre-tener-sed", level: "a1",
+    id: "tener-sustantivo-tener-hambre-tener-sed", level: "a1", lessons: [45],
     group: "Глаголы и управление",
     subgroup: "Устойчивые выражения",
     title: "Tener + sustantivo: tener hambre, tener sed…",
@@ -7057,7 +7113,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "glagoly-s-predlogami-pensar-en-sonar-con", level: "b1",
+    id: "glagoly-s-predlogami-pensar-en-sonar-con", level: "b1", lessons: [115],
     group: "Глаголы и управление",
     subgroup: "Управление",
     title: "Глаголы с предлогами: pensar en, soñar con…",
@@ -7100,7 +7156,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "voz-pasiva-ser-participio-pasiva-refleja", level: "b2",
+    id: "voz-pasiva-ser-participio-pasiva-refleja", level: "b2", lessons: [122],
     group: "Синтаксис и порядок слов",
     subgroup: "Пассив и безличные конструкции",
     title: "Voz pasiva: ser + participio, pasiva refleja, impersonal con se",
@@ -7117,7 +7173,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "kosvennaya-rech-polnaya-tablitsa-sdvigi", level: "b2",
+    id: "kosvennaya-rech-polnaya-tablitsa-sdvigi", level: "b2", lessons: [88, 89, 90],
     group: "Синтаксис и порядок слов",
     subgroup: "Косвенная речь",
     title: "Косвенная речь: полная таблица — сдвиги, вопросы, приказы",
@@ -7151,7 +7207,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "perifrasis-verbales-svodnaya-tablitsa", level: "b1",
+    id: "perifrasis-verbales-svodnaya-tablitsa", level: "b1", lessons: [94, 95, 96],
     group: "Перифразы, неличные формы и модальность",
     subgroup: "Сводная таблица",
     title: "Perífrasis verbales: сводная таблица",
@@ -7175,7 +7231,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "gerundio-obrazovanie-i-upotreblenie", level: "a2",
+    id: "gerundio-obrazovanie-i-upotreblenie", level: "a2", lessons: [56, 98],
     group: "Перифразы, неличные формы и модальность",
     subgroup: "Gerundio",
     title: "Gerundio: образование и употребление",
@@ -7197,7 +7253,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "deber-tener-que-hay-que-dolzhenstvovanie", level: "a1",
+    id: "deber-tener-que-hay-que-dolzhenstvovanie", level: "a1", lessons: [95],
     group: "Перифразы, неличные формы и модальность",
     subgroup: "Долженствование",
     title: "Deber / Tener que / Hay que: долженствование",
@@ -7212,7 +7268,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "imperfecto-vs-indefinido-fon-ili-sobytie", level: "a2",
+    id: "imperfecto-vs-indefinido-fon-ili-sobytie", level: "a2", lessons: [64],
     group: "Времена и аспект",
     subgroup: "Прошедшее",
     title: "Imperfecto vs Indefinido: фон или событие",
@@ -7231,7 +7287,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "futuro-ir-a-infinitivo-ili-futuro-simple", level: "a1",
+    id: "futuro-ir-a-infinitivo-ili-futuro-simple", level: "a1", lessons: [69, 70],
     group: "Времена и аспект",
     subgroup: "Будущее",
     title: "Futuro: ir a + infinitivo или Futuro Simple",
@@ -7245,7 +7301,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "uslovnye-predlozheniya", level: "b1",
+    id: "uslovnye-predlozheniya", level: "b1", lessons: [91, 92],
     group: "Subjuntivo и сложное предложение",
     subgroup: "Условия",
     title: "Условные предложения",
@@ -7263,7 +7319,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "concordancia-de-tiempos-polnaya-tablitsa", level: "b2",
+    id: "concordancia-de-tiempos-polnaya-tablitsa", level: "b2", lessons: [88, 89],
     group: "Subjuntivo и сложное предложение",
     subgroup: "Согласование",
     title: "Concordancia de tiempos: полная таблица",
@@ -7282,7 +7338,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "voprosy-obrazovanie-inversiya-tag-voprosy", level: "a0",
+    id: "voprosy-obrazovanie-inversiya-tag-voprosy", level: "a0", lessons: [30, 31],
     group: "Синтаксис и порядок слов",
     subgroup: "Вопросы",
     title: "Вопросы: образование, инверсия, tag-вопросы",
@@ -7300,7 +7356,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "muy-mucho-stepen-ili-kolichestvo", level: "a1",
+    id: "muy-mucho-stepen-ili-kolichestvo", level: "a1", lessons: [104, 105],
     group: "Наречия, предлоги и связки",
     subgroup: "Наречия",
     title: "Muy/mucho: степень или количество",
@@ -7313,7 +7369,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "ya-todavia-aun-vremya-i-stepen", level: "a2",
+    id: "ya-todavia-aun-vremya-i-stepen", level: "a2", lessons: [102],
     group: "Наречия, предлоги и связки",
     subgroup: "Наречия",
     title: "Ya, todavía, aún: время и степень",
@@ -7330,7 +7386,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "siempre-nunca-a-veces-chastota", level: "a1",
+    id: "siempre-nunca-a-veces-chastota", level: "a1", lessons: [103],
     group: "Наречия, предлоги и связки",
     subgroup: "Наречия",
     title: "Siempre, nunca, a veces: частота",
@@ -7350,7 +7406,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "tambien-tampoco-tozhe-tozhe", level: "a1",
+    id: "tambien-tampoco-tozhe-tozhe", level: "a1", lessons: [109],
     group: "Наречия, предлоги и связки",
     subgroup: "Наречия",
     title: "También/tampoco: тоже / тоже не",
@@ -7363,7 +7419,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "adverbios-na-mente-obrazovanie-i-poryadok", level: "a2",
+    id: "adverbios-na-mente-obrazovanie-i-poryadok", level: "a2", lessons: [106],
     group: "Наречия, предлоги и связки",
     subgroup: "Наречия",
     title: "Adverbios на -mente: образование и порядок",
@@ -7379,7 +7435,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "por-para-prichina-ili-tsel", level: "a2",
+    id: "por-para-prichina-ili-tsel", level: "a2", lessons: [114],
     group: "Наречия, предлоги и связки",
     subgroup: "Предлоги",
     title: "Por/para: причина или цель",
@@ -7396,7 +7452,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "a-en-de-con-sin-sobre-entre-klyuchevye", level: "a1",
+    id: "a-en-de-con-sin-sobre-entre-klyuchevye", level: "a1", lessons: [110, 111, 113],
     group: "Наречия, предлоги и связки",
     subgroup: "Предлоги",
     title: "A/en/de/con/sin/sobre/entre: ключевые предлоги",
@@ -7413,7 +7469,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "preposiciones-de-lugar-entre-sobre-bajo", level: "a1",
+    id: "preposiciones-de-lugar-entre-sobre-bajo", level: "a1", lessons: [112],
     group: "Наречия, предлоги и связки",
     subgroup: "Предлоги",
     title: "Preposiciones de lugar: entre, sobre, bajo…",
@@ -7433,7 +7489,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "desde-hace-durante-vremya-i-dlitelnost", level: "a2",
+    id: "desde-hace-durante-vremya-i-dlitelnost", level: "a2", lessons: [52],
     group: "Наречия, предлоги и связки",
     subgroup: "Предлоги",
     title: "Desde/hace/durante: время и длительность",
@@ -7447,7 +7503,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "locuciones-prepositivas-a-pesar-de-en-vez-de", level: "b1",
+    id: "locuciones-prepositivas-a-pesar-de-en-vez-de", level: "b1", lessons: [120],
     group: "Наречия, предлоги и связки",
     subgroup: "Предлоги",
     title: "Locuciones prepositivas: a pesar de, en vez de…",
@@ -7467,7 +7523,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "porque-aunque-si-cuando-chastye-soyuzy", level: "a1",
+    id: "porque-aunque-si-cuando-chastye-soyuzy", level: "a1", lessons: [116, 118, 119, 120],
     group: "Наречия, предлоги и связки",
     subgroup: "Союзы",
     title: "Porque/aunque/si/cuando: частые союзы",
@@ -7488,7 +7544,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "conectores-vse-svyazki", level: "b1",
+    id: "conectores-vse-svyazki", level: "b1", lessons: [116, 117, 118, 119, 120, 121],
     group: "Наречия, предлоги и связки",
     subgroup: "Коннекторы",
     title: "Conectores: все связки",
@@ -7719,7 +7775,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "la-hora-y-la-fecha-vremya-dni-mesyatsy", level: "a0",
+    id: "la-hora-y-la-fecha-vremya-dni-mesyatsy", level: "a0", lessons: [9],
     group: "Числа, время и даты",
     subgroup: "Время и даты",
     title: "La hora y la fecha: время, дни, месяцы",
@@ -7748,7 +7804,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "tu-vs-usted-vs-vosotros-kogda-ispolzovat", level: "a1",
+    id: "tu-vs-usted-vs-vosotros-kogda-ispolzovat", level: "a1", lessons: [34],
     group: "Живой испанский",
     subgroup: "Формы вежливости",
     title: "Tú vs Usted vs Vosotros: когда использовать",
@@ -7764,7 +7820,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "mestoimeniya-pri-infinitive-gerundii", level: "a2",
+    id: "mestoimeniya-pri-infinitive-gerundii", level: "a2", lessons: [39, 78],
     group: "Местоимения и объекты",
     subgroup: "Местоимения с неличными формами",
     title: "Местоимения при инфинитиве, герундии и императиве",
@@ -7780,7 +7836,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "rod-suschestvitelnyh-pravila-i-isklyucheniya", level: "a0",
+    id: "rod-suschestvitelnyh-pravila-i-isklyucheniya", level: "a0", lessons: [1, 2],
     group: "Существительные и определители",
     subgroup: "Род",
     title: "Род существительных: правила и исключения",
@@ -7800,7 +7856,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "kontraktsii-al-del", level: "a1",
+    id: "kontraktsii-al-del", level: "a1", lessons: [6],
     group: "Существительные и определители",
     subgroup: "Артикли",
     title: "Контракции al / del",
@@ -7831,7 +7887,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "hay-esta-se-encuentra-kak-skazat-est", level: "a1",
+    id: "hay-esta-se-encuentra-kak-skazat-est", level: "a1", lessons: [46, 47],
     group: "Глаголы и управление",
     subgroup: "Частые пары",
     title: "Hay / Está / Se encuentra: как сказать «есть / находится»",
@@ -7862,7 +7918,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "llevar-5-konstruktsii", level: "b1",
+    id: "llevar-5-konstruktsii", level: "b1", lessons: [96],
     group: "Глаголы и управление",
     subgroup: "Частые пары",
     title: "Llevar: 5 конструкций",
@@ -7878,7 +7934,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "preterito-perfecto-vs-indefinido-v-ispanii", level: "a2",
+    id: "preterito-perfecto-vs-indefinido-v-ispanii", level: "a2", lessons: [62],
     group: "Времена и аспект",
     subgroup: "Прошедшее",
     title: "Pretérito Perfecto vs Indefinido в Испании",
@@ -7897,7 +7953,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "dvoinoe-otritsanie-no-nada-no-nunca-no-nadie", level: "a2",
+    id: "dvoinoe-otritsanie-no-nada-no-nunca-no-nadie", level: "a2", lessons: [108],
     group: "Наречия, предлоги и связки",
     subgroup: "Отрицание",
     title: "Двойное отрицание: no…nada, no…nunca, no…nadie",
@@ -7987,7 +8043,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "lichnye-mestoimeniya-polnaya-tablitsa", level: "a0",
+    id: "lichnye-mestoimeniya-polnaya-tablitsa", level: "a0", lessons: [34, 41],
     group: "Местоимения и объекты",
     subgroup: "Личные местоимения",
     title: "Личные местоимения: полная таблица + предлоги",
@@ -8008,7 +8064,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "todo-mucho-poco-bastante-demasiado", level: "a1",
+    id: "todo-mucho-poco-bastante-demasiado", level: "a1", lessons: [20, 22],
     group: "Существительные и определители",
     subgroup: "Определители количества",
     title: "Todo, mucho, poco, bastante, demasiado: количественные определители",
@@ -8027,7 +8083,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "mnozhestvennoe-chislo-pravila-obrazovaniya", level: "a0",
+    id: "mnozhestvennoe-chislo-pravila-obrazovaniya", level: "a0", lessons: [3],
     group: "Существительные и определители",
     subgroup: "Множественное число",
     title: "Множественное число: правила образования",
@@ -8045,7 +8101,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "irregularidades-chastye-modeli-v-presente", level: "a2",
+    id: "irregularidades-chastye-modeli-v-presente", level: "a2", lessons: [49, 50, 59],
     group: "Глаголы и управление",
     subgroup: "Неправильные глаголы",
     title: "Irregularidades: частые модели в Presente и Indefinido",
@@ -8063,7 +8119,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "gustar-20-glagolov-s-kosvennym-obektom", level: "a2",
+    id: "gustar-20-glagolov-s-kosvennym-obektom", level: "a2", lessons: [55],
     group: "Глаголы и управление",
     subgroup: "Частые пары",
     title: "Gustar: 20+ глаголов с косвенным объектом",
@@ -8094,7 +8150,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "haber-hay-he-habia-habra-vse-formy", level: "b1",
+    id: "haber-hay-he-habia-habra-vse-formy", level: "b1", lessons: [46, 60, 66],
     group: "Глаголы и управление",
     subgroup: "Haber",
     title: "Haber: hay, he, había, habrá — все формы",
@@ -8111,7 +8167,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "pluscuamperfecto-ya-uzhe-sdelal-do-togo", level: "b1",
+    id: "pluscuamperfecto-ya-uzhe-sdelal-do-togo", level: "b1", lessons: [66],
     group: "Времена и аспект",
     subgroup: "Прошедшее",
     title: "Pluscuamperfecto: «я уже сделал до того, как…»",
@@ -8127,7 +8183,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "indefinido-chastye-vremennye-konteksty", level: "a2",
+    id: "indefinido-chastye-vremennye-konteksty", level: "a2", lessons: [58, 59],
     group: "Времена и аспект",
     subgroup: "Прошедшее",
     title: "Indefinido: частые временные контексты",
@@ -8148,7 +8204,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "aqui-ahi-alli-aca-alla-ukazanie-mesta", level: "a1",
+    id: "aqui-ahi-alli-aca-alla-ukazanie-mesta", level: "a1", lessons: [100],
     group: "Наречия, предлоги и связки",
     subgroup: "Предлоги места",
     title: "Aquí / Ahí / Allí; Acá / Allá: указание места",
@@ -8188,7 +8244,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "vozrast-i-dlitelnost-tener-cumplir-llevar", level: "a1",
+    id: "vozrast-i-dlitelnost-tener-cumplir-llevar", level: "a1", lessons: [45, 52],
     group: "Числа, время и даты",
     subgroup: "Возраст",
     title: "Возраст и длительность: tener, cumplir, llevar",
@@ -8206,7 +8262,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "vozvratnye-glagoly-obychnyi-vs-vozvratnyi", level: "a1",
+    id: "vozvratnye-glagoly-obychnyi-vs-vozvratnyi", level: "a1", lessons: [53, 54],
     group: "Глаголы и управление",
     subgroup: "Возвратные глаголы",
     title: "Возвратные глаголы: обычный vs возвратный",
@@ -8230,7 +8286,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "personalnaya-a-veo-a-maria-busco-un-medico", level: "a2",
+    id: "personalnaya-a-veo-a-maria-busco-un-medico", level: "a2", lessons: [113],
     group: "Местоимения и объекты",
     subgroup: "Прямой объект",
     title: "Персональная a: veo a María, busco un médico",
@@ -8249,7 +8305,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "infinitivo-ili-que-subjuntivo-odin", level: "b1",
+    id: "infinitivo-ili-que-subjuntivo-odin", level: "b1", lessons: [97],
     group: "Subjuntivo и сложное предложение",
     subgroup: "Сложное предложение",
     title: "Infinitivo или que + subjuntivo: один или разные субъекты",
@@ -8267,7 +8323,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "cuando-hasta-que-en-cuanto-indicativo", level: "b1",
+    id: "cuando-hasta-que-en-cuanto-indicativo", level: "b1", lessons: [118],
     group: "Subjuntivo и сложное предложение",
     subgroup: "Придаточные времени",
     title: "Cuando, hasta que, en cuanto: indicativo или subjuntivo",
@@ -8321,7 +8377,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "participio-he-escrito-fue-escrita-esta", level: "a2",
+    id: "participio-he-escrito-fue-escrita-esta", level: "a2", lessons: [99],
     group: "Перифразы, неличные формы и модальность",
     subgroup: "Participio",
     title: "Participio: he escrito, fue escrita, está escrita",
@@ -8339,7 +8395,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "yo-tu-el-kogda-podlezhaschee-nuzhno-nazyvat", level: "a1",
+    id: "yo-tu-el-kogda-podlezhaschee-nuzhno-nazyvat", level: "a1", lessons: [34],
     group: "Синтаксис и порядок слов",
     subgroup: "Порядок слов",
     title: "Yo, tú, él: когда подлежащее нужно называть",
@@ -8357,7 +8413,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "agudas-llanas-esdrujulas-osnovnye-pravila", level: "a0",
+    id: "agudas-llanas-esdrujulas-osnovnye-pravila", level: "a0", lessons: [123],
     group: "Произношение, орфография и письмо",
     subgroup: "Ударение",
     title: "Agudas, llanas, esdrújulas: основные правила ударения",
@@ -8383,7 +8439,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "diptongo-i-hiato-tiene-pais-maria-oir", level: "a1",
+    id: "diptongo-i-hiato-tiene-pais-maria-oir", level: "a1", lessons: [124],
     group: "Произношение, орфография и письмо",
     subgroup: "Ударение",
     title: "Diptongo и hiato: tiene, país, María, oír",
@@ -8457,7 +8513,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "zapyatye-kavychki-i-propisnye-bukvy", level: "a0",
+    id: "zapyatye-kavychki-i-propisnye-bukvy", level: "a0", lessons: [125],
     group: "Произношение, орфография и письмо",
     subgroup: "Пунктуация и регистр",
     title: "¿? ¡! Запятые, кавычки и прописные буквы",
@@ -8531,7 +8587,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "kak-rasskazyvat-istoriyu-fon-sobytie", level: "b1",
+    id: "kak-rasskazyvat-istoriyu-fon-sobytie", level: "b1", lessons: [64, 65, 66],
     group: "Времена и аспект",
     subgroup: "Прошедшее",
     title: "Как рассказывать историю: фон, событие и предыстория",
@@ -8550,7 +8606,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "predpolozhenie-o-nastoyaschem-i-proshlom", level: "b1",
+    id: "predpolozhenie-o-nastoyaschem-i-proshlom", level: "b1", lessons: [85],
     group: "Перифразы, неличные формы и модальность",
     subgroup: "Вероятность",
     title: "Предположение о настоящем и прошлом: quizá, debe de, futuro, condicional",
@@ -8571,7 +8627,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "vezhlivye-prosby-v-ispanii-puedes-podrias", level: "a2",
+    id: "vezhlivye-prosby-v-ispanii-puedes-podrias", level: "a2", lessons: [71, 72],
     group: "Живой испанский",
     subgroup: "Вежливость",
     title: "Вежливые просьбы в Испании: puedes, podrías, quería",
@@ -8607,7 +8663,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "ojala-venga-viniera-haya-llegado-hubiera", level: "b1",
+    id: "ojala-venga-viniera-haya-llegado-hubiera", level: "b1", lessons: [84],
     group: "Subjuntivo и сложное предложение",
     subgroup: "Subjuntivo",
     title: "Ojalá: venga, viniera, haya llegado, hubiera venido",
@@ -8624,7 +8680,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "pero-sino-sino-que-si-no-no-ili-esli", level: "b1",
+    id: "pero-sino-sino-que-si-no-no-ili-esli", level: "b1", lessons: [116],
     group: "Наречия, предлоги и связки",
     subgroup: "Союзы",
     title: "Pero, sino, sino que, si no: но или если не",
@@ -8642,7 +8698,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "al-llegar-antes-de-salir-sin-decir-nada", level: "b1",
+    id: "al-llegar-antes-de-salir-sin-decir-nada", level: "b1", lessons: [93],
     group: "Перифразы, неличные формы и модальность",
     subgroup: "Infinitivo",
     title: "Al llegar, antes de salir, sin decir nada: конструкции с infinitivo",
@@ -8661,7 +8717,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "subjuntivo-po-smyslu-zhelanie-emotsiya", level: "b1",
+    id: "subjuntivo-po-smyslu-zhelanie-emotsiya", level: "b1", lessons: [84, 85, 86, 87],
     group: "Subjuntivo и сложное предложение",
     subgroup: "Subjuntivo",
     title: "Subjuntivo по смыслу: желание, эмоция, сомнение и оценка",
@@ -8681,7 +8737,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "imperativo-tu-usted-vosotros-i-ustedes", level: "a2",
+    id: "imperativo-tu-usted-vosotros-i-ustedes", level: "a2", lessons: [73, 74, 75, 76],
     group: "Глаголы и управление",
     subgroup: "Imperativo",
     title: "Imperativo: tú, usted, vosotros и ustedes",
@@ -8701,7 +8757,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "sravnenie-mas-menos-tan-tanto-mejor-peor", level: "a1",
+    id: "sravnenie-mas-menos-tan-tanto-mejor-peor", level: "a1", lessons: [15, 16, 24, 107],
     group: "Существительные и определители",
     subgroup: "Сравнение",
     title: "Сравнение: más, menos, tan, tanto; mejor, peor, mayor, menor",
@@ -8721,7 +8777,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "todo-cada-ambos-cualquiera-i-ninguno", level: "a2",
+    id: "todo-cada-ambos-cualquiera-i-ninguno", level: "a2", lessons: [20, 21],
     group: "Существительные и определители",
     subgroup: "Определители",
     title: "Todo, cada, ambos, cualquiera и ninguno",
@@ -8742,7 +8798,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "neopredelennyi-deyatel-uno-la-gente-se", level: "b1",
+    id: "neopredelennyi-deyatel-uno-la-gente-se", level: "b1", lessons: [122],
     group: "Синтаксис и порядок слов",
     subgroup: "Безличность",
     title: "Неопределённый деятель: uno, la gente, se и третье лицо множественного",
@@ -8761,7 +8817,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "prichina-tsel-ustupka-i-sledstvie-porque", level: "b1",
+    id: "prichina-tsel-ustupka-i-sledstvie-porque", level: "b1", lessons: [117, 119, 120, 121],
     group: "Subjuntivo и сложное предложение",
     subgroup: "Обстоятельственные придаточные",
     title: "Причина, цель, уступка и следствие: porque, para que, aunque",
@@ -8801,7 +8857,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "hacer-dejar-ver-i-oir-infinitivo", level: "b2",
+    id: "hacer-dejar-ver-i-oir-infinitivo", level: "b2", lessons: [97],
     group: "Глаголы и управление",
     subgroup: "Causativos и восприятие",
     title: "Hacer, dejar, ver и oír + infinitivo",
@@ -8821,7 +8877,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "dengi-drobi-protsenty-temperatura-telefony", level: "a1",
+    id: "dengi-drobi-protsenty-temperatura-telefony", level: "a1", lessons: [26],
     group: "Числа, время и даты",
     subgroup: "Числа в быту",
     title: "Деньги, дроби, проценты, температура, телефоны и адреса",
@@ -8885,7 +8941,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "ir-irse-i-drugie-pary-s-se", level: "a2",
+    id: "ir-irse-i-drugie-pary-s-se", level: "a2", lessons: [54],
     group: "Глаголы и управление",
     subgroup: "Возвратные глаголы",
     title: "Ir / Irse и другие пары с -se",
@@ -8923,7 +8979,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "se-zavershennosti-comer-comerse-leer-leerse", level: "b2",
+    id: "se-zavershennosti-comer-comerse-leer-leerse", level: "b2", lessons: [54],
     group: "Синтаксис и порядок слов",
     subgroup: "Функции se",
     title: "Se завершённости: comer / comerse, leer / leerse",
@@ -8941,7 +8997,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "leismo-laismo-i-loismo-v-ispanii", level: "b2",
+    id: "leismo-laismo-i-loismo-v-ispanii", level: "b2", lessons: [38],
     group: "Местоимения и объекты",
     subgroup: "Прямые и косвенные объекты",
     title: "Leísmo, laísmo и loísmo в Испании",
@@ -8978,7 +9034,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "faltar-quedar-i-sobrar-chego-ne-hvataet", level: "a2",
+    id: "faltar-quedar-i-sobrar-chego-ne-hvataet", level: "a2", lessons: [55],
     group: "Глаголы и управление",
     subgroup: "Gustar и похожие глаголы",
     title: "Faltar, quedar и sobrar: чего не хватает или сколько осталось",
@@ -8996,7 +9052,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "recordar-acordarse-de-i-olvidar-olvidarse-de", level: "a2",
+    id: "recordar-acordarse-de-i-olvidar-olvidarse-de", level: "a2", lessons: [54],
     group: "Глаголы и управление",
     subgroup: "Частые пары",
     title: "Recordar / Acordarse de и Olvidar / Olvidarse de",
@@ -9033,7 +9089,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "doler-i-chasti-tela-me-duele-me-duelen", level: "a1",
+    id: "doler-i-chasti-tela-me-duele-me-duelen", level: "a1", lessons: [55],
     group: "Глаголы и управление",
     subgroup: "Gustar и похожие глаголы",
     title: "Doler и части тела: me duele / me duelen",
@@ -9051,7 +9107,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "kogda-artikl-ne-ispolzuetsya", level: "b1",
+    id: "kogda-artikl-ne-ispolzuetsya", level: "b1", lessons: [5],
     group: "Существительные и определители",
     subgroup: "Артикли",
     title: "Когда артикль не используется",
@@ -9088,7 +9144,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "kosvennye-voprosy-i-vosklitsaniya", level: "b1",
+    id: "kosvennye-voprosy-i-vosklitsaniya", level: "b1", lessons: [89],
     group: "Синтаксис и порядок слов",
     subgroup: "Вопросы",
     title: "Косвенные вопросы и восклицания",
@@ -9185,7 +9241,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "bueno-bien-malo-mal-priznak-predmeta", level: "a1",
+    id: "bueno-bien-malo-mal-priznak-predmeta", level: "a1", lessons: [106],
     group: "Существительные и определители",
     subgroup: "Прилагательное или наречие",
     title: "Bueno / bien, malo / mal: признак предмета или действия",
@@ -9204,7 +9260,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "soler-acostumbrarse-a-i-tender-a-privychka", level: "a2",
+    id: "soler-acostumbrarse-a-i-tender-a-privychka", level: "a2", lessons: [96],
     group: "Перифразы, неличные формы и модальность",
     subgroup: "Привычки и тенденции",
     title: "Soler, acostumbrarse a и tender a: привычка или тенденция",
@@ -9222,7 +9278,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "presente-ili-estar-seguir-gerundio", level: "a2",
+    id: "presente-ili-estar-seguir-gerundio", level: "a2", lessons: [57],
     group: "Перифразы, неличные формы и модальность",
     subgroup: "Действие в процессе",
     title: "Presente или estar / seguir + gerundio",
@@ -9278,7 +9334,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "creo-que-no-creo-que-mnenie-uverennost", level: "b1",
+    id: "creo-que-no-creo-que-mnenie-uverennost", level: "b1", lessons: [87],
     group: "Subjuntivo и сложное предложение",
     subgroup: "Мнение и достоверность",
     title: "Creo que / No creo que: мнение, уверенность и наклонение",
@@ -9298,7 +9354,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "para-que-antes-de-que-sin-que-kogda-nuzhen", level: "b1",
+    id: "para-que-antes-de-que-sin-que-kogda-nuzhen", level: "b1", lessons: [117, 118],
     group: "Subjuntivo и сложное предложение",
     subgroup: "Цель и обстоятельства",
     title: "Para que, antes de que, sin que: когда нужен Subjuntivo",
@@ -9318,7 +9374,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "aunque-a-pesar-de-que-i-por-mucho-que-fakt", level: "b2",
+    id: "aunque-a-pesar-de-que-i-por-mucho-que-fakt", level: "b2", lessons: [120],
     group: "Subjuntivo и сложное предложение",
     subgroup: "Уступка",
     title: "Aunque, a pesar de que и por mucho que: факт или допущение",
@@ -9356,7 +9412,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "glagoly-peredachi-rechi-afirmar-senalar", level: "b2",
+    id: "glagoly-peredachi-rechi-afirmar-senalar", level: "b2", lessons: [88, 90],
     group: "Синтаксис и порядок слов",
     subgroup: "Цитирование и косвенная речь",
     title: "Глаголы передачи речи: afirmar, señalar, admitir, negar, pedir",
@@ -9415,7 +9471,7 @@ const USEFUL_TABLES = [
   },
 
   {
-    id: "kak-smyagchit-utverzhdenie-al-parecer-cabe", level: "b2",
+    id: "kak-smyagchit-utverzhdenie-al-parecer-cabe", level: "b2", lessons: [85],
     group: "Наречия, предлоги и связки",
     subgroup: "Позиция и достоверность",
     title: "Как смягчить утверждение: al parecer, cabe, puede que, todo apunta a",
@@ -13605,7 +13661,9 @@ function renderVerbCard(verb) {
     line.appendChild(item);
   });
 
-  // Спряжение — главное в карточке, поэтому связанные шпаргалки идут после таблицы.
+  // Спряжение — главное в карточке, поэтому связанные шпаргалки и уроки идут после таблицы.
+  const verbLessons = lessonLinksMarkup(VERB_LESSONS[baseVerb(verb)]);
+  if (verbLessons) node.querySelector(".table-wrap").insertAdjacentHTML("afterend", verbLessons);
   const cheatsheets = verbCheatsheetsMarkup(verb);
   if (cheatsheets) {
     node.querySelector(".table-wrap").insertAdjacentHTML("afterend", cheatsheets);
@@ -14391,7 +14449,7 @@ function renderTenses() {
                 <button class="small-button term-button tense-nav-button ${badge.kind === "rare" ? "is-rare" : ""}" type="button" data-jump="${id}">
                   <span class="tense-nav-main">
                     <span>${TENSE_NAV_LABELS[id] || tense.name}</span>
-                    <small>${tense.ru} · ${TENSE_LEVELS[id] || "справка"}</small>
+                    <small>${tense.ru} · ${tenseLevel(id)}</small>
                   </span>
                   ${badgeMarkup(id)}
                 </button>
@@ -14467,6 +14525,7 @@ function renderTenseCard(tense) {
     </div>
     ${tenseExamplesMarkup(tense.id)}
     ${tenseContrastMarkup(tense.id)}
+    ${lessonLinksMarkup(TENSE_LESSONS[tense.id])}
     ${state.focusedTense === tense.id ? "" : `<button class="small-button tense-card-mobile-toggle ${mobileOpen ? "danger" : "success"}" type="button" data-mobile-tense="${tense.id}" aria-expanded="${mobileOpen}">
       ${mobileOpen ? "Скрыть детали" : "Показать детали"}
     </button>`}
@@ -14563,8 +14622,9 @@ function badgeMarkup(id) {
 }
 
 function tenseLevelMarkup(id) {
-  const level = TENSE_LEVELS[id] || "справка";
-  return `<span class="tense-level-badge" title="Ориентировочный уровень изучения">${level}</span>`;
+  const level = tenseLevel(id);
+  const title = TENSE_LESSONS[id] ? "Уровень урока учебника, где вводятся формы (по PCIC)" : "Ориентировочный уровень по PCIC; в учебнике этого времени нет";
+  return `<span class="tense-level-badge" title="${title}">${level}</span>`;
 }
 
 function tenseContrastMarkup(id) {
@@ -14762,7 +14822,7 @@ function renderTables() {
         </label>
       `}
     </div>
-    <p class="table-filter-summary" aria-live="polite"><span data-table-shown>Показано: ${visibleTables.length} из ${INDEXED_TABLES.length}.</span> Уровень — ориентир по Plan Curricular Instituto Cervantes; A0 является внутренней стартовой ступенью справочника.</p>
+    <p class="table-filter-summary" aria-live="polite"><span data-table-shown>Показано: ${visibleTables.length} из ${INDEXED_TABLES.length}.</span> Уровни — по Plan Curricular del Instituto Cervantes: у шпаргалки, связанной с уроками, показан диапазон от её уровня до уровней этих уроков; A0 — внутренняя стартовая ступень справочника.</p>
   `});
   content.appendChild(nav);
   nav.querySelector("[data-table-filter]")?.addEventListener("change", (event) => {
@@ -14892,6 +14952,7 @@ function renderUsefulTableCard(item) {
       <div class="table-summary"><strong>Главное:</strong> ${summary}</div>
       <div class="table-wrap">${LINKED_TABLE_HTML[index]}</div>
       ${mistake ? `<div class="table-mistake"><strong>Типичная ошибка:</strong> ${mistake}</div>` : ""}
+      ${lessonLinksMarkup(item.lessons)}
       ${related}
     `
   });
@@ -15010,14 +15071,19 @@ function tableLevelMeta(levelId) {
   return TABLE_LEVELS.find((level) => level.id === levelId) || TABLE_LEVELS[0];
 }
 
+function tableLevelLabel(item) {
+  const from = tableLevelMeta(item.minLevel).badge;
+  const to = tableLevelMeta(item.maxLevel).badge;
+  return from === to ? from : `${from}–${to}`;
+}
+
 function tableLevelBadge(item) {
-  const level = tableLevelMeta(item.minLevel);
-  return `<span class="table-level-badge" title="Рекомендуется начиная с уровня ${level.badge}">${level.badge}</span>`;
+  return `<span class="table-level-badge" title="Уровни по PCIC: с какого уровня полезна шпаргалка и до какого уровня доходит её материал">${tableLevelLabel(item)}</span>`;
 }
 
 function tableLevelButton(item) {
   const level = tableLevelMeta(item.minLevel);
-  return `<button class="table-level-badge table-context-level" type="button" data-table-context-level title="Показать шпаргалки уровня ${level.badge}" aria-label="Показать шпаргалки уровня ${level.badge}">${level.badge}</button>`;
+  return `<button class="table-level-badge table-context-level" type="button" data-table-context-level title="Показать шпаргалки уровня ${level.badge}" aria-label="Уровни ${tableLevelLabel(item)}; показать шпаргалки уровня ${level.badge}">${tableLevelLabel(item)}</button>`;
 }
 
 function tableFilterIdForGroup(groupTitle) {
@@ -16669,12 +16735,15 @@ function renderTextbookLesson(content, lesson) {
   const previousButton = previous ? '<button class="small-button" type="button" data-textbook-open="' + previous.id + '">← ' + previous.id + ". " + escapeHTML(textbookText(previous.title)) + "</button>" : "";
   const nextButton = next ? '<button class="small-button" type="button" data-textbook-open="' + next.id + '">' + next.id + ". " + escapeHTML(textbookText(next.title)) + " →</button>" : "";
   const relatedLessons = (TEXTBOOK_RELATED_LESSONS[lesson.id] || []).map((id) => TEXTBOOK_LESSONS.find((item) => item.id === id)).filter(Boolean);
+  const lessonTables = INDEXED_TABLES.filter((table) => table.lessons?.includes(lesson.id));
+  const tablesMarkup = lessonTables.length ? '<section class="textbook-related"><h3>' + escapeHTML(textbookUi("Шпаргалки по теме", "Tablas de consulta")) + '</h3><div class="textbook-actions">' + lessonTables.map((table) => '<a class="small-button" href="#' + tableRoute(table) + '">' + escapeHTML(table.title) + "</a>").join("") + "</div></section>" : "";
   const related = relatedLessons.length ? '<section class="textbook-related"><h3>' + escapeHTML(textbookUi("Связанные уроки", "Lecciones relacionadas")) + '</h3><div class="textbook-actions">' + relatedLessons.map((item) => '<button class="small-button" type="button" data-textbook-open="' + item.id + '">▶ ' + item.id + ". " + escapeHTML(textbookText(item.title)) + "</button>").join("") + "</div></section>" : "";
   const section = infoSection({ className: "info-card textbook-lesson", html: `
     <div class="textbook-lesson-toolbar"><div class="textbook-lesson-controls"><button class="small-button" type="button" data-textbook-catalog>← ${escapeHTML(textbookUi("К оглавлению", "Índice"))}</button>${learningModuleForLesson(lesson.id) ? `<button class="small-button" type="button" data-textbook-plan="${lesson.id}">← ${escapeHTML(textbookUi("К плану", "Al plan"))}</button>` : ""}${textbookLanguageButtons()}</div><div class="textbook-lesson-heading"><h2>${lesson.id}. ${escapeHTML(textbookText(lesson.title))} ${textbookLevelBadge(lesson.id)}</h2><p class="muted">${escapeHTML(textbookText(lesson.goal))}</p></div></div>
     <div class="textbook-summary"><span><strong>${escapeHTML(textbookUi("Верно", "Correctas"))}: ${progress.correct}/${progress.checked}</strong> · ${escapeHTML(textbookUi("Заполнено", "Respondidas"))}: ${progress.answered}/${progress.total}</span><span class="textbook-status ${progress.done ? "is-done" : ""}">${escapeHTML(progress.done ? textbookUi("Урок пройден", "Lección completada") : textbookUi("В работе", "En curso"))}</span></div>
     <div class="textbook-theory-grid">${theory}</div>
     ${related}
+    ${tablesMarkup}
     <section><h3>${escapeHTML(textbookUi("Практика", "Práctica"))}</h3>${exercises}</section>
     <section class="textbook-result" aria-live="polite"><h3>${escapeHTML(textbookUi("Итог урока", "Resultado de la lección"))}</h3><p>${escapeHTML(summary)}</p><div class="textbook-actions"><button class="small-button" type="button" data-textbook-retry="${lesson.id}" ${progress.wrong === 0 ? "disabled" : ""}>${escapeHTML(textbookUi("Повторить ошибки", "Repetir errores"))}</button><button class="small-button danger" type="button" data-textbook-reset="${lesson.id}">${escapeHTML(textbookUi("Сбросить урок", "Reiniciar lección"))}</button></div></section>
     <nav class="textbook-lesson-nav" aria-label="${escapeHTML(textbookUi("Навигация по урокам", "Navegación de lecciones"))}">${previousButton}${nextButton}</nav>
@@ -17616,6 +17685,17 @@ function validateData() {
   DATA.moods.forEach((mood) => {
     (mood.tenseIds || []).filter((id) => !tenseIds.has(id)).forEach((id) => issues.push(`Нет времени для наклонения ${mood.title}: ${id}`));
   });
+  const lessonExists = (id) => TEXTBOOK_LESSONS.some((lesson) => lesson.id === id);
+  Object.entries(TENSE_LESSONS).forEach(([tenseId, ids]) => {
+    if (!tenseIds.has(tenseId)) issues.push("Нет времени для связи с уроками: " + tenseId);
+    ids.filter((id) => !lessonExists(id)).forEach((id) => issues.push(`Нет урока ${id} для времени ${tenseId}`));
+  });
+  Object.keys(TENSE_LEVELS).filter((tenseId) => TENSE_LESSONS[tenseId]).forEach((tenseId) => issues.push("Уровень времени задан дважды: " + tenseId));
+  Object.entries(VERB_LESSONS).forEach(([verb, ids]) => {
+    if (!BASE_VERBS.includes(verb)) issues.push("Нет глагола для связи с уроками: " + verb);
+    ids.filter((id) => !lessonExists(id)).forEach((id) => issues.push(`Нет урока ${id} для глагола ${verb}`));
+  });
+  USEFUL_TABLES.forEach((item) => (item.lessons || []).filter((id) => !lessonExists(id)).forEach((id) => issues.push(`Нет урока ${id} для шпаргалки ${item.title}`)));
   const tableIds = new Set();
   DATA.usefulTables.forEach((item) => {
     if (!tableGroups.has(item.group)) issues.push(`Нет группы шпаргалок для ${item.title}: ${item.group}`);
@@ -17954,10 +18034,17 @@ function renderExceptionCard(verb, tenseId) {
   return card;
 }
 
+// Уровень шпаргалки — диапазон от её собственного уровня и уровней связанных уроков (PCIC):
+// например, «Относительные» охватывают que (A2) и cuyo (B2).
+function tableLevelRange(item) {
+  const levels = [item.level, ...(item.lessons || []).map((id) => textbookLessonLevel(id))].map((level) => TABLE_LEVEL_ORDER.indexOf(level)).filter((index) => index >= 0);
+  return { minLevel: TABLE_LEVEL_ORDER[Math.min(...levels)], maxLevel: TABLE_LEVEL_ORDER[Math.max(...levels)] };
+}
+
 const INDEXED_TABLES = USEFUL_TABLES.map((item, index) => ({
   ...item,
   index,
-  minLevel: item.level
+  ...tableLevelRange(item)
 }));
 
 const VERB_CHEATSHEET_TITLES = Object.freeze({
@@ -18167,6 +18254,11 @@ $all("[data-more-view]").forEach((item) => {
     setTabMoreMenu(false);
     setView(item.dataset.moreView);
   });
+});
+// Ссылки «Уроки учебника» во Временах, Глаголах и Шпаргалках открывают урок из любой вкладки.
+document.addEventListener("click", (event) => {
+  const lessonLink = event.target.closest("[data-open-lesson]");
+  if (lessonLink) openTextbookLesson(Number(lessonLink.dataset.openLesson));
 });
 document.addEventListener("click", (event) => {
   if (!$("#tabMoreMenu").hidden && !event.target.closest("#tabMoreMenu, #tabMoreButton")) setTabMoreMenu(false);

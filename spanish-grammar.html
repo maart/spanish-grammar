@@ -4309,7 +4309,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.43 · обновлено: 29.09.2026 19:14 CEST</span>
+        <span>Версия MVP 1.44 · обновлено: 29.09.2026 23:11 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -6560,7 +6560,7 @@ function verbTextbookExamplesMarkup(verb) {
 }
 
 function lessonLinksMarkup(lessonIds = [], title = "Уроки учебника") {
-  const lessons = lessonIds.map((id) => TEXTBOOK_LESSONS.find((lesson) => lesson.id === id)).filter(Boolean);
+  const lessons = lessonIds.map((id) => lessonById(id)).filter(Boolean);
   if (!lessons.length) return "";
   return `<section class="cross-links" aria-label="${title}"><h4>${title}</h4><div class="cross-links-list">${lessons.map((lesson) => `<button class="small-button" type="button" data-open-lesson="${lesson.id}">${lesson.id}. ${escapeHTML(lesson.title.ru)} <span class="cross-links-level">${textbookLessonLevel(lesson.id).toUpperCase()}</span></button>`).join("")}</div></section>`;
 }
@@ -13437,7 +13437,15 @@ function applyMonosyllableSpelling(forms) {
   return forms.map((form) => form.split(" ").map(monosyllableSpelling).join(" "));
 }
 
+// Формы строятся из правил и таблиц исключений; результат не меняется, поэтому кэшируется по глаголу.
+const FORMS_CACHE = new Map();
+
 function formsFor(verb) {
+  if (!FORMS_CACHE.has(verb)) FORMS_CACHE.set(verb, buildFormsFor(verb));
+  return FORMS_CACHE.get(verb);
+}
+
+function buildFormsFor(verb) {
   const reflexive = isReflexive(verb);
   const simpleVerb = baseVerb(verb);
   const irregular = IRREGULARS[verb] || IRREGULARS[simpleVerb] || {};
@@ -13700,7 +13708,7 @@ function bindFavoriteMaterialButtons(root) {
 
 function savedMaterialsCard() {
   const tables = state.favoriteTables.map((id) => INDEXED_TABLES.find((item) => item.id === id)).filter(Boolean);
-  const lessons = state.favoriteLessons.map((id) => TEXTBOOK_LESSONS.find((lesson) => lesson.id === id)).filter(Boolean);
+  const lessons = state.favoriteLessons.map((id) => lessonById(id)).filter(Boolean);
   const card = document.createElement("section");
   card.className = "info-card saved-materials";
   const row = (open, label, removeAttr) => `<li>${open}<button class="link-button" type="button" ${removeAttr}>убрать</button></li>`;
@@ -14069,7 +14077,14 @@ function hasCompletelyIrregularProfile(verb) {
   return ["ser", "ir"].includes(baseVerb(verb));
 }
 
+const VERB_EXCEPTION_LABELS_CACHE = new Map();
+
 function verbExceptionLabels(verb) {
+  if (!VERB_EXCEPTION_LABELS_CACHE.has(verb)) VERB_EXCEPTION_LABELS_CACHE.set(verb, buildVerbExceptionLabels(verb));
+  return VERB_EXCEPTION_LABELS_CACHE.get(verb);
+}
+
+function buildVerbExceptionLabels(verb) {
   const simpleVerb = baseVerb(verb);
   const labels = [];
   if (hasCompletelyIrregularProfile(simpleVerb)) labels.push("полностью особые формы");
@@ -16308,7 +16323,7 @@ function learningModuleForLesson(lessonId) {
 // Из плана урок открывается сразу на первом упражнении, где есть пустые или непроверенные ответы;
 // из «Повторить» — на первом упражнении с ошибками, с видимой проверкой и фокусом на ошибочном пункте.
 function openTextbookLessonFromPlan(lessonId, { mistakes = false } = {}) {
-  const lesson = TEXTBOOK_LESSONS.find((item) => item.id === lessonId);
+  const lesson = lessonById(lessonId);
   if (!lesson) return;
   openTextbookLesson(lessonId);
   const saved = textbookLessonState(lessonId);
@@ -16334,7 +16349,7 @@ const LEARNING_REVIEW_ERROR_SHARE = 0.2;
 function learningReviewLessons(levelId) {
   return learningModulesFor(levelId).flatMap((module) => module.lessons)
     .map((id) => {
-      const lesson = TEXTBOOK_LESSONS.find((item) => item.id === id);
+      const lesson = lessonById(id);
       const progress = textbookProgressFor(lesson);
       return { lesson, wrong: progress.wrong, checked: progress.checked, share: progress.checked ? progress.wrong / progress.checked : 0 };
     })
@@ -16367,7 +16382,7 @@ function openLearningPlanForLesson(lessonId) {
 }
 
 function learningLessonStatus(lessonId) {
-  const lesson = TEXTBOOK_LESSONS.find((item) => item.id === lessonId);
+  const lesson = lessonById(lessonId);
   if (!lesson) return "todo";
   const progress = textbookProgressFor(lesson);
   if (progress.done) return "done";
@@ -16402,7 +16417,7 @@ function formatStudyMinutes(minutes) {
 
 function learningLessonsLeftMinutes(lessonIds) {
   return lessonIds.filter((id) => learningLessonStatus(id) !== "done")
-    .reduce((sum, id) => sum + textbookLessonMinutes(TEXTBOOK_LESSONS.find((lesson) => lesson.id === id)), 0);
+    .reduce((sum, id) => sum + textbookLessonMinutes(lessonById(id)), 0);
 }
 
 // Следующий шаг уровня: сначала начатый урок, затем первый непройденный по порядку модулей.
@@ -16425,7 +16440,7 @@ function learningPlanNextLesson() {
   for (const levelId of levelIds.slice(Math.max(0, levelIds.indexOf(state.learningLevel)))) {
     if (state.learningChecks[levelId]?.passedAt) continue;
     const next = learningLevelNext(levelId).lesson;
-    if (next) return TEXTBOOK_LESSONS.find((lesson) => lesson.id === next.id);
+    if (next) return lessonById(next.id);
   }
   return null;
 }
@@ -16442,7 +16457,7 @@ function learningModuleMarkup(module, index, isCurrent) {
   const marks = { done: "✓", started: "◐", todo: "○" };
   const labels = { done: "пройден", started: "начат", todo: "не начат" };
   const rows = module.lessons.map((id, lessonIndex) => {
-    const lesson = TEXTBOOK_LESSONS.find((item) => item.id === id);
+    const lesson = lessonById(id);
     const status = learningLessonStatus(id);
     const minutes = status === "done" ? "" : `<small>≈ ${textbookLessonMinutes(lesson)} мин</small>`;
     return { status, html: `<li><button class="learning-module-lesson is-${status}" type="button" data-textbook-open="${id}" aria-label="Шаг ${lessonIndex + 1}. Урок ${id}: ${escapeHTML(lesson.title.ru)} — ${labels[status]}"><span class="learning-module-step" aria-hidden="true">${lessonIndex + 1}.</span><span class="learning-module-mark" aria-hidden="true">${marks[status]}</span><span class="learning-module-lesson-title">Урок ${id}. ${escapeHTML(lesson.title.ru)}</span>${minutes}</button></li>` };
@@ -16492,13 +16507,13 @@ const LEARNING_CHECK_PASS_SHARE = 0.8;
 
 function learningCheckPool(module) {
   return module.lessons.flatMap((lessonId) => {
-    const lesson = TEXTBOOK_LESSONS.find((item) => item.id === lessonId);
+    const lesson = lessonById(lessonId);
     return lesson.exercises.flatMap((exercise) => exercise.items.map((_item, index) => ({ lessonId, exerciseId: exercise.id, index })));
   });
 }
 
 function learningCheckEntry(entry) {
-  const lesson = TEXTBOOK_LESSONS.find((item) => item.id === entry.lessonId);
+  const lesson = lessonById(entry.lessonId);
   const exercise = lesson.exercises.find((item) => item.id === entry.exerciseId);
   return { lesson, exercise, item: exercise.items[entry.index] };
 }
@@ -16581,6 +16596,10 @@ function learningAfterB2Markup() {
 }
 
 function renderLearningPlan() {
+  return withTextbookProgressCache(renderLearningPlanContent);
+}
+
+function renderLearningPlanContent() {
   const content = clearContent();
   const level = LEARNING_LEVELS.find((item) => item.id === state.learningLevel) || LEARNING_LEVELS[0];
   const levelButtons = LEARNING_LEVELS.map((item) => {
@@ -16598,7 +16617,7 @@ function renderLearningPlan() {
     const { lesson: nextLesson, pending } = learningLevelNext(level.id);
     const currentModuleIndex = nextLesson ? nextLesson.moduleIndex : pending ? pending.moduleIndex : -1;
     const currentModule = modules[currentModuleIndex];
-    const lesson = nextLesson ? TEXTBOOK_LESSONS.find((item) => item.id === nextLesson.id) : null;
+    const lesson = nextLesson ? lessonById(nextLesson.id) : null;
     const nextLevel = LEARNING_LEVELS[LEARNING_LEVELS.findIndex((item) => item.id === level.id) + 1];
     const record = state.learningChecks[level.id];
     const levelLessons = modules.flatMap((module) => module.lessons);
@@ -16779,7 +16798,26 @@ function textbookExerciseProgress(exercise, saved) {
   return { total: items.length, answered, checked, correct, wrong: checked - correct, unanswered: items.length - answered, items };
 }
 
+// Во время одной отрисовки Плана или каталога прогресс урока не меняется, поэтому его можно не пересчитывать.
+let textbookProgressCache = null;
+
+function withTextbookProgressCache(render) {
+  textbookProgressCache = new Map();
+  try {
+    return render();
+  } finally {
+    textbookProgressCache = null;
+  }
+}
+
 function textbookProgressFor(lesson) {
+  if (textbookProgressCache?.has(lesson.id)) return textbookProgressCache.get(lesson.id);
+  const progress = computeTextbookProgress(lesson);
+  textbookProgressCache?.set(lesson.id, progress);
+  return progress;
+}
+
+function computeTextbookProgress(lesson) {
   const saved = textbookLessonState(lesson.id);
   const exercises = lesson.exercises.map((exercise) => textbookExerciseProgress(exercise, saved));
   const total = exercises.reduce((sum, exercise) => sum + exercise.total, 0);
@@ -16848,8 +16886,18 @@ const TEXTBOOK_LESSON_LEVELS = {
 
 const TEXTBOOK_LEVEL_IDS = Object.keys(TEXTBOOK_LESSON_LEVELS);
 
+// Словари по номеру урока строятся один раз при первом обращении.
+let TEXTBOOK_LESSON_BY_ID = null;
+let TEXTBOOK_LEVEL_BY_LESSON = null;
+
+function lessonById(lessonId) {
+  TEXTBOOK_LESSON_BY_ID ||= new Map(TEXTBOOK_LESSONS.map((lesson) => [lesson.id, lesson]));
+  return TEXTBOOK_LESSON_BY_ID.get(lessonId) || null;
+}
+
 function textbookLessonLevel(lessonId) {
-  return TEXTBOOK_LEVEL_IDS.find((level) => TEXTBOOK_LESSON_LEVELS[level].includes(lessonId)) || "";
+  TEXTBOOK_LEVEL_BY_LESSON ||= new Map(TEXTBOOK_LEVEL_IDS.flatMap((level) => TEXTBOOK_LESSON_LEVELS[level].map((id) => [id, level])));
+  return TEXTBOOK_LEVEL_BY_LESSON.get(lessonId) || "";
 }
 
 function textbookLevelBadge(lessonId) {
@@ -16902,9 +16950,13 @@ const TEXTBOOK_COURSE_GROUPS = [
 ];
 
 function renderTextbookCatalog(content) {
+  return withTextbookProgressCache(() => renderTextbookCatalogContent(content));
+}
+
+function renderTextbookCatalogContent(content) {
   const lessonCount = TEXTBOOK_LESSONS.length;
   const completed = TEXTBOOK_LESSONS.filter((lesson) => textbookProgressFor(lesson).done).length;
-  const lastLesson = TEXTBOOK_LESSONS.find((lesson) => lesson.id === Number(appStorage.get("msg:textbookLesson")));
+  const lastLesson = lessonById(Number(appStorage.get("msg:textbookLesson")));
   const lastStarted = lastLesson && !textbookProgressFor(lastLesson).done && textbookProgressFor(lastLesson).answered > 0 ? lastLesson : null;
   const planLesson = lastStarted ? null : learningPlanNextLesson();
   const next = lastStarted || planLesson || (lastLesson && !textbookProgressFor(lastLesson).done ? lastLesson : null) || TEXTBOOK_LESSONS.find((lesson) => !textbookProgressFor(lesson).done) || TEXTBOOK_LESSONS[0];
@@ -16918,7 +16970,7 @@ function renderTextbookCatalog(content) {
     return `<button class="textbook-lesson-card" type="button" data-textbook-open="${lesson.id}"><span class="textbook-lesson-number">${lesson.id}</span><span><strong>${escapeHTML(textbookText(lesson.title))} ${textbookLevelBadge(lesson.id)}</strong><small>${escapeHTML(meta)}</small></span><span class="textbook-status ${progress.done ? "is-done" : ""}">${escapeHTML(status)}</span></button>`;
   };
   const cards = TEXTBOOK_COURSE_GROUPS.map((group, index) => {
-    const lessons = group.ids.map((id) => TEXTBOOK_LESSONS.find((lesson) => lesson.id === id)).filter((lesson) => lesson && (state.textbookLevel === "all" || textbookLessonLevel(lesson.id) === state.textbookLevel));
+    const lessons = group.ids.map((id) => lessonById(id)).filter((lesson) => lesson && (state.textbookLevel === "all" || textbookLessonLevel(lesson.id) === state.textbookLevel));
     if (!lessons.length) return "";
     const groupId = "textbook-catalog-group-" + index;
     const isOpen = Boolean(state.textbookOpenGroups[index]);
@@ -16945,8 +16997,8 @@ function normalizeTheoryText(value) {
 function renderTextbookLesson(content, lesson) {
   const progress = textbookProgressFor(lesson);
   const saved = textbookLessonState(lesson.id);
-  const previous = TEXTBOOK_LESSONS.find((item) => item.id === lesson.id - 1);
-  const next = TEXTBOOK_LESSONS.find((item) => item.id === lesson.id + 1);
+  const previous = lessonById(lesson.id - 1);
+  const next = lessonById(lesson.id + 1);
   const theoryBlocks = [...lesson.theory, ...(TEXTBOOK_THEORY_SUPPLEMENTS[lesson.id] || []), ...(TEXTBOOK_THEORY_SOURCE_DETAILS[lesson.id] || [])];
   const theory = theoryBlocks.map((block) => {
     const attention = block.attention ? '<p class="textbook-attention"><strong>' + escapeHTML(textbookUi("Внимание:", "Atención:")) + '</strong> ' + escapeHTML(textbookText(block.attention)) + '</p>' : "";
@@ -16980,7 +17032,7 @@ function renderTextbookLesson(content, lesson) {
       : textbookUi("Проверьте ещё " + remaining + " ответов, чтобы завершить урок.", "Comprueba " + remaining + " respuestas más para completar la lección.");
   const previousButton = previous ? '<button class="small-button" type="button" data-textbook-open="' + previous.id + '">← ' + previous.id + ". " + escapeHTML(textbookText(previous.title)) + "</button>" : "";
   const nextButton = next ? '<button class="small-button" type="button" data-textbook-open="' + next.id + '">' + next.id + ". " + escapeHTML(textbookText(next.title)) + " →</button>" : "";
-  const relatedLessons = (TEXTBOOK_RELATED_LESSONS[lesson.id] || []).map((id) => TEXTBOOK_LESSONS.find((item) => item.id === id)).filter(Boolean);
+  const relatedLessons = (TEXTBOOK_RELATED_LESSONS[lesson.id] || []).map((id) => lessonById(id)).filter(Boolean);
   const lessonTables = INDEXED_TABLES.filter((table) => table.lessons?.includes(lesson.id));
   const tablesMarkup = lessonTables.length ? '<section class="textbook-related"><h3>' + escapeHTML(textbookUi("Шпаргалки по теме", "Tablas de consulta")) + '</h3><div class="textbook-actions">' + lessonTables.map((table) => '<a class="small-button" href="#' + tableRoute(table) + '">' + escapeHTML(table.title) + "</a>").join("") + "</div></section>" : "";
   const related = relatedLessons.length ? '<section class="textbook-related"><h3>' + escapeHTML(textbookUi("Связанные уроки", "Lecciones relacionadas")) + '</h3><div class="textbook-actions">' + relatedLessons.map((item) => '<button class="small-button" type="button" data-textbook-open="' + item.id + '">▶ ' + item.id + ". " + escapeHTML(textbookText(item.title)) + "</button>").join("") + "</div></section>" : "";
@@ -17000,7 +17052,7 @@ function renderTextbookLesson(content, lesson) {
 
 function renderTextbook() {
   const content = clearContent();
-  const lesson = TEXTBOOK_LESSONS.find((item) => item.id === state.textbookLesson);
+  const lesson = lessonById(state.textbookLesson);
   if (lesson) renderTextbookLesson(content, lesson);
   else renderTextbookCatalog(content);
 }

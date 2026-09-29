@@ -890,6 +890,32 @@ input[type="search"] {
   accent-color: var(--success);
 }
 
+.learning-review {
+  display: grid;
+  gap: 6px;
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--warning) 45%, var(--line));
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--warning) 7%, var(--surface));
+}
+
+.learning-review h3,
+.learning-review p {
+  margin: 0;
+}
+
+.learning-review p {
+  font-size: 13px;
+}
+
+.learning-review-share {
+  flex: none;
+  min-width: 2.6em;
+  color: var(--warning-text);
+  font-weight: 900;
+}
+
 .learning-plan-notice {
   display: flex;
   align-items: center;
@@ -3952,7 +3978,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.35 · обновлено: 29.09.2026 18:17 CEST</span>
+        <span>Версия MVP 1.36 · обновлено: 29.09.2026 18:20 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -15616,24 +15642,50 @@ function learningModuleForLesson(lessonId) {
   return LEARNING_MODULES.find((module) => module.lessons.includes(lessonId)) || null;
 }
 
-// Из плана урок открывается сразу на первом упражнении, где есть пустые или непроверенные ответы.
-function openTextbookLessonFromPlan(lessonId) {
+// Из плана урок открывается сразу на первом упражнении, где есть пустые или непроверенные ответы;
+// из «Повторить» — на первом упражнении с ошибками, с видимой проверкой и фокусом на ошибочном пункте.
+function openTextbookLessonFromPlan(lessonId, { mistakes = false } = {}) {
   const lesson = TEXTBOOK_LESSONS.find((item) => item.id === lessonId);
   if (!lesson) return;
   openTextbookLesson(lessonId);
   const saved = textbookLessonState(lessonId);
   const exercise = lesson.exercises.find((item) => {
     const progress = textbookExerciseProgress(item, saved);
-    return progress.answered < progress.total || progress.checked < progress.total;
+    return mistakes ? progress.wrong > 0 : progress.answered < progress.total || progress.checked < progress.total;
   });
   if (!exercise) return;
   state.textbookOpenExercises[`${lessonId}:${exercise.id}`] = true;
+  if (mistakes) state.textbookVisibleFeedback[`${lessonId}:${exercise.id}`] = true;
   renderTextbook();
   setTimeout(() => {
     const target = document.querySelector(`[data-textbook-exercise="${exercise.id}"]`);
-    target?.scrollIntoView({ behavior: "auto", block: "start" });
-    target?.querySelector("input, select, button")?.focus({ preventScroll: true });
+    const question = mistakes ? target?.querySelector(".textbook-question.is-wrong") : null;
+    (question || target)?.scrollIntoView({ behavior: "auto", block: question ? "center" : "start" });
+    (question || target)?.querySelector("input, button")?.focus({ preventScroll: true });
   }, 50);
+}
+
+// Урок попадает в «Повторить», если ошибки составляют не меньше этой доли проверенных ответов.
+const LEARNING_REVIEW_ERROR_SHARE = 0.2;
+
+function learningReviewLessons(levelId) {
+  return learningModulesFor(levelId).flatMap((module) => module.lessons)
+    .map((id) => {
+      const lesson = TEXTBOOK_LESSONS.find((item) => item.id === id);
+      const progress = textbookProgressFor(lesson);
+      return { lesson, wrong: progress.wrong, checked: progress.checked, share: progress.checked ? progress.wrong / progress.checked : 0 };
+    })
+    .filter((item) => item.wrong > 0 && item.share >= LEARNING_REVIEW_ERROR_SHARE)
+    .sort((a, b) => b.share - a.share || a.lesson.id - b.lesson.id);
+}
+
+function learningReviewMarkup(level) {
+  const review = learningReviewLessons(level.id);
+  if (!review.length) return "";
+  const shown = review.slice(0, 5);
+  const items = shown.map(({ lesson, wrong, checked, share }) => `<li><button class="learning-module-lesson" type="button" data-textbook-review="${lesson.id}" aria-label="Повторить урок ${lesson.id}: ${escapeHTML(lesson.title.ru)} — ошибок ${wrong} из ${checked}"><span class="learning-review-share" aria-hidden="true">${Math.round(share * 100)}%</span><span>${lesson.id}. ${escapeHTML(lesson.title.ru)}</span></button></li>`).join("");
+  const more = review.length > shown.length ? `<p class="muted">И ещё ${review.length - shown.length} — появятся здесь, когда вы исправите эти.</p>` : "";
+  return `<section class="learning-review"><h3>Повторить</h3><p class="muted">Уроки ${level.label}, где ошибки — ${Math.round(LEARNING_REVIEW_ERROR_SHARE * 100)}% проверенных ответов или больше. Урок откроется на упражнении с ошибками; после исправления он исчезнет из списка.</p><ol class="learning-module-lessons">${items}</ol>${more}</section>`;
 }
 
 function openLearningPlanForLesson(lessonId) {
@@ -15752,6 +15804,7 @@ function renderLearningPlan() {
         ? `<div class="plan-next-step"><div>${nowTitle}<small>Следующий урок: ${lesson.id}. ${escapeHTML(lesson.title.ru)}</small></div><button class="small-button primary" type="button" data-textbook-open="${lesson.id}">Продолжить</button></div>`
         : `<div class="plan-next-step"><div>${nowTitle}<small>${currentStep.kind === "task" ? "Следующий шаг: задание модуля" : "Следующий шаг: самопроверка «Могу»"}</small></div><button class="small-button primary" type="button" data-open-learning-module="${currentModule.id}">Продолжить</button></div>`;
     body = `<section class="learning-plan-summary" aria-live="polite"><div class="learning-plan-summary-head"><p><strong>${level.label} · ${level.title}</strong><span class="muted">${level.description}</span></p><p class="learning-plan-percent"><strong>${percent}%</strong><span class="muted">${done} из ${total}</span></p></div><progress max="100" value="${percent}" aria-label="Освоено на уровне ${level.label}"></progress>${nextStepMarkup}</section>
+      ${learningReviewMarkup(level)}
       <div class="learning-modules">${modules.map((module, index) => learningModuleMarkup(module, index, index === currentModuleIndex)).join("")}</div>
       <p class="muted learning-modules-note">${modules.some((module) => module.lessons.length) ? "Уроки отмечаются сами, когда все их упражнения проверены в Учебнике. " : "Учебник начинается с A1, поэтому здесь опора — шпаргалки. "}Задание и пункты «Могу» отмечайте сами.</p>
       <p class="learning-plan-reset"><button class="small-button" type="button" data-reset-learning>Сбросить отметки ${level.label}</button></p>`;
@@ -15779,6 +15832,7 @@ function renderLearningPlan() {
   }));
   bindClickAll(header, "[data-go-learning-level]", (event) => { selectLevel(event.currentTarget.dataset.goLearningLevel); scrollAppTop(); });
   bindClickAll(header, "[data-textbook-open]", (event) => openTextbookLessonFromPlan(Number(event.currentTarget.dataset.textbookOpen)));
+  bindClickAll(header, "[data-textbook-review]", (event) => openTextbookLessonFromPlan(Number(event.currentTarget.dataset.textbookReview), { mistakes: true }));
   bindClickAll(header, "[data-dismiss-learning-notice]", () => { appStorage.remove("msg:learningPlanNotice"); renderLearningPlan(); });
   $all("[data-learning-done]", header).forEach((input) => input.addEventListener("change", (event) => {
     const key = event.currentTarget.dataset.learningDone;

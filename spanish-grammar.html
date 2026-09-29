@@ -4199,7 +4199,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.50 · обновлено: 29.09.2026 23:23 CEST</span>
+        <span>Версия MVP 1.51 · обновлено: 29.09.2026 23:28 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -4225,7 +4225,28 @@ select {
       </article>
     </template>
     <script>
-// Данные справочника: глаголы, времена, шпаргалки и наклонения.
+// Оглавление скрипта (разделы отмечены строками «// ═══════ N. …»):
+//  1. Данные: глаголы, переводы, исключения
+//  2. Данные: времена, уровни CEFR и связи с уроками
+//  3. Данные: шпаргалки
+//  4. Данные: наклонения
+//  5. Данные: уровни и страница «После B2» для Плана
+//  6. Хранилище (localStorage) и состояние приложения
+//  7. Данные: учебник (уроки, теория, связи, уровни, группы каталога)
+//  8. Утилиты: экранирование и шаблон html, делегированные события, перерисовка
+//  9. Спряжение: правила, исключения, формы (formsFor, verbInfo)
+// 10. Вкладка «Глаголы»: карточка глагола, поиск, список
+// 11. Вкладка «Времена»
+// 12. Вкладка «Шпаргалки»
+// 13. Вкладка «Наклонения»
+// 14. Вкладка «План»: модули, маршрут, итоговая проверка
+// 15. Вкладка «Учебник»: каталог, урок, упражнения
+// 16. Вкладка «Избранное»: квиз по глаголам, статистика, сохранённые материалы
+// 17. Проверка данных (validateData) и индексы шпаргалок
+// 18. Маршрутизация, запуск и глобальные обработчики
+// Весь код и данные остаются в этом файле (правило проекта). validate-conjugations.js выполняет скрипт
+// до маркера `const dataIssues = validateData();`, поэтому код, которому нужен document, стоит после него.
+// ═══════ 1. Данные: глаголы, переводы, исключения ═══════
 const PEOPLE = ["yo", "tú", "él/ella", "nosotros", "vosotros", "ellos"];
 
 const IRREGULARS = {
@@ -5903,6 +5924,7 @@ const HABER_FORM_ALTERNATIVES = {
   subjImperfecto: ["hubiese", "hubieses", "hubiese", "hubiésemos", "hubieseis", "hubiesen"]
 };
 
+// ═══════ 2. Данные: времена, уровни CEFR и связи с уроками ═══════
 const TENSES = [
   {
     id: "presente",
@@ -6695,6 +6717,7 @@ const TENSE_EXAMPLES = {
   ]
 };
 
+// ═══════ 3. Данные: шпаргалки ═══════
 const USEFUL_TABLES = [
 
   {
@@ -9832,6 +9855,7 @@ const TABLE_LEVELS = Object.freeze([
 
 const TABLE_LEVEL_ORDER = Object.freeze(TABLE_LEVELS.filter((level) => level.id !== "all").map((level) => level.id));
 
+// ═══════ 4. Данные: наклонения ═══════
 const MOODS = [
   {
     id: "indicativo",
@@ -10019,6 +10043,7 @@ const MOODS = [
   }
 ];
 
+// ═══════ 5. Данные: уровни и страница «После B2» для Плана ═══════
 const LEARNING_LEVELS = [
   { id: "a0", label: levelLabel("a0"), title: "Старт с нуля", description: "Подготовительная ступень до A1: чтение, первые фразы, числа и время." },
   { id: "a1", label: levelLabel("a1"), title: "Базовое общение", description: "Простое взаимодействие в знакомых бытовых ситуациях." },
@@ -10054,6 +10079,7 @@ const LEARNING_AFTER_B2 = {
   ]
 };
 
+// ═══════ 6. Хранилище (localStorage) и состояние приложения ═══════
 // Хранилище может быть недоступно для file://, приватного режима или строгих настроек браузера.
 // В таком случае приложение продолжает работать в текущей сессии без сохранения настроек.
 const appStorage = (() => {
@@ -10362,6 +10388,7 @@ const tb = (ru, es) => ({ ru, es });
 // Пункт может задать собственные варианты ответа (4-й элемент), например пару «vamos / nos vamos».
 const tbExercise = (id, kind, instruction, items, options = []) => ({ id, kind, instruction, items: items.map(([prompt, answer, note = "", itemOptions = []]) => ({ prompt, answer, note, options: itemOptions })), options });
 const textbookItemOptions = (exercise, item) => (item.options?.length ? item.options : exercise.options);
+// ═══════ 7. Данные: учебник (уроки, теория, связи, уровни, группы каталога) ═══════
 const TEXTBOOK_LESSONS = [
   {
     id: 1, title: tb("Род существительных: люди", "Género de los nombres: personas"),
@@ -12563,6 +12590,87 @@ function clearContent() {
   return content;
 }
 
+// В книге уровни у unidades не указаны. Уровень урока — ступень Plan Curricular del Instituto Cervantes,
+// на которой вводится основное содержание урока (если урок смешанный — по самой поздней из его частей).
+const TEXTBOOK_LESSON_LEVELS = {
+  a1: [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 14, 15, 18, 19, 23, 25, 26, 27, 30, 31, 32, 33, 34, 35, 36,
+    42, 43, 44, 45, 46, 47, 48, 49, 50, 53, 55, 56, 58, 60, 69, 73, 75, 93, 99, 100, 101, 103, 104,
+    108, 109, 110, 112, 116, 125
+  ],
+  a2: [
+    10, 11, 16, 17, 20, 21, 22, 24, 28, 38, 39, 40, 41, 51, 52, 54, 57, 59, 61, 62, 63, 64, 65, 74,
+    76, 77, 78, 91, 98, 102, 105, 106, 107, 111, 113, 123, 124
+  ],
+  b1: [
+    37, 66, 67, 68, 70, 71, 72, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 92, 94, 95, 96, 97,
+    114, 115, 117, 118, 119, 121, 122
+  ],
+  b2: [
+    29, 90, 120
+  ]
+};
+
+const TEXTBOOK_LEVEL_IDS = Object.keys(TEXTBOOK_LESSON_LEVELS);
+
+// Словари по номеру урока строятся один раз при первом обращении.
+let TEXTBOOK_LESSON_BY_ID = null;
+let TEXTBOOK_LEVEL_BY_LESSON = null;
+
+function lessonById(lessonId) {
+  TEXTBOOK_LESSON_BY_ID ||= new Map(TEXTBOOK_LESSONS.map((lesson) => [lesson.id, lesson]));
+  return TEXTBOOK_LESSON_BY_ID.get(lessonId) || null;
+}
+
+function textbookLessonLevel(lessonId) {
+  TEXTBOOK_LEVEL_BY_LESSON ||= new Map(TEXTBOOK_LEVEL_IDS.flatMap((level) => TEXTBOOK_LESSON_LEVELS[level].map((id) => [id, level])));
+  return TEXTBOOK_LEVEL_BY_LESSON.get(lessonId) || "";
+}
+
+const TEXTBOOK_COURSE_GROUPS = [
+  { ids: [1, 2, 3], title: tb("Существительные: род и число", "Sustantivos: género y número") },
+  { ids: [4, 5], title: tb("Неопределённый артикль и отсутствие артикля", "Artículo indeterminado y ausencia de artículo") },
+  { ids: [6, 7, 8, 9, 10], title: tb("Определённый артикль", "Artículo determinado") },
+  { ids: [11, 12], title: tb("Определение и указание", "Omisión y demostrativos") },
+  { ids: [13, 14], title: tb("Прилагательные", "Adjetivos") },
+  { ids: [15, 16, 17], title: tb("Сравнение и превосходная степень", "Comparación y superlativo") },
+  { ids: [18, 19, 20], title: tb("Притяжательные и неопределённые", "Posesivos e indefinidos") },
+  { ids: [21, 22, 23, 24], title: tb("Неопределённые и количество", "Indefinidos y cantidad") },
+  { ids: [25, 26, 27], title: tb("Числительные", "Numerales") },
+  { ids: [28, 29], title: tb("Относительные слова", "Relativos") },
+  { ids: [30, 31, 32], title: tb("Вопросительные слова", "Interrogativos") },
+  { ids: [33], title: tb("Восклицательные слова", "Exclamativos") },
+  { ids: [34, 35, 36, 37, 38, 39, 40, 41], title: tb("Личные местоимения и местоименные конструкции", "Pronombres personales y construcciones pronominales") },
+  { ids: [42], title: tb("Глагол ser", "Verbo ser") },
+  { ids: [43, 44], title: tb("Глагол estar и различие ser/estar", "Verbo estar y contraste ser/estar") },
+  { ids: [45], title: tb("Глагол tener", "Verbo tener") },
+  { ids: [46, 47], title: tb("Наличие и местонахождение: hay / estar", "Existencia y localización: hay / estar") },
+  { ids: [48, 49, 50], title: tb("Настоящее время: модели спряжения", "Presente: modelos de conjugación") },
+  { ids: [51, 52], title: tb("Настоящее время: другие употребления", "Presente: otros usos") },
+  { ids: [53, 54, 55], title: tb("Глаголы с me, te, se и конструкция gustar", "Verbos con me, te, se y construcción de gustar") },
+  { ids: [56, 57], title: tb("Estar + gerundio", "Estar + gerundio") },
+  { ids: [58, 59], title: tb("Pretérito indefinido", "Pretérito indefinido") },
+  { ids: [60, 61, 62], title: tb("Pretérito perfecto и его контраст с indefinido", "Pretérito perfecto y contraste con el indefinido") },
+  { ids: [63, 64, 65], title: tb("Pretérito imperfecto и рассказ о прошлом", "Pretérito imperfecto y relato en pasado") },
+  { ids: [66], title: tb("Pretérito pluscuamperfecto", "Pretérito pluscuamperfecto") },
+  { ids: [67, 68, 69, 70], title: tb("Будущее: futuro simple и ir a + инфинитив", "Futuro: futuro simple e ir a + infinitivo") },
+  { ids: [71, 72], title: tb("Condicional simple", "Condicional simple") },
+  { ids: [73, 74, 75, 76, 77, 78], title: tb("Imperativo", "Imperativo") },
+  { ids: [79, 80, 81], title: tb("Presente de subjuntivo", "Presente de subjuntivo") },
+  { ids: [82, 83], title: tb("Pretérito imperfecto de subjuntivo", "Pretérito imperfecto de subjuntivo") },
+  { ids: [84, 85, 86, 87], title: tb("Subjuntivo: желания, вероятность, чувства, мнение", "Subjuntivo: deseos, probabilidad, sentimientos, opinión") },
+  { ids: [88, 89, 90], title: tb("Косвенная речь", "Estilo indirecto") },
+  { ids: [91, 92], title: tb("Условные предложения", "Oraciones condicionales") },
+  { ids: [93, 94, 95, 96, 97], title: tb("Инфинитив и выражения с инфинитивом", "Infinitivo y expresiones con infinitivo") },
+  { ids: [98, 99], title: tb("Gerundio и participio", "Gerundio y participio") },
+  { ids: [100, 101, 102, 103], title: tb("Наречия места, времени и частоты", "Adverbios de lugar, tiempo y frecuencia") },
+  { ids: [104, 105, 106, 107], title: tb("Наречия количества и образа действия; сравнение", "Adverbios de cantidad y de modo; comparación") },
+  { ids: [108, 109], title: tb("Отрицание, согласие и несогласие", "Negación, coincidencia y no coincidencia") },
+  { ids: [110, 111, 112, 113, 114, 115], title: tb("Предлоги", "Preposiciones") },
+  { ids: [116, 117, 118, 119, 120, 121, 122], title: tb("Союзы и придаточные предложения", "Conjunciones y oraciones subordinadas") },
+  { ids: [123, 124, 125], title: tb("Ударение и заглавные буквы", "Acentuación y mayúsculas") }
+];
+
 function infoSection({ id = "", className = "info-card", html = "" } = {}) {
   const section = document.createElement("section");
   section.className = className;
@@ -12583,6 +12691,44 @@ function disclosureButton({ open, target, label, hideLabel = `Скрыть ${lab
     <span class="button-label-full">${open ? hideLabel : label}</span>
     <span class="button-label-short">${open ? "Скрыть" : label}</span>
   </button>`;
+}
+
+// ═══════ 8. Утилиты: экранирование и шаблон html, делегированные события, перерисовка ═══════
+function escapeHTML(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+// Шаблон html`…`: подставленные значения экранируются автоматически, поэтому забыть escapeHTML нельзя.
+// Готовую разметку (результат другого html`…` или rawHtml(...)) он вставляет как есть, массивы — склеивает.
+// null и undefined дают пустую строку; false печатается как "false" (нужно для aria-pressed и подобных).
+class RawHtml {
+  constructor(value) {
+    this.value = String(value);
+  }
+
+  toString() {
+    return this.value;
+  }
+}
+
+function rawHtml(value) {
+  return new RawHtml(value);
+}
+
+function htmlValue(value) {
+  if (value instanceof RawHtml) return value.value;
+  if (Array.isArray(value)) return value.map(htmlValue).join("");
+  if (value === null || value === undefined) return "";
+  return escapeHTML(value);
+}
+
+function html(strings, ...values) {
+  return rawHtml(strings.reduce((out, chunk, index) => out + chunk + (index < values.length ? htmlValue(values[index]) : ""), ""));
 }
 
 // Делегированные обработчики: по одному слушателю на документ для каждого типа события.
@@ -12752,6 +12898,7 @@ function stem(verb) {
   return baseVerb(verb).slice(0, -2);
 }
 
+// ═══════ 9. Спряжение: правила, исключения, формы (formsFor, verbInfo) ═══════
 function regularPresent(verb) {
   const generated = generatedPresent(verb);
   if (generated) return generated;
@@ -13608,46 +13755,6 @@ function formMatchReason(match) {
   return `Найдено по форме: ${match.form} = ${match.person}, ${match.tense}`;
 }
 
-// Кроме глаголов в избранное можно сохранить шпаргалки (по постоянному id) и уроки учебника.
-function toggleFavoriteMaterial(kind, id) {
-  const key = kind === "table" ? "favoriteTables" : "favoriteLessons";
-  const list = state[key];
-  state[key] = list.includes(id) ? list.filter((item) => item !== id) : [id, ...list];
-  appStorage.set(kind === "table" ? "msg:favoriteTables" : "msg:favoriteLessons", JSON.stringify(state[key]));
-  return state[key].includes(id);
-}
-
-function favoriteMaterialButton(kind, id, label) {
-  const saved = (kind === "table" ? state.favoriteTables : state.favoriteLessons).includes(id);
-  return `<button class="favorite-button favorite-material" type="button" data-favorite-${kind}="${id}" aria-pressed="${saved}" aria-label="${saved ? "Убрать из избранного" : "Добавить в избранное"}: ${escapeHTML(label)}" title="Избранное">${saved ? "★" : "☆"}</button>`;
-}
-
-onDelegated("click", "[data-favorite-table], [data-favorite-lesson]", (_event, target) => {
-    const kind = target.dataset.favoriteTable ? "table" : "lesson";
-    const id = kind === "table" ? target.dataset.favoriteTable : Number(target.dataset.favoriteLesson);
-    const saved = toggleFavoriteMaterial(kind, id);
-    target.textContent = saved ? "★" : "☆";
-    target.setAttribute("aria-pressed", String(saved));
-    target.setAttribute("aria-label", (saved ? "Убрать из избранного" : "Добавить в избранное") + target.getAttribute("aria-label").replace(/^[^:]*/, ""));
-});
-
-function savedMaterialsCard() {
-  const tables = state.favoriteTables.map((id) => INDEXED_TABLES.find((item) => item.id === id)).filter(Boolean);
-  const lessons = state.favoriteLessons.map((id) => lessonById(id)).filter(Boolean);
-  const card = document.createElement("section");
-  card.className = "info-card saved-materials";
-  const row = (open, label, removeAttr) => `<li>${open}<button class="link-button" type="button" ${removeAttr}>убрать</button></li>`;
-  card.innerHTML = `
-    <h2>Шпаргалки и уроки</h2>
-    ${tables.length || lessons.length ? "" : `<p class="muted">Сохраняйте нужные шпаргалки и уроки звёздочкой ☆ в их заголовке — они появятся здесь.</p>`}
-    ${tables.length ? `<h3>Шпаргалки · ${tables.length}</h3><ul class="saved-materials-list">${tables.map((item) => row(`<a href="#${tableRoute(item)}">${escapeHTML(item.title)}</a>`, "", `data-remove-favorite-table="${item.id}"`)).join("")}</ul>` : ""}
-    ${lessons.length ? `<h3>Уроки · ${lessons.length}</h3><ul class="saved-materials-list">${lessons.map((lesson) => row(`<button class="link-button saved-materials-open" type="button" data-open-lesson="${lesson.id}">${lesson.id}. ${escapeHTML(lesson.title.ru)}</button>`, "", `data-remove-favorite-lesson="${lesson.id}"`)).join("")}</ul>` : ""}
-  `;
-  $all("[data-remove-favorite-table]", card).forEach((button) => button.addEventListener("click", () => { toggleFavoriteMaterial("table", button.dataset.removeFavoriteTable); renderCards(); }));
-  $all("[data-remove-favorite-lesson]", card).forEach((button) => button.addEventListener("click", () => { toggleFavoriteMaterial("lesson", Number(button.dataset.removeFavoriteLesson)); renderCards(); }));
-  return card;
-}
-
 function saveCards() {
   persist("cards");
 }
@@ -13763,6 +13870,7 @@ function setView(view, { updateRoute = true } = {}) {
   });
 }
 
+// ═══════ 10. Вкладка «Глаголы»: карточка глагола, поиск, список ═══════
 function renderVerbCard(verb) {
   const template = $(SELECTORS.verbTemplate);
   const node = template.content.firstElementChild.cloneNode(true);
@@ -14481,8 +14589,6 @@ function highlightSearchMatch(value) {
   ].join("");
 }
 
-
-
 function hasIrregularBehavior(info) {
   return Boolean(
     info.irregular ||
@@ -14491,6 +14597,7 @@ function hasIrregularBehavior(info) {
   );
 }
 
+// ═══════ 11. Вкладка «Времена» ═══════
 function renderTenses() {
   const content = clearContent();
   const focusedTense = tenseById(state.focusedTense);
@@ -14866,6 +14973,7 @@ function formatFormula(value) {
   return value.replace(/participio|infinitivo|gerundio|subjuntivo/g, (match) => grammarSlot(match));
 }
 
+// ═══════ 12. Вкладка «Шпаргалки» ═══════
 function renderTables() {
   const content = clearContent();
   const focusedTable = Number.isInteger(state.focusedTable) ? INDEXED_TABLES[state.focusedTable] : null;
@@ -15430,6 +15538,7 @@ const MOOD_TAB_LABELS = {
   condicional: ["Condicional", "время Indicativo"]
 };
 
+// ═══════ 13. Вкладка «Наклонения» ═══════
 function renderMoods() {
   const content = clearContent();
   const selected = MOODS.find((mood) => mood.id === state.selectedMood) || MOODS[0];
@@ -15759,255 +15868,7 @@ function moodComparisonLabel(moodId) {
   return labels[moodId] || "Сравнить формы";
 }
 
-const QUIZ_TENSES = [
-  { id: "presente", name: "Presente" },
-  { id: "perfecto", name: "Perfecto" },
-  { id: "indefinido", name: "Indefinido" },
-  { id: "imperfecto", name: "Imperfecto" },
-  { id: "pluscuamperfecto", name: "Pluscuamperfecto" },
-  { id: "futuro", name: "Futuro" },
-  { id: "futuro_perfecto", name: "Futuro Perfecto" },
-  { id: "condicional", name: "Condicional" },
-  { id: "condicional_compuesto", name: "Condicional Compuesto" },
-  { id: "subjuntivo_presente", name: "Subj. Presente" },
-  { id: "subjuntivo_perfecto", name: "Subj. Perfecto" },
-  { id: "subjuntivo_imperfecto", name: "Subj. Imperfecto" },
-  { id: "subjuntivo_pluscuamperfecto", name: "Subj. Pluscuamperfecto" },
-  { id: "imperativo_afirmativo", name: "Imperativo afirmativo" },
-  { id: "imperativo_negativo", name: "Imperativo negativo" }
-];
-
-const QUIZ_COUNTS = [3, 5, 10, 20, 0];
-const QUIZ_CHARACTERS = ["á", "é", "í", "ó", "ú", "ü", "ñ"];
-const BASIC_QUIZ_TENSES = ["presente", "perfecto", "indefinido", "imperfecto", "futuro"];
-const CARD_MASTERY_MIN_ATTEMPTS = 3;
-const CARD_MASTERY_MIN_ACCURACY = 80;
-const CARD_MASTERY_MIN_STREAK = 2;
-const QUIZ_TYPE_LABELS = {
-  infinitive: "Русский → испанский",
-  meaning: "Испанский → русский",
-  conjugation: "Спряжение"
-};
-let activeQuizKeydownCleanup = null;
-
-function clearQuizHotkeys() {
-  activeQuizKeydownCleanup?.();
-  activeQuizKeydownCleanup = null;
-}
-
-function bindQuizHotkeys(handler) {
-  clearQuizHotkeys();
-  document.addEventListener("keydown", handler);
-  activeQuizKeydownCleanup = () => document.removeEventListener("keydown", handler);
-}
-
-function selectedQuizPersons() {
-  const persons = Array.isArray(state.quizConfig.persons) ? state.quizConfig.persons : [];
-  const valid = [...new Set(persons.filter((index) => Number.isInteger(index) && index >= 0 && index < PEOPLE.length))];
-  return valid.sort((a, b) => a - b);
-}
-
-function saveQuizConfig() {
-  persist("quizConfig");
-}
-
-function getAllTenseIds() {
-  return QUIZ_TENSES.map((t) => t.id);
-}
-
-function getTenseName(id) {
-  return QUIZ_TENSES.find((t) => t.id === id)?.name || id;
-}
-
-function quizAnswerKey(value, stripAccents = false) {
-  const normalized = String(value)
-    .trim()
-    .replace(/\s+/g, " ")
-    .toLowerCase()
-    .normalize(stripAccents ? "NFD" : "NFC");
-  return stripAccents ? normalized.replace(/[\u0300-\u036f]/g, "") : normalized;
-}
-
-function translationAnswers(translation) {
-  const full = String(translation).trim();
-  const alternatives = full
-    .replace(/\([^)]*\)/g, "")
-    .split(/[,;/]|\s+или\s+/i)
-    .map((item) => item.trim())
-    .filter((item) => item.length > 1);
-  return [...new Set([full, ...alternatives])];
-}
-
-function infinitiveAnswers(verb, cards) {
-  const translation = quizAnswerKey(translationFor(verb), true);
-  return cards
-    .filter((candidate) => quizAnswerKey(translationFor(candidate), true) === translation)
-    .map(displayInfinitive);
-}
-
-function generateInfinitiveQuestions(cards, count) {
-  const shuffled = shuffle([...cards]);
-  const selected = count > 0 ? shuffled.slice(0, count) : shuffled;
-  return selected.map((verb) => ({
-    type: "infinitive",
-    verb,
-    question: translationFor(verb),
-    answer: displayInfinitive(verb),
-    acceptedAnswers: infinitiveAnswers(verb, cards)
-  }));
-}
-
-function generateMeaningQuestions(cards, count) {
-  const shuffled = shuffle([...cards]);
-  const selected = count > 0 ? shuffled.slice(0, count) : shuffled;
-  return selected.map((verb) => ({
-    type: "meaning",
-    verb,
-    question: displayInfinitive(verb),
-    answer: translationFor(verb),
-    acceptedAnswers: translationAnswers(translationFor(verb))
-  }));
-}
-
-function quizFormsFor(verb, tense) {
-  return formsFor(verb)[tense];
-}
-
-function generateConjugationQuestions(cards, tenses, persons, count) {
-  const tenseList = tenses.filter((id) => getAllTenseIds().includes(id));
-  const personList = Array.isArray(persons) ? persons : [];
-  const buckets = shuffle(cards).map((verb) => {
-    const questions = [];
-    for (const tense of tenseList) {
-      const tenseForms = quizFormsFor(verb, tense);
-      if (!tenseForms) continue;
-      for (const personIdx of personList) {
-        if (personIdx >= tenseForms.length) continue;
-        const form = tenseForms[personIdx];
-        if (form === "-") continue;
-        questions.push({
-          type: "conjugation",
-          verb,
-          tense,
-          person: personIdx,
-          question: `${displayInfinitive(verb)} — ${getTenseName(tense)} — ${PEOPLE[personIdx]}`,
-          answer: form
-        });
-      }
-    }
-    return { verb, questions: shuffle(questions) };
-  }).filter((bucket) => bucket.questions.length > 0);
-
-  const result = [];
-  while (buckets.some((bucket) => bucket.questions.length > 0) && (count === 0 || result.length < count)) {
-    const round = shuffle(buckets.filter((bucket) => bucket.questions.length > 0));
-    if (result.length > 0 && round.length > 1 && round[0].verb === result.at(-1).verb) {
-      [round[0], round[1]] = [round[1], round[0]];
-    }
-    for (const bucket of round) {
-      if (count > 0 && result.length >= count) break;
-      result.push(bucket.questions.pop());
-    }
-  }
-  return result;
-}
-
-function evaluateAnswer(userInput, question) {
-  const candidates = question.acceptedAnswers?.length ? question.acceptedAnswers : [question.answer];
-  const exact = quizAnswerKey(userInput);
-  if (candidates.some((answer) => exact === quizAnswerKey(answer))) {
-    return { status: "correct", message: "Верно!" };
-  }
-  const accentless = quizAnswerKey(userInput, true);
-  if (accentless && candidates.some((answer) => accentless === quizAnswerKey(answer, true))) {
-    return { status: "almost", message: "Почти верно: проверьте ударение или диакритический знак." };
-  }
-  if (question.type === "conjugation" && question.verb.endsWith("se")) {
-    const base = question.verb.slice(0, -2);
-    const baseAnswer = formsFor(base)[question.tense]?.[question.person];
-    if (baseAnswer && accentless === quizAnswerKey(baseAnswer, true)) {
-      return { status: "almost", message: "Почти верно: у возвратного глагола нужно местоимение." };
-    }
-  }
-  return { status: "wrong", message: "Ответ пока неверный." };
-}
-
-function cardStatsFor(verb) {
-  return state.cardStats[verb] || { attempts: 0, correct: 0, mistakes: 0, streak: 0, lastReviewed: null };
-}
-
-function cardAccuracy(stats) {
-  return stats.attempts > 0 ? Math.round((stats.correct / stats.attempts) * 100) : 0;
-}
-
-function isCardMastered(verb) {
-  const stats = cardStatsFor(verb);
-  return stats.attempts >= CARD_MASTERY_MIN_ATTEMPTS &&
-    cardAccuracy(stats) >= CARD_MASTERY_MIN_ACCURACY &&
-    stats.streak >= CARD_MASTERY_MIN_STREAK;
-}
-
-function cardNeedsReview(verb) {
-  return cardStatsFor(verb).mistakes > 0 && !isCardMastered(verb);
-}
-
-function studyCardCounts() {
-  return state.cards.reduce((counts, verb) => {
-    const stats = cardStatsFor(verb);
-    if (stats.attempts === 0) counts.unreviewed += 1;
-    else counts.reviewed += 1;
-    if (cardNeedsReview(verb)) counts.mistakes += 1;
-    if (isCardMastered(verb)) counts.mastered += 1;
-    return counts;
-  }, { reviewed: 0, unreviewed: 0, mistakes: 0, mastered: 0 });
-}
-
-function cardsForFilter(filter = state.cardsFilter) {
-  if (filter === "reviewed") return state.cards.filter((verb) => cardStatsFor(verb).attempts > 0);
-  if (filter === "unreviewed") return state.cards.filter((verb) => cardStatsFor(verb).attempts === 0);
-  if (filter === "mistakes") return state.cards.filter(cardNeedsReview);
-  if (filter === "mastered") return state.cards.filter(isCardMastered);
-  return [...state.cards];
-}
-
-function cardDifficulty(verb) {
-  const stats = cardStatsFor(verb);
-  if (stats.attempts === 0) return verbInfo(verb).irregular ? 1 : 0;
-  return stats.mistakes * 3 + (stats.attempts - stats.correct) - stats.streak * 0.25;
-}
-
-function saveCardStats() {
-  persist("cardStats");
-}
-
-function difficultStudyCards() {
-  const reviewed = state.cards.filter(cardNeedsReview);
-  const source = reviewed.length > 0 ? reviewed : state.cards.filter((verb) => verbInfo(verb).irregular);
-  return [...(source.length > 0 ? source : state.cards)].sort((a, b) => cardDifficulty(b) - cardDifficulty(a));
-}
-
-function visibleStudyCards() {
-  const query = normalize(state.cardsQuery);
-  const filtered = cardsForFilter().filter((verb) => {
-    if (!query) return true;
-    return normalize(displayInfinitive(verb)).includes(query) || normalize(translationFor(verb)).includes(query);
-  });
-  if (state.cardsSort === "alphabetical") {
-    return filtered.sort((a, b) => displayInfinitive(a).localeCompare(displayInfinitive(b), "es"));
-  }
-  if (state.cardsSort === "difficult") {
-    return filtered.sort((a, b) => cardDifficulty(b) - cardDifficulty(a));
-  }
-  if (state.cardsSort === "irregular") {
-    return filtered.sort((a, b) => Number(verbInfo(b).irregular) - Number(verbInfo(a).irregular) || displayInfinitive(a).localeCompare(displayInfinitive(b), "es"));
-  }
-  return filtered.sort((a, b) => state.cards.indexOf(b) - state.cards.indexOf(a));
-}
-
-function hasSavedQuizSession() {
-  return Boolean(state.savedQuizSession?.cardQuiz?.length);
-}
-
+// ═══════ 14. Вкладка «План»: модули, маршрут, итоговая проверка ═══════
 // Модули плана: уроки учебника по темам общения, 1–3 шпаргалки, одно задание на речь или письмо и самопроверка.
 // Статус урока берётся из прогресса учебника; задание и пункты «Могу» отмечаются вручную по ключам plan:<id>:….
 const LEARNING_MODULES = [
@@ -16501,52 +16362,8 @@ function renderLearningPlan() {
 function renderLearningPlanContent() {
   const content = clearContent();
   const level = currentLearningLevel();
-  const levelButtons = LEARNING_LEVELS.map((item) => {
-    const selected = item.id === level.id;
-    const { done, total } = learningLevelCounts(item);
-    const percent = total ? Math.round(done / total * 100) : 0;
-    const confirmed = Boolean(state.learningChecks[item.id]?.passedAt);
-    return `<button class="small-button ${selected ? "is-active" : ""}" id="learning-level-${item.id}" role="tab" tabindex="${selected ? "0" : "-1"}" type="button" data-learning-level="${item.id}" aria-selected="${selected}" aria-controls="learning-plan-panel" aria-label="${confirmed ? `${item.label}: подтверждён итоговой проверкой` : total ? `${item.label}: освоено ${percent}%` : item.label}">${item.label}${confirmed ? "<small>✓</small>" : total ? `<small>${percent}%</small>` : ""}</button>`;
-  }).join("");
-  const modules = learningModulesFor(level.id);
-  let body = learningAfterB2Markup();
-  if (modules.length) {
-    const { done, total } = learningLevelCounts(level);
-    const percent = total ? Math.round(done / total * 100) : 0;
-    const { lesson: nextLesson, pending } = learningLevelNext(level.id);
-    const currentModuleIndex = nextLesson ? nextLesson.moduleIndex : pending ? pending.moduleIndex : -1;
-    const currentModule = modules[currentModuleIndex];
-    const lesson = nextLesson ? lessonById(nextLesson.id) : null;
-    const nextLevel = LEARNING_LEVELS[LEARNING_LEVELS.findIndex((item) => item.id === level.id) + 1];
-    const record = state.learningChecks[level.id];
-    const levelLessons = modules.flatMap((module) => module.lessons);
-    const left = learningLessonsLeftMinutes(levelLessons);
-    const nowTitle = currentModule ? `<p><strong>Сейчас: модуль ${currentModuleIndex + 1} из ${modules.length} · ${currentModule.title}</strong></p>` : "";
-    const lessonLine = lesson ? `<small>${nextLesson.status === "started" ? "Начатый урок" : "Следующий урок"}: ${lesson.id}. ${escapeHTML(lesson.title.ru)} · ≈ ${textbookLessonMinutes(lesson)} мин</small>` : "";
-    const pendingLine = pending && lesson ? `<p class="plan-next-extra">${learningPendingText(pending.module)} <button class="link-button" type="button" data-open-learning-module="${pending.module.id}">Открыть модуль</button></p>` : "";
-    const goNext = nextLevel ? `<button class="small-button primary" type="button" data-go-learning-level="${nextLevel.id}">Перейти к ${nextLevel.label}</button>` : "";
-    let nextStepMarkup;
-    if (record?.passedAt) {
-      nextStepMarkup = `<div class="plan-next-step"><div><p><strong>Уровень ${level.label} подтверждён итоговой проверкой</strong></p><small>${new Date(record.passedAt).toLocaleDateString("ru-RU")}, лучший результат ${record.best}%.${lesson ? " Оставшиеся уроки можно пройти для закрепления." : ""}</small></div><div class="plan-next-actions">${goNext}${lesson ? `<button class="small-button" type="button" data-textbook-open="${lesson.id}">Продолжить уроки</button>` : ""}</div></div>`;
-    } else if (lesson) {
-      nextStepMarkup = `<div class="plan-next-step"><div>${nowTitle}${lessonLine}${pendingLine}</div><button class="small-button primary" type="button" data-textbook-open="${lesson.id}">Продолжить</button></div>`;
-    } else if (pending) {
-      nextStepMarkup = `<div class="plan-next-step"><div>${nowTitle}<small>${learningPendingText(pending.module)}</small></div><button class="small-button primary" type="button" data-open-learning-module="${pending.module.id}">Продолжить</button></div>`;
-    } else {
-      nextStepMarkup = `<div class="plan-next-step"><div><p><strong>Уровень завершён</strong></p><small>Все пункты отмечены как освоенные.</small></div>${goNext}</div>`;
-    }
-    const lessonsDone = levelLessons.filter((id) => learningLessonStatus(id) === "done").length;
-    const skipMarkup = record?.passedAt ? ""
-      : levelLessons.length
-        ? (lessonsDone < levelLessons.length * 0.3 ? `<p class="learning-plan-skip">Уже знаете ${level.label}? <button class="link-button" type="button" data-check-start>Пройдите итоговую проверку</button>: при ${Math.round(LEARNING_CHECK_PASS_SHARE * 100)}% верных уровень будет подтверждён.</p>` : "")
-        : (nextLevel && done < total ? `<p class="learning-plan-skip">Уже читаете по-испански и можете представиться? <button class="link-button" type="button" data-go-learning-level="${nextLevel.id}">Начните с ${nextLevel.label}</button>.</p>` : "");
-    body = `<section class="learning-plan-summary" aria-live="polite"><div class="learning-plan-summary-head"><p><strong>${level.label} · ${level.title}</strong><span class="muted">${level.description}</span></p><p class="learning-plan-percent"><strong>${percent}%</strong><span class="muted">${done} из ${total}</span>${left ? `<span class="muted">уроки: ${formatStudyMinutes(left)}</span>` : ""}</p></div><progress max="100" value="${percent}" aria-label="Освоено на уровне ${level.label}"></progress>${nextStepMarkup}${skipMarkup}</section>
-      ${learningReviewMarkup(level)}
-      <div class="learning-modules">${modules.map((module, index) => learningModuleMarkup(module, index, index === currentModuleIndex)).join("")}</div>
-      <p class="muted learning-modules-note">${modules.some((module) => module.lessons.length) ? "Уроки отмечаются сами, когда все их упражнения проверены в Учебнике. " : "Учебник начинается с A1, поэтому здесь опора — шпаргалки. "}Задание и пункты «Могу» отмечайте сами.</p>
-      ${learningCheckCardMarkup(level)}
-      <p class="learning-plan-reset"><button class="small-button" type="button" data-reset-learning>Сбросить отметки ${level.label}</button></p>`;
-  }
+  const levelButtons = learningLevelTabsMarkup(level);
+  let body = learningLevelBodyMarkup(level);
   if (state.learningCheck?.level === level.id) body = learningCheckMarkup(level);
   const header = document.createElement("section");
   header.className = "info-card learning-plan";
@@ -16560,6 +16377,58 @@ function renderLearningPlanContent() {
     </div>
   `;
   content.appendChild(header);
+}
+
+// Лента уровней: процент освоения или ✓ для уровня, подтверждённого итоговой проверкой.
+function learningLevelTabsMarkup(level) {
+  return LEARNING_LEVELS.map((item) => {
+    const selected = item.id === level.id;
+    const { done, total } = learningLevelCounts(item);
+    const percent = total ? Math.round(done / total * 100) : 0;
+    const confirmed = Boolean(state.learningChecks[item.id]?.passedAt);
+    return `<button class="small-button ${selected ? "is-active" : ""}" id="learning-level-${item.id}" role="tab" tabindex="${selected ? "0" : "-1"}" type="button" data-learning-level="${item.id}" aria-selected="${selected}" aria-controls="learning-plan-panel" aria-label="${confirmed ? `${item.label}: подтверждён итоговой проверкой` : total ? `${item.label}: освоено ${percent}%` : item.label}">${item.label}${confirmed ? "<small>✓</small>" : total ? `<small>${percent}%</small>` : ""}</button>`;
+  }).join("");
+}
+
+// Содержимое уровня: сводка и «Сейчас», «Повторить», модули, итоговая проверка; для «После B2» — страница ориентиров.
+function learningLevelBodyMarkup(level) {
+  const modules = learningModulesFor(level.id);
+  if (!modules.length) return learningAfterB2Markup();
+  const { done, total } = learningLevelCounts(level);
+  const percent = total ? Math.round(done / total * 100) : 0;
+  const { lesson: nextLesson, pending } = learningLevelNext(level.id);
+  const currentModuleIndex = nextLesson ? nextLesson.moduleIndex : pending ? pending.moduleIndex : -1;
+  const currentModule = modules[currentModuleIndex];
+  const lesson = nextLesson ? lessonById(nextLesson.id) : null;
+  const nextLevel = LEARNING_LEVELS[LEARNING_LEVELS.findIndex((item) => item.id === level.id) + 1];
+  const record = state.learningChecks[level.id];
+  const levelLessons = modules.flatMap((module) => module.lessons);
+  const left = learningLessonsLeftMinutes(levelLessons);
+  const nowTitle = currentModule ? `<p><strong>Сейчас: модуль ${currentModuleIndex + 1} из ${modules.length} · ${currentModule.title}</strong></p>` : "";
+  const lessonLine = lesson ? `<small>${nextLesson.status === "started" ? "Начатый урок" : "Следующий урок"}: ${lesson.id}. ${escapeHTML(lesson.title.ru)} · ≈ ${textbookLessonMinutes(lesson)} мин</small>` : "";
+  const pendingLine = pending && lesson ? `<p class="plan-next-extra">${learningPendingText(pending.module)} <button class="link-button" type="button" data-open-learning-module="${pending.module.id}">Открыть модуль</button></p>` : "";
+  const goNext = nextLevel ? `<button class="small-button primary" type="button" data-go-learning-level="${nextLevel.id}">Перейти к ${nextLevel.label}</button>` : "";
+  let nextStepMarkup;
+  if (record?.passedAt) {
+    nextStepMarkup = `<div class="plan-next-step"><div><p><strong>Уровень ${level.label} подтверждён итоговой проверкой</strong></p><small>${new Date(record.passedAt).toLocaleDateString("ru-RU")}, лучший результат ${record.best}%.${lesson ? " Оставшиеся уроки можно пройти для закрепления." : ""}</small></div><div class="plan-next-actions">${goNext}${lesson ? `<button class="small-button" type="button" data-textbook-open="${lesson.id}">Продолжить уроки</button>` : ""}</div></div>`;
+  } else if (lesson) {
+    nextStepMarkup = `<div class="plan-next-step"><div>${nowTitle}${lessonLine}${pendingLine}</div><button class="small-button primary" type="button" data-textbook-open="${lesson.id}">Продолжить</button></div>`;
+  } else if (pending) {
+    nextStepMarkup = `<div class="plan-next-step"><div>${nowTitle}<small>${learningPendingText(pending.module)}</small></div><button class="small-button primary" type="button" data-open-learning-module="${pending.module.id}">Продолжить</button></div>`;
+  } else {
+    nextStepMarkup = `<div class="plan-next-step"><div><p><strong>Уровень завершён</strong></p><small>Все пункты отмечены как освоенные.</small></div>${goNext}</div>`;
+  }
+  const lessonsDone = levelLessons.filter((id) => learningLessonStatus(id) === "done").length;
+  const skipMarkup = record?.passedAt ? ""
+    : levelLessons.length
+      ? (lessonsDone < levelLessons.length * 0.3 ? `<p class="learning-plan-skip">Уже знаете ${level.label}? <button class="link-button" type="button" data-check-start>Пройдите итоговую проверку</button>: при ${Math.round(LEARNING_CHECK_PASS_SHARE * 100)}% верных уровень будет подтверждён.</p>` : "")
+      : (nextLevel && done < total ? `<p class="learning-plan-skip">Уже читаете по-испански и можете представиться? <button class="link-button" type="button" data-go-learning-level="${nextLevel.id}">Начните с ${nextLevel.label}</button>.</p>` : "");
+  return `<section class="learning-plan-summary" aria-live="polite"><div class="learning-plan-summary-head"><p><strong>${level.label} · ${level.title}</strong><span class="muted">${level.description}</span></p><p class="learning-plan-percent"><strong>${percent}%</strong><span class="muted">${done} из ${total}</span>${left ? `<span class="muted">уроки: ${formatStudyMinutes(left)}</span>` : ""}</p></div><progress max="100" value="${percent}" aria-label="Освоено на уровне ${level.label}"></progress>${nextStepMarkup}${skipMarkup}</section>
+    ${learningReviewMarkup(level)}
+    <div class="learning-modules">${modules.map((module, index) => learningModuleMarkup(module, index, index === currentModuleIndex)).join("")}</div>
+    <p class="muted learning-modules-note">${modules.some((module) => module.lessons.length) ? "Уроки отмечаются сами, когда все их упражнения проверены в Учебнике. " : "Учебник начинается с A1, поэтому здесь опора — шпаргалки. "}Задание и пункты «Могу» отмечайте сами.</p>
+    ${learningCheckCardMarkup(level)}
+    <p class="learning-plan-reset"><button class="small-button" type="button" data-reset-learning>Сбросить отметки ${level.label}</button></p>`;
 }
 
 function currentLearningLevel() {
@@ -16656,6 +16525,7 @@ onDelegated("click", ".learning-plan [data-reset-learning]", () => {
   renderLearningPlan();
 });
 
+// ═══════ 15. Вкладка «Учебник»: каталог, урок, упражнения ═══════
 function textbookText(value) {
   if (value && typeof value === "object" && ("ru" in value || "es" in value)) return value[state.textbookLanguage] || value.ru || value.es || "";
   return String(value ?? "");
@@ -16774,91 +16644,10 @@ function textbookLanguageButtons() {
   return `<div class="textbook-language-switch" role="group" aria-label="${escapeHTML(textbookUi("Язык учебника", "Idioma del curso"))}"><button class="small-button ${state.textbookLanguage === "ru" ? "is-active" : ""}" type="button" data-textbook-language="ru" aria-pressed="${state.textbookLanguage === "ru"}">RU</button><button class="small-button ${state.textbookLanguage === "es" ? "is-active" : ""}" type="button" data-textbook-language="es" aria-pressed="${state.textbookLanguage === "es"}">ES</button></div>`;
 }
 
-// В книге уровни у unidades не указаны. Уровень урока — ступень Plan Curricular del Instituto Cervantes,
-// на которой вводится основное содержание урока (если урок смешанный — по самой поздней из его частей).
-const TEXTBOOK_LESSON_LEVELS = {
-  a1: [
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 14, 15, 18, 19, 23, 25, 26, 27, 30, 31, 32, 33, 34, 35, 36,
-    42, 43, 44, 45, 46, 47, 48, 49, 50, 53, 55, 56, 58, 60, 69, 73, 75, 93, 99, 100, 101, 103, 104,
-    108, 109, 110, 112, 116, 125
-  ],
-  a2: [
-    10, 11, 16, 17, 20, 21, 22, 24, 28, 38, 39, 40, 41, 51, 52, 54, 57, 59, 61, 62, 63, 64, 65, 74,
-    76, 77, 78, 91, 98, 102, 105, 106, 107, 111, 113, 123, 124
-  ],
-  b1: [
-    37, 66, 67, 68, 70, 71, 72, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 92, 94, 95, 96, 97,
-    114, 115, 117, 118, 119, 121, 122
-  ],
-  b2: [
-    29, 90, 120
-  ]
-};
-
-const TEXTBOOK_LEVEL_IDS = Object.keys(TEXTBOOK_LESSON_LEVELS);
-
-// Словари по номеру урока строятся один раз при первом обращении.
-let TEXTBOOK_LESSON_BY_ID = null;
-let TEXTBOOK_LEVEL_BY_LESSON = null;
-
-function lessonById(lessonId) {
-  TEXTBOOK_LESSON_BY_ID ||= new Map(TEXTBOOK_LESSONS.map((lesson) => [lesson.id, lesson]));
-  return TEXTBOOK_LESSON_BY_ID.get(lessonId) || null;
-}
-
-function textbookLessonLevel(lessonId) {
-  TEXTBOOK_LEVEL_BY_LESSON ||= new Map(TEXTBOOK_LEVEL_IDS.flatMap((level) => TEXTBOOK_LESSON_LEVELS[level].map((id) => [id, level])));
-  return TEXTBOOK_LEVEL_BY_LESSON.get(lessonId) || "";
-}
-
 function textbookLevelBadge(lessonId) {
   const level = textbookLessonLevel(lessonId);
   return level ? `<span class="level-badge textbook-level-badge" title="${escapeHTML(textbookUi("Уровень по Plan Curricular del Instituto Cervantes", "Nivel según el Plan Curricular del Instituto Cervantes"))}">${levelLabel(level)}</span>` : "";
 }
-
-const TEXTBOOK_COURSE_GROUPS = [
-  { ids: [1, 2, 3], title: tb("Существительные: род и число", "Sustantivos: género y número") },
-  { ids: [4, 5], title: tb("Неопределённый артикль и отсутствие артикля", "Artículo indeterminado y ausencia de artículo") },
-  { ids: [6, 7, 8, 9, 10], title: tb("Определённый артикль", "Artículo determinado") },
-  { ids: [11, 12], title: tb("Определение и указание", "Omisión y demostrativos") },
-  { ids: [13, 14], title: tb("Прилагательные", "Adjetivos") },
-  { ids: [15, 16, 17], title: tb("Сравнение и превосходная степень", "Comparación y superlativo") },
-  { ids: [18, 19, 20], title: tb("Притяжательные и неопределённые", "Posesivos e indefinidos") },
-  { ids: [21, 22, 23, 24], title: tb("Неопределённые и количество", "Indefinidos y cantidad") },
-  { ids: [25, 26, 27], title: tb("Числительные", "Numerales") },
-  { ids: [28, 29], title: tb("Относительные слова", "Relativos") },
-  { ids: [30, 31, 32], title: tb("Вопросительные слова", "Interrogativos") },
-  { ids: [33], title: tb("Восклицательные слова", "Exclamativos") },
-  { ids: [34, 35, 36, 37, 38, 39, 40, 41], title: tb("Личные местоимения и местоименные конструкции", "Pronombres personales y construcciones pronominales") },
-  { ids: [42], title: tb("Глагол ser", "Verbo ser") },
-  { ids: [43, 44], title: tb("Глагол estar и различие ser/estar", "Verbo estar y contraste ser/estar") },
-  { ids: [45], title: tb("Глагол tener", "Verbo tener") },
-  { ids: [46, 47], title: tb("Наличие и местонахождение: hay / estar", "Existencia y localización: hay / estar") },
-  { ids: [48, 49, 50], title: tb("Настоящее время: модели спряжения", "Presente: modelos de conjugación") },
-  { ids: [51, 52], title: tb("Настоящее время: другие употребления", "Presente: otros usos") },
-  { ids: [53, 54, 55], title: tb("Глаголы с me, te, se и конструкция gustar", "Verbos con me, te, se y construcción de gustar") },
-  { ids: [56, 57], title: tb("Estar + gerundio", "Estar + gerundio") },
-  { ids: [58, 59], title: tb("Pretérito indefinido", "Pretérito indefinido") },
-  { ids: [60, 61, 62], title: tb("Pretérito perfecto и его контраст с indefinido", "Pretérito perfecto y contraste con el indefinido") },
-  { ids: [63, 64, 65], title: tb("Pretérito imperfecto и рассказ о прошлом", "Pretérito imperfecto y relato en pasado") },
-  { ids: [66], title: tb("Pretérito pluscuamperfecto", "Pretérito pluscuamperfecto") },
-  { ids: [67, 68, 69, 70], title: tb("Будущее: futuro simple и ir a + инфинитив", "Futuro: futuro simple e ir a + infinitivo") },
-  { ids: [71, 72], title: tb("Condicional simple", "Condicional simple") },
-  { ids: [73, 74, 75, 76, 77, 78], title: tb("Imperativo", "Imperativo") },
-  { ids: [79, 80, 81], title: tb("Presente de subjuntivo", "Presente de subjuntivo") },
-  { ids: [82, 83], title: tb("Pretérito imperfecto de subjuntivo", "Pretérito imperfecto de subjuntivo") },
-  { ids: [84, 85, 86, 87], title: tb("Subjuntivo: желания, вероятность, чувства, мнение", "Subjuntivo: deseos, probabilidad, sentimientos, opinión") },
-  { ids: [88, 89, 90], title: tb("Косвенная речь", "Estilo indirecto") },
-  { ids: [91, 92], title: tb("Условные предложения", "Oraciones condicionales") },
-  { ids: [93, 94, 95, 96, 97], title: tb("Инфинитив и выражения с инфинитивом", "Infinitivo y expresiones con infinitivo") },
-  { ids: [98, 99], title: tb("Gerundio и participio", "Gerundio y participio") },
-  { ids: [100, 101, 102, 103], title: tb("Наречия места, времени и частоты", "Adverbios de lugar, tiempo y frecuencia") },
-  { ids: [104, 105, 106, 107], title: tb("Наречия количества и образа действия; сравнение", "Adverbios de cantidad y de modo; comparación") },
-  { ids: [108, 109], title: tb("Отрицание, согласие и несогласие", "Negación, coincidencia y no coincidencia") },
-  { ids: [110, 111, 112, 113, 114, 115], title: tb("Предлоги", "Preposiciones") },
-  { ids: [116, 117, 118, 119, 120, 121, 122], title: tb("Союзы и придаточные предложения", "Conjunciones y oraciones subordinadas") },
-  { ids: [123, 124, 125], title: tb("Ударение и заглавные буквы", "Acentuación y mayúsculas") }
-];
 
 function renderTextbookCatalog(content) {
   return withTextbookProgressCache(() => renderTextbookCatalogContent(content));
@@ -17156,13 +16945,309 @@ function openTextbookLesson(id, { updateRoute = true } = {}) {
   requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "auto" }));
 }
 
+// ═══════ 16. Вкладка «Избранное»: квиз по глаголам, статистика, сохранённые материалы ═══════
+const QUIZ_TENSES = [
+  { id: "presente", name: "Presente" },
+  { id: "perfecto", name: "Perfecto" },
+  { id: "indefinido", name: "Indefinido" },
+  { id: "imperfecto", name: "Imperfecto" },
+  { id: "pluscuamperfecto", name: "Pluscuamperfecto" },
+  { id: "futuro", name: "Futuro" },
+  { id: "futuro_perfecto", name: "Futuro Perfecto" },
+  { id: "condicional", name: "Condicional" },
+  { id: "condicional_compuesto", name: "Condicional Compuesto" },
+  { id: "subjuntivo_presente", name: "Subj. Presente" },
+  { id: "subjuntivo_perfecto", name: "Subj. Perfecto" },
+  { id: "subjuntivo_imperfecto", name: "Subj. Imperfecto" },
+  { id: "subjuntivo_pluscuamperfecto", name: "Subj. Pluscuamperfecto" },
+  { id: "imperativo_afirmativo", name: "Imperativo afirmativo" },
+  { id: "imperativo_negativo", name: "Imperativo negativo" }
+];
+
+const QUIZ_COUNTS = [3, 5, 10, 20, 0];
+const QUIZ_CHARACTERS = ["á", "é", "í", "ó", "ú", "ü", "ñ"];
+const BASIC_QUIZ_TENSES = ["presente", "perfecto", "indefinido", "imperfecto", "futuro"];
+const CARD_MASTERY_MIN_ATTEMPTS = 3;
+const CARD_MASTERY_MIN_ACCURACY = 80;
+const CARD_MASTERY_MIN_STREAK = 2;
+const QUIZ_TYPE_LABELS = {
+  infinitive: "Русский → испанский",
+  meaning: "Испанский → русский",
+  conjugation: "Спряжение"
+};
+let activeQuizKeydownCleanup = null;
+
+function clearQuizHotkeys() {
+  activeQuizKeydownCleanup?.();
+  activeQuizKeydownCleanup = null;
+}
+
+function bindQuizHotkeys(handler) {
+  clearQuizHotkeys();
+  document.addEventListener("keydown", handler);
+  activeQuizKeydownCleanup = () => document.removeEventListener("keydown", handler);
+}
+
+function selectedQuizPersons() {
+  const persons = Array.isArray(state.quizConfig.persons) ? state.quizConfig.persons : [];
+  const valid = [...new Set(persons.filter((index) => Number.isInteger(index) && index >= 0 && index < PEOPLE.length))];
+  return valid.sort((a, b) => a - b);
+}
+
+function saveQuizConfig() {
+  persist("quizConfig");
+}
+
+function getAllTenseIds() {
+  return QUIZ_TENSES.map((t) => t.id);
+}
+
+function getTenseName(id) {
+  return QUIZ_TENSES.find((t) => t.id === id)?.name || id;
+}
+
+function quizAnswerKey(value, stripAccents = false) {
+  const normalized = String(value)
+    .trim()
+    .replace(/\s+/g, " ")
+    .toLowerCase()
+    .normalize(stripAccents ? "NFD" : "NFC");
+  return stripAccents ? normalized.replace(/[\u0300-\u036f]/g, "") : normalized;
+}
+
+function translationAnswers(translation) {
+  const full = String(translation).trim();
+  const alternatives = full
+    .replace(/\([^)]*\)/g, "")
+    .split(/[,;/]|\s+или\s+/i)
+    .map((item) => item.trim())
+    .filter((item) => item.length > 1);
+  return [...new Set([full, ...alternatives])];
+}
+
+function infinitiveAnswers(verb, cards) {
+  const translation = quizAnswerKey(translationFor(verb), true);
+  return cards
+    .filter((candidate) => quizAnswerKey(translationFor(candidate), true) === translation)
+    .map(displayInfinitive);
+}
+
+function generateInfinitiveQuestions(cards, count) {
+  const shuffled = shuffle([...cards]);
+  const selected = count > 0 ? shuffled.slice(0, count) : shuffled;
+  return selected.map((verb) => ({
+    type: "infinitive",
+    verb,
+    question: translationFor(verb),
+    answer: displayInfinitive(verb),
+    acceptedAnswers: infinitiveAnswers(verb, cards)
+  }));
+}
+
+function generateMeaningQuestions(cards, count) {
+  const shuffled = shuffle([...cards]);
+  const selected = count > 0 ? shuffled.slice(0, count) : shuffled;
+  return selected.map((verb) => ({
+    type: "meaning",
+    verb,
+    question: displayInfinitive(verb),
+    answer: translationFor(verb),
+    acceptedAnswers: translationAnswers(translationFor(verb))
+  }));
+}
+
+function quizFormsFor(verb, tense) {
+  return formsFor(verb)[tense];
+}
+
+function generateConjugationQuestions(cards, tenses, persons, count) {
+  const tenseList = tenses.filter((id) => getAllTenseIds().includes(id));
+  const personList = Array.isArray(persons) ? persons : [];
+  const buckets = shuffle(cards).map((verb) => {
+    const questions = [];
+    for (const tense of tenseList) {
+      const tenseForms = quizFormsFor(verb, tense);
+      if (!tenseForms) continue;
+      for (const personIdx of personList) {
+        if (personIdx >= tenseForms.length) continue;
+        const form = tenseForms[personIdx];
+        if (form === "-") continue;
+        questions.push({
+          type: "conjugation",
+          verb,
+          tense,
+          person: personIdx,
+          question: `${displayInfinitive(verb)} — ${getTenseName(tense)} — ${PEOPLE[personIdx]}`,
+          answer: form
+        });
+      }
+    }
+    return { verb, questions: shuffle(questions) };
+  }).filter((bucket) => bucket.questions.length > 0);
+
+  const result = [];
+  while (buckets.some((bucket) => bucket.questions.length > 0) && (count === 0 || result.length < count)) {
+    const round = shuffle(buckets.filter((bucket) => bucket.questions.length > 0));
+    if (result.length > 0 && round.length > 1 && round[0].verb === result.at(-1).verb) {
+      [round[0], round[1]] = [round[1], round[0]];
+    }
+    for (const bucket of round) {
+      if (count > 0 && result.length >= count) break;
+      result.push(bucket.questions.pop());
+    }
+  }
+  return result;
+}
+
+function evaluateAnswer(userInput, question) {
+  const candidates = question.acceptedAnswers?.length ? question.acceptedAnswers : [question.answer];
+  const exact = quizAnswerKey(userInput);
+  if (candidates.some((answer) => exact === quizAnswerKey(answer))) {
+    return { status: "correct", message: "Верно!" };
+  }
+  const accentless = quizAnswerKey(userInput, true);
+  if (accentless && candidates.some((answer) => accentless === quizAnswerKey(answer, true))) {
+    return { status: "almost", message: "Почти верно: проверьте ударение или диакритический знак." };
+  }
+  if (question.type === "conjugation" && question.verb.endsWith("se")) {
+    const base = question.verb.slice(0, -2);
+    const baseAnswer = formsFor(base)[question.tense]?.[question.person];
+    if (baseAnswer && accentless === quizAnswerKey(baseAnswer, true)) {
+      return { status: "almost", message: "Почти верно: у возвратного глагола нужно местоимение." };
+    }
+  }
+  return { status: "wrong", message: "Ответ пока неверный." };
+}
+
+function cardStatsFor(verb) {
+  return state.cardStats[verb] || { attempts: 0, correct: 0, mistakes: 0, streak: 0, lastReviewed: null };
+}
+
+function cardAccuracy(stats) {
+  return stats.attempts > 0 ? Math.round((stats.correct / stats.attempts) * 100) : 0;
+}
+
+function isCardMastered(verb) {
+  const stats = cardStatsFor(verb);
+  return stats.attempts >= CARD_MASTERY_MIN_ATTEMPTS &&
+    cardAccuracy(stats) >= CARD_MASTERY_MIN_ACCURACY &&
+    stats.streak >= CARD_MASTERY_MIN_STREAK;
+}
+
+function cardNeedsReview(verb) {
+  return cardStatsFor(verb).mistakes > 0 && !isCardMastered(verb);
+}
+
+function studyCardCounts() {
+  return state.cards.reduce((counts, verb) => {
+    const stats = cardStatsFor(verb);
+    if (stats.attempts === 0) counts.unreviewed += 1;
+    else counts.reviewed += 1;
+    if (cardNeedsReview(verb)) counts.mistakes += 1;
+    if (isCardMastered(verb)) counts.mastered += 1;
+    return counts;
+  }, { reviewed: 0, unreviewed: 0, mistakes: 0, mastered: 0 });
+}
+
+function cardsForFilter(filter = state.cardsFilter) {
+  if (filter === "reviewed") return state.cards.filter((verb) => cardStatsFor(verb).attempts > 0);
+  if (filter === "unreviewed") return state.cards.filter((verb) => cardStatsFor(verb).attempts === 0);
+  if (filter === "mistakes") return state.cards.filter(cardNeedsReview);
+  if (filter === "mastered") return state.cards.filter(isCardMastered);
+  return [...state.cards];
+}
+
+function cardDifficulty(verb) {
+  const stats = cardStatsFor(verb);
+  if (stats.attempts === 0) return verbInfo(verb).irregular ? 1 : 0;
+  return stats.mistakes * 3 + (stats.attempts - stats.correct) - stats.streak * 0.25;
+}
+
+function saveCardStats() {
+  persist("cardStats");
+}
+
+function difficultStudyCards() {
+  const reviewed = state.cards.filter(cardNeedsReview);
+  const source = reviewed.length > 0 ? reviewed : state.cards.filter((verb) => verbInfo(verb).irregular);
+  return [...(source.length > 0 ? source : state.cards)].sort((a, b) => cardDifficulty(b) - cardDifficulty(a));
+}
+
+function visibleStudyCards() {
+  const query = normalize(state.cardsQuery);
+  const filtered = cardsForFilter().filter((verb) => {
+    if (!query) return true;
+    return normalize(displayInfinitive(verb)).includes(query) || normalize(translationFor(verb)).includes(query);
+  });
+  if (state.cardsSort === "alphabetical") {
+    return filtered.sort((a, b) => displayInfinitive(a).localeCompare(displayInfinitive(b), "es"));
+  }
+  if (state.cardsSort === "difficult") {
+    return filtered.sort((a, b) => cardDifficulty(b) - cardDifficulty(a));
+  }
+  if (state.cardsSort === "irregular") {
+    return filtered.sort((a, b) => Number(verbInfo(b).irregular) - Number(verbInfo(a).irregular) || displayInfinitive(a).localeCompare(displayInfinitive(b), "es"));
+  }
+  return filtered.sort((a, b) => state.cards.indexOf(b) - state.cards.indexOf(a));
+}
+
+function hasSavedQuizSession() {
+  return Boolean(state.savedQuizSession?.cardQuiz?.length);
+}
+
+// Кроме глаголов в избранное можно сохранить шпаргалки (по постоянному id) и уроки учебника.
+function toggleFavoriteMaterial(kind, id) {
+  const key = kind === "table" ? "favoriteTables" : "favoriteLessons";
+  const list = state[key];
+  state[key] = list.includes(id) ? list.filter((item) => item !== id) : [id, ...list];
+  appStorage.set(kind === "table" ? "msg:favoriteTables" : "msg:favoriteLessons", JSON.stringify(state[key]));
+  return state[key].includes(id);
+}
+
+function favoriteMaterialButton(kind, id, label) {
+  const saved = (kind === "table" ? state.favoriteTables : state.favoriteLessons).includes(id);
+  return `<button class="favorite-button favorite-material" type="button" data-favorite-${kind}="${id}" aria-pressed="${saved}" aria-label="${saved ? "Убрать из избранного" : "Добавить в избранное"}: ${escapeHTML(label)}" title="Избранное">${saved ? "★" : "☆"}</button>`;
+}
+
+onDelegated("click", "[data-favorite-table], [data-favorite-lesson]", (_event, target) => {
+    const kind = target.dataset.favoriteTable ? "table" : "lesson";
+    const id = kind === "table" ? target.dataset.favoriteTable : Number(target.dataset.favoriteLesson);
+    const saved = toggleFavoriteMaterial(kind, id);
+    target.textContent = saved ? "★" : "☆";
+    target.setAttribute("aria-pressed", String(saved));
+    target.setAttribute("aria-label", (saved ? "Убрать из избранного" : "Добавить в избранное") + target.getAttribute("aria-label").replace(/^[^:]*/, ""));
+});
+
+function savedMaterialsCard() {
+  const tables = state.favoriteTables.map((id) => INDEXED_TABLES.find((item) => item.id === id)).filter(Boolean);
+  const lessons = state.favoriteLessons.map((id) => lessonById(id)).filter(Boolean);
+  const card = document.createElement("section");
+  card.className = "info-card saved-materials";
+  const row = (open, label, removeAttr) => `<li>${open}<button class="link-button" type="button" ${removeAttr}>убрать</button></li>`;
+  card.innerHTML = `
+    <h2>Шпаргалки и уроки</h2>
+    ${tables.length || lessons.length ? "" : `<p class="muted">Сохраняйте нужные шпаргалки и уроки звёздочкой ☆ в их заголовке — они появятся здесь.</p>`}
+    ${tables.length ? `<h3>Шпаргалки · ${tables.length}</h3><ul class="saved-materials-list">${tables.map((item) => row(`<a href="#${tableRoute(item)}">${escapeHTML(item.title)}</a>`, "", `data-remove-favorite-table="${item.id}"`)).join("")}</ul>` : ""}
+    ${lessons.length ? `<h3>Уроки · ${lessons.length}</h3><ul class="saved-materials-list">${lessons.map((lesson) => row(`<button class="link-button saved-materials-open" type="button" data-open-lesson="${lesson.id}">${lesson.id}. ${escapeHTML(lesson.title.ru)}</button>`, "", `data-remove-favorite-lesson="${lesson.id}"`)).join("")}</ul>` : ""}
+  `;
+  $all("[data-remove-favorite-table]", card).forEach((button) => button.addEventListener("click", () => { toggleFavoriteMaterial("table", button.dataset.removeFavoriteTable); renderCards(); }));
+  $all("[data-remove-favorite-lesson]", card).forEach((button) => button.addEventListener("click", () => { toggleFavoriteMaterial("lesson", Number(button.dataset.removeFavoriteLesson)); renderCards(); }));
+  return card;
+}
+
 function renderCards() {
   const content = clearContent();
   if (state.cardQuiz.length > 0) {
     renderCardQuiz(content);
     return;
   }
+  content.appendChild(cardsDashboardSection());
+  content.appendChild(state.cards.length === 0 ? cardsEmptySection() : cardsStudyListSection());
+  content.appendChild(savedMaterialsCard());
+}
 
+// Панель вкладки «Избранное»: быстрый старт проверки, прогресс и настройки квиза.
+function cardsDashboardSection() {
   const cfg = state.quizConfig;
   if (!QUIZ_TYPE_LABELS[cfg.type]) cfg.type = "infinitive";
   if (!Array.isArray(cfg.tenses)) cfg.tenses = ["presente"];
@@ -17277,7 +17362,6 @@ function renderCards() {
     </div>` : ""}
     </div>` : ""}
   `;
-  content.appendChild(header);
 
   header.querySelectorAll("[data-preset]").forEach((button) => button.addEventListener("click", () => startQuizPreset(button.dataset.preset)));
   header.querySelectorAll("[data-cards-dashboard-filter]").forEach((button) => button.addEventListener("click", () => {
@@ -17340,32 +17424,36 @@ function renderCards() {
     renderCards();
   }));
   header.querySelector("#startCardQuiz")?.addEventListener("click", () => startCardQuiz());
+  return header;
+}
 
-  if (state.cards.length === 0) {
-    const emptyCard = document.createElement("section");
-    emptyCard.className = "info-card verb-list-card";
-    const suggestedCards = COMMON_VERB_SUGGESTIONS.filter((verb) => BASE_VERBS.includes(verb)).slice(0, 5);
-    emptyCard.innerHTML = `
-      <h2>Избранное пока пусто</h2>
-      <p class="muted">Добавьте базовый набор для первой проверки. Отдельные глаголы можно выбирать звездочкой в разделе «Глаголы».</p>
-      <button class="small-button primary" type="button" data-add-starter>Добавить 5 базовых глаголов</button>
-      <div class="starter-verb-links" aria-label="Посмотреть базовые глаголы">
-        ${suggestedCards.map((verb) => `<button class="starter-verb-link" type="button" data-starter-verb="${verb}" lang="es">${escapeHTML(displayInfinitive(verb))}</button>`).join("")}
-      </div>
-    `;
-    emptyCard.querySelectorAll("[data-starter-verb]").forEach((button) => button.addEventListener("click", () => {
-      openVerbFromReference(button.dataset.starterVerb);
-    }));
-    emptyCard.querySelector("[data-add-starter]").addEventListener("click", () => {
-      state.cards = [...new Set([...state.cards, ...suggestedCards])];
-      saveCards();
-      renderCards();
-    });
-    content.appendChild(emptyCard);
-    content.appendChild(savedMaterialsCard());
-    return;
-  }
+// Пустое избранное: предложение добавить базовые глаголы.
+function cardsEmptySection() {
+  const emptyCard = document.createElement("section");
+  emptyCard.className = "info-card verb-list-card";
+  const suggestedCards = COMMON_VERB_SUGGESTIONS.filter((verb) => BASE_VERBS.includes(verb)).slice(0, 5);
+  emptyCard.innerHTML = `
+    <h2>Избранное пока пусто</h2>
+    <p class="muted">Добавьте базовый набор для первой проверки. Отдельные глаголы можно выбирать звездочкой в разделе «Глаголы».</p>
+    <button class="small-button primary" type="button" data-add-starter>Добавить 5 базовых глаголов</button>
+    <div class="starter-verb-links" aria-label="Посмотреть базовые глаголы">
+      ${suggestedCards.map((verb) => `<button class="starter-verb-link" type="button" data-starter-verb="${verb}" lang="es">${escapeHTML(displayInfinitive(verb))}</button>`).join("")}
+    </div>
+  `;
+  emptyCard.querySelectorAll("[data-starter-verb]").forEach((button) => button.addEventListener("click", () => {
+    openVerbFromReference(button.dataset.starterVerb);
+  }));
+  emptyCard.querySelector("[data-add-starter]").addEventListener("click", () => {
+    state.cards = [...new Set([...state.cards, ...suggestedCards])];
+    saveCards();
+    renderCards();
+  });
+  return emptyCard;
+}
 
+// Список глаголов для изучения с поиском, сортировкой и фильтрами.
+function cardsStudyListSection() {
+  const studyCounts = studyCardCounts();
   const listCard = document.createElement("section");
   listCard.className = "info-card verb-list-card";
   const visibleCards = visibleStudyCards();
@@ -17455,8 +17543,7 @@ function renderCards() {
   listCard.querySelectorAll("[data-quiz-verb]").forEach((button) => button.addEventListener("click", () => {
     startSingleVerbQuiz(button.dataset.quizVerb);
   }));
-  content.appendChild(listCard);
-  content.appendChild(savedMaterialsCard());
+  return listCard;
 }
 
 function saveQuizSession() {
@@ -17883,43 +17970,6 @@ function stopCardQuiz() {
   renderCards();
 }
 
-function escapeHTML(str) {
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-// Шаблон html`…`: подставленные значения экранируются автоматически, поэтому забыть escapeHTML нельзя.
-// Готовую разметку (результат другого html`…` или rawHtml(...)) он вставляет как есть, массивы — склеивает.
-// null и undefined дают пустую строку; false печатается как "false" (нужно для aria-pressed и подобных).
-class RawHtml {
-  constructor(value) {
-    this.value = String(value);
-  }
-
-  toString() {
-    return this.value;
-  }
-}
-
-function rawHtml(value) {
-  return new RawHtml(value);
-}
-
-function htmlValue(value) {
-  if (value instanceof RawHtml) return value.value;
-  if (Array.isArray(value)) return value.map(htmlValue).join("");
-  if (value === null || value === undefined) return "";
-  return escapeHTML(value);
-}
-
-function html(strings, ...values) {
-  return rawHtml(strings.reduce((out, chunk, index) => out + chunk + (index < values.length ? htmlValue(values[index]) : ""), ""));
-}
-
 function shuffle(items) {
   const arr = [...items];
   for (let i = arr.length - 1; i > 0; i--) {
@@ -17929,6 +17979,7 @@ function shuffle(items) {
   return arr;
 }
 
+// ═══════ 17. Проверка данных (validateData) и индексы шпаргалок ═══════
 function validateData() {
   const tenseIds = new Set(DATA.tenses.map((tense) => tense.id));
   const tableGroups = new Set(DATA.tableGroups.map((group) => group.title));
@@ -18407,6 +18458,7 @@ function applyTheme() {
   themeToggle.title = themeLabel;
 }
 
+// ═══════ 18. Маршрутизация, запуск и глобальные обработчики ═══════
 function render() {
   applyTheme();
   syncActiveTab();

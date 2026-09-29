@@ -684,7 +684,7 @@ input[type="search"] {
 
 .learning-level-tabs {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 6px;
   margin: 16px 0;
 }
@@ -742,109 +742,6 @@ input[type="search"] {
   font-size: 11px;
   font-weight: 700;
   opacity: 0.8;
-}
-
-.learning-plan-filter-bar {
-  display: grid;
-  gap: 8px;
-  margin: 12px 0 2px;
-  padding: 10px 0 2px;
-  border-top: 1px solid var(--line);
-}
-
-.learning-plan-filter-bar p {
-  margin: 0;
-}
-
-.learning-plan-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.learning-plan-filters .small-button.is-active {
-  border-color: var(--accent-2);
-  background: color-mix(in srgb, var(--accent-2) 14%, var(--surface));
-  color: var(--accent-2);
-  font-weight: 900;
-}
-
-.learning-plan-section {
-  padding: 16px 0;
-  border-top: 1px solid var(--line);
-}
-
-.learning-plan-section-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.learning-plan-section-head h3 {
-  margin: 0;
-}
-
-.learning-plan-section-head span {
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.learning-plan-list {
-  display: grid;
-  gap: 8px;
-  margin: 12px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.learning-plan-item {
-  display: grid;
-  gap: 6px;
-  padding: 9px 0;
-  border-bottom: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
-}
-
-.learning-plan-item.is-next {
-  border: 1px solid color-mix(in srgb, var(--accent-2) 48%, var(--line));
-  border-radius: 8px;
-  padding: 10px;
-  background: color-mix(in srgb, var(--accent-2) 7%, var(--surface));
-}
-
-.learning-plan-item label {
-  display: flex;
-  gap: 8px;
-}
-
-.learning-item-main {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 10px;
-}
-
-.learning-done-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 32px;
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-.learning-done-toggle input {
-  width: 18px;
-  height: 18px;
-  margin: 0;
-  accent-color: var(--success);
-}
-
-.learning-plan-item.is-done .learning-item-title {
-  color: var(--muted);
 }
 
 .learning-plan-reset {
@@ -993,39 +890,62 @@ input[type="search"] {
   accent-color: var(--success);
 }
 
-.learning-modules-note {
-  margin: 10px 0 0;
-  font-size: 12px;
-}
-
-.learning-item-title {
-  min-width: 0;
-}
-
-.learning-item-resources {
+.learning-plan-notice {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: -6px;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+  font-size: 13px;
 }
 
-.learning-item-resources-label {
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.learning-item-detail {
+.learning-plan-notice p {
   margin: 0;
 }
 
-.learning-item-detail summary {
-  width: fit-content;
-  cursor: pointer;
-  color: var(--accent);
+.learning-after-levels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.learning-after-level {
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.learning-after-level h3 {
+  margin: 0 0 4px;
+  font-size: 16px;
+}
+
+.learning-after-level p {
+  margin: 0 0 8px;
   font-size: 13px;
-  font-weight: 800;
+}
+
+.learning-after-level ul,
+.learning-after-part ol,
+.learning-after-part ul {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding-left: 20px;
+}
+
+.learning-after-part {
+  margin-bottom: 14px;
+}
+
+.learning-modules-note {
+  margin: 10px 0 0;
+  font-size: 12px;
 }
 
 .plan-next-step {
@@ -1056,64 +976,6 @@ input[type="search"] {
 .plan-next-step small {
   margin-top: 2px;
   color: var(--muted);
-}
-
-.learning-item-detail-body {
-  display: grid;
-  gap: 8px;
-  margin-top: 10px;
-  padding: 10px 12px;
-  border-left: 2px solid var(--line);
-  color: var(--muted);
-  font-size: 14px;
-}
-
-.learning-item-detail-body p {
-  margin: 0;
-}
-
-.learning-detail-lead {
-  color: var(--text);
-  font-weight: 700;
-}
-
-.learning-detail-points {
-  display: grid;
-  gap: 5px;
-  margin: 0;
-  padding-left: 18px;
-}
-
-.learning-detail-examples {
-  display: grid;
-  border-block: 1px solid var(--line);
-}
-
-.learning-detail-example {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 12px;
-  padding: 7px 0;
-}
-
-.learning-detail-example + .learning-detail-example {
-  border-top: 1px solid var(--line);
-}
-
-.learning-detail-example [lang="es"] {
-  color: var(--text);
-  font-weight: 750;
-}
-
-.learning-detail-task {
-  padding: 9px 10px;
-  border-left: 3px solid var(--accent-2);
-  background: color-mix(in srgb, var(--accent-2) 8%, transparent);
-  color: var(--text);
-}
-
-.learning-detail-note {
-  font-size: 13px;
 }
 
 .learning-item-links {
@@ -3553,17 +3415,12 @@ select {
   }
 
   .learning-level-tabs {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .learning-level-tabs [role="tab"] small {
     display: block;
     margin: 1px 0 0;
-  }
-
-  .learning-detail-example {
-    grid-template-columns: 1fr;
-    gap: 2px;
   }
 
   .plan-next-step {
@@ -4095,7 +3952,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.34 · обновлено: 29.09.2026 18:10 CEST</span>
+        <span>Версия MVP 1.35 · обновлено: 29.09.2026 18:17 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -9723,70 +9580,39 @@ const MOODS = [
 ];
 
 const LEARNING_LEVELS = [
-  {
-    id: "a0", label: "A0", title: "Старт с нуля",
-    description: "Внутренняя подготовительная ступень проекта до официального A1.",
-    can: ["прочитать и произнести основные испанские звуки", "поздороваться, попрощаться, представиться и назвать страну/язык", "понять числа 0–20, дни недели и простое время"],
-    grammar: ["алфавит, ударение и базовые правила чтения", "род и число существительных; артикли el/la, un/una", "личные местоимения и базовый порядок слов", "ser, estar, tener, hay, llamarse в настоящем времени"],
-    topics: ["имя, возраст, происхождение и языки", "семья и базовые личные данные", "числа, даты, время и классные команды"],
-    practice: ["представиться в 4–5 фразах", "задать и понять имя, страну и профессию", "прочитать короткое расписание или ценник"],
-    checklist: ["Я читаю простые слова по правилам испанского", "Я могу кратко рассказать о себе", "Я понимаю базовые вопросы и инструкции"]
-  },
-  {
-    id: "a1", label: "A1", title: "Базовое общение",
-    description: "Простое взаимодействие в знакомых бытовых ситуациях.",
-    can: ["понять и использовать знакомые повседневные выражения", "представить себя и другого человека", "задавать и отвечать на простые вопросы о личных данных и окружении"],
-    grammar: ["presente de indicativo: регулярные глаголы и частотные неправильные формы", "вопросы, отрицание, hay и estar; согласование существительных и прилагательных", "притяжательные, указательные и количественные слова", "ir a + infinitivo для ближайших планов; базовые местоимения"],
-    topics: ["дом, семья, распорядок дня", "еда, покупки, кафе и цены", "город, транспорт, направления", "работа/учёба, погода и свободное время"],
-    practice: ["заказать еду и купить нужный товар", "спросить дорогу и понять простой ответ", "написать короткое сообщение или анкету", "описать обычный день"],
-    checklist: ["Я поддерживаю короткий разговор на знакомую тему", "Я понимаю медленную чёткую речь и короткие тексты", "Я могу написать простое сообщение о себе или планах"]
-  },
-  {
-    id: "a2", label: "A2", title: "Повседневная самостоятельность",
-    description: "Общение в регулярно встречающихся ситуациях и рассказ о прошлом, настоящем и планах.",
-    can: ["понимать часто употребляемые фразы о семье, работе, покупках и поездках", "общаться в большинстве простых рутинных ситуаций", "описать прошлый опыт, планы и ближайшие намерения простыми связанными фразами"],
-    grammar: ["pretérito perfecto compuesto, indefinido и imperfecto: базовое противопоставление", "будущее и условное намерение: ir a + infinitivo, futuro simple в частотных случаях", "сравнение, превосходная степень и наречия частотности", "привычки и действие в процессе: soler + infinitivo, estar/seguir + gerundio", "прямые/косвенные местоимения, возвратные глаголы и базовый imperativo", "союзы porque, aunque, cuando, si и простые придаточные"],
-    topics: ["путешествия, жильё, услуги и здоровье", "работа, учёба, планы и опыт", "личные события, привычки и воспоминания", "покупки, технологии и повседневные проблемы"],
-    practice: ["рассказать, что произошло вчера или недавно", "описать привычки и фоновые обстоятельства в прошлом", "объяснить проблему в магазине, отеле или у врача", "написать короткий рассказ, письмо или отзыв"],
-    checklist: ["Я могу объясниться в типичной поездке без постоянного перехода на другой язык", "Я различаю основные способы рассказать о прошлом", "Я связываю несколько фраз в понятный рассказ о знакомой теме"]
-  },
-  {
-    id: "b1", label: "B1", title: "Уверенное самостоятельное общение",
-    description: "Самостоятельное общение на знакомые темы, рассказ о событиях и объяснение мнения.",
-    can: ["понимать основную мысль ясной стандартной речи на знакомые темы", "справляться с большинством ситуаций в поездке по Испании", "создавать связный рассказ о событиях, опыте, планах и целях", "кратко объяснять причины, сравнивать варианты и выражать мнение"],
-    grammar: ["системное различение indefinido, imperfecto и perfecto", "futuro, condicional и основные перифразы", "presente de subjuntivo в желаниях, оценках, советах и цели", "мнение и достоверность: indicativo или subjuntivo после creo, no creo, dudo", "условные конструкции реального и гипотетического типа", "относительные, временные, причинные и условные придаточные", "связки текста, местоимения, косвенная речь в базовом объёме"],
-    topics: ["работа и образование, путешествия и общество", "здоровье, окружающая среда, медиа и технологии", "биография, планы, проблемы и решения", "культурные и бытовые реалии Испании"],
-    practice: ["рассказать историю и поддержать разговор без подготовки", "написать письмо, отзыв или связный рассказ", "объяснить проблему и предложить решение", "перефразировать простое сообщение для другого человека"],
-    checklist: ["Я могу поддерживать разговор на большинство знакомых тем", "Я связно рассказываю о прошлом и планах", "Я выражаю мнение и объясняю его простыми аргументами"]
-  },
-  {
-    id: "b2", label: "B2", title: "Свободное взаимодействие",
-    description: "Уверенное взаимодействие с носителями языка и точное обсуждение широкого круга тем.",
-    can: ["понимать основные идеи сложных текстов и дискуссий на конкретные и абстрактные темы", "общаться достаточно свободно и спонтанно", "аргументировать позицию, сравнивать точки зрения и учитывать возражения", "писать подробные тексты с ясной структурой"],
-    grammar: ["весь основной репертуар времён и аспектов", "subjuntivo в оценках, сомнениях, гипотезах, уступке и относительных конструкциях", "сложные условные и модальные конструкции", "косвенная речь, пассивные и безличные конструкции", "связность, регистр, порядок слов и оттенки значения", "устойчивые сочетания и управление частотных глаголов"],
-    topics: ["актуальные события, работа, культура и общество", "наука, технологии, экономика и образование", "ценности, решения, риски и последствия", "регистры и вариативность с опорой на норму Испании"],
-    practice: ["участвовать в обсуждении и вежливо перебивать/уточнять", "написать эссе, отчёт или формальное письмо", "суммировать несколько аргументов", "выступить с подготовленной презентацией"],
-    checklist: ["Я могу вести спонтанную дискуссию с носителями", "Я ясно строю аргументированный текст", "Я меняю тон между бытовым и формальным общением"]
-  },
-  {
-    id: "c1", label: "C1", title: "Продвинутое владение",
-    description: "Гибкая, точная и уместная речь в профессиональных, академических и социальных ситуациях.",
-    can: ["понимать длинные сложные тексты, включая скрытые смысловые связи", "говорить бегло, почти не испытывая затруднений в подборе слов", "использовать язык гибко для социальных, профессиональных и академических целей", "строить хорошо организованные подробные тексты на сложные темы"],
-    grammar: ["тонкие значения времён и наклонений, включая все основные формы subjuntivo", "сложные средства тематизации, эмфазы, эллипсиса и связности", "нюансы модальности, вероятности, дистанции и вежливости", "разнообразная косвенная речь, номинализация и пассивные модели", "регистры, идиомы, коллокации и стилистический выбор"],
-    topics: ["абстрактные и профессиональные области", "общественные процессы, культура и этика", "академическая и деловая коммуникация", "язык, идентичность и вариативность испанского"],
-    practice: ["вести переговоры и достигать компромисса", "суммировать и критически сопоставлять источники", "редактировать текст под аудиторию и регистр", "выступать без подробной подготовки"],
-    checklist: ["Я точно выражаю сложные мысли и оттенки", "Я понимаю имплицитный смысл и позицию автора", "Я адаптирую стиль к ситуации и собеседнику"]
-  },
-  {
-    id: "c2", label: "C2", title: "Очень высокий уровень владения",
-    description: "Практически полное понимание и точное использование испанского, включая стилистические оттенки.",
-    can: ["легко понимать практически любой устный или письменный материал", "свободно обобщать информацию из разных источников", "выражаться спонтанно, очень точно и с тонкими смысловыми различиями", "создавать убедительные, логичные и стилистически выверенные тексты"],
-    grammar: ["полный контроль грамматических средств и редких конструкций", "стилистические эффекты порядка слов, выбора времени и наклонения", "идиоматические выражения, метафоры, юмор и игра слов", "точное переключение регистров и разновидностей языка", "самостоятельное редактирование точности, связности и уместности"],
-    topics: ["любые общественные, научные, профессиональные и культурные темы", "литературные и публицистические жанры", "риторика, стиль, ирония и подтекст", "вариативность испанского с опорой на норму Испании"],
-    practice: ["вести сложную дискуссию и мгновенно реагировать на нюансы", "синтезировать длинные и разнородные источники", "создавать тексты разных жанров и регистров", "объяснять тонкие языковые различия другим учащимся"],
-    checklist: ["Я понимаю практически всё, что читаю и слышу", "Я говорю и пишу точно, гибко и естественно", "Я контролирую стиль, тон, подтекст и культурные отсылки"]
-  }
+  { id: "a0", label: "A0", title: "Старт с нуля", description: "Подготовительная ступень до A1: чтение, первые фразы, числа и время." },
+  { id: "a1", label: "A1", title: "Базовое общение", description: "Простое взаимодействие в знакомых бытовых ситуациях." },
+  { id: "a2", label: "A2", title: "Повседневная самостоятельность", description: "Общение в регулярно встречающихся ситуациях и рассказ о прошлом, настоящем и планах." },
+  { id: "b1", label: "B1", title: "Уверенное самостоятельное общение", description: "Самостоятельное общение на знакомые темы, рассказ о событиях и объяснение мнения." },
+  { id: "b2", label: "B2", title: "Свободное взаимодействие", description: "Уверенное взаимодействие с носителями языка и точное обсуждение широкого круга тем." },
+  { id: "after", label: "После B2", title: "C1 и C2", description: "Учебник заканчивается на B2, поэтому здесь нет модулей и прогресса — только ориентиры и официальные материалы." }
 ];
+
+// C1–C2 не покрыты учебником: для них нет модулей и отметок, только ориентиры CEFR и официальные материалы.
+const LEARNING_AFTER_B2 = {
+  levels: [
+    {
+      label: "C1", title: "Продвинутое владение",
+      description: "Гибкая, точная и уместная речь в профессиональных, академических и социальных ситуациях.",
+      can: ["понимать длинные сложные тексты, включая скрытые смысловые связи", "говорить бегло, почти не испытывая затруднений в подборе слов", "использовать язык гибко для социальных, профессиональных и академических целей", "строить хорошо организованные подробные тексты на сложные темы"]
+    },
+    {
+      label: "C2", title: "Очень высокий уровень владения",
+      description: "Практически полное понимание и точное использование испанского, включая стилистические оттенки.",
+      can: ["легко понимать практически любой устный или письменный материал", "свободно обобщать информацию из разных источников", "выражаться спонтанно, очень точно и с тонкими смысловыми различиями", "создавать убедительные, логичные и стилистически выверенные тексты"]
+    }
+  ],
+  steps: [
+    "Закройте B1–B2: пройдите все уроки Учебника этих уровней и выполните задания модулей.",
+    "Каждую неделю работайте с аутентичными материалами из Испании — новости, радио, подкасты, сериалы — и пересказывайте их письменно и устно.",
+    "Сверяйте цель с официальным описанием уровня и тренируйте формат заданий DELE C1 или C2."
+  ],
+  resources: [
+    ["DELE C1: описание экзамена", "https://examenes.cervantes.es/es/dele/examenes/c1"],
+    ["DELE C2: описание экзамена", "https://examenes.cervantes.es/es/dele/examenes/c2"],
+    ["Plan Curricular: грамматический инвентарь C1–C2", "https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/niveles/02_gramatica_inventario_c1-c2.htm"]
+  ]
+};
 
 // Хранилище может быть недоступно для file://, приватного режима или строгих настроек браузера.
 // В таком случае приложение продолжает работать в текущей сессии без сохранения настроек.
@@ -9886,14 +9712,39 @@ function readTextbookProgress() {
   return { version: 2, lessons };
 }
 
+// До MVP 1.35 план хранил отметки по номеру пункта («a1:7»); модулям они не соответствуют.
+// Такие ключи переносятся в msg:learningProgressLegacy, а план один раз показывает уведомление.
+function migrateLearningProgress() {
+  const stored = readStoredJSON("msg:learningProgress", {});
+  const progress = stored && typeof stored === "object" && !Array.isArray(stored) ? stored : {};
+  const legacy = Object.fromEntries(Object.entries(progress).filter(([key]) => !key.startsWith("plan:")));
+  if (!Object.keys(legacy).length) return progress;
+  const archived = readStoredJSON("msg:learningProgressLegacy", {});
+  const current = Object.fromEntries(Object.entries(progress).filter(([key]) => key.startsWith("plan:")));
+  appStorage.set("msg:learningProgressLegacy", JSON.stringify({ ...(archived && typeof archived === "object" ? archived : {}), ...legacy }));
+  appStorage.set("msg:learningProgress", JSON.stringify(current));
+  appStorage.set("msg:learningPlanNotice", "1");
+  return current;
+}
+
+function readLearningDetails() {
+  const stored = readStoredJSON("msg:learningDetails", {});
+  const details = stored && typeof stored === "object" && !Array.isArray(stored) ? stored : {};
+  const current = Object.fromEntries(Object.entries(details).filter(([key]) => key.startsWith("plan:")));
+  if (Object.keys(current).length !== Object.keys(details).length) appStorage.set("msg:learningDetails", JSON.stringify(current));
+  appStorage.remove("msg:learningFilter");
+  return current;
+}
+
 const state = {
   view: "verbs",
-  learningLevel: LEARNING_LEVELS.some((level) => level.id === appStorage.get("msg:learningLevel"))
-    ? appStorage.get("msg:learningLevel")
-    : "a0",
-  learningProgress: readStoredJSON("msg:learningProgress", {}),
-  learningDetails: readStoredJSON("msg:learningDetails", {}),
-  learningFilter: appStorage.get("msg:learningFilter") || "all",
+  learningLevel: (() => {
+    const stored = appStorage.get("msg:learningLevel");
+    if (stored === "c1" || stored === "c2") return "after";
+    return LEARNING_LEVELS.some((level) => level.id === stored) ? stored : "a0";
+  })(),
+  learningProgress: migrateLearningProgress(),
+  learningDetails: readLearningDetails(),
   query: "",
   selectedVerb: null,
   previousVerbQuery: null,
@@ -15576,1482 +15427,6 @@ function hasSavedQuizSession() {
   return Boolean(state.savedQuizSession?.cardQuiz?.length);
 }
 
-const A0_LEARNING_DETAILS = {
-  "прочитать и произнести основные испанские звуки": {
-    guidance: "Испанское письмо довольно предсказуемо: сначала закрепите пять устойчивых гласных, затем несколько сочетаний, которые читаются не как в русском.",
-    points: [
-      "a, e, i, o, u произносятся отчётливо и почти не редуцируются; h не читается: hola, hotel.",
-      "В норме Испании c перед e/i и z дают межзубный звук: cero, cinco, Zaragoza; j и g перед e/i звучат примерно как сильное русское «х»: jamón, gente.",
-      "ñ читается как «нь»; b и v обозначают один фонемный ряд; rr сильнее одиночного r: pero — perro.",
-      "В gue/gui буква u обычно не звучит: guerra, guitarra; две точки возвращают звук u: pingüino."
-    ],
-    examples: [["hola", "привет; h не читается"], ["cinco", "пять; c перед i — межзубный звук"], ["gente", "люди; g перед e звучит как сильное «х»"], ["España", "Испания; ñ = «нь»"]],
-    task: "Прочитайте вслух: hola, vino, cinco, Zaragoza, gente, guitarra, niño, perro. Затем проверьте, не превращаются ли гласные в безударные русские звуки."
-  },
-  "поздороваться, попрощаться, представиться и назвать страну/язык": {
-    guidance: "Для первого контакта достаточно готовой цепочки: приветствие → имя → происхождение или язык → реакция на знакомство → прощание.",
-    points: [
-      "Нейтрально: Hola. По времени суток: Buenos días, Buenas tardes, Buenas noches.",
-      "Представление: Me llamo Ana или Soy Ana. Реакция: Encantado / Encantada; Mucho gusto.",
-      "С ровесником и знакомым: ¿Cómo estás? / ¿Y tú? Вежливо или официально: ¿Cómo está? / ¿Y usted?",
-      "Происхождение: Soy de Rusia. Национальность и язык пишутся со строчной буквы: soy ruso / rusa, hablo ruso.",
-      "Прощание: Adiós, Hasta luego, Nos vemos."
-    ],
-    examples: [["Hola, me llamo Mijaíl.", "Привет, меня зовут Михаил."], ["Soy de Rusia y hablo ruso.", "Я из России и говорю по-русски."], ["Encantado. ¿Y tú?", "Очень приятно. А ты?"], ["Buenos días. ¿Cómo está usted?", "Доброе утро. Как Вы?"], ["Hasta luego.", "До скорого."]],
-    task: "Скажите всю цепочку без подсказки и замените имя, страну и язык своими данными."
-  },
-  "понять числа 0–20, дни недели и простое время": {
-    guidance: "На старте важно не только перечислить слова, но и узнавать их в цене, дате, номере телефона и вопросе о времени.",
-    points: [
-      "0–10: cero, uno, dos, tres, cuatro, cinco, seis, siete, ocho, nueve, diez.",
-      "11–20: once, doce, trece, catorce, quince, dieciséis, diecisiete, dieciocho, diecinueve, veinte.",
-      "Дни недели пишутся со строчной буквы: lunes, martes, miércoles, jueves, viernes, sábado, domingo.",
-      "Для одного часа: Es la una. Для остальных: Son las dos. Минуты: Son las tres y diez.",
-      "Полезные части часа: y cuarto — четверть после, y media — половина, menos cuarto — без четверти."
-    ],
-    examples: [["Hoy es lunes.", "Сегодня понедельник."], ["Son las ocho y veinte.", "Сейчас восемь часов двадцать минут."], ["Son las nueve y media.", "Сейчас половина десятого."], ["Cuesta quince euros.", "Это стоит пятнадцать евро."], ["Tengo clase el miércoles.", "У меня занятие в среду."]],
-    task: "Запишите на слух или произнесите пять чисел от 0 до 20, сегодняшний день недели и текущее время."
-  },
-  "алфавит, ударение и базовые правила чтения": {
-    guidance: "В испанском алфавите 27 букв; ch и ll являются сочетаниями, а ñ — отдельной буквой. Для чтения незнакомого слова достаточно знать основные соответствия и правило ударения.",
-    points: [
-      "Названия букв: a, be, ce, de, e, efe, ge, hache, i, jota, ka, ele, eme, ene, eñe, o, pe, cu, erre, ese, te, u, uve, uve doble, equis, ye, zeta.",
-      "Если слово заканчивается на гласную, n или s, без письменного ударения обычно выделяется предпоследний слог: casa, examen, lunes.",
-      "После другой согласной обычно ударен последний слог: hotel, hablar, Madrid.",
-      "Знак ударения отменяет общее правило: café, teléfono, también.",
-      "Вопрос и восклицание открываются и закрываются знаками: ¿Cómo te llamas? ¡Hola!"
-    ],
-    examples: [["María: eme, a, erre, i, a", "Имя María по буквам."], ["casa", "CA-sa: предпоследний слог"], ["hotel", "ho-TEL: последний слог"], ["teléfono", "te-LÉ-fo-no: ударение показано знаком"], ["¿Qué tal?", "Как дела? Открывающий знак обязателен."]],
-    task: "Назовите по буквам своё имя и фамилию, затем разделите на слоги и поставьте голосом ударение: amigo, español, examen, profesor, música, también."
-  },
-  "род и число существительных; артикли el/la, un/una": {
-    guidance: "Учите существительное сразу с артиклем: не casa, а la casa; не libro, а el libro. Артикль одновременно подсказывает род и определённость.",
-    points: [
-      "Частая модель: -o — мужской род, -a — женский: el libro, la casa. Но есть исключения: el día, la mano, el problema.",
-      "el/la называют конкретный или уже известный предмет; un/una вводят один новый или неопределённый предмет.",
-      "После гласной множественное число обычно получает -s: casa → casas; после согласной — -es: hotel → hoteles.",
-      "Слова на -z меняют z на c: luz → luces.",
-      "Базовые цвета тоже согласуются: blanco/a, negro/a, rojo/a, amarillo/a; azul, verde и gris не меняются по роду: una casa verde."
-    ],
-    examples: [["Hay una mesa.", "Есть стол: предмет вводится впервые."], ["La mesa es blanca.", "Этот стол белый: предмет уже известен."], ["un libro — unos libros", "книга — несколько книг"], ["la luz — las luces", "свет — огни"]],
-    task: "Добавьте артикль и множественное число: casa, libro, hotel, ciudad, día, mano, luz."
-  },
-  "личные местоимения и базовый порядок слов": {
-    guidance: "Базовая схема фразы — подлежащее + глагол + дополнение, но личное местоимение обычно опускается: форма глагола уже показывает лицо.",
-    points: [
-      "Лица: yo, tú, él/ella/usted, nosotros/as, vosotros/as, ellos/ellas/ustedes. В Испании vosotros — обычное неформальное «вы» во множественном числе.",
-      "usted и ustedes сочетаются с формами третьего лица: usted habla, ustedes hablan.",
-      "Нейтрально: Ana habla español. Часто: Hablo español, а не Yo hablo español; yo нужно для контраста или акцента.",
-      "Отрицание ставится перед глаголом: No hablo inglés. Вопрос оформляется знаками и интонацией: ¿Hablas español?"
-    ],
-    examples: [["Estudio español.", "Я изучаю испанский; yo не требуется."], ["Yo soy Ana, ¿y tú?", "Я Ана, а ты? Здесь yo создаёт контраст."], ["Vosotros vivís en Madrid.", "Вы живёте в Мадриде."], ["¿Usted habla inglés?", "Вы говорите по-английски?"]],
-    task: "Переделайте три утверждения в отрицания и вопросы: Hablas español. Vive en Madrid. Tenéis clase."
-  },
-  "ser, estar, tener, hay, llamarse в настоящем времени": {
-    guidance: "Эти пять моделей покрывают большую часть рассказа о себе и ближайшем окружении: кто вы, где вы, что у вас есть и что где-то существует.",
-    points: [
-      "ser: soy, eres, es, somos, sois, son — личность, происхождение, профессия, постоянная характеристика.",
-      "estar: estoy, estás, está, estamos, estáis, están — место и состояние.",
-      "tener: tengo, tienes, tiene, tenemos, tenéis, tienen — обладание и возраст.",
-      "hay — неизменяемое «есть / имеется»; llamarse: me llamo, te llamas, se llama, nos llamamos, os llamáis, se llaman."
-    ],
-    examples: [["Soy estudiante.", "Я студент."], ["Estoy en Madrid.", "Я нахожусь в Мадриде."], ["Tengo treinta años.", "Мне тридцать лет."], ["Hay un café aquí.", "Здесь есть кафе."], ["Me llamo Elena.", "Меня зовут Елена."]],
-    task: "Заполните своими данными пять фраз: Soy…, Estoy en…, Tengo… años, Hay… cerca, Me llamo…"
-  },
-  "имя, возраст, происхождение и языки": {
-    guidance: "Личные данные удобно учить парами «вопрос — короткий ответ». На уровне A0 достаточно распознать вопрос и ответить одной моделью.",
-    points: [
-      "Имя: ¿Cómo te llamas? — Me llamo… / ¿Cuál es tu nombre? — Mi nombre es…",
-      "Фамилия и написание: ¿Cuál es tu apellido? — Mi apellido es…; ¿Cómo se escribe? — Se escribe…",
-      "Возраст: ¿Cuántos años tienes? — Tengo … años. В испанском возраст выражается с tener.",
-      "Происхождение: ¿De dónde eres? — Soy de…; место жительства: ¿Dónde vives? — Vivo en…",
-      "Языки: ¿Qué idiomas hablas? — Hablo ruso y un poco de español.",
-      "Контакты: ¿Cuál es tu número de teléfono?; correo electrónico — e-mail, arroba — @, punto — точка, guion bajo — _."
-    ],
-    examples: [["Me llamo Irina López.", "Меня зовут Ирина Лопес."], ["Tengo veintiocho años.", "Мне двадцать восемь лет."], ["Soy de Moldavia y vivo en España.", "Я из Молдовы и живу в Испании."], ["Hablo ruso y rumano.", "Я говорю по-русски и по-румынски."], ["Mi correo es irina arroba ejemplo punto es.", "Мой e-mail: irina@example.es."]],
-    task: "Ответьте вслух на вопросы об имени, фамилии, возрасте, стране и языках; затем продиктуйте по цифрам номер телефона и произнесите адрес электронной почты."
-  },
-  "семья и базовые личные данные": {
-    guidance: "Для первого описания семьи нужны названия родства, притяжательные mi/tu/su и уже знакомые ser, tener, llamarse, vivir.",
-    points: [
-      "Базовые слова: madre, padre, padres, hermano/a, hijo/a, marido, mujer, pareja, abuelo/a.",
-      "mi и tu во множественном числе получают -s: mi hermana — mis hermanas; tu hijo — tus hijos.",
-      "su может означать его, её или Ваш; на A0 значение обычно ясно из контекста.",
-      "Для количества: Tengo un hermano. Для имени: Mi madre se llama Ana."
-    ],
-    examples: [["Esta es mi familia.", "Это моя семья."], ["Tengo una hermana.", "У меня есть сестра."], ["Mi padre se llama Víctor.", "Моего отца зовут Виктор."], ["Mis padres viven en Chisináu.", "Мои родители живут в Кишинёве."]],
-    task: "Составьте четыре фразы о реальной или вымышленной семье, используя mi/mis, tener, llamarse и vivir."
-  },
-  "числа, даты, время и классные команды": {
-    guidance: "Этот набор помогает ориентироваться на уроке и извлекать конкретную информацию: номер, день, час и простое действие преподавателя.",
-    points: [
-      "Месяцы: enero, febrero, marzo, abril, mayo, junio, julio, agosto, septiembre, octubre, noviembre, diciembre.",
-      "Времена года: primavera, verano, otoño, invierno. С месяцем и временем года: en mayo, en verano.",
-      "Дата: Hoy es lunes, 5 de mayo. День недели и месяц пишутся со строчной буквы.",
-      "Время: Es la una; Son las dos; Son las cuatro y media; La clase es a las nueve.",
-      "Частые команды: escucha, lee, escribe, repite, abre, cierra, mira, habla.",
-      "Предметы класса: libro, diccionario, papel, bolígrafo, lápiz, goma, mesa, silla, pizarra, ordenador.",
-      "Фразы для уточнения: Más despacio, por favor. ¿Puede repetir? ¿Qué significa…? ¿Cómo se dice… en español? ¿Cómo se escribe? No entiendo."
-    ],
-    examples: [["Mi cumpleaños es el 14 de septiembre.", "Мой день рождения 14 сентября."], ["En agosto es verano en España.", "В августе в Испании лето."], ["Abre el libro.", "Открой книгу."], ["Escucha y repite.", "Слушай и повторяй."], ["La clase es el martes a las diez.", "Урок во вторник в десять."], ["¿Qué significa pizarra?", "Что означает pizarra?"]],
-    task: "Запишите сегодняшнюю дату и время, назовите текущий месяц и время года, затем выполните без перевода команды: abre, lee, escribe, cierra."
-  },
-  "представиться в 4–5 фразах": {
-    guidance: "Короткое представление лучше строить по устойчивому порядку: приветствие → имя → происхождение/место → занятие → языки или цель обучения.",
-    points: [
-      "Не пытайтесь включить всю биографию: одна мысль — одна короткая фраза.",
-      "Профессия после ser обычно без артикля: Soy programador. Soy profesora.",
-      "Связка y соединяет две близкие мысли; pero можно использовать для простого контраста."
-    ],
-    examples: [["Hola, me llamo Pablo.", "Привет, меня зовут Пабло."], ["Soy de Argentina y vivo en Madrid.", "Я из Аргентины и живу в Мадриде."], ["Soy diseñador.", "Я дизайнер."], ["Hablo español e inglés.", "Я говорю по-испански и по-английски."], ["Estudio ruso.", "Я изучаю русский."]],
-    task: "Подготовьте свою версию из пяти фраз, произнесите её дважды и во второй раз не смотрите в текст."
-  },
-  "задать и понять имя, страну и профессию": {
-    guidance: "В мини-диалоге достаточно трёх вопросительных моделей. Слушайте ключевое слово после llamo, de и soy, а не пытайтесь перевести каждое слово.",
-    points: [
-      "Имя: ¿Cómo te llamas? — Me llamo…",
-      "Страна: ¿De dónde eres? — Soy de…",
-      "Профессия или занятие: ¿A qué te dedicas? — Soy… / Trabajo como… / Estudio…",
-      "Вежливая форма: ¿Cómo se llama? ¿De dónde es? ¿A qué se dedica?"
-    ],
-    examples: [["¿Cómo te llamas? — Me llamo Sara.", "Как тебя зовут? — Меня зовут Сара."], ["¿De dónde eres? — Soy de Italia.", "Откуда ты? — Я из Италии."], ["¿A qué te dedicas? — Soy médico.", "Чем ты занимаешься? — Я врач."]],
-    task: "Разыграйте обе роли: задайте три вопроса на tú, ответьте, затем повторите диалог в вежливой форме usted."
-  },
-  "прочитать короткое расписание или ценник": {
-    guidance: "В расписании и ценнике не нужно понимать весь текст: сначала найдите тип информации, затем извлеките день, время, цену или статус abierto/cerrado.",
-    points: [
-      "Horario — расписание или часы работы; de lunes a viernes — с понедельника по пятницу; cerrado — закрыто.",
-      "Интервал 9:30–14:00 читается как de nueve y media a dos; цена в Испании может быть записана 3,50 €.",
-      "A las указывает время события: La visita es a las once. El показывает день: el martes.",
-      "Перед чтением сформулируйте вопрос: когда открыто, во сколько начинается или сколько стоит?"
-    ],
-    examples: [["Horario: 9:30–14:00", "Часы работы: с 9:30 до 14:00."], ["De lunes a viernes", "С понедельника по пятницу."], ["Entrada: 12 €", "Вход: 12 евро."], ["Cerrado el domingo", "В воскресенье закрыто."]],
-    task: "Ответьте по примерам: ¿Cuándo está abierto? ¿A qué hora cierra? ¿Cuánto cuesta la entrada?"
-  },
-  "Я читаю простые слова по правилам испанского": {
-    guidance: "Пункт выполнен, если вы можете прочитать новое короткое слово, объяснить ударение и распознать основные буквенные сочетания без транскрипции.",
-    points: [
-      "Проверьте отдельно гласные, h, ñ, c/z, g/j, gue/gui и r/rr.",
-      "Не требуется идеальный акцент; важны различимость слова, правильный ударный слог и отсутствие русской редукции гласных.",
-      "Если слово незнакомо, сначала найдите ударение по окончанию или знаку tilde, затем читайте по слогам."
-    ],
-    examples: [["guitarra", "gui-ta-rra"], ["miércoles", "MIÉR-co-les"], ["habitación", "ha-bi-ta-CIÓN; h не читается"], ["cerveza", "два межзубных звука в норме справочника"]],
-    task: "Без подготовки прочитайте: gente, guitarra, cerveza, español, habitación, miércoles. Отметьте пункт только если верно прочитали минимум пять слов из шести."
-  },
-  "Я могу кратко рассказать о себе": {
-    guidance: "Готовность определяется самостоятельной речью, а не заучиванием одного текста: вы должны уметь заменить в модели имя, страну, город, занятие и язык.",
-    points: [
-      "Минимум: 4–5 связанных фраз без перехода на русский.",
-      "Допустимы паузы и отдельные ошибки, если собеседник понимает основные данные.",
-      "После рассказа будьте готовы ответить хотя бы на два вопроса: ¿De dónde eres? ¿Qué idiomas hablas?"
-    ],
-    examples: [["Me llamo Olga.", "Меня зовут Ольга."], ["Soy de Ucrania y vivo en Valencia.", "Я из Украины и живу в Валенсии."], ["Soy ingeniera.", "Я инженер."], ["Hablo ucraniano y ruso.", "Я говорю по-украински и по-русски."]],
-    task: "Запишите себя на одну минуту. Отметьте пункт, если сказали минимум четыре понятные фразы и ответили на два базовых вопроса без готового текста."
-  },
-  "Я понимаю базовые вопросы и инструкции": {
-    guidance: "На подготовительном уровне достаточно узнавать ключевые личные вопросы и короткие инструкции, если собеседник говорит медленно, чётко и при необходимости повторяет.",
-    points: [
-      "Вопросы: ¿Cómo te llamas? ¿De dónde eres? ¿Cuántos años tienes? ¿Dónde vives? ¿Qué idiomas hablas?",
-      "Инструкции: escucha, mira, lee, escribe, repite, abre, cierra.",
-      "Разрешённая стратегия: попросить повторить — ¿Puede repetir? — или говорить медленнее — Más despacio, por favor.",
-      "Если мешает одно слово: ¿Qué significa…? Если нужно назвать или записать слово: ¿Cómo se dice…? ¿Cómo se escribe?",
-      "Не нужно понимать каждое слово; нужно правильно выполнить действие или дать подходящий короткий ответ."
-    ],
-    examples: [["¿Dónde vives?", "Где ты живёшь?"], ["Lee el texto.", "Прочитай текст."], ["Escribe tu nombre.", "Напиши своё имя."], ["Más despacio, por favor.", "Помедленнее, пожалуйста."]],
-    task: "Попросите другого человека в случайном порядке прочитать пять вопросов или команд. Отметьте пункт, если правильно отреагировали минимум четыре раза."
-  }
-};
-
-const A1_LEARNING_DETAILS = {
-  "понять и использовать знакомые повседневные выражения": {
-    guidance: "На A1 важны короткие готовые выражения для конкретной потребности: получить предмет, узнать цену или место, попросить повторить и вежливо завершить разговор.",
-    points: [
-      "Просьба: Quiero…, Quisiera… или Un café, por favor. На этом уровне достаточно устойчивой вежливой формулы.",
-      "Информация: ¿Cuánto cuesta? ¿Dónde está…? ¿A qué hora…?",
-      "Стратегии понимания: No entiendo. ¿Puede repetir? Más despacio, por favor.",
-      "Социальные формулы: gracias, de nada, perdón, lo siento, por favor."
-    ],
-    examples: [["Quiero un café, por favor.", "Я хочу кофе, пожалуйста."], ["¿Cuánto cuesta?", "Сколько это стоит?"], ["¿Dónde está el baño?", "Где туалет?"], ["Más despacio, por favor.", "Помедленнее, пожалуйста."]],
-    task: "Разыграйте три мини-ситуации: закажите напиток, спросите цену и попросите повторить непонятную фразу."
-  },
-  "представить себя и другого человека": {
-    guidance: "Представление другого человека строится почти так же, как рассказ о себе: имя, связь с вами, происхождение или место, занятие и одна характеристика.",
-    points: [
-      "О себе: Me llamo…, Soy de…, Vivo en…, Trabajo en… / Estudio…",
-      "О другом: Este es Carlos / Esta es Ana. Se llama…, Es…, Vive…, Trabaja…",
-      "Перед человеком обычно ставится личное a после presentar: Te presento a Ana.",
-      "Реакция: Encantado/a, Mucho gusto, Hola, ¿qué tal?"
-    ],
-    examples: [["Esta es mi amiga Laura.", "Это моя подруга Лаура."], ["Es de Sevilla y vive en Madrid.", "Она из Севильи и живёт в Мадриде."], ["Trabaja en un hospital.", "Она работает в больнице."], ["Te presento a mi hermano.", "Познакомься с моим братом."]],
-    task: "Представьте себя в четырёх фразах, затем представьте знакомого, заменив формы первого лица на третье."
-  },
-  "задавать и отвечать на простые вопросы о личных данных и окружении": {
-    guidance: "Учите вопрос вместе с типом ответа: quién — человек, dónde — место, qué — предмет или занятие, cuánto — количество, cómo — имя или характеристика.",
-    points: [
-      "Личные данные: ¿Cómo te llamas? ¿De dónde eres? ¿Dónde vives? ¿A qué te dedicas?",
-      "Окружение: ¿Quién es? ¿Qué es esto? ¿Dónde está la farmacia? ¿Hay un supermercado cerca?",
-      "Вопросительные слова несут письменное ударение: qué, quién, cómo, dónde, cuánto.",
-      "После ответа добавьте встречный вопрос: ¿Y tú? / ¿Y usted?"
-    ],
-    examples: [["¿Dónde vives? — Vivo en Toledo.", "Где ты живёшь? — Я живу в Толедо."], ["¿Quién es? — Es mi profesor.", "Кто это? — Это мой преподаватель."], ["¿Hay un banco cerca? — Sí, hay uno aquí.", "Рядом есть банк? — Да, один есть здесь."], ["¿A qué te dedicas? — Soy arquitecta.", "Чем ты занимаешься? — Я архитектор."]],
-    task: "Составьте диалог из шести реплик: три разных вопросительных слова, три ответа и один встречный вопрос."
-  },
-  "presente de indicativo: регулярные глаголы и частотные неправильные формы": {
-    guidance: "Сначала автоматизируйте окончания трёх спряжений, затем добавляйте частотные неправильные глаголы группами, а не одним длинным списком.",
-    points: [
-      "-ar: -o, -as, -a, -amos, -áis, -an; -er: -o, -es, -e, -emos, -éis, -en; -ir: -o, -es, -e, -imos, -ís, -en.",
-      "Полностью или сильно особые: ser, estar, ir, haber. Частая особая форма yo: tengo, hago, pongo, salgo.",
-      "Изменение корня обычно не затрагивает nosotros/vosotros: querer → quiero, quieres, quiere, queremos, queréis, quieren.",
-      "Подлежащее обычно опускается: Trabajo en casa. Vivimos en Madrid."
-    ],
-    examples: [["Trabajo de lunes a viernes.", "Я работаю с понедельника по пятницу."], ["Vivimos cerca del centro.", "Мы живём рядом с центром."], ["Quiero aprender español.", "Я хочу выучить испанский."], ["Tengo clase hoy.", "У меня сегодня занятие."]],
-    task: "Проспрягайте hablar, comer и vivir, затем составьте по одной личной фразе с tener, ir, hacer и querer."
-  },
-  "вопросы, отрицание, hay и estar; согласование существительных и прилагательных": {
-    guidance: "Этот блок объединяет четыре механизма простой фразы: вопрос, отрицание, существование предмета, его местоположение и согласование описания.",
-    points: [
-      "Вопрос обозначается ¿…? и часто сохраняет обычный порядок: ¿Ana vive aquí? С вопросительным словом: ¿Dónde vive Ana?",
-      "no ставится перед спрягаемым глаголом: No trabajo hoy. No hay leche.",
-      "hay вводит существующий, часто новый объект: Hay una mesa. estar показывает место конкретного объекта: La mesa está aquí.",
-      "Прилагательное согласуется в роде и числе: un piso pequeño, una casa pequeña, unos pisos pequeños."
-    ],
-    examples: [["¿Hay una farmacia cerca?", "Рядом есть аптека?"], ["La farmacia está en esta calle.", "Аптека находится на этой улице."], ["No está abierta.", "Она не открыта."], ["Las tiendas son pequeñas.", "Магазины маленькие."]],
-    task: "Опишите комнату четырьмя фразами с hay, укажите место двух предметов с estar, затем задайте вопрос и сделайте одно отрицание."
-  },
-  "притяжательные, указательные и количественные слова": {
-    guidance: "Эти определители помогают быстро уточнить, чей предмет, какой именно предмет и сколько его. Учите их внутри именной группы.",
-    points: [
-      "Перед существительным: mi/mis, tu/tus, su/sus, nuestro/a/os/as, vuestro/a/os/as. Артикль перед ними не ставится: mi casa.",
-      "Расстояние: este/esta/estos/estas — здесь; ese… — у собеседника или там; aquel… — далеко.",
-      "Количество: mucho, poco, demasiado согласуются с существительным; bastante меняется только по числу.",
-      "muy усиливает прилагательное или наречие, mucho относится к существительному или глаголу: muy caro, mucho dinero, trabajo mucho."
-    ],
-    examples: [["Esta es mi casa.", "Это мой дом."], ["¿Cuánto cuesta ese libro?", "Сколько стоит та книга?"], ["Tenemos muchas cosas.", "У нас много вещей."], ["Hay bastante espacio.", "Здесь достаточно места."]],
-    task: "Выберите пять предметов вокруг и опишите их, используя mi/tu, este/ese/aquel и два разных слова количества."
-  },
-  "ir a + infinitivo для ближайших планов; базовые местоимения": {
-    guidance: "Ближайшее намерение выражается формой ir + a + infinitivo. Местоимения помогают не повторять уже названных людей и предметы.",
-    points: [
-      "ir: voy, vas, va, vamos, vais, van. Схема не меняется: Voy a estudiar. Vamos a salir.",
-      "me, te, nos, os могут обозначать возвратность или объект: Me levanto. Te llamo mañana.",
-      "lo/la/los/las заменяют прямой объект: Compro el libro → Lo compro.",
-      "Перед спрягаемым глаголом: Lo voy a comprar; с инфинитивом можно Voy a comprarlo."
-    ],
-    examples: [["Voy a estudiar esta tarde.", "Я собираюсь заниматься сегодня днём."], ["Vamos a visitar el museo.", "Мы собираемся посетить музей."], ["¿Compras la camisa? — Sí, la compro.", "Ты покупаешь рубашку? — Да, покупаю её."], ["Te llamo mañana.", "Я позвоню тебе завтра."]],
-    task: "Составьте три ближайших плана с ir a и замените выделенный предмет местоимением: compro el libro, veo a Ana, necesito las entradas."
-  },
-  "дом, семья, распорядок дня": {
-    guidance: "Для темы достаточно трёх моделей: описать, что есть дома; назвать членов семьи; перечислить ежедневные действия со временем и частотностью.",
-    points: [
-      "Дом: piso, casa, salón, dormitorio, cocina, baño; hay для состава, estar для расположения.",
-      "Семья: padres, madre, padre, hermano/a, hijo/a, pareja; mi/mis и su/sus.",
-      "Распорядок: levantarse, desayunar, trabajar/estudiar, comer, volver, cenar, acostarse.",
-      "Частота: siempre, normalmente, a veces, nunca; время: a las ocho, por la mañana."
-    ],
-    examples: [["En mi piso hay dos dormitorios.", "В моей квартире две спальни."], ["Vivo con mis padres.", "Я живу с родителями."], ["Me levanto a las siete.", "Я встаю в семь."], ["Normalmente ceno en casa.", "Обычно я ужинаю дома."]],
-    task: "Опишите дом двумя фразами, семью двумя фразами и обычный день четырьмя действиями по порядку."
-  },
-  "еда, покупки, кафе и цены": {
-    guidance: "Учите лексику как сценарий обслуживания: привлечь внимание, назвать товар или блюдо, уточнить количество и цену, оплатить и поблагодарить.",
-    points: [
-      "Еда: agua, café, pan, carne, pescado, fruta, verdura; приёмы пищи: desayuno, comida, cena.",
-      "Количество: un kilo de, medio kilo de, una botella de, un café con leche.",
-      "Покупка: Quiero…, ¿Tiene…?, ¿Cuánto cuesta?, ¿Puedo pagar con tarjeta?",
-      "В кафе Испании уместны Quería… или Para mí…; счёт: La cuenta, por favor."
-    ],
-    examples: [["Quería un café con leche.", "Я бы хотел кофе с молоком."], ["Deme medio kilo de tomates.", "Дайте мне полкило помидоров."], ["¿Cuánto cuesta esta camisa?", "Сколько стоит эта рубашка?"], ["La cuenta, por favor.", "Счёт, пожалуйста."]],
-    task: "Составьте диалог из восьми реплик: заказ или товар, количество, цена, уточнение способа оплаты и завершение."
-  },
-  "город, транспорт, направления": {
-    guidance: "Для ориентации в городе нужны названия мест, вопрос с dónde, простые предлоги расположения и команды движения.",
-    points: [
-      "Места: calle, plaza, estación, parada, banco, farmacia, supermercado, museo.",
-      "Транспорт: ir andando, en metro, en autobús, en tren; в Испании нейтрально coger el metro/el autobús.",
-      "Положение: al lado de, cerca de, lejos de, delante de, detrás de, entre.",
-      "Направление: sigue todo recto, gira a la derecha/izquierda, cruza la calle.",
-      "Перед el предлоги сокращаются: a + el → al, de + el → del: voy al centro, al lado del banco."
-    ],
-    examples: [["¿Dónde está la estación?", "Где вокзал?"], ["Está al lado del banco.", "Он рядом с банком."], ["Sigue todo recto.", "Идите всё время прямо."], ["Voy en metro al centro.", "Я еду в центр на метро."]],
-    task: "Нарисуйте простой маршрут из трёх поворотов и объясните его вслух, затем назовите транспорт до центра."
-  },
-  "работа/учёба, погода и свободное время": {
-    guidance: "Три темы объединяет настоящее время: где и когда вы работаете или учитесь, какая сегодня погода и что вы обычно делаете для отдыха.",
-    points: [
-      "Работа: trabajar en, trabajar de, ser + profesión; учёба: estudiar, tener clase, aprender.",
-      "Погода: hace frío/calor/sol/viento, está nublado, llueve, nieva, hay niebla.",
-      "Досуг: leer, ver una película, escuchar música, ir al cine, hacer deporte, quedar con amigos.",
-      "Вкусы: Me gusta + единственное/инфинитив; Me gustan + множественное."
-    ],
-    examples: [["Trabajo en una oficina.", "Я работаю в офисе."], ["Hoy hace frío y está nublado.", "Сегодня холодно и облачно."], ["Me gusta leer.", "Мне нравится читать."], ["Los sábados voy al cine.", "По субботам я хожу в кино."]],
-    task: "Скажите две фразы о работе или учёбе, опишите сегодняшнюю погоду и назовите три занятия в свободное время."
-  },
-  "заказать еду и купить нужный товар": {
-    guidance: "Успешная ситуация A1 — это не идеальная грамматика, а понятная последовательность: запрос → количество или вариант → цена → оплата → завершение.",
-    points: [
-      "В кафе: Para mí…, Quería…, ¿Tiene…?, Sin…, La cuenta, por favor.",
-      "В магазине: Busco…, Quiero…, ¿Tiene otra talla/color?, ¿Cuánto cuesta?",
-      "Количество и уточнение можно показать жестом и словом: este, esa, uno, dos, medio kilo.",
-      "Если не поняли ответ: ¿Puede repetir? Más despacio, por favor."
-    ],
-    examples: [["Para mí, el menú del día.", "Мне комплексный обед."], ["Quería una botella de agua sin gas.", "Я хотел бы бутылку воды без газа."], ["¿Tiene esta camiseta en azul?", "У вас есть эта футболка синего цвета?"], ["Pago con tarjeta.", "Я плачу картой."]],
-    task: "Разыграйте два диалога по шесть реплик: заказ в кафе и покупку одежды или продуктов."
-  },
-  "спросить дорогу и понять простой ответ": {
-    guidance: "Сначала назовите цель маршрута, затем слушайте опорные слова движения, стороны и расстояния. Не нужно понимать каждое служебное слово.",
-    points: [
-      "Начало: Perdone, ¿dónde está…? / ¿Hay … cerca? / ¿Cómo voy a…?",
-      "Ключи ответа: recto, derecha, izquierda, primera/segunda calle, cerca, lejos.",
-      "Полезные ориентиры: al lado de, enfrente de, detrás de, entre.",
-      "Проверка понимания: ¿A la derecha? ¿La segunda calle?"
-    ],
-    examples: [["¿Cómo voy a la Plaza Mayor?", "Как пройти к Пласа-Майор?"], ["Sigue recto y gira a la izquierda.", "Идите прямо и поверните налево."], ["Está enfrente del museo.", "Это напротив музея."], ["¿Está lejos?", "Это далеко?"]],
-    task: "Попросите маршрут, повторите два ключевых шага собеседнику и объясните обратный путь."
-  },
-  "написать короткое сообщение или анкету": {
-    guidance: "На A1 письменный текст состоит из знакомых формул и коротких предложений. В анкете важна точность данных, в сообщении — цель и понятное завершение.",
-    points: [
-      "Анкета: nombre, apellidos, nacionalidad, fecha de nacimiento, dirección, teléfono, correo electrónico.",
-      "Сообщение: приветствие, одна причина, ключевые данные времени/места, вопрос или просьба, прощание.",
-      "Дни недели, месяцы, языки и национальности пишутся со строчной буквы.",
-      "В прямом вопросе нужны оба знака: ¿Quedamos a las seis?"
-    ],
-    examples: [["Hola, Marta:", "Привет, Марта!"], ["Hoy no tengo clase.", "Сегодня у меня нет занятия."], ["¿Quedamos mañana a las seis?", "Встретимся завтра в шесть?"], ["Un saludo, Alex", "С наилучшими пожеланиями, Алекс."]],
-    task: "Заполните вымышленную анкету и напишите сообщение знакомому из 25–40 слов с датой, временем и вопросом."
-  },
-  "описать обычный день": {
-    guidance: "Рассказ об обычном дне строится в Presente и движется по времени суток. Связки primero, después, luego и por la noche делают список действий текстом.",
-    points: [
-      "Начните с времени подъёма, затем добавьте утро, работу/учёбу, вечер и сон.",
-      "Возвратные действия требуют me/te/se: me levanto, me ducho, me acuesto.",
-      "Для времени: a las siete; для части дня: por la mañana/tarde/noche.",
-      "Частотность: normalmente, siempre, a veces, nunca."
-    ],
-    examples: [["Me levanto a las siete.", "Я встаю в семь."], ["Después desayuno y voy al trabajo.", "Потом я завтракаю и иду на работу."], ["Por la tarde estudio español.", "Днём я изучаю испанский."], ["Normalmente me acuesto a las once.", "Обычно я ложусь в одиннадцать."]],
-    task: "Расскажите о своём дне в 6–8 фразах, используя минимум две связки, два времени и одно наречие частотности."
-  },
-  "Я поддерживаю короткий разговор на знакомую тему": {
-    guidance: "Пункт выполнен, если вы не только отвечаете, но и задаёте встречный вопрос, реагируете стандартной фразой и можете попросить повторить.",
-    points: [
-      "Подходящие темы: семья, дом, работа/учёба, еда, город, свободное время.",
-      "Минимальная структура: приветствие → 2–3 обмена вопросами и ответами → завершение.",
-      "Допустимы паузы, повторения и помощь собеседника, если основной смысл остаётся понятным.",
-      "Полезные реакции: Ah, sí. Qué bien. Yo también. Yo tampoco. ¿Y tú?; vale и pues помогают естественно принять ответ или продолжить реплику."
-    ],
-    examples: [["¿Qué haces en tu tiempo libre?", "Что ты делаешь в свободное время?"], ["Me gusta caminar. ¿Y a ti?", "Мне нравится гулять. А тебе?"], ["Yo también. Voy al parque los domingos.", "Мне тоже. По воскресеньям я хожу в парк."]],
-    task: "Поговорите две минуты на знакомую тему. Отметьте пункт, если задали минимум два вопроса и разговор не остановился после первого ответа."
-  },
-  "Я понимаю медленную чёткую речь и короткие тексты": {
-    guidance: "На A1 понимание означает извлечь тему и конкретные данные из предсказуемого сообщения, а не перевести каждое слово.",
-    points: [
-      "В речи ищите имена, места, числа, время и знакомые глаголы; нормальны повтор и медленный темп.",
-      "В тексте используйте формат: заголовок, цена, время, адрес и изображения заранее подсказывают тему.",
-      "Подходящие материалы: короткое объявление, меню, расписание, сообщение, простое описание человека или места.",
-      "После чтения или прослушивания ответьте: кто/что, где, когда и сколько."
-    ],
-    examples: [["El museo abre a las diez.", "Музей открывается в десять."], ["La entrada cuesta ocho euros.", "Вход стоит восемь евро."], ["Marta vive cerca de la estación.", "Марта живёт рядом со станцией."]],
-    task: "Возьмите короткое объявление или запись до 30 секунд и найдите минимум три конкретных факта без дословного перевода."
-  },
-  "Я могу написать простое сообщение о себе или планах": {
-    guidance: "Готовый текст A1 — это несколько простых, логично расположенных предложений с понятной целью и базовыми формулами начала и конца.",
-    points: [
-      "О себе используйте Presente: vivo, trabajo, estudio, me gusta.",
-      "О ближайшем плане используйте ir a + infinitivo: voy a visitar, vamos a quedar.",
-      "Свяжите фразы с y, pero, porque; достаточно одного союза каждого нужного типа.",
-      "Проверьте согласование, форму глагола, вопросительные знаки и написание даты/времени."
-    ],
-    examples: [["Vivo en Alicante y trabajo en casa.", "Я живу в Аликанте и работаю дома."], ["Este fin de semana voy a visitar Madrid.", "На этих выходных я собираюсь посетить Мадрид."], ["¿Quieres tomar un café el sábado?", "Хочешь выпить кофе в субботу?"], ["Hasta pronto.", "До скорого."]],
-    task: "Напишите 40–60 слов о себе и одном ближайшем плане. Добавьте вопрос адресату и перечитайте текст по чек-листу."
-  }
-};
-
-function buildLearningDetails(entries) {
-  return Object.fromEntries(entries.map(([item, guidance, points, examples, task]) => [item, {
-    guidance,
-    points,
-    examples,
-    task
-  }]));
-}
-
-const A2_LEARNING_DETAILS = buildLearningDetails([
-  [
-    "понимать часто употребляемые фразы о семье, работе, покупках и поездках",
-    "На A2 нужно извлекать из короткой реплики практический смысл: кто, где, когда, сколько и что требуется сделать.",
-    ["Слушайте смысловыми блоками: horarios y fechas, precios y cantidades, familia y trabajo.", "Неизвестное слово не мешает понять сообщение, если известны ситуация, ключевой глагол и числа."],
-    [["El tren sale del andén cuatro a las seis y cuarto.", "Поезд отправляется с четвёртого пути в четверть седьмого."], ["Buscamos a una persona con experiencia para trabajar por las tardes.", "Мы ищем человека с опытом для работы по вечерам."]],
-    "Прочитайте два объявления и выпишите из каждого место, время, участника и требуемое действие."
-  ],
-  [
-    "общаться в большинстве простых рутинных ситуаций",
-    "Освойте устойчивую схему бытового диалога: обозначить цель, уточнить деталь, подтвердить понимание и завершить разговор.",
-    ["Полезные ходы: Quería…, ¿Me puede decir…?, Entonces…, De acuerdo, gracias.", "Если не поняли, просите повторить или переформулировать: ¿Puede repetirlo más despacio?"],
-    [["Quería cambiar esta camiseta. ¿Tiene el recibo?", "Я хотел бы обменять эту футболку. У вас есть чек?"], ["Entonces, la cita es el jueves a las once, ¿verdad?", "Итак, приём в четверг в одиннадцать, верно?"]],
-    "Разыграйте шестирепликовый диалог в магазине, на вокзале или в регистратуре, включая одно уточнение."
-  ],
-  [
-    "описать прошлый опыт, планы и ближайшие намерения простыми связанными фразами",
-    "Стройте рассказ по временной линии: прошлый опыт → нынешняя ситуация → ближайший план.",
-    ["Для опыта используйте he estado / fui / trabajaba по смыслу; для намерения — voy a + infinitivo.", "Связывайте мысли маркерами primero, después, ahora, este fin de semana."],
-    [["El año pasado fui a Sevilla y visité el Alcázar.", "В прошлом году я ездил в Севилью и посетил Алькасар."], ["Ahora estudio español y este verano voy a hacer un curso en Málaga.", "Сейчас я учу испанский, а этим летом собираюсь пройти курс в Малаге."]],
-    "Расскажите в шести фразах об одном прошлом опыте, текущем занятии и двух ближайших планах."
-  ],
-  [
-    "pretérito perfecto compuesto, indefinido и imperfecto: базовое противопоставление",
-    "Выбирайте прошедшее не по переводу русского глагола, а по взгляду говорящего на событие: актуальный период, завершённый эпизод или фон.",
-    ["Perfecto: hoy, esta semana, todavía no; Indefinido: ayer, en 2024, de repente; Imperfecto: antes, de niño, mientras.", "В рассказе Imperfecto создаёт сцену, а Indefinido продвигает сюжет."],
-    [["Esta semana he trabajado mucho.", "На этой неделе я много работал."], ["Cuando vivía en Toledo, conocí a Marta.", "Когда я жил в Толедо, я познакомился с Мартой."]],
-    "Распределите шесть событий между Perfecto, Indefinido и Imperfecto и объясните каждый выбор одним признаком."
-  ],
-  [
-    "будущее и условное намерение: ir a + infinitivo, futuro simple в частотных случаях",
-    "Различайте запланированное или уже очевидное действие и нейтральный прогноз, обещание либо предположение.",
-    ["Ir a + infinitivo обычно подчёркивает намерение или видимый признак: Va a llover.", "Futuro simple употребляется для прогнозов, обещаний и догадки о настоящем: Estará en casa."],
-    [["Mañana voy a llamar al médico.", "Завтра я собираюсь позвонить врачу."], ["No te preocupes, te ayudaré.", "Не волнуйся, я тебе помогу."]],
-    "Составьте по две фразы: с личным планом через ir a, с прогнозом и обещанием через Futuro simple."
-  ],
-  [
-    "сравнение, превосходная степень и наречия частотности",
-    "Сравнивайте признаки и привычки при помощи устойчивых рамок, сохраняя согласование прилагательного.",
-    ["Сравнение: más/menos + adjetivo + que; равенство: tan + adjetivo + como; количество: tanto/a/os/as + nombre + como.", "Превосходная степень: el/la más… de; частотность обычно ставится рядом с глаголом: siempre, normalmente, a veces, casi nunca."],
-    [["Este barrio es más tranquilo que el centro.", "Этот район спокойнее центра."], ["Es el restaurante más barato de la zona y siempre está lleno.", "Это самый дешёвый ресторан в районе, и он всегда полон."]],
-    "Сравните два знакомых города по трём признакам и добавьте две фразы о своих привычках."
-  ],
-  [
-    "привычки и действие в процессе: soler + infinitivo, estar/seguir + gerundio",
-    "Различайте обычное действие, текущий процесс и его продолжение: это разные взгляды на действие, а не взаимозаменяемые формы.",
-    ["Soler + infinitivo сообщает привычку: Suelo caminar; solía + infinitivo — прежнюю привычку.", "Estar + gerundio выделяет процесс, seguir + gerundio подчёркивает, что он продолжается."],
-    [["Suelo ir al trabajo en metro.", "Я обычно езжу на работу на метро."], ["Esta semana estoy trabajando en casa y sigo preparando el informe.", "На этой неделе я работаю из дома и продолжаю готовить отчёт."]],
-    "Опишите две постоянные привычки, одну привычку в прошлом, два текущих процесса и одно продолжающееся действие."
-  ],
-  [
-    "прямые/косвенные местоимения, возвратные глаголы и базовый imperativo",
-    "Определяйте функцию местоимения до выбора формы: что заменяем, кому адресовано действие и совпадает ли исполнитель с объектом.",
-    ["Прямое дополнение: lo/la/los/las; косвенное: le/les, перед lo/la превращается в se: se lo doy.", "В утвердительном Imperativo местоимение присоединяется: dímelo; в отрицательном стоит перед формой: no me lo digas."],
-    [["La llave se la doy a la recepcionista.", "Ключ я отдаю администратору."], ["Levántate y no te olvides del pasaporte.", "Вставай и не забудь паспорт."]],
-    "Замените дополнения местоимениями в четырёх фразах и преобразуйте две команды в отрицательные."
-  ],
-  [
-    "союзы porque, aunque, cuando, si и простые придаточные",
-    "Каждая связка выражает отдельное отношение: причину, уступку, время или условие; сначала назовите эту связь.",
-    ["Porque отвечает на ¿por qué?; aunque вводит препятствие, которое не отменяет результат.", "На A2 используйте когда/если с реальными и привычными ситуациями: Cuando llego…, Si tengo tiempo…"],
-    [["No salgo porque estoy cansado.", "Я не выхожу, потому что устал."], ["Aunque llueve, vamos a pasear si tienes tiempo.", "Хотя идёт дождь, мы пойдём гулять, если у тебя есть время."]],
-    "Соедините восемь простых фраз в четыре пары, по одному разу используя porque, aunque, cuando и si."
-  ],
-  [
-    "путешествия, жильё, услуги и здоровье",
-    "Соберите лексику вокруг действий путешественника: забронировать, заселиться, найти услугу, описать симптом и попросить помощь.",
-    ["Учите сочетания: reservar una habitación, hacer el check-in, perder el equipaje, pedir cita, doler la garganta.", "Добавляйте данные, которые решают задачу: fechas, duración, dirección, documento, intensidad."],
-    [["Tengo una reserva para dos noches a nombre de Sokolov.", "У меня бронь на две ночи на имя Соколов."], ["Me duele la garganta desde ayer.", "У меня со вчерашнего дня болит горло."]],
-    "Подготовьте по четыре фразы для заселения в отель и обращения в аптеку."
-  ],
-  [
-    "работа, учёба, планы и опыт",
-    "Описывайте роль, обязанности, расписание, уже полученный опыт и следующий шаг, а не только название профессии.",
-    ["Полезные сочетания: trabajar de/como, encargarse de, hacer un curso, tener experiencia en.", "Разделяйте текущую деятельность trabajo/estudio и завершённый опыт trabajé/he trabajado."],
-    [["Trabajo como diseñador y me encargo de la página web.", "Я работаю дизайнером и отвечаю за веб-сайт."], ["He hecho un curso de marketing y voy a buscar prácticas.", "Я прошёл курс по маркетингу и собираюсь искать стажировку."]],
-    "Составьте короткий профиль: занятие, две обязанности, один опыт и один план."
-  ],
-  [
-    "личные события, привычки и воспоминания",
-    "Для воспоминания соединяйте устойчивый фон, повторяющуюся привычку и одно конкретное событие.",
-    ["Imperfecto описывает возраст, погоду, место, состояние и повтор: solía, siempre, todos los veranos.", "Indefinido выделяет поворотный момент: un día, entonces, de repente."],
-    [["De pequeño pasaba los veranos con mis abuelos.", "В детстве я проводил лето с бабушкой и дедушкой."], ["Un día encontramos una caja antigua en el desván.", "Однажды мы нашли старую коробку на чердаке."]],
-    "Расскажите одно воспоминание: три фразы фона в Imperfecto и два события в Indefinido."
-  ],
-  [
-    "покупки, технологии и повседневные проблемы",
-    "Практическая лексика должна позволять назвать предмет, неисправность, желаемое решение и условия покупки.",
-    ["Полезные модели: no funciona, se ha roto, no carga, quisiera devolverlo, está en garantía.", "При уточнении сравнивайте варианты: más barato, tiene más memoria, dura menos."],
-    [["El móvil no carga y todavía está en garantía.", "Телефон не заряжается и всё ещё на гарантии."], ["Quisiera cambiarlo por un modelo más sencillo.", "Я хотел бы обменять его на более простую модель."]],
-    "Опишите две неисправности и разыграйте обращение с просьбой обменять или отремонтировать товар."
-  ],
-  [
-    "рассказать, что произошло вчера или недавно",
-    "Начните с временной рамки, расположите события по порядку и завершите результатом.",
-    ["Для закрытого вчера используйте Indefinido; для текущего сегодня/на этой неделе в Испании часто используется Perfecto.", "Связки порядка: primero, luego, después, al final."],
-    [["Ayer perdí el autobús y llegué tarde al trabajo.", "Вчера я пропустил автобус и опоздал на работу."], ["Esta mañana he hablado con mi jefa y hemos resuelto el problema.", "Сегодня утром я поговорил с начальницей, и мы решили проблему."]],
-    "Расскажите о вчерашнем дне в пяти действиях, затем добавьте одно событие текущего дня через Perfecto."
-  ],
-  [
-    "описать привычки и фоновые обстоятельства в прошлом",
-    "Фон отвечает на вопросы «как всё было?» и «что обычно происходило?», поэтому держится преимущественно на Imperfecto.",
-    ["Опишите возраст, место, погоду, людей и повторяющиеся действия.", "Не переключайтесь на Indefinido, пока не появляется завершённое событие, меняющее ситуацию."],
-    [["Cuando estudiaba en la universidad, vivía cerca del centro.", "Когда я учился в университете, я жил недалеко от центра."], ["Los viernes quedábamos en el mismo café.", "По пятницам мы встречались в одном и том же кафе."]],
-    "Опишите прежний распорядок в шести фразах и подчеркните четыре маркера повторяемости или фона."
-  ],
-  [
-    "объяснить проблему в магазине, отеле или у врача",
-    "Сообщение о проблеме должно содержать четыре части: контекст, неполадку, важную деталь и желаемое решение.",
-    ["Смягчайте просьбу: Quería…, ¿Podría…?, Necesitaría…", "Подтверждайте договорённость: Entonces me lo cambian mañana, ¿verdad?"],
-    [["La habitación da a una calle muy ruidosa. ¿Podrían cambiarla?", "Номер выходит на очень шумную улицу. Вы могли бы его поменять?"], ["Tengo fiebre desde anoche y necesito ver a un médico.", "У меня температура со вчерашнего вечера, и мне нужно обратиться к врачу."]],
-    "Выберите одну ситуацию и запишите восьмирепликовый диалог от описания проблемы до подтверждённого решения."
-  ],
-  [
-    "написать короткий рассказ, письмо или отзыв",
-    "Перед письмом определите жанр и адресата: рассказ требует хронологии, личное письмо — обращения, отзыв — оценки и основания.",
-    ["Делите текст на начало, развитие и завершение; используйте простые связки.", "Для отзыва соедините факт и оценку: La habitación era…, por eso…; Lo recomiendo porque…"],
-    [["El sábado fuimos a Segovia. Primero visitamos el alcázar y después comimos en el centro.", "В субботу мы съездили в Сеговию. Сначала посетили Алькасар, потом поели в центре."], ["El hotel estaba limpio, pero la habitación era bastante ruidosa.", "Отель был чистым, но номер оказался довольно шумным."]],
-    "Напишите 80–100 слов в одном жанре и проверьте наличие начала, трёх связок и ясной финальной оценки."
-  ],
-  [
-    "Я могу объясниться в типичной поездке без постоянного перехода на другой язык",
-    "Проверяйте не заученный монолог, а способность решить задачу и восстановить разговор после непонимания.",
-    ["Вы должны уметь спросить дорогу, купить билет, заселиться и сообщить о проблеме.", "Стратегии компенсации входят в навык: ¿Cómo se dice…?, Es una cosa que…, ¿Puede repetir?"],
-    [["Quiero ir a la estación. ¿Qué autobús tengo que coger?", "Я хочу добраться до вокзала. На какой автобус мне сесть?"], ["No recuerdo la palabra, pero es una cosa para cargar el móvil.", "Я не помню слово, но это вещь для зарядки телефона."]],
-    "Пройдите четыре минутных сценария поездки без русского языка; отметьте, где пришлось отказаться от задачи."
-  ],
-  [
-    "Я различаю основные способы рассказать о прошлом",
-    "Навык подтверждён, если вы объясняете выбор Perfecto, Indefinido и Imperfecto по контексту, а не по отдельному маркеру.",
-    ["Меняйте временную рамку и наблюдайте за формой: hoy he visto / ayer vi.", "В одном эпизоде соединяйте фон и событие: llovía cuando salí."],
-    [["Este mes he ido dos veces al teatro.", "В этом месяце я дважды ходил в театр."], ["Antes iba mucho al teatro, pero el año pasado no fui.", "Раньше я часто ходил в театр, но в прошлом году не ходил."]],
-    "Перескажите одно событие в трёх рамках: сегодня, вчера и как прежнюю привычку."
-  ],
-  [
-    "Я связываю несколько фраз в понятный рассказ о знакомой теме",
-    "Связность A2 — это ясный порядок и простые логические отношения, а не длинные сложные предложения.",
-    ["Используйте указатели времени и местоимения, чтобы не повторять каждое существительное.", "Проверьте, понятно ли слушателю, кто действует и к чему относится esto/lo/él/ella."],
-    [["Primero llamé al hotel. Después les envié un correo y al final confirmaron la reserva.", "Сначала я позвонил в отель. Потом отправил им письмо, и в конце они подтвердили бронь."], ["Estaba cansado, así que volví a casa.", "Я устал, поэтому вернулся домой."]],
-    "Запишите рассказ из восьми фраз, используя не менее четырёх разных связок, и перескажите его без текста."
-  ]
-]);
-
-const B1_LEARNING_DETAILS = buildLearningDetails([
-  [
-    "понимать основную мысль ясной стандартной речи на знакомые темы",
-    "На B1 отделяйте главную мысль от деталей и распознавайте позицию говорящего по вводным фразам и логическим связкам.",
-    ["Перед прослушиванием прогнозируйте лексику по теме; после первого раза сформулируйте смысл одним предложением.", "На втором прослушивании фиксируйте причины, примеры, числа и решение."],
-    [["En resumen, la empresa mantendrá el teletrabajo dos días por semana.", "Итак, компания сохранит удалённую работу два дня в неделю."], ["El problema principal es que no hay suficiente transporte público.", "Главная проблема в том, что общественного транспорта недостаточно."]],
-    "Прослушайте двухминутный фрагмент и запишите тему, главную мысль, два аргумента и итог без полного перевода."
-  ],
-  [
-    "справляться с большинством ситуаций в поездке по Испании",
-    "К бытовым сценариям A2 добавьте изменение условий, претензию, альтернативу и вежливое согласование решения.",
-    ["Освойте транспортные реалии Испании: cercanías, media distancia, AVE, andén, enlace, abono.", "При затруднении переформулируйте просьбу и уточняйте последствия: ¿Y si pierdo el enlace?"],
-    [["Han cancelado mi tren. ¿Puedo usar el mismo billete en el siguiente?", "Мой поезд отменили. Можно воспользоваться тем же билетом на следующий?"], ["¿Hay alguna alternativa que llegue antes de las nueve?", "Есть ли вариант, который прибывает до девяти?"]],
-    "Разыграйте отмену поезда, ошибку бронирования и медицинскую проблему, добиваясь конкретного решения."
-  ],
-  [
-    "создавать связный рассказ о событиях, опыте, планах и целях",
-    "Организуйте рассказ вокруг основной линии, добавляя фон, причины, последствия и отношение говорящего.",
-    ["Вводите этапы: al principio, mientras tanto, entonces, desde entonces, al final.", "Сочетайте времена последовательно и не теряйте точку отсчёта."],
-    [["Llevaba meses buscando trabajo cuando me ofrecieron un puesto en Valencia.", "Я несколько месяцев искал работу, когда мне предложили должность в Валенсии."], ["Desde entonces he aprendido mucho y ahora quiero especializarme.", "С тех пор я многому научился и теперь хочу специализироваться."]],
-    "Подготовьте двухминутный рассказ о решении, которое изменило ваши планы, с фоном, событием и результатом."
-  ],
-  [
-    "кратко объяснять причины, сравнивать варианты и выражать мнение",
-    "Стройте аргумент по схеме позиция → причина → пример → оговорка или вывод.",
-    ["Мнение: creo que, desde mi punto de vista; причина: porque, ya que; вывод: por eso, así que.", "Для взвешенности: por un lado… por otro; aunque; sin embargo."],
-    [["Desde mi punto de vista, el tren es mejor porque permite trabajar durante el viaje.", "С моей точки зрения, поезд лучше, потому что во время поездки можно работать."], ["El coche es más flexible; sin embargo, resulta más caro.", "Машина удобнее по времени, однако обходится дороже."]],
-    "Сравните два способа учиться или путешествовать, приведите по два аргумента и сделайте вывод."
-  ],
-  [
-    "системное различение indefinido, imperfecto и perfecto",
-    "На B1 учитывайте не только маркеры, но и временную перспективу всего текста и смену плана повествования.",
-    ["Perfecto связан с незавершённым периодом или актуальным результатом; Indefinido помещает факт в закрытое прошлое.", "Imperfecto задаёт фон, привычку и незавершённость; в паре с Indefinido показывает действие в развитии."],
-    [["Esta mañana he perdido las llaves, pero ayer también las perdí.", "Сегодня утром я потерял ключи, но вчера тоже их терял."], ["Buscaba las llaves cuando recordó que estaban en el coche.", "Он искал ключи, когда вспомнил, что они в машине."]],
-    "Отредактируйте короткий рассказ с намеренно неверными прошедшими формами и устно обоснуйте исправления."
-  ],
-  [
-    "futuro, condicional и основные перифразы",
-    "Разделяйте грамматическое время и модальное значение: Futuro и Condicional также выражают предположение, вежливость и дистанцию.",
-    ["Перифразы уточняют фазу: empezar a, seguir + gerundio, dejar de, acabar de, volver a.", "Condicional смягчает просьбу и выражает гипотезу; Futuro может означать догадку о настоящем."],
-    [["Seguiré buscando hasta que encuentre una solución.", "Я продолжу искать, пока не найду решение."], ["¿Podrías decirme cuánto tardaría?", "Ты мог бы сказать, сколько это заняло бы?"]],
-    "Опишите один проект пятью перифразами, затем добавьте прогноз, предположение и вежливую просьбу."
-  ],
-  [
-    "presente de subjuntivo в желаниях, оценках, советах и цели",
-    "Ищите два субъекта и отношение говорящего к ещё не утверждаемому действию.",
-    ["Желание/совет: quiero que, te recomiendo que; оценка: es importante que; цель: para que.", "При одном субъекте обычно нужен инфинитив: Quiero salir; при двух — que + Subjuntivo: Quiero que salgas."],
-    [["Te recomiendo que reserves con antelación.", "Советую тебе забронировать заранее."], ["Te escribo para que sepas que ya he llegado.", "Пишу тебе, чтобы ты знал, что я уже приехал."]],
-    "Преобразуйте четыре пары с одним субъектом в конструкции с двумя субъектами и Subjuntivo."
-  ],
-  [
-    "мнение и достоверность: indicativo или subjuntivo после creo, no creo, dudo",
-    "Выбирайте наклонение по тому, утверждает ли говорящий содержание, отрицает его достоверность или оставляет под сомнением.",
-    ["Creo/pienso/me parece que обычно вводят Indicativo; no creo/no pienso/dudo que — Subjuntivo.", "Формулы уверенности está claro que и sé que требуют Indicativo, а es posible que и puede que — Subjuntivo."],
-    [["Creo que la reunión empieza a las nueve.", "Думаю, встреча начинается в девять."], ["No creo que hayan confirmado la fecha.", "Не думаю, что они подтвердили дату."]],
-    "Составьте четыре пары утверждение/сомнение и объясните, какую позицию показывает смена наклонения."
-  ],
-  [
-    "условные конструкции реального и гипотетического типа",
-    "Определите степень реальности условия: открытое условие использует Presente, маловероятное или воображаемое — Imperfecto de subjuntivo.",
-    ["Реальное: si + presente → presente/futuro/imperativo.", "Гипотетическое: si + imperfecto de subjuntivo → condicional simple; после si не ставьте Futuro или Condicional."],
-    [["Si terminas pronto, llámame.", "Если закончишь рано, позвони мне."], ["Si tuviera más tiempo, aprendería otro idioma.", "Если бы у меня было больше времени, я бы выучил ещё один язык."]],
-    "Дайте реальный и гипотетический совет для трёх ситуаций, меняя обе части условного предложения."
-  ],
-  [
-    "относительные, временные, причинные и условные придаточные",
-    "Выбирайте связку по функции и проверяйте, утверждается ли факт или речь идёт о неизвестном/будущем.",
-    ["Относительные: que, donde, quien; временные: cuando, mientras, en cuanto; причина: porque, como, ya que.", "Будущее после cuando/en cuanto обычно требует Subjuntivo: Cuando llegues, avísame."],
-    [["Busco un piso que tenga dos habitaciones.", "Я ищу квартиру, в которой было бы две комнаты."], ["Como no había autobuses, volvimos andando.", "Поскольку автобусов не было, мы вернулись пешком."]],
-    "Объедините восемь простых предложений в четыре сложных: относительное, временное, причинное и условное."
-  ],
-  [
-    "связки текста, местоимения, косвенная речь в базовом объёме",
-    "Связность строится одновременно на логических связках, понятных отсылках местоимений и сохранении временной перспективы.",
-    ["Группируйте связки по функции: además, sin embargo, por eso, en cambio, en resumen.", "В косвенной речи от настоящего часто сохраняется время; от прошлого меняются указатели и может сдвигаться время: mañana → al día siguiente."],
-    [["Ana dice que llegará mañana.", "Ана говорит, что приедет завтра."], ["Ana dijo que llegaría al día siguiente; sin embargo, no pudo venir.", "Ана сказала, что приедет на следующий день, однако не смогла приехать."]],
-    "Передайте чужое короткое сообщение от настоящего и от прошлого, затем соедините его с реакцией тремя связками."
-  ],
-  [
-    "работа и образование, путешествия и общество",
-    "Переходите от списка слов к типичным действиям и позициям: искать работу, описывать образование, организовывать поездку и обсуждать общественную услугу.",
-    ["Коллокации: solicitar un puesto, hacer prácticas, obtener un título, reservar alojamiento, usar el transporte público.", "Добавляйте личную оценку и причину, чтобы тема становилась разговорной."],
-    [["Estoy buscando un puesto que me permita trabajar a distancia.", "Я ищу должность, которая позволит работать удалённо."], ["El transporte público debería ser más frecuente en los pueblos.", "Общественный транспорт в небольших городах должен ходить чаще."]],
-    "Выберите одну тему, составьте карту из 15 сочетаний и двухминутное мнение с примером."
-  ],
-  [
-    "здоровье, окружающая среда, медиа и технологии",
-    "Учитесь описывать проблему, её причины, последствия и возможные меры, сохраняя понятную структуру.",
-    ["Полезные модели: afectar a, deberse a, provocar, reducir, proteger, estar informado.", "Различайте факт, источник и личную оценку: según…, se ha informado de…, me parece que…"],
-    [["La contaminación afecta a la salud y por eso hay que reducir el tráfico.", "Загрязнение влияет на здоровье, поэтому нужно сократить движение транспорта."], ["Según la noticia, la aplicación recogerá menos datos personales.", "Согласно новости, приложение будет собирать меньше персональных данных."]],
-    "Кратко перескажите одну новость, отделив три факта от собственного мнения и предложения."
-  ],
-  [
-    "биография, планы, проблемы и решения",
-    "Связывайте жизненные этапы с решениями: обстоятельство → выбор → результат → следующий план.",
-    ["Используйте desde, durante, al cabo de, mientras, por eso, desde entonces.", "Для решения: darse cuenta de, decidir, intentar, conseguir, tener pensado."],
-    [["Después de trabajar cinco años en banca, decidió cambiar de profesión.", "Проработав пять лет в банке, она решила сменить профессию."], ["Al principio le costó, pero consiguió terminar el curso.", "Сначала ей было трудно, но она смогла закончить курс."]],
-    "Подготовьте биографию реального или вымышленного человека из восьми этапов и двух причинно-следственных связей."
-  ],
-  [
-    "культурные и бытовые реалии Испании",
-    "Изучайте не только названия, но и коммуникативные нормы Испании: расписания, формы обращения, бытовые услуги и региональное многоязычие.",
-    ["Полезно понимать términos como empadronamiento, centro de salud, menú del día, puente, sobremesa.", "Не превращайте культурное наблюдение в абсолютное правило: формулируйте suele, en muchos casos, depende de la región."],
-    [["En muchos bares se puede pedir un menú del día al mediodía.", "Во многих барах в обед можно заказать комплексное меню."], ["Los horarios comerciales dependen de la ciudad y del establecimiento.", "Часы работы магазинов зависят от города и конкретного заведения."]],
-    "Выберите три бытовых реалии Испании, объясните их по-испански и сравните со своей страной без стереотипов."
-  ],
-  [
-    "рассказать историю и поддержать разговор без подготовки",
-    "Используйте короткий план в голове: обстановка, событие, осложнение, результат; оставляйте собеседнику место для реакции.",
-    ["Поддерживайте контакт: ¿sabes?, pues, resulta que, total que; не злоупотребляйте заполнителями.", "Реагируйте и уточняйте: ¿En serio?, ¿Y qué pasó?, ¿Cómo lo resolviste?"],
-    [["Resulta que habíamos reservado, pero al llegar no encontraban la reserva.", "Оказалось, что мы забронировали, но по приезде они не нашли бронь."], ["¿Y qué hicisteis al final?", "И что вы в итоге сделали?"]],
-    "Расскажите двухминутную историю без текста; партнёр должен задать три уточняющих вопроса, на которые вы ответите."
-  ],
-  [
-    "написать письмо, отзыв или связный рассказ",
-    "Соблюдайте жанр: письмо ориентировано на адресата, отзыв оценивает по критериям, рассказ управляет временной линией.",
-    ["Используйте абзацы и разные связки; каждое местоимение должно иметь ясный референт.", "В письме различайте нейтральное Hola… и формальное Estimado/a… / Atentamente."],
-    [["Le escribo para solicitar información sobre el curso intensivo.", "Пишу Вам, чтобы запросить информацию об интенсивном курсе."], ["Aunque la ubicación era excelente, la habitación no estaba bien insonorizada.", "Хотя расположение было отличным, номер был плохо звукоизолирован."]],
-    "Напишите 130–160 слов в выбранном жанре и проверьте цель, абзацы, регистр, времена и связки."
-  ],
-  [
-    "объяснить проблему и предложить решение",
-    "Покажите причинную цепочку и предложите выполнимый шаг с преимуществом и возможным ограничением.",
-    ["Структура: el problema es que…; esto provoca…; una opción sería…; así…", "Смягчайте несогласие: entiendo que…, pero quizá podríamos…"],
-    [["El problema es que el horario coincide con las clases.", "Проблема в том, что расписание совпадает с занятиями."], ["Una opción sería cambiar la reunión al viernes; así podría asistir todo el equipo.", "Можно было бы перенести встречу на пятницу; тогда вся команда смогла бы присутствовать."]],
-    "Выберите бытовую или рабочую проблему, предложите два решения, сравните их и договоритесь об одном."
-  ],
-  [
-    "перефразировать простое сообщение для другого человека",
-    "Сохраняйте намерение, участников и важные условия сообщения, меняя лицо, время и указатели места/времени.",
-    ["Просьбу передавайте через pedir que + Subjuntivo; информацию — decir/explicar que + Indicativo.", "Проверяйте cambios deícticos: aquí → allí, hoy → ese día, mañana → al día siguiente."],
-    [["Marta: «Tráeme el informe mañana». → Marta me pidió que le llevara el informe al día siguiente.", "Марта попросила принести ей отчёт на следующий день."], ["Dice que la reunión empieza a las nueve.", "Он говорит, что встреча начинается в девять."]],
-    "Передайте третьему человеку объявление, просьбу и приглашение, сохранив все практические детали."
-  ],
-  [
-    "Я могу поддерживать разговор на большинство знакомых тем",
-    "Навык B1 означает, что вы развиваете тему, задаёте встречные вопросы и восстанавливаете общение после затруднения.",
-    ["Ответ должен содержать не только sí/no, но причину, пример или уточнение.", "Используйте стратегии: a ver, lo que quiero decir es…, no sé cómo se dice, pero…"],
-    [["No estoy del todo de acuerdo porque en mi caso fue diferente.", "Я не совсем согласен, потому что в моём случае всё было иначе."], ["¿Y tú qué harías en esa situación?", "А что бы ты сделал в такой ситуации?"]],
-    "Проведите пятиминутный разговор на случайную знакомую тему, задав не менее пяти содержательных вопросов."
-  ],
-  [
-    "Я связно рассказываю о прошлом и планах",
-    "Проверьте, умеете ли вы менять временной план без потери точки отсчёта и показывать связь прошлого с нынешними целями.",
-    ["Обозначайте последовательность и длительность; не перечисляйте формы вне контекста.", "Используйте перифразы для этапов и Futuro/ir a для разных оттенков плана."],
-    [["Llevaba dos años estudiando español cuando decidí mudarme.", "Я учил испанский два года, когда решил переехать."], ["El próximo curso voy a prepararme y después solicitaré una beca.", "В следующем учебном году я собираюсь подготовиться, а потом подам заявку на стипендию."]],
-    "Расскажите три минуты о прошлом опыте, нынешнем результате и плане на год, используя минимум четыре временные формы."
-  ],
-  [
-    "Я выражаю мнение и объясняю его простыми аргументами",
-    "Мнение на B1 должно быть понятным и обоснованным, даже если словарь ещё ограничен.",
-    ["Сформулируйте тезис, две разные причины, пример и краткий вывод.", "Покажите одну оговорку: aunque, es verdad que…, sin embargo…"],
-    [["Creo que aprender idiomas en grupo es útil porque obliga a hablar.", "Я считаю, что учить языки в группе полезно, потому что это заставляет говорить."], ["Es verdad que cuesta más, pero se aprende de los demás.", "Правда, это стоит дороже, но можно учиться у других."]],
-    "Запишите двухминутное мнение о дистанционной работе или учёбе и ответьте на одно возражение."
-  ]
-]);
-
-const B2_LEARNING_DETAILS = buildLearningDetails([
-  [
-    "понимать основные идеи сложных текстов и дискуссий на конкретные и абстрактные темы",
-    "На B2 восстанавливайте архитектуру текста: тезис, аргументы, примеры, контраргумент и вывод, а также отношение автора.",
-    ["Следите за маркерами contraste, causa, consecuencia, concesión и reformulación.", "Отделяйте факт, цитируемую позицию и авторскую оценку; замечайте модальные слова и оговорки."],
-    [["Ahora bien, que la medida sea popular no significa que resulte eficaz.", "Однако популярность меры ещё не означает, что она окажется эффективной."], ["El autor admite sus ventajas, si bien cuestiona su coste.", "Автор признаёт её преимущества, хотя и ставит под сомнение стоимость."]],
-    "Составьте схему статьи или дискуссии: тезис, три довода, возражение, позиция автора и вывод."
-  ],
-  [
-    "общаться достаточно свободно и спонтанно",
-    "Свободное общение означает способность брать и передавать очередь, уточнять мысль и исправляться без разрушения разговора.",
-    ["Используйте естественные ходы: a ver, en realidad, me explico, lo que quiero decir es…", "Реагируйте на собеседника, а не произносите заготовленный монолог: retome его слова и задайте продолжение."],
-    [["Entiendo lo que dices; aun así, creo que hay otra opción.", "Я понимаю, что ты говоришь; и всё же думаю, что есть другой вариант."], ["Perdona, no me he explicado bien: me refería al coste inicial.", "Извини, я неясно выразился: я имел в виду начальные затраты."]],
-    "Проведите восьмиминутный разговор без сценария, один раз уточнив, переформулировав и вежливо не согласившись."
-  ],
-  [
-    "аргументировать позицию, сравнивать точки зрения и учитывать возражения",
-    "Сильный аргумент B2 не только защищает тезис, но и точно представляет альтернативную позицию перед ответом на неё.",
-    ["Структура: tesis → fundamento → evidencia/ejemplo → objeción → respuesta → conclusión.", "Градуируйте уверенность: es evidente, parece probable, cabe la posibilidad, no se puede descartar."],
-    [["Quienes se oponen sostienen que sería demasiado caro; no obstante, el ahorro a largo plazo podría compensarlo.", "Противники утверждают, что это будет слишком дорого; однако долгосрочная экономия могла бы это компенсировать."], ["Ambas propuestas son viables, aunque la segunda ofrece mayor flexibilidad.", "Оба предложения осуществимы, хотя второе даёт больше гибкости."]],
-    "Подготовьте трёхминутную позицию с двумя доводами, честным контраргументом и ответом на него."
-  ],
-  [
-    "писать подробные тексты с ясной структурой",
-    "Планируйте текст абзацами: каждый абзац раскрывает одну функцию и связан с предыдущим темой или логическим переходом.",
-    ["Во вступлении задайте вопрос и границы; в основной части развивайте аргументы; в выводе синтезируйте, а не повторяйте.", "Используйте референцию и синонимию, чтобы избегать неоднозначных местоимений и механических повторов."],
-    [["El objetivo de este informe es evaluar las dos alternativas disponibles.", "Цель этого отчёта — оценить два доступных варианта."], ["A la vista de lo expuesto, convendría aplicar la medida de forma gradual.", "В свете изложенного меру следовало бы вводить постепенно."]],
-    "Напишите 220–260 слов по плану из пяти абзацев и подпишите функцию каждого абзаца до редактирования."
-  ],
-  [
-    "весь основной репертуар времён и аспектов",
-    "На B2 формы времени выбираются вместе с аспектом и точкой отсчёта: завершённость, длительность, предшествование и актуальный результат.",
-    ["Уверенно сочетайте pluscuamperfecto, futuro compuesto, condicional compuesto и составные формы Subjuntivo.", "Сравнивайте формы в одном контексте: hacía / había hecho / hizo / ha hecho, hará / habrá hecho."],
-    [["Cuando llegamos, la conferencia ya había empezado.", "Когда мы пришли, конференция уже началась."], ["Para entonces habremos terminado la primera fase.", "К тому моменту мы закончим первый этап."]],
-    "Постройте временную линию проекта из восьми событий и выразите предшествование, длительность и завершённость разными формами."
-  ],
-  [
-    "subjuntivo в оценках, сомнениях, гипотезах, уступке и относительных конструкциях",
-    "Выбор наклонения зависит от коммуникативного статуса информации: утверждаем её, оцениваем, отрицаем, предполагаем или не идентифицируем референт.",
-    ["Уступка меняет смысл: Aunque es caro — известный факт; aunque sea caro — допустимая возможность.", "В относительных Indicativo указывает на известный объект, Subjuntivo — на искомый, неопределённый или отрицаемый."],
-    [["No creo que hayan entendido la propuesta.", "Не думаю, что они поняли предложение."], ["Buscamos a alguien que pueda coordinar el proyecto.", "Мы ищем человека, который мог бы координировать проект."]],
-    "Для пяти контекстов составьте пары Indicativo/Subjuntivo и объясните, какая смена смысла произошла."
-  ],
-  [
-    "сложные условные и модальные конструкции",
-    "Добавьте нереальное прошлое, смешанные условия, предположение и степень обязательности.",
-    ["Нереальное прошлое: si + pluscuamperfecto de subjuntivo → condicional compuesto.", "Модальность выражается не только deber/poder, но и haber de, tener que, puede que, deber de + infinitivo."],
-    [["Si hubiéramos reservado antes, habríamos pagado menos.", "Если бы мы забронировали раньше, то заплатили бы меньше."], ["Debían de ser las diez cuando terminó la reunión.", "Должно быть, было около десяти, когда встреча закончилась."]],
-    "Преобразуйте три реальные ситуации в гипотетические настоящее, прошлое и смешанный тип; добавьте оценку вероятности."
-  ],
-  [
-    "косвенная речь, пассивные и безличные конструкции",
-    "Выбирайте конструкцию по информационному фокусу: кто сказал, что произошло или какой результат важен.",
-    ["В косвенной речи согласуйте времена и дейктические слова с точкой отсчёта рассказчика.", "Ser + participio выделяет результат и согласует причастие; pasiva refleja и impersonal con se чаще звучат естественно без агента."],
-    [["La portavoz afirmó que las obras terminarían al año siguiente.", "Представительница заявила, что работы завершатся в следующем году."], ["Se han aprobado nuevas medidas y serán publicadas mañana.", "Утверждены новые меры, и завтра их опубликуют."]],
-    "Передайте новость в косвенной речи и перепишите четыре активных предложения тремя безличными/пассивными способами."
-  ],
-  [
-    "связность, регистр, порядок слов и оттенки значения",
-    "Форма должна соответствовать адресату и цели; порядок слов помогает распределять уже известную и новую информацию.",
-    ["Нейтрально тема обычно предшествует реме; вынос и инверсия создают контраст: Eso no lo dije yo.", "Согласуйте обращения, просьбы, лексику и завершение текста в одном регистре."],
-    [["Lo que más me preocupa es la falta de tiempo.", "Больше всего меня беспокоит нехватка времени."], ["Le agradeceríamos que nos remitiera la documentación.", "Будем признательны, если Вы направите нам документы."]],
-    "Перепишите одно сообщение для друга, клиента и официального учреждения, сохранив содержание и меняя регистр."
-  ],
-  [
-    "устойчивые сочетания и управление частотных глаголов",
-    "Учите слово как конструкцию: глагол + предлог, тип дополнения и типичные существительные рядом.",
-    ["Примеры управления: depender de, insistir en, contribuir a, contar con, carecer de.", "Различайте близкие модели: acordarse de / recordar algo; tratar de / tratar sobre; quedar con / quedar en."],
-    [["La decisión depende de que recibamos la autorización.", "Решение зависит от того, получим ли мы разрешение."], ["La empresa cuenta con un equipo especializado.", "В компании есть специализированная команда."]],
-    "Составьте 20 карточек коллокаций с целой моделью и употребите десять из них в связном тексте."
-  ],
-  [
-    "актуальные события, работа, культура и общество",
-    "Развивайте тематический словарь через участников, процессы, институты и позиции, а не через изолированные термины.",
-    ["Для новости различайте hecho, medida, debate, repercusión, fuente и postura.", "Соблюдайте осторожность при пересказе: según, al parecer, se prevé, todavía no se ha confirmado."],
-    [["La medida ha generado un debate sobre la conciliación laboral.", "Мера вызвала дискуссию о балансе работы и личной жизни."], ["Según el ayuntamiento, el proyecto beneficiará a varios barrios.", "По данным мэрии, проект принесёт пользу нескольким районам."]],
-    "Выберите актуальную тему в Испании и представьте факты, две позиции и своё заключение без категоричных обобщений."
-  ],
-  [
-    "наука, технологии, экономика и образование",
-    "Учитесь объяснять сложное доступно: определение, механизм, данные, ограничение и практическое следствие.",
-    ["Полезные связи: dar lugar a, basarse en, tener impacto en, plantear un reto, aportar evidencia.", "Отличайте корреляцию от причины и отмечайте неопределённость: los datos sugieren, no permiten concluir."],
-    [["Los datos sugieren una mejora, aunque la muestra sigue siendo limitada.", "Данные указывают на улучшение, хотя выборка всё ещё ограничена."], ["La automatización puede aumentar la productividad, pero también plantea retos formativos.", "Автоматизация может повысить производительность, но создаёт и образовательные вызовы."]],
-    "Объясните неспециалисту одну технологию или исследование за три минуты, указав пользу и ограничение."
-  ],
-  [
-    "ценности, решения, риски и последствия",
-    "Обсуждайте решения через критерии, заинтересованные стороны, краткосрочные и долгосрочные последствия.",
-    ["Градуируйте оценку: aceptable, cuestionable, perjudicial, imprescindible; evite простого bueno/malo.", "Для риска: existe el riesgo de que + Subjuntivo; podría provocar; a largo plazo."],
-    [["Existe el riesgo de que la medida aumente la desigualdad.", "Есть риск, что мера усилит неравенство."], ["A corto plazo resulta costosa; a largo plazo podría ser rentable.", "В краткосрочной перспективе это дорого, но в долгосрочной может окупиться."]],
-    "Оцените одно решение по четырём критериям и предложите способ уменьшить главный риск."
-  ],
-  [
-    "регистры и вариативность с опорой на норму Испании",
-    "Сохраняйте активную норму Испании, но учитесь распознавать основные различия регистра и общеиспанской вариативности без их смешения.",
-    ["В Испании различайте tú/usted/vosotros и разговорное/нейтральное/официальное оформление.", "Региональные формы рассматривайте рецептивно: значение, территория и уместность; voseo не используйте как собственную норму проекта."],
-    [["¿Os apetece venir?", "Хотите прийти? Неформальное множественное обращение в Испании."], ["Le ruego que confirme su asistencia.", "Прошу Вас подтвердить присутствие. Официальный регистр."]],
-    "Передайте одну просьбу в разговорном, нейтральном и официальном регистре; отдельно отметьте одну распознаваемую региональную форму."
-  ],
-  [
-    "участвовать в обсуждении и вежливо перебивать/уточнять",
-    "Управляйте очередностью речи явно и уважительно: войдите в разговор, свяжите реплику с предыдущей и верните слово.",
-    ["Вход: Perdona que te interrumpa…, Si me permites…; уточнение: ¿Quieres decir que…?", "Несогласие: no lo veo exactamente así; entiendo el argumento, pero…"],
-    [["Si me permites, quisiera matizar un punto.", "Если позволишь, я хотел бы уточнить один момент."], ["¿Te refieres al coste total o solo a la inversión inicial?", "Ты имеешь в виду общую стоимость или только начальные вложения?"]],
-    "Проведите групповую дискуссию, использовав по одному ходу для входа, уточнения, несогласия и передачи слова."
-  ],
-  [
-    "написать эссе, отчёт или формальное письмо",
-    "Сначала выберите жанровую задачу: эссе аргументирует, отчёт анализирует данные и рекомендует, письмо добивается конкретного действия.",
-    ["У каждого жанра свои заголовки, степень безличности, формулы обращения и допустимая оценочность.", "Проверяйте последовательность регистра: colloquialism в формальном отчёте разрушает тон."],
-    [["El presente informe analiza las causas del descenso y propone dos medidas.", "Настоящий отчёт анализирует причины снижения и предлагает две меры."], ["Quedo a la espera de su respuesta. Atentamente,", "Ожидаю Вашего ответа. С уважением,"]],
-    "Напишите 250 слов в одном жанре, затем преобразуйте вступление и заключение под другой жанр."
-  ],
-  [
-    "суммировать несколько аргументов",
-    "Синтез объединяет идеи по темам и отношениям, а не пересказывает источники по очереди.",
-    ["Сгруппируйте совпадения, расхождения, доказательства и ограничения.", "Используйте нейтральную атрибуцию: ambos autores coinciden, el segundo cuestiona, los datos respaldan."],
-    [["Ambos textos coinciden en el diagnóstico, pero discrepan sobre la solución.", "Оба текста совпадают в диагнозе, но расходятся в решении."], ["En conjunto, los argumentos apuntan a una aplicación gradual.", "В целом аргументы указывают на необходимость постепенного внедрения."]],
-    "Прочитайте два коротких мнения и напишите синтез на 120 слов без последовательного пересказа каждого."
-  ],
-  [
-    "выступить с подготовленной презентацией",
-    "Организуйте выступление для слушателя: обозначьте маршрут, выделите переходы, объясните визуальные данные и завершите выводом.",
-    ["Сигналы: primero abordaré…, pasemos ahora a…, como muestra el gráfico…, para concluir…", "Не читайте слайд; поясняйте, почему данные важны и как связаны с тезисом."],
-    [["Como puede verse en el gráfico, el crecimiento se concentra en el último trimestre.", "Как видно на графике, рост сосредоточен в последнем квартале."], ["Para concluir, quisiera destacar dos ideas.", "В заключение я хотел бы подчеркнуть две идеи."]],
-    "Подготовьте пятиминутное выступление с тремя разделами, одним объяснённым примером и минутой вопросов."
-  ],
-  [
-    "Я могу вести спонтанную дискуссию с носителями",
-    "Самопроверка требует реального взаимодействия: вы следите за аргументом, реагируете на новое и сохраняете точность при темпе разговора.",
-    ["Допустимы паузы и самокоррекция, но не постоянный перевод в голове или уход от сложных реплик.", "Проверяйте инициативу: уточнение, развитие чужой мысли, контраргумент и итог."],
-    [["Retomando lo que has dicho, quizá convendría distinguir dos casos.", "Возвращаясь к твоим словам, возможно, стоит различить два случая."], ["No había considerado ese aspecto; aun así, mantengo que…", "Я не учитывал этот аспект; всё же считаю, что…"]],
-    "Запишите десятиминутную дискуссию и отметьте четыре момента взаимодействия, а не заранее подготовленной речи."
-  ],
-  [
-    "Я ясно строю аргументированный текст",
-    "Текст считается ясным, если читатель без догадки восстанавливает тезис, функцию каждого абзаца и связь доказательства с выводом.",
-    ["Проверьте тематические предложения, переходы и референцию.", "Удалите связки, которые лишь украшают текст, но не выражают реального отношения."],
-    [["La principal ventaja reside en su flexibilidad. Esta permite adaptar…", "Главное преимущество заключается в гибкости. Она позволяет адаптировать…"], ["Por estas razones, la segunda opción resulta preferible, siempre que…", "По этим причинам второй вариант предпочтительнее при условии, что…"]],
-    "Дайте другому человеку текст без заголовка: он должен сформулировать тезис и план; исправьте места, где это не удалось."
-  ],
-  [
-    "Я меняю тон между бытовым и формальным общением",
-    "Управляйте не отдельным вежливым словом, а всей системой: обращением, модальностью, лексикой, синтаксисом и финальной формулой.",
-    ["Разговорно допустимы сокращения и прямые просьбы; формально предпочтительны дистанция и точная цель.", "Избегайте искусственного смешения: Hola + le ruego encarecidamente + un abrazo."],
-    [["Oye, ¿me mandas el archivo cuando puedas?", "Слушай, пришлёшь мне файл, когда сможешь?"], ["Le agradecería que me enviara el archivo a la mayor brevedad posible.", "Буду признателен, если Вы отправите мне файл как можно скорее."]],
-    "Перепишите три бытовые реплики как официальное письмо и три формальные формулы как естественное сообщение знакомому."
-  ]
-]);
-
-const C1_LEARNING_DETAILS = buildLearningDetails([
-  [
-    "понимать длинные сложные тексты, включая скрытые смысловые связи",
-    "На C1 восстанавливайте не только содержание, но и прагматический замысел: что автор подразумевает, смягчает, иронизирует или оставляет читателю.",
-    ["Следите за пресуппозициями, анафорой, оценочной лексикой, кавычками и сменой дистанции.", "Сопоставляйте буквальное высказывание с контекстом и возможной целью автора."],
-    [["No deja de ser curioso que nadie lo advirtiera.", "Всё же любопытно, что никто этого не заметил; формула выражает скрытую оценку."], ["La solución, por llamarla de algún modo, duró dos semanas.", "«Решение», если его можно так назвать, продержалось две недели."]],
-    "Разберите сложную колонку: выпишите тезис, пять явных связей, три имплицитные оценки и один возможный контраргумент."
-  ],
-  [
-    "говорить бегло, почти не испытывая затруднений в подборе слов",
-    "Беглость C1 опирается на гибкое переформулирование: если точное слово не приходит, вы сохраняете нюанс и структуру, не обрывая мысль.",
-    ["Используйте reformulación: dicho de otro modo, más concretamente, o mejor dicho.", "Самокоррекция должна уточнять, а не постоянно отменять сказанное."],
-    [["No es exactamente una prohibición; se trata más bien de una restricción temporal.", "Это не совсем запрет; скорее, временное ограничение."], ["La medida fue precipitada, o mejor dicho, insuficientemente debatida.", "Мера была поспешной, точнее, недостаточно обсуждённой."]],
-    "Говорите четыре минуты на абстрактную тему, сознательно переформулировав две сложные мысли без пауз на поиск перевода."
-  ],
-  [
-    "использовать язык гибко для социальных, профессиональных и академических целей",
-    "Выбирайте жанр, степень прямоты, терминологию и доказательность по роли, адресату и риску коммуникации.",
-    ["Одна просьба коллеге, клиенту и комиссии требует разной дистанции и аргументации.", "В академическом контексте отделяйте утверждение от степени уверенности и источника."],
-    [["¿Te importa si lo dejamos para mañana?", "Не возражаешь, если отложим до завтра?"], ["Los resultados permiten sostener, con ciertas reservas, que la intervención fue eficaz.", "Результаты позволяют, с некоторыми оговорками, считать вмешательство эффективным."]],
-    "Передайте одну сложную рекомендацию другу, рабочей группе и академической аудитории, меняя форму, но не смысл."
-  ],
-  [
-    "строить хорошо организованные подробные тексты на сложные темы",
-    "Управляйте глобальной связностью: читатель должен видеть иерархию тезисов, а не только грамматически связанные предложения.",
-    ["Планируйте разделы, тематические цепочки и переходы между уровнями аргумента.", "Варьируйте повтор ключевого понятия: точное повторение, синоним, гипероним, местоименная отсылка."],
-    [["Conviene distinguir, antes de nada, entre acceso formal y acceso efectivo.", "Прежде всего следует различать формальный и фактический доступ."], ["Esta distinción permite entender por qué ambas cifras no son contradictorias.", "Это различие позволяет понять, почему обе цифры не противоречат друг другу."]],
-    "Напишите 350 слов с многоуровневым планом; после черновика подпишите логическую функцию каждого абзаца и перехода."
-  ],
-  [
-    "тонкие значения времён и наклонений, включая все основные формы subjuntivo",
-    "На C1 время и наклонение выражают позицию говорящего: дистанцию, допущение, ретроспективу, незавершённость и отношение к достоверности.",
-    ["Сопоставляйте había hecho / habría hecho / hubiera hecho и sea / será / sería в контексте.", "Освойте литературно и формально употребительные формы будущего Subjuntivo рецептивно: sea quien fuere."],
-    [["No porque lo hubiera previsto, sino porque tuvo suerte.", "Не потому, что он это предвидел, а потому, что ему повезло."], ["Quienquiera que haya tomado la decisión deberá explicarla.", "Кто бы ни принял решение, ему придётся его объяснить."]],
-    "Создайте шесть минимальных пар, где смена времени или наклонения меняет отношение к факту, и письменно назовите оттенок."
-  ],
-  [
-    "сложные средства тематизации, эмфазы, эллипсиса и связности",
-    "Используйте информационную структуру осмысленно: вынесение темы, расщепление и эллипсис выделяют контраст и управляют вниманием.",
-    ["Тематизация: Ese asunto ya lo tratamos; расщепление: Fue Marta quien lo propuso.", "Эллипсис допустим, когда восстановление однозначно и соответствует жанру."],
-    [["Lo que resulta difícil de justificar es el retraso.", "Трудно оправдать именно задержку."], ["A Juan le ofrecieron el puesto; a Marta, no.", "Хуану предложили должность, а Марте — нет."]],
-    "Перестройте пять нейтральных фраз так, чтобы поочерёдно выделить деятеля, объект, время и противопоставление."
-  ],
-  [
-    "нюансы модальности, вероятности, дистанции и вежливости",
-    "Градуируйте обязательность и уверенность, не сводя их к должен/может; учитывайте, кто несёт ответственность за оценку.",
-    ["Вероятность: cabe pensar, todo apunta a, difícilmente, no es descartable.", "Дистанция: se diría que, vendría a ser, quisiera señalar; обязательность: procede, conviene, resulta imprescindible."],
-    [["Todo apunta a que la demanda seguirá creciendo.", "Всё указывает на то, что спрос продолжит расти."], ["Convendría reconsiderar el calendario antes de adoptar una decisión definitiva.", "Стоило бы пересмотреть график до принятия окончательного решения."]],
-    "Расположите десять формул по шкале уверенности или обязательности и употребите их в коротком аналитическом комментарии."
-  ],
-  [
-    "разнообразная косвенная речь, номинализация и пассивные модели",
-    "Перестраивайте сообщение под жанр: живой пересказ сохраняет голоса, отчёт уплотняет действия в существительные и безличные конструкции.",
-    ["Номинализация повышает плотность, но чрезмерное количество скрывает участников и делает текст тяжёлым.", "Выбирайте citar, afirmar, sostener, admitir, insinuar, negar по речевому действию, а не универсальное decir."],
-    [["La ministra admitió que se habían cometido errores.", "Министр признала, что были допущены ошибки."], ["La admisión de errores dio lugar a una revisión del procedimiento.", "Признание ошибок привело к пересмотру процедуры."]],
-    "Перепишите устный фрагмент как нейтральную новость и официальный отчёт, меняя глаголы речи и степень номинализации."
-  ],
-  [
-    "регистры, идиомы, коллокации и стилистический выбор",
-    "Оценивайте выражение по четырём параметрам: значение, сочетаемость, регистр и прагматический эффект.",
-    ["Не заменяйте нейтральное слово идиомой только ради сложности; идиома должна быть естественной для ситуации.", "Собирайте коллокационные семьи: plantear una cuestión/un reto/una objeción; alcanzar un acuerdo/una meta."],
-    [["La propuesta no acaba de convencer a todas las partes.", "Предложение не вполне убеждает все стороны."], ["Tras semanas de negociación, alcanzaron un acuerdo de mínimos.", "После недель переговоров они достигли минимально приемлемого соглашения."]],
-    "Отредактируйте текст с десятью неуместно разговорными или книжными выражениями и объясните каждый стилистический выбор."
-  ],
-  [
-    "абстрактные и профессиональные области",
-    "Стройте лексику вокруг понятий, процессов, причинности и типичных жанров своей области.",
-    ["Для термина укажите определение, частые сочетания, родственные слова и понятное объяснение неспециалисту.", "Отмечайте расхождение общеязыкового и профессионального значения."],
-    [["La viabilidad del proyecto depende tanto de la financiación como del marco normativo.", "Осуществимость проекта зависит как от финансирования, так и от нормативной базы."], ["Por escalabilidad entendemos la capacidad del sistema para crecer sin perder rendimiento.", "Под масштабируемостью понимается способность системы расти без потери производительности."]],
-    "Создайте глоссарий из 20 понятий своей сферы и устно объясните пять из них человеку другой профессии."
-  ],
-  [
-    "общественные процессы, культура и этика",
-    "Обсуждайте сложные темы через определения, конфликт ценностей, участников и последствия, избегая лозунгов и стереотипов.",
-    ["Различайте descripción, explicación, valoración и prescripción.", "Отмечайте перспективу: desde el punto de vista de…, para quienes…, a juicio de…"],
-    [["El debate no se limita al coste; plantea además una cuestión de equidad.", "Дискуссия не ограничивается стоимостью; она также ставит вопрос справедливости."], ["Desde la perspectiva de los usuarios, la accesibilidad debería ser prioritaria.", "С точки зрения пользователей доступность должна быть приоритетом."]],
-    "Проанализируйте этическую дилемму с позиций трёх участников и сформулируйте компромисс с его ограничениями."
-  ],
-  [
-    "академическая и деловая коммуникация",
-    "Освойте повторяющиеся речевые задачи: определить проблему, ограничить утверждение, сослаться на источник, возразить и согласовать решение.",
-    ["В академическом тексте источник и степень доказательности обязательны.", "В деловом общении фиксируйте решение, ответственного, срок и следующий шаг."],
-    [["Como señala el informe, esta relación no implica necesariamente causalidad.", "Как отмечается в отчёте, эта связь не обязательно означает причинность."], ["Quedamos, por tanto, en remitir la versión revisada antes del viernes.", "Итак, договорились направить исправленную версию до пятницы."]],
-    "Составьте аннотацию исследования и протокол встречи по одному исходному материалу, меняя цель и структуру."
-  ],
-  [
-    "язык, идентичность и вариативность испанского",
-    "Рассматривайте вариативность описательно: кто, где, в каком регистре и с каким эффектом употребляет форму; активная норма проекта остаётся пиренейской.",
-    ["Различайте estándar, variedad geográfica, sociolecto, registro и estilo individual.", "Не называйте системный вариант «ошибкой»; отдельно отмечайте нормативность в формальной речи Испании."],
-    [["El uso de vosotros forma parte de la norma habitual de gran parte de España.", "Vosotros входит в обычную норму значительной части Испании."], ["Una misma forma puede ser neutra en una zona y marcada en otra.", "Одна и та же форма может быть нейтральной в одном регионе и маркированной в другом."]],
-    "Сравните три варианта одной речевой функции, указав регион, регистр и рекомендуемую активную форму для Испании."
-  ],
-  [
-    "вести переговоры и достигать компромисса",
-    "Переговоры требуют отделить позиции от интересов, прояснить ограничения и собрать взаимоприемлемый пакет условий.",
-    ["Ходы: si he entendido bien…, nuestra prioridad es…, podríamos aceptar… siempre que…", "Фиксируйте частичное согласие и нерешённое: en eso coincidimos; queda pendiente."],
-    [["Podríamos aceptar el plazo, siempre que se redujera el alcance inicial.", "Мы могли бы согласиться со сроком при условии сокращения первоначального объёма."], ["Entiendo vuestra preocupación; ¿qué margen habría para ajustar el presupuesto?", "Я понимаю вашу озабоченность; насколько можно скорректировать бюджет?"]],
-    "Проведите десятиминутные переговоры с тремя условиями у каждой стороны и зафиксируйте итоговое соглашение."
-  ],
-  [
-    "суммировать и критически сопоставлять источники",
-    "Оценивайте не только выводы, но и вопрос, данные, метод, предпосылки и ограничения каждого источника.",
-    ["Синтезируйте по проблемам, а не по очереди авторов.", "Различайте corroborar, matizar, contradecir, cuestionar и no abordar."],
-    [["El segundo estudio corrobora la tendencia, aunque cuestiona la explicación propuesta.", "Второе исследование подтверждает тенденцию, но ставит под сомнение предложенное объяснение."], ["Ninguna de las fuentes aborda el efecto a largo plazo.", "Ни один из источников не рассматривает долгосрочный эффект."]],
-    "Сопоставьте три источника в матрице вопрос–доказательства–ограничения и напишите синтез без последовательного пересказа."
-  ],
-  [
-    "редактировать текст под аудиторию и регистр",
-    "Редактирование C1 меняет отбор информации, терминологию, прямоту и структуру, а не только заменяет tú на usted.",
-    ["Определите знания, ожидания и возможные возражения аудитории.", "Проверьте, какие детали нужно объяснить, сократить, вынести вперёд или подкрепить."],
-    [["La incidencia fue subsanada. → Ya hemos solucionado el problema.", "Сбой устранён. → Мы уже решили проблему."], ["Los datos no son concluyentes. → Todavía no hay datos suficientes para llegar a una conclusión definitiva.", "Данные не позволяют сделать вывод. → Пока данных недостаточно для окончательного вывода."]],
-    "Переработайте один профессиональный текст для руководителя и для клиента; перечислите пять осознанных изменений."
-  ],
-  [
-    "выступать без подробной подготовки",
-    "Быстро создавайте опору из трёх пунктов и управляйте временем, сохраняя ясное вступление и завершение.",
-    ["Используйте внутреннюю схему: postura → dos razones → matiz → cierre.", "Выигрывайте время содержательно: la cuestión tiene dos vertientes; empezaría por…"],
-    [["La cuestión puede abordarse desde dos perspectivas.", "К вопросу можно подойти с двух точек зрения."], ["Dicho esto, mi conclusión sería la siguiente.", "С учётом сказанного мой вывод таков."]],
-    "После 60 секунд подготовки выступите пять минут на незнакомую общественную тему и ответьте на два вопроса."
-  ],
-  [
-    "Я точно выражаю сложные мысли и оттенки",
-    "Точность подтверждается способностью разграничивать близкие понятия, степень уверенности, условие и исключение.",
-    ["Проверяйте, можно ли заменить слово без потери смысла; если нет, объясните различие.", "Используйте оговорки экономно и последовательно."],
-    [["No es imposible, pero sí poco probable en las condiciones actuales.", "Это не невозможно, но маловероятно в нынешних условиях."], ["La medida sería eficaz únicamente en la medida en que se aplicara de forma homogénea.", "Мера была бы эффективна лишь постольку, поскольку применялась бы единообразно."]],
-    "Объясните пять тонких различий из своей области и попросите слушателя пересказать их; исправьте места потери нюанса."
-  ],
-  [
-    "Я понимаю имплицитный смысл и позицию автора",
-    "Проверяйте вывод доказательствами из текста: лексическим выбором, структурой, модальностью и тем, что автор считает само собой разумеющимся.",
-    ["Не путайте собственную реакцию с авторской позицией.", "Допускайте неоднозначность и ранжируйте интерпретации по убедительности."],
-    [["Resulta significativo que el informe omita cualquier referencia al coste.", "Показательно, что в отчёте нет упоминания стоимости."], ["La propuesta es, cuando menos, optimista.", "Предложение, мягко говоря, оптимистично."]],
-    "Выберите текст с иронией или недосказанностью и обоснуйте три вывода конкретными языковыми сигналами."
-  ],
-  [
-    "Я адаптирую стиль к ситуации и собеседнику",
-    "Адаптация подтверждена, если меняется весь коммуникативный дизайн, а содержание и точность сохраняются.",
-    ["Учитывайте дистанцию, власть, знания адресата, канал и последствия ошибки.", "После адаптации проверьте естественность, а не только формальную вежливость."],
-    [["¿Te viene bien adelantar la reunión?", "Тебе удобно перенести встречу на более раннее время?"], ["¿Sería posible adelantar la reunión, si no supone ningún inconveniente?", "Можно ли было бы перенести встречу на более раннее время, если это не создаст неудобств?"]],
-    "Сыграйте одну сложную ситуацию в трёх ролях и после каждой версии назовите изменённые языковые параметры."
-  ]
-]);
-
-const C2_LEARNING_DETAILS = buildLearningDetails([
-  [
-    "легко понимать практически любой устный или письменный материал",
-    "C2 предполагает уверенное понимание плотной, быстрой и стилистически маркированной речи, но не означает знания каждого термина или культурной отсылки.",
-    ["Восстанавливайте смысл при эллипсисе, перебиваниях, игре регистров и непрямой аргументации.", "Отмечайте жанр, голос, интертекст и причину выбора нестандартной формы."],
-    [["Entre que llegaban tarde y que nadie se aclaraba, aquello fue un caos.", "Из-за того, что все опаздывали и никто не мог разобраться, всё превратилось в хаос."], ["El remedio resultó, como suele ocurrir, peor que la enfermedad.", "Лекарство, как это часто бывает, оказалось хуже болезни."]],
-    "Сопоставьте интервью, эссе и сатирический текст на одну тему; объясните различия смысла, голоса и культурных отсылок."
-  ],
-  [
-    "свободно обобщать информацию из разных источников",
-    "Синтез C2 перестраивает материал в собственную модель, сохраняя степень уверенности, противоречия и происхождение утверждений.",
-    ["Иерархизируйте источники по вопросу, методу и надёжности, а не по красоте формулировки.", "Сжимайте без ложного согласия: оставляйте существенные расхождения и пределы данных."],
-    [["Tomados en conjunto, los estudios respaldan la tendencia, aunque no permiten atribuirle una causa única.", "В совокупности исследования подтверждают тенденцию, но не позволяют приписать ей единственную причину."], ["Los testimonios ilustran el impacto percibido; las estadísticas, en cambio, miden su alcance.", "Свидетельства показывают воспринимаемое влияние, а статистика измеряет его масштаб."]],
-    "Подготовьте 250-словный синтез пяти разнородных источников с общей моделью, расхождением и явным ограничением."
-  ],
-  [
-    "выражаться спонтанно, очень точно и с тонкими смысловыми различиями",
-    "Точность C2 — это быстрый выбор между близкими формами с учётом денотации, коннотации, регистра и прагматического эффекта.",
-    ["Разграничивайте, например, insinuar, sugerir, dar a entender и dejar entrever.", "При исправлении сохраняйте ход разговора и объясняйте различие без громоздкой метаязыковой паузы."],
-    [["No lo afirmó expresamente, pero dejó entrever que dimitiría.", "Он не сказал этого прямо, но дал понять, что уйдёт в отставку."], ["Más que rechazar la propuesta, puso en duda que fuera viable.", "Он не столько отверг предложение, сколько усомнился в его осуществимости."]],
-    "Экспромтом объясните пять пар близких слов и сразу употребите каждую пару в контрастном контексте."
-  ],
-  [
-    "создавать убедительные, логичные и стилистически выверенные тексты",
-    "На C2 структура, ритм, плотность и голос текста работают на одну цель и остаются устойчивыми на большой длине.",
-    ["Управляйте чередованием длинных аналитических и коротких акцентных фраз.", "Редактируйте не только ошибки, но и скрытые скачки аргумента, нежелательные коннотации и монотонность."],
-    [["La objeción parece sólida. No lo es. Confunde la ausencia de pruebas con la prueba de una ausencia.", "Возражение кажется убедительным. Но это не так. Оно смешивает отсутствие доказательств с доказательством отсутствия."], ["De ahí que la cuestión no sea si actuar, sino cómo hacerlo sin agravar el problema.", "Поэтому вопрос не в том, действовать ли, а в том, как действовать, не усугубляя проблему."]],
-    "Напишите и дважды отредактируйте текст на 500 слов: сначала логику и доказательность, затем голос, ритм и стилистическую точность."
-  ],
-  [
-    "полный контроль грамматических средств и редких конструкций",
-    "Редкая форма оправдана только тогда, когда она точнее, естественна для жанра и правильно сочетается с окружением.",
-    ["Рецептивно контролируйте формулы с futuro de subjuntivo, infinitivo compuesto, absolutos и сложными относительными.", "Различайте грамматическую допустимость, нормативность, частотность и стилистическую маркированность."],
-    [["Sea cual fuere el resultado, habrá que rendir cuentas.", "Каким бы ни был результат, придётся отчитаться."], ["De haberlo sabido, habría actuado de otro modo.", "Если бы я это знал, я бы поступил иначе."]],
-    "Соберите десять редких конструкций из качественных текстов, укажите жанр и частотность и предложите нейтральную парафразу."
-  ],
-  [
-    "стилистические эффекты порядка слов, выбора времени и наклонения",
-    "Меняйте форму ради контролируемого эффекта: фокуса, дистанции, ретроспекции, иронии или драматизации, а не ради разнообразия.",
-    ["Порядок слов выделяет контраст: A eso me niego yo; время может приближать прошлое: En 1492 Colón llega…", "Indicativo/Subjuntivo позволяет представить содержание как утверждение, допущение, эхо чужой мысли или полемику."],
-    [["Bonita manera de resolver el problema.", "Хорош способ решить проблему; препозиция и контекст создают иронию."], ["Que yo sepa, nadie ha autorizado semejante cambio.", "Насколько мне известно, никто не разрешал такого изменения."]],
-    "Создайте три версии одного абзаца: нейтральную, полемическую и литературную; подпишите формальные средства эффекта."
-  ],
-  [
-    "идиоматические выражения, метафоры, юмор и игра слов",
-    "Интерпретируйте и создавайте образные средства с учётом культурной доступности, жанра и риска буквального непонимания.",
-    ["Различайте устоявшуюся идиому, авторскую метафору, аллюзию и каламбур.", "В переводе или объяснении передавайте функцию шутки, даже если форма неизбежно меняется."],
-    [["La negociación entró en vía muerta.", "Переговоры зашли в тупик; буквально — на запасной путь."], ["Prometieron transparencia, pero el informe resultó bastante opaco.", "Они обещали прозрачность, но отчёт оказался весьма непрозрачным; игра на переносном смысле."]],
-    "Разберите пять примеров юмора или метафоры из Испании и предложите нейтральную парафразу с описанием утраченного эффекта."
-  ],
-  [
-    "точное переключение регистров и разновидностей языка",
-    "Управляйте переключением осознанно и последовательно; распознавайте чужие варианты, сохраняя собственную норму Испании.",
-    ["Учитывайте канал: устный разговор, чат, публичное выступление, договор и художественный диалог допускают разную плотность и прямоту.", "Кодовое или стилевое переключение может маркировать солидарность, дистанцию, цитирование или иронию."],
-    [["Venga, lo vemos luego. → Procederemos a examinarlo posteriormente.", "Ладно, посмотрим потом. → Приступим к его рассмотрению позднее."], ["El personaje alterna el registro culto con expresiones coloquiales para crear distancia irónica.", "Персонаж чередует высокий стиль с разговорными выражениями, создавая ироническую дистанцию."]],
-    "Адаптируйте один сложный тезис для чата, подкаста, научного доклада и административного документа."
-  ],
-  [
-    "самостоятельное редактирование точности, связности и уместности",
-    "Редактируйте по отдельным проходам: смысл и факты, макроструктура, абзацы, предложения, лексика, норма и оформление.",
-    ["Сначала исправляйте логическую ошибку, затем неоднозначность, затем стиль; косметика не должна скрывать дефект аргумента.", "Читайте текст глазами конкретного адресата и проверяйте непреднамеренные эффекты."],
-    [["La frase es gramatical, pero sugiere una causalidad que los datos no demuestran.", "Фраза грамматически верна, но подразумевает причинность, которую данные не доказывают."], ["El pronombre es ambiguo: no queda claro a cuál de los dos informes remite.", "Местоимение неоднозначно: неясно, к какому из двух отчётов оно относится."]],
-    "Проведите шесть отдельных редакторских проходов по собственному тексту и сохраните журнал десяти содержательных решений."
-  ],
-  [
-    "любые общественные, научные, профессиональные и культурные темы",
-    "Универсальность C2 означает способность быстро построить понятийную карту новой темы и честно обозначить границы компетенции.",
-    ["Осваивайте участников, процессы, критерии доказательства и жанры дискуссии новой области.", "Не маскируйте нехватку знаний беглостью: отделяйте языковую уверенность от предметной."],
-    [["No soy especialista en la materia, pero el argumento plantea dos cuestiones metodológicas.", "Я не специалист в этой области, но аргумент ставит два методологических вопроса."], ["Para valorar la propuesta habría que aclarar primero qué se entiende por eficiencia.", "Чтобы оценить предложение, сначала нужно уточнить, что понимается под эффективностью."]],
-    "За 30 минут изучите незнакомую тему и проведите пятиминутное объяснение с определениями, оговорками и вопросами для эксперта."
-  ],
-  [
-    "литературные и публицистические жанры",
-    "Распознавайте жанровый договор, голос рассказчика, композицию, интертекст и способы убеждения или эстетического воздействия.",
-    ["В публицистике анализируйте тезис, рамку события и риторические ходы; в литературе — перспективу, мотивы, ритм и неоднозначность.", "Не сводите анализ к пересказу содержания."],
-    [["El narrador afirma no recordar los hechos, pero ofrece detalles imposibles de olvidar.", "Рассказчик утверждает, что не помнит событий, но приводит детали, которые невозможно забыть."], ["La columna convierte una anécdota doméstica en argumento político.", "Колонка превращает бытовой эпизод в политический аргумент."]],
-    "Сравните рассказ и колонку: опишите голос, композицию, подразумеваемого читателя и эффект трёх языковых решений."
-  ],
-  [
-    "риторика, стиль, ирония и подтекст",
-    "Анализируйте, как форма управляет доверием и интерпретацией: через умолчание, преуменьшение, гиперболу, эхо чужих слов и контраст.",
-    ["Ирония требует несоответствия буквального смысла контексту и разделяемого знания.", "Подтекст может быть вероятным, но не всегда единственным; обосновывайте чтение сигналами."],
-    [["El proyecto fue un éxito tan rotundo que hubo que cancelarlo.", "Проект имел такой «оглушительный успех», что его пришлось отменить."], ["No estuvo precisamente brillante.", "Он выступил, мягко говоря, не блестяще."]],
-    "Найдите в одном тексте четыре риторических приёма, объясните их эффект и предложите буквальную версию для сравнения."
-  ],
-  [
-    "вариативность испанского с опорой на норму Испании",
-    "Изучайте паниспанскую вариативность рецептивно и без иерархии «правильный/неправильный», сохраняя пиренейскую норму как активную модель.",
-    ["Для формы фиксируйте географию, социальную маркированность, регистр и нормативный статус.", "Внутри Испании также учитывайте диалектные и двуязычные контексты, не выдавая один локальный обычай за общую норму."],
-    [["Ordenador y computadora designan el mismo objeto, pero su distribución geográfica es distinta.", "Оба слова обозначают компьютер: ordenador типичен для Испании, computadora широко употребляется в Америке."], ["La variación no impide la comprensión mutua, pero sí puede marcar identidad.", "Вариативность не мешает взаимопониманию, но может обозначать идентичность."]],
-    "Создайте паспорт десяти вариантов: форма, значение, регион, регистр, активное или только рецептивное владение."
-  ],
-  [
-    "вести сложную дискуссию и мгновенно реагировать на нюансы",
-    "В сложной дискуссии одновременно отслеживайте содержание, предпосылки, степень уверенности и отношения между участниками.",
-    ["Отвечайте на наиболее сильную версию аргумента, а не на удобное упрощение.", "При необходимости отделяйте терминологическое расхождение от содержательного."],
-    [["Si por sostenible entendemos económicamente viable, coincido; si incluimos el impacto social, discrepo.", "Если под устойчивым понимать экономически жизнеспособное, я согласен; если включить социальное влияние — нет."], ["La objeción matiza el alcance de la propuesta, pero no invalida su premisa central.", "Возражение уточняет область применимости предложения, но не опровергает его основную предпосылку."]],
-    "Проведите дискуссию с меняющимися условиями и после каждой реплики кратко сформулируйте, на какой нюанс отвечаете."
-  ],
-  [
-    "синтезировать длинные и разнородные источники",
-    "Создавайте единый аналитический продукт из данных, свидетельств, теории и полемики, явно показывая разный вес доказательств.",
-    ["Не уравнивайте личное свидетельство и систематические данные, но используйте каждое по его функции.", "Отмечайте пробелы и несовместимые определения до объединения выводов."],
-    [["Las cifras describen la magnitud del fenómeno; las entrevistas ayudan a interpretar sus mecanismos.", "Цифры описывают масштаб явления, а интервью помогают понять его механизмы."], ["La aparente contradicción desaparece al distinguir entre incidencia anual y prevalencia acumulada.", "Кажущееся противоречие исчезает, если различить годовую заболеваемость и накопленную распространённость."]],
-    "Подготовьте аналитическую записку по шести источникам разных жанров с общей рамкой и иерархией доказательств."
-  ],
-  [
-    "создавать тексты разных жанров и регистров",
-    "Сохраняйте фактическое ядро при радикальной смене жанрового договора, композиции, голоса и плотности.",
-    ["Один материал может стать новостью, аналитической запиской, колонкой, инструкцией или публичной речью.", "Каждый жанр требует собственного заголовка, вступления, способа атрибуции и завершения."],
-    [["Se informa a las personas usuarias de que…", "Пользователей уведомляют о том, что…; административная формула."], ["Imaginen por un momento una ciudad sin ruido de motores.", "Представьте на мгновение город без шума двигателей; риторическое вступление."]],
-    "Преобразуйте один набор фактов в четыре жанра и объясните, какие сведения вы выдвинули, сократили или переоформили."
-  ],
-  [
-    "объяснять тонкие языковые различия другим учащимся",
-    "Хорошее объяснение сочетает ясное различие, минимальную пару, контекст употребления, ограничение и проверочное задание.",
-    ["Не заменяйте объяснение списком терминов; начните с изменения смысла.", "Если допустимы оба варианта, объясните разницу перспективы или регистра, а не объявляйте один ошибкой."],
-    [["No dijo que vendría / Dijo que no vendría.", "В первом случае отрицается само сообщение, во втором передаётся сообщение об отказе."], ["Era amable / Fue amable.", "Imperfecto описывает свойство в контексте, а Indefinido оценивает конкретное поведение."]],
-    "Подготовьте пятиминутное объяснение одной трудной пары, два контрпримера и короткую проверку для ученика."
-  ],
-  [
-    "Я понимаю практически всё, что читаю и слышу",
-    "Оценивайте широкий диапазон жанров и условий, а не только знакомую профессиональную тему; редкие пробелы допустимы и на C2.",
-    ["Проверьте быструю групповую речь, регионально окрашенный материал, эссе, административный и художественный текст.", "После понимания содержания объясните тон, позицию, имплицитное и жанровый эффект."],
-    [["Comprender las palabras no basta si se pierde la ironía o la relación entre las voces.", "Понимания слов недостаточно, если теряются ирония или отношения между голосами."], ["Una referencia cultural desconocida puede investigarse sin destruir la comprensión global.", "Незнакомую культурную отсылку можно проверить, не теряя общего понимания."]],
-    "Проведите аудит пяти максимально разных материалов и запишите не только пробелы, но и стратегию их восстановления."
-  ],
-  [
-    "Я говорю и пишу точно, гибко и естественно",
-    "Навык подтверждается не сложностью, а уместностью: форма звучит естественно, выражает нужный нюанс и не перегружает адресата.",
-    ["Сравнивайте свою продукцию с качественными образцами того же жанра.", "Отмечайте устойчивые следы переноса из русского: порядок слов, управление, ложные друзья и чрезмерная эксплицитность."],
-    [["La versión más breve no siempre es menos precisa; a menudo elimina ruido.", "Более короткая версия не всегда менее точна; часто она убирает шум."], ["La naturalidad depende del contexto, no de acumular expresiones idiomáticas.", "Естественность зависит от контекста, а не от количества идиом."]],
-    "Запишите речь и текст на одну тему, сравните с двумя испанскими образцами и выполните предметную редактуру по пяти критериям."
-  ],
-  [
-    "Я контролирую стиль, тон, подтекст и культурные отсылки",
-    "Контроль означает способность предвидеть интерпретацию и при необходимости сделать эффект яснее, слабее или двусмысленнее.",
-    ["Проверьте, кому доступна отсылка и не создаёт ли шутка нежелательной агрессии или исключения.", "Отделяйте намеренный подтекст от случайной двусмысленности."],
-    [["La alusión funciona para un público español informado, pero requeriría contexto para otros lectores.", "Аллюзия понятна осведомлённой испанской аудитории, но другим читателям понадобится контекст."], ["El tono pretendía ser irónico, aunque por escrito puede interpretarse como hostil.", "Тон задумывался как ироничный, но на письме может восприниматься как враждебный."]],
-    "Создайте две версии текста с явным и скрытым посылом, протестируйте на читателе и исправьте непреднамеренные толкования."
-  ]
-]);
-
-const LEARNING_LEVEL_DETAILS = {
-  a0: A0_LEARNING_DETAILS,
-  a1: A1_LEARNING_DETAILS,
-  a2: A2_LEARNING_DETAILS,
-  b1: B1_LEARNING_DETAILS,
-  b2: B2_LEARNING_DETAILS,
-  c1: C1_LEARNING_DETAILS,
-  c2: C2_LEARNING_DETAILS
-};
-
-const LEARNING_LEVEL_RESOURCES = {
-  a0: [
-    ["Как читать b/v, c/z, g/j, h, r/rr", "Правила чтения"],
-    ["Agudas, llanas, esdrújulas", "Ударение"],
-    ["Артикли: el/la/los/las", "Артикли"],
-    ["Род существительных", "Род"],
-    ["Множественное число", "Множественное число"],
-    ["Личные местоимения", "Личные местоимения"],
-    ["Ser/estar: сущность", "Ser / estar"],
-    ["Hay / Está / Se encuentra", "Hay / está"],
-    ["Числительные: количественные", "Числа"],
-    ["La hora y la fecha", "Время и дата"],
-    ["Вопросительные: qué", "Вопросительные слова"]
-  ],
-  a1: [
-    ["Irregularidades: частые модели в Presente", "Presente: модели"],
-    ["Вопросы: образование", "Вопросы"],
-    ["Прямые и косвенные объекты", "Объектные местоимения"],
-    ["Возвратные глаголы: обычный", "Возвратные глаголы"],
-    ["Mi/mío, tu/tuyo", "Притяжательные"],
-    ["Указательные: este/ese/aquel", "Указательные"],
-    ["Todo, mucho, poco", "Количество"],
-    ["Gustar и похожие глаголы", "Gustar"],
-    ["Futuro: ir a + infinitivo", "Ir a + infinitivo"],
-    ["Preposiciones de lugar", "Место"],
-    ["Погода: hacer, estar", "Погода"],
-    ["Вежливые просьбы в Испании", "Вежливые просьбы"],
-    ["Письма и сообщения", "Сообщения"],
-    ["Bueno / bien, malo / mal", "Bueno / bien"],
-    ["Presente или estar / seguir", "Действие в процессе"],
-    ["Decir, contar, hablar", "Глаголы речи"]
-  ],
-  a2: [
-    ["Pretérito Perfecto vs Indefinido", "Perfecto / Indefinido"],
-    ["Imperfecto vs Indefinido", "Imperfecto / Indefinido"],
-    ["Futuro: ir a + infinitivo", "Способы говорить о будущем"],
-    ["Прямые и косвенные объекты", "Объектные местоимения"],
-    ["Imperativo: tú, usted", "Imperativo"],
-    ["Porque/aunque/si/cuando", "Частые союзы"],
-    ["Сравнение: más, menos", "Сравнение"],
-    ["Desde/hace/durante", "Время и длительность"],
-    ["Как рассказывать историю", "Как строить рассказ"],
-    ["Транспорт и маршруты", "Поездки по Испании"],
-    ["Doler и части тела", "У врача"],
-    ["Письма и сообщения", "Письма и отзывы"],
-    ["Soler, acostumbrarse a", "Привычки и тенденции"],
-    ["Presente или estar / seguir", "Процесс и привычка"],
-    ["У врача и в аптеке", "Врач и аптека"],
-    ["Отель, аренда жилья", "Отель и жильё"],
-    ["Возврат товара, гарантия", "Возврат и гарантия"]
-  ],
-  b1: [
-    ["Pretérito Perfecto vs Indefinido", "Perfecto / Indefinido"],
-    ["Imperfecto vs Indefinido", "Фон и событие"],
-    ["Perífrasis verbales", "Глагольные перифразы"],
-    ["Subjuntivo по смыслу", "Subjuntivo по смыслу"],
-    ["Infinitivo или que + subjuntivo", "Один или два субъекта"],
-    ["Условные предложения", "Условные предложения"],
-    ["Cuando, hasta que, en cuanto", "Время и Subjuntivo"],
-    ["Относительные: que, quien", "Относительные"],
-    ["Conectores: все связки", "Связки текста"],
-    ["Косвенная речь: полная таблица", "Косвенная речь"],
-    ["Вежливые просьбы в Испании", "Вежливое общение"],
-    ["Письма и сообщения", "Письма и сообщения"],
-    ["Creo que / No creo que", "Мнение и наклонение"],
-    ["Para que, antes de que", "Цель и обстоятельства"],
-    ["Cita previa, formulario", "Госуслуги в Испании"],
-    ["Рабочая встреча", "Рабочая встреча"]
-  ],
-  b2: [
-    ["Pluscuamperfecto", "Предшествование в прошлом"],
-    ["Предположение о настоящем и прошлом", "Предположение"],
-    ["Условные предложения", "Все типы условий"],
-    ["Concordancia de tiempos", "Согласование времён"],
-    ["Subjuntivo по смыслу", "Subjuntivo: выбор смысла"],
-    ["Busco un piso que tenga", "Относительные и Subjuntivo"],
-    ["Voz pasiva", "Пассив и se"],
-    ["Косвенная речь: полная таблица", "Косвенная речь"],
-    ["Conectores: все связки", "Связность текста"],
-    ["Глаголы с предлогами", "Управление глаголов"],
-    ["Yo, tú, él: когда подлежащее", "Фокус и порядок слов"],
-    ["Письма и сообщения", "Формальное письмо"],
-    ["Aunque, a pesar de que", "Уступка и наклонение"],
-    ["Как построить аргумент", "Аргументация"],
-    ["Глаголы передачи речи", "Передача источника"],
-    ["Разговорный, нейтральный", "Регистры"]
-  ],
-  c1: [
-    ["Concordancia de tiempos", "Согласование времён"],
-    ["Предположение о настоящем и прошлом", "Модальность"],
-    ["Como si + Subjuntivo", "Como si + Subjuntivo"],
-    ["Ojalá: venga", "Временные планы Subjuntivo"],
-    ["Косвенная речь: полная таблица", "Передача чужой речи"],
-    ["Voz pasiva", "Пассивные модели"],
-    ["Se: возвратность", "Функции se"],
-    ["Lo + прилагательное", "Нейтральное lo"],
-    ["Относительные предложения: смысл запятых", "Относительные и пунктуация"],
-    ["Conectores: все связки", "Продвинутая связность"],
-    ["Глаголы с предлогами", "Управление и коллокации"],
-    ["Expresiones coloquiales de España", "Разговорный регистр Испании"],
-    ["Lo que…, fue quien", "Тема и фокус"],
-    ["Ссылки внутри текста", "Связность текста"],
-    ["Номинализация", "Номинализация"],
-    ["Как смягчить утверждение", "Достоверность"]
-  ],
-  c2: [
-    ["Concordancia de tiempos", "Точка отсчёта и времена"],
-    ["Subjuntivo по смыслу", "Наклонение и позиция говорящего"],
-    ["Предположение о настоящем и прошлом", "Дистанция и вероятность"],
-    ["Lo + прилагательное", "Абстракция и эмфаза"],
-    ["Se: возвратность", "Все функции se"],
-    ["Yo, tú, él: когда подлежащее", "Фокус и эмфаза"],
-    ["Относительные предложения: смысл запятых", "Сложные относительные"],
-    ["Conectores: все связки", "Риторические связи"],
-    ["Expresiones coloquiales de España", "Идиоматика Испании"],
-    ["Diminutivos и aumentativos", "Стилистические оттенки"],
-    ["Tilde diacrítica", "Тонкая орфография"],
-    ["¿? ¡! Запятые", "Пунктуация и оформление"],
-    ["Lo que…, fue quien", "Тема и фокус"],
-    ["Ссылки внутри текста", "Связность текста"],
-    ["Номинализация", "Номинализация"],
-    ["Разговорный, нейтральный", "Регистры"]
-  ]
-};
-
-const LEARNING_ITEM_RESOURCES = {
-  a0: {
-    "прочитать и произнести основные испанские звуки": [["Как читать b/v, c/z, g/j, h, r/rr", "Правила чтения"], ["Diptongo и hiato", "Гласные рядом"]],
-    "поздороваться, попрощаться, представиться и назвать страну/язык": [["Tú vs Usted vs Vosotros", "Tú / usted / vosotros"], ["Gentilicios", "Страны и национальности"]],
-    "понять числа 0–20, дни недели и простое время": [["Числительные: количественные", "Числа"], ["La hora y la fecha", "Время и календарь"]],
-    "алфавит, ударение и базовые правила чтения": [["Как читать b/v, c/z, g/j, h, r/rr", "Правила чтения"], ["Agudas, llanas, esdrújulas", "Ударение"], ["¿? ¡! Запятые", "Знаки и регистр"]],
-    "род и число существительных; артикли el/la, un/una": [["Артикли: el/la/los/las", "Артикли"], ["Род существительных", "Род"], ["Множественное число", "Множественное число"]],
-    "личные местоимения и базовый порядок слов": [["Личные местоимения", "Личные местоимения"], ["Yo, tú, él: когда подлежащее", "Когда называть подлежащее"], ["Вопросы: образование", "Как задать вопрос"]],
-    "ser, estar, tener, hay, llamarse в настоящем времени": [["Ser/estar: сущность", "Ser / estar"], ["Hay / Está / Se encuentra", "Hay / está"], ["Tener + sustantivo", "Выражения с tener"]],
-    "имя, возраст, происхождение и языки": [["Возраст и длительность", "Возраст"], ["Gentilicios", "Национальности"], ["Деньги, дроби, проценты", "Телефоны и адреса"]],
-    "семья и базовые личные данные": [["Mi/mío, tu/tuyo", "Притяжательные"], ["Личные местоимения", "Личные местоимения"]],
-    "числа, даты, время и классные команды": [["La hora y la fecha", "Время, дни и месяцы"], ["Числительные: количественные", "Числа"], ["¿? ¡! Запятые", "Письмо и знаки"]],
-    "представиться в 4–5 фразах": [["Tú vs Usted vs Vosotros", "Обращение"], ["Gentilicios", "Национальности"], ["Ser/estar: сущность", "Ser / estar"]],
-    "задать и понять имя, страну и профессию": [["Вопросительные: qué", "Вопросительные слова"], ["Tú vs Usted vs Vosotros", "Tú / usted"]],
-    "прочитать короткое расписание или ценник": [["La hora y la fecha", "Расписание"], ["Деньги, дроби, проценты", "Цены и деньги"]],
-    "Я читаю простые слова по правилам испанского": [["Как читать b/v, c/z, g/j, h, r/rr", "Правила чтения"], ["Agudas, llanas, esdrújulas", "Ударение"]],
-    "Я могу кратко рассказать о себе": [["Личные местоимения", "Личные местоимения"], ["Ser/estar: сущность", "Ser / estar"], ["Возраст и длительность", "Возраст"]],
-    "Я понимаю базовые вопросы и инструкции": [["Вопросительные: qué", "Вопросительные слова"], ["Tú vs Usted vs Vosotros", "Формы обращения"]]
-  },
-  a1: {
-    "понять и использовать знакомые повседневные выражения": [["Вежливые просьбы в Испании", "Вежливые просьбы"], ["Tú vs Usted vs Vosotros", "Формы обращения"], ["Вопросы: образование", "Вопросы"]],
-    "представить себя и другого человека": [["Персональная a", "Личная a"], ["Gentilicios", "Национальности"], ["Yo, tú, él: когда подлежащее", "Подлежащее"]],
-    "задавать и отвечать на простые вопросы о личных данных и окружении": [["Вопросительные: qué", "Вопросительные слова"], ["Вопросы: образование", "Как задать вопрос"], ["Hay / Está / Se encuentra", "Hay / está"]],
-    "presente de indicativo: регулярные глаголы и частотные неправильные формы": [["Irregularidades: частые модели в Presente", "Модели Presente"], ["Yo, tú, él: когда подлежащее", "Подлежащее"]],
-    "вопросы, отрицание, hay и estar; согласование существительных и прилагательных": [["Вопросы: образование", "Вопросы"], ["Hay / Está / Se encuentra", "Hay / está"], ["Прилагательные: согласование", "Согласование прилагательных"]],
-    "притяжательные, указательные и количественные слова": [["Mi/mío, tu/tuyo", "Притяжательные"], ["Указательные: este/ese/aquel", "Указательные"], ["Todo, mucho, poco", "Количество"], ["Muy/mucho", "Muy / mucho"]],
-    "ir a + infinitivo для ближайших планов; базовые местоимения": [["Futuro: ir a + infinitivo", "Ir a + infinitivo"], ["Прямые и косвенные объекты", "Объектные местоимения"], ["Местоимения при инфинитиве", "Местоимение + инфинитив"]],
-    "дом, семья, распорядок дня": [["Hay / Está / Se encuentra", "Hay / está"], ["Mi/mío, tu/tuyo", "Притяжательные"], ["Siempre, nunca, a veces", "Частотность"], ["Возвратные глаголы: обычный", "Возвратные глаголы"]],
-    "еда, покупки, кафе и цены": [["En un bar", "В баре и кафе"], ["Pedir/preguntar", "Pedir / preguntar"], ["Деньги, дроби, проценты", "Цены и деньги"], ["Вежливые просьбы в Испании", "Вежливые просьбы"]],
-    "город, транспорт, направления": [["Транспорт и маршруты", "Транспорт и маршруты"], ["Preposiciones de lugar", "Предлоги места"], ["Ir/venir/llevar/traer", "Глаголы движения"], ["Контракции al / del", "Al / del"]],
-    "работа/учёба, погода и свободное время": [["Погода: hacer, estar", "Погода"], ["Gustar и похожие глаголы", "Gustar"], ["Siempre, nunca, a veces", "Частотность"]],
-    "заказать еду и купить нужный товар": [["En un bar", "В баре и кафе"], ["Вежливые просьбы в Испании", "Вежливые просьбы"], ["Pedir/preguntar", "Pedir / preguntar"], ["Деньги, дроби, проценты", "Оплата и цены"]],
-    "спросить дорогу и понять простой ответ": [["Транспорт и маршруты", "Транспорт и маршруты"], ["Preposiciones de lugar", "Предлоги места"], ["Ir/venir/llevar/traer", "Глаголы движения"], ["Вопросы: образование", "Вопросы"]],
-    "написать короткое сообщение или анкету": [["Teléfono y WhatsApp", "Телефон и WhatsApp"], ["Письма и сообщения", "Письма и сообщения"], ["Abreviaturas", "Сокращения"], ["¿? ¡! Запятые", "Знаки и регистр"]],
-    "описать обычный день": [["Siempre, nunca, a veces", "Частотность"], ["Возвратные глаголы: обычный", "Возвратные глаголы"], ["La hora y la fecha", "Время"]],
-    "Я поддерживаю короткий разговор на знакомую тему": [["Tú vs Usted vs Vosotros", "Формы обращения"], ["También/tampoco", "También / tampoco"], ["Muletillas", "Разговорные связки"]],
-    "Я понимаю медленную чёткую речь и короткие тексты": [["Вопросительные: qué", "Вопросительные слова"], ["La hora y la fecha", "Время и дата"], ["Деньги, дроби, проценты", "Числа в быту"]],
-    "Я могу написать простое сообщение о себе или планах": [["Письма и сообщения", "Письма и сообщения"], ["Futuro: ir a + infinitivo", "Планы с ir a"], ["Как договориться о встрече", "Договориться о встрече"], ["¿? ¡! Запятые", "Знаки и регистр"]]
-  }
-};
-
-const LEARNING_RESOURCE_RULES = [
-  {
-    terms: ["понимать", "речь", "разговор", "общаться", "дискусс", "перебивать", "выступ"],
-    resources: [["Muletillas", "Ходы живой речи"], ["Вопросы: образование", "Уточняющие вопросы"]]
-  },
-  {
-    terms: ["поездк", "путешеств", "транспорт", "отел"],
-    resources: [["Транспорт и маршруты", "Транспорт в Испании"], ["Вежливые просьбы в Испании", "Вежливые просьбы"]]
-  },
-  {
-    terms: ["прошл", "истори", "событи", "воспомин", "биограф"],
-    resources: [["Как рассказывать историю", "Как строить рассказ"], ["Imperfecto vs Indefinido", "Фон и событие"]]
-  },
-  {
-    terms: ["perfecto", "indefinido", "imperfecto", "времён", "времени и аспект"],
-    resources: [["Pretérito Perfecto vs Indefinido", "Perfecto / Indefinido"], ["Pluscuamperfecto", "Предшествование"]]
-  },
-  {
-    terms: ["futuro", "будущее", "план"],
-    resources: [["Futuro: ir a + infinitivo", "Будущее"], ["Perífrasis verbales", "Перифразы"]]
-  },
-  {
-    terms: ["привычк", "процесс", "soler", "gerundio", "распорядок"],
-    resources: [["Soler, acostumbrarse a", "Привычки"], ["Presente или estar / seguir", "Действие в процессе"]]
-  },
-  {
-    terms: ["subjuntivo", "желани", "сомнени", "гипотез"],
-    resources: [["Subjuntivo по смыслу", "Subjuntivo по смыслу"], ["Infinitivo или que + subjuntivo", "Infinitivo или Subjuntivo"]]
-  },
-  {
-    terms: ["мнение", "достоверност", "уверенност", "позици"],
-    resources: [["Creo que / No creo que", "Мнение и наклонение"], ["Как смягчить утверждение", "Степень уверенности"]]
-  },
-  {
-    terms: ["условн"],
-    resources: [["Условные предложения", "Условные предложения"], ["Como si + Subjuntivo", "Como si"]]
-  },
-  {
-    terms: ["относительн", "придаточн"],
-    resources: [["Относительные: que, quien", "Относительные местоимения"], ["Para que, antes de que", "Цель и обстоятельства"]]
-  },
-  {
-    terms: ["уступ", "aunque", "возражен"],
-    resources: [["Aunque, a pesar de que", "Уступка и наклонение"], ["Как построить аргумент", "Аргументация"]]
-  },
-  {
-    terms: ["связ", "текст", "эссе", "отчёт", "источник", "суммир", "синтез"],
-    resources: [["Conectores: все связки", "Связки текста"], ["Ссылки внутри текста", "Ссылки внутри текста"]]
-  },
-  {
-    terms: ["косвен", "перефраз", "чуж", "передач"],
-    resources: [["Косвенная речь: полная таблица", "Косвенная речь"], ["Глаголы передачи речи", "Точные глаголы речи"]]
-  },
-  {
-    terms: ["пассив", "безличн"],
-    resources: [["Voz pasiva", "Пассив и безличность"], ["Se: возвратность", "Функции se"]]
-  },
-  {
-    terms: ["номинализац"],
-    resources: [["Номинализация", "Номинализация"], ["Глаголы передачи речи", "Глагольный стиль"]]
-  },
-  {
-    terms: ["местоимени", "возвратн", "объект"],
-    resources: [["Прямые и косвенные объекты", "Объектные местоимения"], ["Местоимения при инфинитиве", "Позиция местоимений"]]
-  },
-  {
-    terms: ["модаль", "вероятност", "дистанц", "обязательност"],
-    resources: [["Предположение о настоящем и прошлом", "Предположение"], ["Как смягчить утверждение", "Степень уверенности"]]
-  },
-  {
-    terms: ["регистр", "стил", "аудитори", "делов", "академ", "формальн", "письмо"],
-    resources: [["Разговорный, нейтральный", "Три регистра"], ["Письма и сообщения", "Письма и регистр"]]
-  },
-  {
-    terms: ["идиом", "метафор", "юмор", "разговорн"],
-    resources: [["Expresiones coloquiales de España", "Разговорный испанский"], ["Muletillas", "Разговорные маркеры"]]
-  },
-  {
-    terms: ["вариатив", "вариант", "идентичност", "разнообраз"],
-    resources: [["Tú vs Usted vs Vosotros", "Обращения в Испании"], ["Leísmo, laísmo и loísmo", "Местоименная норма Испании"]]
-  },
-  {
-    terms: ["коллокац", "управлен", "профессиональн", "абстрактн"],
-    resources: [["Глаголы с предлогами", "Управление глаголов"], ["Que, de que, en que", "Предлог перед que"]]
-  },
-  {
-    terms: ["порядок слов", "эмфаз", "тематизац", "фокус"],
-    resources: [["Lo que…, fue quien", "Тема и фокус"], ["A María le escribí", "Вынос дополнения"]]
-  },
-  {
-    terms: ["переговор", "компромисс", "решени", "аргумент", "мнени"],
-    resources: [["Как построить аргумент", "Структура аргумента"], ["Reformular, corregir y matizar", "Уточнить позицию"]]
-  },
-  {
-    terms: ["здоров", "врач", "аптек"],
-    resources: [["У врача и в аптеке", "Врач и аптека"], ["Doler и части тела", "Doler"]]
-  },
-  {
-    terms: ["жиль", "отел", "аренд"],
-    resources: [["Отель, аренда жилья", "Отель и жильё"]]
-  },
-  {
-    terms: ["покупк", "магазин", "технолог", "товар"],
-    resources: [["Возврат товара, гарантия", "Возврат и гарантия"]]
-  },
-  {
-    terms: ["услуг", "административ", "документ"],
-    resources: [["Cita previa, formulario", "Госуслуги в Испании"]]
-  },
-  {
-    terms: ["работ", "встреч", "профессиональн"],
-    resources: [["Рабочая встреча", "Рабочая встреча"]]
-  },
-  {
-    terms: ["орфограф", "редактир", "пунктуац"],
-    resources: [["¿? ¡! Запятые", "Пунктуация"], ["Tilde diacrítica", "Диакритические ударения"]]
-  }
-];
-
-const LEARNING_DETAIL_PATTERNS = [
-  {
-    terms: ["perfecto", "indefinido", "imperfecto"],
-    guidance: "Работайте с временной линией: Perfecto связывает опыт с настоящим, Indefinido завершает событие, Imperfecto задаёт фон, привычку или описание.",
-    task: "Напишите три пары фраз: сначала фон через Imperfecto, затем завершённое событие через Indefinido; отдельно добавьте недавний опыт через Perfecto."
-  },
-  {
-    terms: ["subjuntivo"],
-    guidance: "Сначала ищите не форму глагола, а триггер: желание, оценку, сомнение, эмоцию, цель или ещё не наступившее событие.",
-    task: "Составьте по одному предложению с querer que, me alegra que, es importante que и cuando + будущее действие."
-  },
-  {
-    terms: ["condicional", "условн"],
-    guidance: "Различайте реальное условие (si + presente, futuro) и гипотетическое (si + imperfecto de subjuntivo, condicional); после si Condicional не ставится.",
-    task: "Сравните: Si tengo tiempo, iré и Si tuviera tiempo, iría; затем придумайте два своих примера."
-  },
-  {
-    terms: ["местоимени", "возвратн"],
-    guidance: "Сначала назовите функцию формы: дополнение, возвратность, притяжательность или указание. Не учите все местоимения одним списком.",
-    task: "Составьте четыре пары: veo a Marta → la veo; doy el libro a Juan → se lo doy; me levanto; esta casa es mía."
-  },
-  {
-    terms: ["союз", "связк", "придаточ", "aunque", "porque", "cuando"],
-    guidance: "Связки задают логику текста: причина, условие, уступка, время или следствие. Выбирайте их по смыслу, а не как взаимозаменяемые слова.",
-    task: "Соедините пять коротких фраз с porque, aunque, cuando, si и por eso; проверьте, меняется ли наклонение."
-  },
-  {
-    terms: ["ser, estar", "hay и estar"],
-    guidance: "Разделите три задачи: ser для идентификации и характеристики, estar для состояния и места, hay для существования нового или неопределённого объекта.",
-    task: "Опишите комнату пятью фразами: что в ней есть, где предметы находятся и какими они являются."
-  },
-  {
-    terms: ["заказать", "покупк", "кафе", "услуг"],
-    guidance: "Для бытовой задачи подготовьте не отдельные слова, а готовые ходы: просьба, уточнение, количество, цена, вежливое завершение.",
-    task: "Разыграйте диалог из шести реплик: попросите товар, уточните цену, задайте вопрос и поблагодарите."
-  },
-  {
-    terms: ["написать", "письмо", "отзыв", "рассказ"],
-    guidance: "Сначала выберите структуру: цель текста, порядок событий, связки и финальная фраза. Только затем проверяйте грамматику.",
-    task: "Напишите 80–100 слов: начало с контекстом, два события со связками и короткое заключение."
-  },
-  {
-    terms: ["здоров", "врача"],
-    guidance: "В медицинской ситуации важнее понятность: назовите проблему, её длительность, интенсивность и нужную помощь простыми фразами.",
-    task: "Составьте мини-диалог пациента и врача: симптом, когда начался, что болит и один уточняющий вопрос."
-  }
-];
-
 // Модули плана: уроки учебника по темам общения, 1–3 шпаргалки, одно задание на речь или письмо и самопроверка.
 // Статус урока берётся из прогресса учебника; задание и пункты «Могу» отмечаются вручную по ключам plan:<id>:….
 const LEARNING_MODULES = [
@@ -17294,14 +15669,8 @@ function learningModuleSteps(module) {
 }
 
 function learningLevelCounts(level) {
-  const modules = learningModulesFor(level.id);
-  if (modules.length) {
-    const steps = modules.flatMap(learningModuleSteps);
-    return { done: steps.filter((step) => step.done).length, total: steps.length };
-  }
-  const total = [level.can, level.grammar, level.topics, level.practice, level.checklist].reduce((sum, list) => sum + (list?.length || 0), 0);
-  const done = Object.keys(state.learningProgress).filter((key) => key.startsWith(`${level.id}:`) && learningStatusFor(key) === "done").length;
-  return { done, total };
+  const steps = learningModulesFor(level.id).flatMap(learningModuleSteps);
+  return { done: steps.filter((step) => step.done).length, total: steps.length };
 }
 
 function learningModuleMarkup(module, index, isCurrent) {
@@ -17336,131 +15705,25 @@ function learningTableResource(titlePart, label) {
   return table ? { href: `#table-${table.index}`, label } : null;
 }
 
-function learningDetailMarkup(detail) {
-  const points = detail.points?.length
-    ? `<ul class="learning-detail-points">${detail.points.map((point) => `<li>${point}</li>`).join("")}</ul>`
-    : "";
-  const examples = detail.examples?.length
-    ? `<div class="learning-detail-examples" aria-label="Примеры">${detail.examples.map(([spanish, russian]) => `<div class="learning-detail-example"><span lang="es">${spanish}</span><span>${russian}</span></div>`).join("")}</div>`
-    : "";
-  const note = detail.note ? `<p class="learning-detail-note">${detail.note}</p>` : "";
-  return `<p class="learning-detail-lead">${detail.guidance}</p>${points}${examples}<p class="learning-detail-task"><strong>Мини-проверка.</strong> ${detail.task}</p>${note}`;
-}
-
-function learningItemDetails(level, section, item) {
-  const text = item.toLocaleLowerCase("es-ES");
-  const levelDetail = LEARNING_LEVEL_DETAILS[level.id]?.[item] || null;
-  const links = [];
-  const add = (resource) => {
-    if (resource && !links.some((link) => link.href === resource.href)) links.push(resource);
-  };
-  const tense = (id, label) => add(tenseById(id) ? { href: `#tense-${id}`, label } : null);
-  const mood = (id, label) => add(MOODS.some((entry) => entry.id === id) ? { href: `#mood-${id}`, label } : null);
-  const verb = (id, label) => add(BASE_VERBS.includes(id) ? { href: `#verb-${id}`, label } : null);
-  const table = (titlePart, label) => add(learningTableResource(titlePart, label));
-
-  if (text.includes("presente")) tense("presente", "Presente");
-  if (text.includes("perfecto")) tense("perfecto", "Pretérito perfecto");
-  if (text.includes("indefinido")) tense("indefinido", "Pretérito indefinido");
-  if (text.includes("imperfecto")) tense("imperfecto", "Pretérito imperfecto");
-  if (text.includes("futuro")) tense("futuro", "Futuro simple");
-  if (text.includes("condicional")) mood("condicional", "Condicional");
-  if (text.includes("subjuntivo")) mood("subjuntivo", "Subjuntivo");
-  if (text.includes("imperativo")) mood("imperativo", "Imperativo");
-  if (text.includes("ser, estar")) table("Ser/estar: сущность или состояние", "Шпаргалка ser / estar");
-  if (text.includes("артикл") || text.includes("род и число")) table("Артикли: el/la/los/las и un/una", "Артикли");
-  if (text.includes("прочитать") || text.includes("алфавит") || text.includes("правилам испанского")) {
-    table("Как читать b/v, c/z, g/j, h, r/rr", "Правила чтения");
-    table("Agudas, llanas, esdrújulas", "Правила ударения");
-  }
-  if (text.includes("числа") || text.includes("ценник")) table("Числительные: количественные", "Числительные");
-  if (text.includes("время") || text.includes("даты") || text.includes("расписание")) table("La hora y la fecha", "Время и дата");
-  if (text.includes("возвратн")) table("Me/te/se: возвратные местоимения", "Возвратные местоимения");
-  if (text.includes("личные местоимения")) table("Личные местоимения: полная таблица", "Личные местоимения");
-  if (text.includes("базовые местоимения")) table("Прямые и косвенные объекты", "Объектные местоимения");
-  if (text.includes("прямые/косвенные")) table("Прямые и косвенные объекты", "Прямые и косвенные дополнения");
-  if (text.includes("притяжательн")) table("Mi/mío, tu/tuyo", "Притяжательные");
-  if (text.includes("указательн")) table("Указательные: este/ese/aquel", "Указательные");
-  if (text.includes("сравнен") || text.includes("превосходн")) table("Прилагательные: согласование, позиция, сравнение", "Сравнение прилагательных");
-  if (text.includes("вопрос") || text.includes("дорогу")) table("Вопросительные: qué, quién, cuál, cómo", "Вопросительные слова");
-  if (text.includes("союз") || text.includes("связк") || text.includes("придаточ") || text.includes("aunque") || text.includes("porque") || text.includes("cuando")) table("Conectores: все связки", "Связки текста");
-  if (text.includes("косвенная речь")) table("Concordancia de tiempos: полная таблица", "Согласование времён");
-  if (text.includes("пассив") || text.includes("безличн")) table("Voz pasiva: ser + participio", "Пассив и безличные конструкции");
-  if (text.includes("заказать") || text.includes("покупк") || text.includes("кафе")) table("Pedir/preguntar: просить или спрашивать", "Просьбы и вопросы");
-  if (text.includes("дорогу") || text.includes("направлен")) table("Ir/venir/llevar/traer: идти, приходить, нести", "Глаголы движения");
-  if (text.includes("здоров") || text.includes("врача")) table("Tener + sustantivo: tener hambre", "Полезные выражения с tener");
-  if (text.includes("погода")) table("Погода: hacer, estar, hay, llover", "Погода");
-  if (text.includes("свободное время")) table("Gustar и похожие глаголы", "Gustar");
-  if (text.includes("распорядок") || text.includes("обычный день")) {
-    table("Siempre, nunca, a veces", "Частотность");
-    table("Me/te/se: возвратные местоимения", "Возвратные глаголы");
-  }
-  if (text.includes("даты") || text.includes("простое время")) table("La hora y la fecha: время, дни, месяцы", "Время и дата");
-  if (text.includes("возраст")) table("Возраст и длительность", "Возраст с tener");
-  if (text.includes("hay")) verb("haber", "Глагол haber");
-  if (text.includes("llamarse")) verb("llamar", "Глагол llamar(se)");
-  if (text.includes("имя") || text.includes("представиться") || text.includes("рассказать о себе")) verb("llamar", "Глагол llamar(se)");
-  if (text.includes("професси") || text.includes("происхождени")) verb("ser", "Глагол ser");
-  if (text.includes("семья") || text.includes("возраст")) verb("tener", "Глагол tener");
-  if (text.includes("ir a + infinitivo")) verb("ir", "Глагол ir");
-  if (text.includes("план")) verb("ir", "Глагол ir");
-  if (text.includes("заказать") || text.includes("покупк")) verb("pedir", "Глагол pedir");
-  if (text.includes("врача") || text.includes("здоров")) verb("tener", "Глагол tener");
-  if (text.includes("написать") || text.includes("письмо")) verb("escribir", "Глагол escribir");
-
-  (LEARNING_ITEM_RESOURCES[level.id]?.[item] || []).forEach(([titlePart, label]) => table(titlePart, label));
-  if (!["a0", "a1"].includes(level.id)) {
-    LEARNING_RESOURCE_RULES
-      .filter((rule) => rule.terms.some((term) => text.includes(term)))
-      .forEach((rule) => rule.resources.forEach(([titlePart, label]) => table(titlePart, label)));
-  }
-  if (links.length === 0) {
-    (LEARNING_LEVEL_RESOURCES[level.id] || []).slice(0, 2).forEach(([titlePart, label]) => table(titlePart, label));
-  }
-
-  const pattern = LEARNING_DETAIL_PATTERNS.find((entry) => entry.terms.some((term) => text.includes(term)));
-  const genericGuidance = {
-    "Что нужно уметь": "Это практическая цель. Не отмечайте её после чтения правила: выполните действие вслух или письменно без подсказки.",
-    "Грамматика": "Разберите правило на двух-трёх своих примерах и составьте ещё пять коротких фраз с новой конструкцией.",
-    "Темы и лексика": "Соберите личный минимальный словарь по теме и употребите новые слова хотя бы в трёх собственных фразах.",
-    "Практические ситуации": "Сыграйте ситуацию целиком: сначала медленно с опорой, затем повторите её без русского текста.",
-    "Чек-лист уровня": "Отмечайте пункт только если можете выполнить его самостоятельно в незнакомом, но похожем контексте."
-  }[section];
-  const genericTask = {
-    "Что нужно уметь": `Мини-проверка: выполните задачу «${item}» в течение минуты.`,
-    "Грамматика": `Мини-проверка: объясните себе правило из пункта «${item}» и дайте пять примеров.`,
-    "Темы и лексика": `Мини-проверка: подготовьте 10–15 слов по теме «${item}» и составьте три фразы о себе.`,
-    "Практические ситуации": `Мини-проверка: разыграйте сценарий «${item}» в роли говорящего и собеседника.`,
-    "Чек-лист уровня": `Самопроверка: подтвердите утверждение «${item}» конкретным примером речи или текста.`
-  }[section];
-  return {
-    guidance: levelDetail?.guidance || pattern?.guidance || genericGuidance,
-    task: levelDetail?.task || pattern?.task || genericTask,
-    points: levelDetail?.points || [],
-    examples: levelDetail?.examples || [],
-    note: levelDetail?.note || "",
-    links: links.slice(0, 6)
-  };
-}
-
-const LEARNING_FILTERS = [
-  ["all", "Все пункты"],
-  ["can", "Цели"],
-  ["grammar", "Грамматика"],
-  ["topics", "Лексика"],
-  ["practice", "Ситуации"],
-  ["checklist", "Чек-лист"]
-];
-
-// Старый статус «Изучаю» больше не показывается и считается неосвоенным пунктом.
+// Ранний формат хранил статус как true; «learning» из старого плана считается неосвоенным.
 function learningStatusFor(key) {
   const stored = state.learningProgress[key];
   return stored === true || stored === "done" ? "done" : "todo";
 }
 
-function learningDoneToggle(key, item) {
-  const done = learningStatusFor(key) === "done";
-  return `<label class="learning-done-toggle"><input type="checkbox" data-learning-done="${key}" ${done ? "checked" : ""} aria-label="Освоено: ${escapeHTML(item)}"><span>Освоено</span></label>`;
+function learningPlanNoticeMarkup() {
+  if (appStorage.get("msg:learningPlanNotice") !== "1") return "";
+  return `<div class="learning-plan-notice" role="status"><p>План перестроен на модули. Старые отметки пунктов больше не показываются, но сохранены в резервной копии прогресса; прогресс уроков в Учебнике не изменился.</p><button class="small-button" type="button" data-dismiss-learning-notice>Понятно</button></div>`;
+}
+
+function learningAfterB2Markup() {
+  const levels = LEARNING_AFTER_B2.levels.map((level) => `<section class="learning-after-level"><h3>${level.label} · ${level.title}</h3><p class="muted">${level.description}</p><ul>${level.can.map((item) => `<li>${item}</li>`).join("")}</ul></section>`).join("");
+  const steps = LEARNING_AFTER_B2.steps.map((step) => `<li>${step}</li>`).join("");
+  const resources = LEARNING_AFTER_B2.resources.map(([label, href]) => `<li><a href="${href}" target="_blank" rel="noopener">${label}</a></li>`).join("");
+  return `<section class="learning-plan-summary"><p><strong>После B2 · C1 и C2</strong></p><p class="muted">${LEARNING_LEVELS.find((level) => level.id === "after").description}</p></section>
+    <div class="learning-after-levels">${levels}</div>
+    <div class="learning-module-part learning-after-part"><h4>Что делать дальше</h4><ol>${steps}</ol></div>
+    <div class="learning-module-part learning-after-part"><h4>Официальные материалы</h4><ul>${resources}</ul></div>`;
 }
 
 function renderLearningPlan() {
@@ -17470,81 +15733,43 @@ function renderLearningPlan() {
     const selected = item.id === level.id;
     const { done, total } = learningLevelCounts(item);
     const percent = total ? Math.round(done / total * 100) : 0;
-    return `<button class="small-button ${selected ? "is-active" : ""}" id="learning-level-${item.id}" role="tab" tabindex="${selected ? "0" : "-1"}" type="button" data-learning-level="${item.id}" aria-selected="${selected}" aria-controls="learning-plan-panel" aria-label="${item.label}: освоено ${percent}%">${item.label}<small>${percent}%</small></button>`;
+    return `<button class="small-button ${selected ? "is-active" : ""}" id="learning-level-${item.id}" role="tab" tabindex="${selected ? "0" : "-1"}" type="button" data-learning-level="${item.id}" aria-selected="${selected}" aria-controls="learning-plan-panel" aria-label="${total ? `${item.label}: освоено ${percent}%` : item.label}">${item.label}${total ? `<small>${percent}%</small>` : ""}</button>`;
   }).join("");
-  const sections = [
-    ["can", "Что нужно уметь", level.can], ["grammar", "Грамматика", level.grammar], ["topics", "Темы и лексика", level.topics],
-    ["practice", "Практические ситуации", level.practice], ["checklist", "Чек-лист уровня", level.checklist]
-  ];
-  const activeLearningFilter = LEARNING_FILTERS.some(([id]) => id === state.learningFilter) ? state.learningFilter : "all";
-  const allItems = sections.flatMap(([sectionId, section, items]) => (items || []).map((item) => ({ sectionId, section, item })));
-  const nextIndex = allItems.findIndex((_, index) => learningStatusFor(`${level.id}:${index}`) !== "done");
-  const nextItem = nextIndex >= 0 ? allItems[nextIndex] : null;
-  const nextKey = nextItem ? `${level.id}:${nextIndex}` : "";
-  const doneCount = allItems.filter((_, index) => learningStatusFor(`${level.id}:${index}`) === "done").length;
-  const progress = allItems.length ? Math.round(doneCount / allItems.length * 100) : 0;
-  const filteredItemCount = allItems.filter(({ sectionId }) => activeLearningFilter === "all" || activeLearningFilter === sectionId).length;
-  const filterButtons = LEARNING_FILTERS.map(([id, label]) => `<button class="small-button ${activeLearningFilter === id ? "is-active" : ""}" type="button" data-learning-filter="${id}" aria-pressed="${activeLearningFilter === id}">${label}</button>`).join("");
-  let itemIndex = 0;
-  const list = (sectionId, title, items = []) => {
-    if (!items.length) return "";
-    const sectionStart = itemIndex;
-    const sectionDone = items.filter((_, index) => learningStatusFor(`${level.id}:${sectionStart + index}`) === "done").length;
-    itemIndex += items.length;
-    const visibleItems = items.map((item, index) => ({ item, index })).filter(() => activeLearningFilter === "all" || activeLearningFilter === sectionId);
-    if (!visibleItems.length) return "";
-    const itemMarkup = visibleItems.map(({ item, index }) => {
-      const key = `${level.id}:${sectionStart + index}`;
-      const done = learningStatusFor(key) === "done";
-      const detail = learningItemDetails(level, title, item);
-      const resourceLinks = detail.links.length
-        ? `<div class="learning-item-resources" aria-label="Шпаргалки по теме"><span class="learning-item-resources-label">Шпаргалки:</span><div class="learning-item-links">${detail.links.map((link) => `<a class="small-button" href="${link.href}">${link.label}</a>`).join("")}</div></div>`
-        : "";
-      const globalIndex = sectionStart + index;
-      return `<li class="learning-plan-item ${globalIndex === nextIndex ? "is-next" : ""} ${done ? "is-done" : ""}" data-learning-step="${key}"><div class="learning-item-main"><span class="learning-item-title">${item}</span>${learningDoneToggle(key, item)}</div>${resourceLinks}<details class="learning-item-detail" data-learning-detail="${key}" ${state.learningDetails[key] ? "open" : ""}><summary>Как проверить</summary><div class="learning-item-detail-body">${learningDetailMarkup(detail)}</div></details></li>`;
-    }).join("");
-    return `<section class="learning-plan-section" data-learning-section="${sectionId}"><div class="learning-plan-section-head"><h3>${title}</h3><span>${sectionDone}/${items.length}</span></div><ul class="learning-plan-list">${itemMarkup}</ul></section>`;
-  };
+  const modules = learningModulesFor(level.id);
+  let body = learningAfterB2Markup();
+  if (modules.length) {
+    const { done, total } = learningLevelCounts(level);
+    const percent = total ? Math.round(done / total * 100) : 0;
+    const currentModuleIndex = modules.findIndex((module) => learningModuleSteps(module).some((step) => !step.done));
+    const currentModule = modules[currentModuleIndex];
+    const currentStep = currentModule ? learningModuleSteps(currentModule).find((step) => !step.done) : null;
+    const lesson = currentStep?.kind === "lesson" ? TEXTBOOK_LESSONS.find((item) => item.id === currentStep.id) : null;
+    const nextLevel = LEARNING_LEVELS[LEARNING_LEVELS.findIndex((item) => item.id === level.id) + 1];
+    const nowTitle = currentModule ? `<p><strong>Сейчас: модуль ${currentModuleIndex + 1} из ${modules.length} · ${currentModule.title}</strong></p>` : "";
+    const nextStepMarkup = !currentStep
+      ? `<div class="plan-next-step"><div><p><strong>Уровень завершён</strong></p><small>Все пункты отмечены как освоенные.</small></div>${nextLevel ? `<button class="small-button primary" type="button" data-go-learning-level="${nextLevel.id}">Перейти к ${nextLevel.label}</button>` : ""}</div>`
+      : lesson
+        ? `<div class="plan-next-step"><div>${nowTitle}<small>Следующий урок: ${lesson.id}. ${escapeHTML(lesson.title.ru)}</small></div><button class="small-button primary" type="button" data-textbook-open="${lesson.id}">Продолжить</button></div>`
+        : `<div class="plan-next-step"><div>${nowTitle}<small>${currentStep.kind === "task" ? "Следующий шаг: задание модуля" : "Следующий шаг: самопроверка «Могу»"}</small></div><button class="small-button primary" type="button" data-open-learning-module="${currentModule.id}">Продолжить</button></div>`;
+    body = `<section class="learning-plan-summary" aria-live="polite"><div class="learning-plan-summary-head"><p><strong>${level.label} · ${level.title}</strong><span class="muted">${level.description}</span></p><p class="learning-plan-percent"><strong>${percent}%</strong><span class="muted">${done} из ${total}</span></p></div><progress max="100" value="${percent}" aria-label="Освоено на уровне ${level.label}"></progress>${nextStepMarkup}</section>
+      <div class="learning-modules">${modules.map((module, index) => learningModuleMarkup(module, index, index === currentModuleIndex)).join("")}</div>
+      <p class="muted learning-modules-note">${modules.some((module) => module.lessons.length) ? "Уроки отмечаются сами, когда все их упражнения проверены в Учебнике. " : "Учебник начинается с A1, поэтому здесь опора — шпаргалки. "}Задание и пункты «Могу» отмечайте сами.</p>
+      <p class="learning-plan-reset"><button class="small-button" type="button" data-reset-learning>Сбросить отметки ${level.label}</button></p>`;
+  }
   const header = document.createElement("section");
   header.className = "info-card";
-  const modules = learningModulesFor(level.id);
-  const levelCounts = learningLevelCounts(level);
-  const levelProgress = levelCounts.total ? Math.round(levelCounts.done / levelCounts.total * 100) : 0;
-  const currentModuleIndex = modules.findIndex((module) => learningModuleSteps(module).some((step) => !step.done));
-  const currentModule = modules[currentModuleIndex];
-  const currentStep = currentModule ? learningModuleSteps(currentModule).find((step) => !step.done) : null;
-  const nextLevel = LEARNING_LEVELS[LEARNING_LEVELS.findIndex((item) => item.id === level.id) + 1];
-  const doneMarkup = `<div class="plan-next-step"><div><p><strong>Уровень завершён</strong></p><small>Все пункты отмечены как освоенные.</small></div>${nextLevel ? `<button class="small-button primary" type="button" data-go-learning-level="${nextLevel.id}">Перейти к ${nextLevel.label}</button>` : ""}</div>`;
-  let nextStepMarkup = nextItem
-    ? `<div class="plan-next-step"><div><p><strong>Следующий пункт</strong></p><small>${nextItem.item}</small></div><button class="small-button primary" type="button" data-open-learning-item="${nextKey}">Открыть пункт</button></div>`
-    : doneMarkup;
-  if (modules.length) {
-    const lesson = currentStep?.kind === "lesson" ? TEXTBOOK_LESSONS.find((item) => item.id === currentStep.id) : null;
-    nextStepMarkup = !currentStep
-      ? doneMarkup
-      : lesson
-        ? `<div class="plan-next-step"><div><p><strong>Сейчас: модуль ${currentModuleIndex + 1} из ${modules.length} · ${currentModule.title}</strong></p><small>Следующий урок: ${lesson.id}. ${escapeHTML(lesson.title.ru)}</small></div><button class="small-button primary" type="button" data-textbook-open="${lesson.id}">Продолжить</button></div>`
-        : `<div class="plan-next-step"><div><p><strong>Сейчас: модуль ${currentModuleIndex + 1} из ${modules.length} · ${currentModule.title}</strong></p><small>${currentStep.kind === "task" ? "Следующий шаг: задание модуля" : "Следующий шаг: самопроверка «Могу»"}</small></div><button class="small-button primary" type="button" data-open-learning-module="${currentModule.id}">Продолжить</button></div>`;
-  }
-  const summaryDone = modules.length ? levelCounts.done : doneCount;
-  const summaryTotal = modules.length ? levelCounts.total : allItems.length;
-  const summaryProgress = modules.length ? levelProgress : progress;
-  const planBody = modules.length
-    ? `<div class="learning-modules">${modules.map((module, index) => learningModuleMarkup(module, index, index === currentModuleIndex)).join("")}</div><p class="muted learning-modules-note">${modules.some((module) => module.lessons.length) ? "Уроки отмечаются сами, когда все их упражнения проверены в Учебнике. " : "Учебник начинается с A1, поэтому здесь опора — шпаргалки. "}Задание и пункты «Могу» отмечайте сами.</p>`
-    : `<div class="learning-plan-filter-bar"><p><strong>Показывать пункты</strong> <span class="muted">${filteredItemCount} из ${allItems.length}</span></p><div class="learning-plan-filters" role="group" aria-label="Фильтр по типу пункта">${filterButtons}</div></div>
-      ${sections.map(([sectionId, title, items]) => list(sectionId, title, items)).join("")}`;
   header.innerHTML = `
     <div class="card-head"><div><h2>План обучения</h2><p class="muted">Маршрут по Учебнику и Шпаргалкам по уровням CEFR.</p></div></div>
+    ${learningPlanNoticeMarkup()}
     <div class="learning-level-tabs" role="tablist" aria-label="Выбор уровня">${levelButtons}</div>
     <div id="learning-plan-panel" role="tabpanel" tabindex="-1" aria-labelledby="learning-level-${level.id}">
-      <section class="learning-plan-summary" aria-live="polite"><div class="learning-plan-summary-head"><p><strong>${level.label} · ${level.title}</strong><span class="muted">${level.description}</span></p><p class="learning-plan-percent"><strong>${summaryProgress}%</strong><span class="muted">${summaryDone} из ${summaryTotal}</span></p></div><progress max="100" value="${summaryProgress}" aria-label="Освоено на уровне ${level.label}"></progress>${nextStepMarkup}</section>
-      ${planBody}
-      <p class="muted learning-plan-sources">Основа: <a href="https://www.coe.int/en/web/common-european-framework-reference-languages/companion-volume" target="_blank" rel="noopener">CEFR Companion Volume</a> и <a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/default.htm" target="_blank" rel="noopener">Plan Curricular del Instituto Cervantes</a>. A0 опирается на коммуникативные дескрипторы Pre-A1 и начальное содержание A1; планы A1–C2 соотнесены с официальными дескрипторами и инвентарями функций, грамматики, прагматики и учебных тем соответствующих уровней. Списки являются практической адаптацией для самостоятельного обучения, а не официальным экзаменационным силлабусом.</p>
-      <p class="learning-plan-reset"><button class="small-button" type="button" data-reset-learning>Сбросить прогресс ${level.label}</button></p>
+      ${body}
+      <p class="muted learning-plan-sources">Основа: <a href="https://www.coe.int/en/web/common-european-framework-reference-languages/companion-volume" target="_blank" rel="noopener">CEFR Companion Volume</a> и <a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/default.htm" target="_blank" rel="noopener">Plan Curricular del Instituto Cervantes</a>. Уровни уроков — по грамматическому инвентарю PCIC; модули объединяют их по темам общения. Это практическая адаптация для самостоятельного обучения, а не экзаменационный силлабус.</p>
     </div>
   `;
   content.appendChild(header);
-  bindClickAll(header, "[data-learning-level]", (event) => { state.learningLevel = event.currentTarget.dataset.learningLevel; appStorage.set("msg:learningLevel", state.learningLevel); renderLearningPlan(); });
+  const selectLevel = (levelId) => { state.learningLevel = levelId; appStorage.set("msg:learningLevel", state.learningLevel); renderLearningPlan(); };
+  bindClickAll(header, "[data-learning-level]", (event) => selectLevel(event.currentTarget.dataset.learningLevel));
   $all("[data-learning-level]", header).forEach((button, index, buttons) => button.addEventListener("keydown", (event) => {
     const direction = event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : event.key === "Home" ? -Infinity : event.key === "End" ? Infinity : 0;
     if (!direction) return;
@@ -17552,6 +15777,9 @@ function renderLearningPlan() {
     const nextIndex = direction === -Infinity ? 0 : direction === Infinity ? buttons.length - 1 : (index + direction + buttons.length) % buttons.length;
     buttons[nextIndex].focus();
   }));
+  bindClickAll(header, "[data-go-learning-level]", (event) => { selectLevel(event.currentTarget.dataset.goLearningLevel); scrollAppTop(); });
+  bindClickAll(header, "[data-textbook-open]", (event) => openTextbookLessonFromPlan(Number(event.currentTarget.dataset.textbookOpen)));
+  bindClickAll(header, "[data-dismiss-learning-notice]", () => { appStorage.remove("msg:learningPlanNotice"); renderLearningPlan(); });
   $all("[data-learning-done]", header).forEach((input) => input.addEventListener("change", (event) => {
     const key = event.currentTarget.dataset.learningDone;
     const scrollY = window.scrollY;
@@ -17564,10 +15792,6 @@ function renderLearningPlan() {
       $all("[data-learning-done]").find((item) => item.dataset.learningDone === key)?.focus({ preventScroll: true });
     });
   }));
-  bindClickAll(header, "[data-learning-filter]", (event) => { state.learningFilter = event.currentTarget.dataset.learningFilter; appStorage.set("msg:learningFilter", state.learningFilter); renderLearningPlan(); requestAnimationFrame(() => $all("[data-learning-filter]").find((button) => button.dataset.learningFilter === state.learningFilter)?.focus({ preventScroll: true })); });
-  $all("[data-learning-detail]", header).forEach((detail) => detail.addEventListener("toggle", () => { const key = detail.dataset.learningDetail; if (detail.open) state.learningDetails[key] = true; else delete state.learningDetails[key]; appStorage.set("msg:learningDetails", JSON.stringify(state.learningDetails)); }));
-  bindClickAll(header, "[data-go-learning-level]", (event) => { state.learningLevel = event.currentTarget.dataset.goLearningLevel; appStorage.set("msg:learningLevel", state.learningLevel); renderLearningPlan(); scrollAppTop(); });
-  bindClickAll(header, "[data-textbook-open]", (event) => openTextbookLessonFromPlan(Number(event.currentTarget.dataset.textbookOpen)));
   $all("[data-learning-module]", header).forEach((detail) => detail.addEventListener("toggle", () => {
     state.learningDetails[`plan:${detail.dataset.learningModule}`] = detail.open;
     appStorage.set("msg:learningDetails", JSON.stringify(state.learningDetails));
@@ -17580,31 +15804,9 @@ function renderLearningPlan() {
     target.scrollIntoView({ behavior: "smooth", block: "center" });
     target.focus({ preventScroll: true });
   });
-  header.querySelector("[data-open-learning-item]")?.addEventListener("click", (event) => {
-    const key = event.currentTarget.dataset.openLearningItem;
-    const openTarget = () => {
-      const target = $all("[data-learning-step]").find((item) => item.dataset.learningStep === key);
-      const detail = target?.querySelector("[data-learning-detail]");
-      if (detail) {
-        detail.open = true;
-        state.learningDetails[key] = true;
-        appStorage.set("msg:learningDetails", JSON.stringify(state.learningDetails));
-      }
-      target?.scrollIntoView({ behavior: "smooth", block: "center" });
-      detail?.querySelector("summary")?.focus({ preventScroll: true });
-    };
-    if (!$all("[data-learning-step]", header).some((item) => item.dataset.learningStep === key)) {
-      state.learningFilter = "all";
-      appStorage.set("msg:learningFilter", state.learningFilter);
-      renderLearningPlan();
-      requestAnimationFrame(openTarget);
-      return;
-    }
-    openTarget();
-  });
   bindClickAll(header, "[data-reset-learning]", () => {
-    if (!window.confirm(`Сбросить прогресс уровня ${level.label}? Все отметки этого уровня в плане будут удалены; прогресс уроков в Учебнике сохранится.`)) return;
-    Object.keys(state.learningProgress).filter((key) => key.startsWith(`${level.id}:`) || key.startsWith(`plan:${level.id}-`)).forEach((key) => delete state.learningProgress[key]);
+    if (!window.confirm(`Сбросить отметки уровня ${level.label}? Задания и пункты «Могу» станут неотмеченными; прогресс уроков в Учебнике сохранится.`)) return;
+    Object.keys(state.learningProgress).filter((key) => key.startsWith(`plan:${level.id}-`)).forEach((key) => delete state.learningProgress[key]);
     appStorage.set("msg:learningProgress", JSON.stringify(state.learningProgress));
     renderLearningPlan();
   });

@@ -1103,7 +1103,7 @@ const ACCENTED_MODEL_REFERENCE = {
 // ─── Validation logic ───────────────────────────────────────────────────────
 const issues = [];
 
-// Learning-plan tab scaffold: stage 1 must expose a tab, all CEFR levels and a renderer.
+// Learning-plan tab: levels A0–B2 are built from modules linked to textbook lessons; C1–C2 are one «После B2» page.
 const learningPlanScaffold = [
   ["navigation", 'data-view="learning-plan"'],
   ["renderer", "function renderLearningPlan()"],
@@ -1114,15 +1114,12 @@ const learningPlanScaffold = [
   ["A2", 'id: "a2"'],
   ["B1", 'id: "b1"'],
   ["B2", 'id: "b2"'],
-  ["C1", 'id: "c1"'],
-  ["C2", 'id: "c2"'],
-  ["calm layout", "learning-plan-section"],
-  ["item details", "learning-item-detail"],
-  ["detail generator", "function learningItemDetails"],
-  ["saved detail state", "data-learning-detail"],
-  ["themed detail patterns", "const LEARNING_DETAIL_PATTERNS"],
-  ["connector resource", "Conectores: все связки"],
-  ["functional verb resource", "Pedir/preguntar: просить или спрашивать"],
+  ["after B2", 'id: "after"'],
+  ["modules", "const LEARNING_MODULES = ["],
+  ["C1–C2 page", "const LEARNING_AFTER_B2 = {"],
+  ["lesson levels", "const TEXTBOOK_LESSON_LEVELS = {"],
+  ["legacy progress migration", "function migrateLearningProgress()"],
+  ["back to plan", "data-textbook-plan"],
 ];
 for (const [part, expected] of learningPlanScaffold) {
   if (!html.includes(expected)) {
@@ -1137,14 +1134,14 @@ for (const [part, expected] of learningPlanScaffold) {
   }
 }
 
-const forbiddenLearningPlanFragments = ["data-learning-resource", "function learningResourceFor", "learning-item-actions", "data-learning-next", "learning-next-step"];
+const forbiddenLearningPlanFragments = ["data-learning-resource", "function learningResourceFor", "learning-item-actions", "data-learning-next", "learning-next-step", "function learningItemDetails", "LEARNING_DETAIL_PATTERNS", "_LEARNING_DETAILS", "data-learning-filter"];
 for (const fragment of forbiddenLearningPlanFragments) {
   if (html.includes(fragment)) {
     issues.push({
       verb: "learning plan",
-      tense: "irrelevant resource link",
+      tense: "removed learning-plan code",
       person: "-",
-      expected: "no generic links in learning-plan items",
+      expected: "no code from the old item-list plan",
       actual: fragment,
       severity: "high",
     });

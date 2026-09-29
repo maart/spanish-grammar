@@ -1024,6 +1024,39 @@ input[type="search"] {
   margin-bottom: 14px;
 }
 
+.learning-module-example {
+  margin: 4px 0 0 26px;
+}
+
+.learning-module-example summary {
+  width: fit-content;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.learning-module-example-body {
+  display: grid;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.learning-module-example-body p {
+  display: grid;
+  gap: 1px;
+  margin: 0;
+}
+
+.learning-module-example-body [lang="es"] {
+  font-weight: 700;
+}
+
+.learning-module-example-body span:last-child {
+  color: var(--muted);
+  font-size: 13px;
+}
+
 .learning-modules-note {
   margin: 10px 0 0;
   font-size: 12px;
@@ -4033,7 +4066,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.37 · обновлено: 29.09.2026 18:22 CEST</span>
+        <span>Версия MVP 1.38 · обновлено: 29.09.2026 18:26 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -15522,6 +15555,7 @@ const LEARNING_MODULES = [
     lessons: [34, 42, 1, 14, 25, 45, 30, 31, 116, 125],
     tables: [["Личные местоимения: полная таблица", "Личные местоимения"], ["Tú vs Usted vs Vosotros", "Tú / usted / vosotros"], ["Gentilicios", "Национальности"]],
     task: "Представьтесь вслух в 5–6 фразах: имя, страна и национальность, возраст, профессия, языки. Затем задайте те же вопросы собеседнику — сначала на tú, потом на usted.",
+    example: [["Me llamo Iván, soy ruso y tengo treinta años. Soy ingeniero y hablo ruso e inglés.", "Меня зовут Иван, я русский, мне тридцать лет. Я инженер, говорю по-русски и по-английски."], ["¿De dónde eres? / ¿De dónde es usted?", "Откуда ты? / Откуда вы?"]],
     canDo: ["назвать имя, страну, возраст и профессию", "спросить то же у собеседника", "выбрать tú или usted по ситуации"]
   },
   {
@@ -15530,6 +15564,7 @@ const LEARNING_MODULES = [
     lessons: [2, 3, 4, 6, 7, 5, 26, 23, 35, 36],
     tables: [["Артикли: el/la/los/las", "Артикли"], ["Род существительных: правила", "Род"], ["Числительные: количественные", "Числа"]],
     task: "Разыграйте покупку в магазине из 6 реплик: попросите три вещи с un/una/unos, уточните цену и ответьте на вопрос продавца, заменив вещь на lo/la.",
+    example: [["Quiero unas manzanas y una botella de agua, por favor. ¿Cuánto cuesta el pan?", "Мне, пожалуйста, яблоки и бутылку воды. Сколько стоит хлеб?"], ["—¿Quiere la bolsa? —Sí, la quiero, gracias.", "— Пакет нужен? — Да, нужен, спасибо."]],
     canDo: ["назвать вещь с правильным артиклем", "спросить и понять цену", "заменить уже названную вещь на lo / la"]
   },
   {
@@ -15538,6 +15573,7 @@ const LEARNING_MODULES = [
     lessons: [12, 13, 15, 18, 19, 43, 44, 8, 33],
     tables: [["Прилагательные: согласование", "Прилагательные"], ["Ser/estar: сущность", "Ser / estar"], ["Mi/mío, tu/tuyo", "Притяжательные"]],
     task: "Напишите 60–80 слов о знакомом человеке: внешность и характер (ser), как он себя сейчас чувствует (estar), какие у него вещи (mi, su, suyo) и одно сравнение с вами.",
+    example: [["Mi hermana es alta y muy simpática, pero hoy está cansada.", "Моя сестра высокая и очень приятная, но сегодня она устала."], ["Su piso es más grande que el mío.", "Её квартира больше моей."]],
     canDo: ["описать внешность и характер человека", "сказать, как он себя чувствует и где находится", "сравнить двух людей или две вещи"]
   },
   {
@@ -15546,6 +15582,7 @@ const LEARNING_MODULES = [
     lessons: [46, 100, 47, 112, 27, 32],
     tables: [["Hay / Está / Se encuentra", "Hay / está"], ["Preposiciones de lugar", "Предлоги места"], ["Aquí / Ahí / Allí", "Aquí / ahí / allí"]],
     task: "Опишите вслух свою квартиру и улицу в 6–8 фразах: что там есть (hay), где что находится (está + предлог места), на каком этаже вы живёте. Затем спросите, где ближайшая аптека, и повторите ответ.",
+    example: [["En mi calle hay una farmacia y dos bares. El supermercado está al lado del banco.", "На моей улице есть аптека и два бара. Супермаркет рядом с банком."], ["Perdone, ¿dónde está la farmacia más cercana?", "Простите, где ближайшая аптека?"]],
     canDo: ["сказать, что есть в доме или на улице", "сказать, где находится предмет или место", "спросить, где что-то находится, и понять ответ"]
   },
   {
@@ -15554,6 +15591,7 @@ const LEARNING_MODULES = [
     lessons: [48, 49, 50, 53, 55, 9, 110, 101, 103, 104, 108, 109],
     tables: [["Gustar и похожие глаголы", "Gustar"], ["Siempre, nunca, a veces", "Частотность"], ["La hora y la fecha", "Время и дата"]],
     task: "Расскажите вслух о своём обычном дне в 8–10 фразах: во сколько встаёте, что делаете и как часто, что любите и чего не любите. Спросите собеседника ¿Y a ti? и ответьте también / tampoco.",
+    example: [["Me levanto a las siete y desayuno en casa. Los sábados nunca trabajo.", "Я встаю в семь и завтракаю дома. По субботам никогда не работаю."], ["—Me gusta mucho el cine. ¿Y a ti? —A mí también.", "— Я очень люблю кино. А ты? — Я тоже."]],
     canDo: ["рассказать о распорядке дня с указанием времени", "сказать, как часто что-то делаю", "сказать, что мне нравится и что нет"]
   },
   {
@@ -15562,6 +15600,7 @@ const LEARNING_MODULES = [
     lessons: [56, 69, 93, 73, 75, 99, 60, 58],
     tables: [["Futuro: ir a + infinitivo", "Ir a + infinitivo"], ["Imperativo: tú, usted", "Imperativo"], ["Pretérito Perfecto vs Indefinido в Испании", "Perfecto / indefinido"]],
     task: "Напишите сообщение другу из 5–6 фраз: что вы делаете сейчас, что уже сделали сегодня, что делали вчера и что собираетесь делать на выходных; закончите одной просьбой в imperativo.",
+    example: [["Ahora estoy escribiendo un mensaje. Hoy he ido al gimnasio.", "Сейчас я пишу сообщение. Сегодня я сходил в спортзал."], ["Ayer cené con mis padres y el sábado voy a ir a la playa. ¡Llámame!", "Вчера я ужинал с родителями, а в субботу собираюсь на пляж. Позвони мне!"]],
     canDo: ["сказать, что делаю сейчас и что собираюсь делать", "рассказать, что сделал сегодня и вчера", "попросить о простом действии или дать инструкцию"]
   },
   {
@@ -15570,6 +15609,7 @@ const LEARNING_MODULES = [
     lessons: [],
     tables: [["Как читать b/v, c/z, g/j", "Правила чтения"], ["Agudas, llanas, esdrújulas", "Ударение"], ["Diptongo и hiato", "Дифтонги"]],
     task: "Прочитайте вслух названия городов Испании: Zaragoza, Jaén, Girona, Cádiz, Valladolid, Guadalajara, Logroño, Málaga. Для каждого назовите ударный слог и объясните, почему тильда есть или её нет. Затем продиктуйте по буквам своё имя.",
+    example: [["Zaragoza → za-ra-GO-za", "llana на гласную: тильда не нужна"], ["Cádiz → CÁ-diz", "llana на -z: тильда нужна"]],
     canDo: ["читать слова с c/z, g/j, ll, ñ, r/rr", "находить ударный слог в незнакомом слове", "продиктовать по буквам своё имя"]
   },
   {
@@ -15578,6 +15618,7 @@ const LEARNING_MODULES = [
     lessons: [],
     tables: [["Tú vs Usted vs Vosotros", "Tú / usted / vosotros"], ["Вопросы: образование", "Вопросы"], ["Вежливые просьбы в Испании", "Вежливые просьбы"]],
     task: "Разыграйте знакомство из 6 реплик: поздоровайтесь, назовите имя и страну (Me llamo…, Soy de…), спросите то же у собеседника и попрощайтесь. Повторите диалог на usted и добавьте просьбу повторить помедленнее.",
+    example: [["¡Hola! Me llamo Ana. Soy de Rusia. ¿Y tú, cómo te llamas?", "Привет! Меня зовут Анна. Я из России. А тебя как зовут?"], ["Perdone, ¿puede hablar más despacio, por favor?", "Простите, не могли бы вы говорить помедленнее?"]],
     canDo: ["поздороваться и попрощаться в разное время дня", "назвать своё имя и страну", "попросить повторить или говорить медленнее"]
   },
   {
@@ -15586,6 +15627,7 @@ const LEARNING_MODULES = [
     lessons: [],
     tables: [["Числительные: количественные", "Числа"], ["La hora y la fecha", "Время и дата"], ["Деньги, дроби, проценты", "Цены и телефоны"]],
     task: "Назовите вслух свой номер телефона, сегодняшний день недели, дату и сколько сейчас времени. Затем прочитайте три цены с чека или ценника и скажите, сколько стоит всё вместе.",
+    example: [["Hoy es martes, 29 de septiembre. Son las cinco y media.", "Сегодня вторник, 29 сентября. Сейчас половина шестого."], ["Son tres euros con cincuenta.", "С вас три евро пятьдесят."]],
     canDo: ["считать от 0 до 100", "назвать день недели, дату и время", "понять цену на слух"]
   },
   {
@@ -15594,6 +15636,7 @@ const LEARNING_MODULES = [
     lessons: [59, 61, 62, 63, 64, 65, 102, 123, 124],
     tables: [["Imperfecto vs Indefinido: фон или событие", "Imperfecto / indefinido"], ["Pretérito Perfecto vs Indefinido в Испании", "Perfecto / indefinido"], ["Как рассказывать историю", "Как рассказывать историю"]],
     task: "Напишите 100–120 слов о запомнившейся поездке: обстановка и привычки (imperfecto), события по порядку (indefinido) и чем эта поездка важна для вас сейчас (perfecto). Проверьте тильды в формах прошедшего времени.",
+    example: [["Cuando era niño, pasaba los veranos en el pueblo de mis abuelos.", "В детстве я проводил лето в деревне у бабушки и дедушки."], ["Un día llovía mucho y perdimos el último autobús. Desde entonces he vuelto tres veces.", "Однажды шёл сильный дождь, и мы опоздали на последний автобус. С тех пор я возвращался туда три раза."]],
     canDo: ["рассказать, что произошло вчера или в поездке", "описать обстоятельства и привычки в прошлом", "сказать, что уже сделал и чего ещё нет"]
   },
   {
@@ -15602,6 +15645,7 @@ const LEARNING_MODULES = [
     lessons: [40, 54, 51, 52, 98, 57, 106],
     tables: [["Возвратные глаголы: обычный vs возвратный", "Возвратные глаголы"], ["Desde/hace/durante", "Desde / hace / durante"], ["Gerundio: образование", "Gerundio"]],
     task: "Расскажите вслух за 2 минуты, как изменилась ваша жизнь за последний год: что вы делаете сейчас и с каких пор (desde hace, hace… que), чем заняты в эти дни (estar + gerundio) и как проходит ваше утро (возвратные глаголы).",
+    example: [["Vivo en Madrid desde hace dos años. Estos días estoy aprendiendo a cocinar.", "Я живу в Мадриде два года. Сейчас учусь готовить."], ["Me ducho, me visto y me voy al trabajo.", "Я принимаю душ, одеваюсь и ухожу на работу."]],
     canDo: ["сказать, сколько времени что-то длится", "различить обычное действие и происходящее сейчас", "описать утро с возвратными глаголами"]
   },
   {
@@ -15610,6 +15654,7 @@ const LEARNING_MODULES = [
     lessons: [10, 11, 16, 17, 24, 107, 20, 21, 22, 105],
     tables: [["Сравнение: más, menos, tan, tanto", "Сравнение"], ["Todo, mucho, poco, bastante, demasiado", "Количество"], ["Muy/mucho: степень", "Muy / mucho"]],
     task: "Выберите между двумя квартирами (или телефонами) и объясните выбор в 6–8 фразах: сравнение (más… que, tan… como, tanto… como), превосходная степень, чего слишком много или недостаточно.",
+    example: [["Este piso es más caro que el otro, pero es tan luminoso como el mío.", "Эта квартира дороже той, но такая же светлая, как моя."], ["La cocina es demasiado pequeña, pero tiene bastantes armarios.", "Кухня слишком маленькая, но шкафов достаточно."]],
     canDo: ["сравнить два предмета по нескольким признакам", "сказать, чего слишком много или недостаточно", "обосновать свой выбор"]
   },
   {
@@ -15618,6 +15663,7 @@ const LEARNING_MODULES = [
     lessons: [39, 76, 74, 77, 78, 111, 91],
     tables: [["Imperativo: tú, usted, vosotros и ustedes", "Imperativo"], ["Местоимения при инфинитиве, герундии и императиве", "Местоимения с imperativo"], ["Транспорт и маршруты в Испании", "Транспорт и маршруты"]],
     task: "Дайте другу 6–8 инструкций, как дойти от станции до вашего дома, и скажите, что делать, если он заблудится (si + presente). Включите два запрета (no vayas…, no cojas…) и одну команду с местоимением (llámame, díselo).",
+    example: [["Coge la línea 1 y bájate en Sol. Luego sigue todo recto hasta la plaza.", "Садись на первую линию и выходи на Sol. Потом иди прямо до площади."], ["Si te pierdes, llámame. No cojas un taxi: está muy cerca.", "Если заблудишься, позвони мне. Не бери такси: это совсем близко."]],
     canDo: ["объяснить простой маршрут", "дать совет или запрет", "сказать, что делать в случае проблемы"]
   },
   {
@@ -15626,6 +15672,7 @@ const LEARNING_MODULES = [
     lessons: [38, 41, 113, 28],
     tables: [["Прямые и косвенные объекты: lo, la, le", "Lo / le"], ["Персональная a", "Персональная a"], ["Относительные: que, quien", "Относительные"]],
     task: "Опишите трёх людей из своего окружения, каждого одной фразой с que / quien / donde (Es la chica que…), и расскажите, что вы им обычно пишете, дарите или говорите, заменяя их на le / les, а вещи — на lo / la.",
+    example: [["Marta es la amiga que vive en Sevilla. Le escribo casi todos los días.", "Марта — подруга, которая живёт в Севилье. Я пишу ей почти каждый день."], ["A mi padre lo veo los domingos.", "С отцом я вижусь по воскресеньям."]],
     canDo: ["уточнить, о ком идёт речь (el chico que…)", "не путать lo / la и le / les", "ставить a перед людьми-дополнениями"]
   },
   {
@@ -15634,6 +15681,7 @@ const LEARNING_MODULES = [
     lessons: [67, 68, 70, 85, 71, 72],
     tables: [["Futuro: ir a + infinitivo или Futuro Simple", "Futuro"], ["Предположение о настоящем и прошлом", "Предположение"], ["Вежливые просьбы в Испании", "Вежливые просьбы"]],
     task: "Опишите вслух свою жизнь через 10 лет (futuro), сделайте три предположения о том, что сейчас делает ваш друг (estará…, puede que…), и вежливо попросите коллегу о двух вещах (¿Podrías…?, Me gustaría que…).",
+    example: [["Dentro de diez años viviré en la costa y trabajaré desde casa.", "Через десять лет я буду жить на побережье и работать из дома."], ["¿Podrías enviarme el informe hoy? Me gustaría revisarlo antes de la reunión.", "Не мог бы ты прислать мне отчёт сегодня? Я хотел бы просмотреть его до совещания."]],
     canDo: ["говорить о будущем и планах", "делать предположения о настоящем", "вежливо просить и советовать с condicional"]
   },
   {
@@ -15642,6 +15690,7 @@ const LEARNING_MODULES = [
     lessons: [79, 80, 81, 84, 86, 97],
     tables: [["Subjuntivo по смыслу", "Subjuntivo по смыслу"], ["Ojalá: venga", "Ojalá"], ["Infinitivo или que + subjuntivo", "Infinitivo / que + subj."]],
     task: "Напишите другу сообщение поддержки на 80–100 слов: пожелания (que + subjuntivo, ojalá), ваши чувства (me alegra que…, siento que…) и два совета (te recomiendo que…).",
+    example: [["¡Que te mejores pronto! Ojalá puedas venir a la fiesta.", "Выздоравливай скорее! Надеюсь, ты сможешь прийти на праздник."], ["Me alegra que tengas un trabajo nuevo. Te recomiendo que descanses este fin de semana.", "Я рад, что у тебя новая работа. Советую тебе отдохнуть в эти выходные."]],
     canDo: ["выразить пожелание", "сказать, что я чувствую по поводу чужих действий", "дать совет с que + subjuntivo"]
   },
   {
@@ -15650,6 +15699,7 @@ const LEARNING_MODULES = [
     lessons: [119, 117, 118, 121, 114, 115],
     tables: [["Причина, цель, уступка и следствие", "Связки смысла"], ["Por/para: причина или цель", "Por / para"], ["Cuando, hasta que, en cuanto", "Cuando + subj."]],
     task: "Напишите 120–150 слов «за и против» работы из дома: причины (porque, ya que, como), цель (para que), время (cuando + subjuntivo о будущем) и вывод (así que, por eso).",
+    example: [["Como no tengo que ir a la oficina, ahorro tiempo y dinero.", "Поскольку мне не нужно ездить в офис, я экономлю время и деньги."], ["Cuando vuelva a la oficina, echaré de menos la tranquilidad; por eso prefiero un modelo mixto.", "Когда я вернусь в офис, мне будет не хватать тишины; поэтому я предпочитаю смешанный формат."]],
     canDo: ["объяснить причину и цель", "связать события во времени", "сделать вывод из сказанного"]
   },
   {
@@ -15658,6 +15708,7 @@ const LEARNING_MODULES = [
     lessons: [87, 82, 83, 92, 122],
     tables: [["Условные предложения", "Условные предложения"], ["Неопределённый деятель", "Безличные конструкции"], ["Es que, lo que pasa es que", "Es que…"]],
     task: "Выскажите мнение о туризме в вашем городе в 8–10 фразах: creo que / no creo que, es verdad que / no es cierto que, что бы вы изменили (si pudiera…, cambiaría…) и что об этом говорят (se dice que…).",
+    example: [["No creo que el turismo sea el problema principal, pero es verdad que los alquileres han subido.", "Не думаю, что туризм — главная проблема, но аренда действительно подорожала."], ["Si pudiera, limitaría los pisos turísticos en el centro.", "Если бы я мог, я бы ограничил туристические квартиры в центре."]],
     canDo: ["выразить мнение и сомнение", "рассуждать о воображаемой ситуации", "сослаться на общее мнение"]
   },
   {
@@ -15666,6 +15717,7 @@ const LEARNING_MODULES = [
     lessons: [66, 94, 95, 96, 37, 88, 89],
     tables: [["Косвенная речь: полная таблица", "Косвенная речь"], ["Pluscuamperfecto: «я уже сделал", "Pluscuamperfecto"], ["Perífrasis verbales: сводная таблица", "Перифразы"]],
     task: "Перескажите вчерашний разговор или новость в 8–10 фразах: что вам сказали, о чём спросили и что попросили (косвенная речь), что произошло до этого (pluscuamperfecto) и кому вы это передали (se lo dije).",
+    example: [["Mi jefa me dijo que la reunión se había cambiado y me preguntó si podía ir el lunes.", "Начальница сказала мне, что совещание перенесли, и спросила, смогу ли я прийти в понедельник."], ["Me pidió que avisara a Luis, así que se lo dije por la tarde.", "Она попросила предупредить Луиса, так что вечером я ему это передал."]],
     canDo: ["передать чужие слова и вопросы", "рассказать, что произошло раньше другого события", "начать, прекратить или повторить действие перифразами"]
   },
   {
@@ -15674,6 +15726,7 @@ const LEARNING_MODULES = [
     lessons: [29, 120, 90],
     tables: [["Относительные предложения: смысл запятых", "Относительные предложения"], ["Locuciones prepositivas", "Предложные обороты"], ["Косвенная речь: полная таблица", "Косвенная речь"]],
     task: "Возьмите короткую новость (5–6 предложений) и перепишите её: объедините предложения с cuyo / donde, добавьте уступку с a pesar de que и передайте одно требование в косвенной речи (exigió que…).",
+    example: [["El alcalde, cuyo mandato termina en mayo, presentó el plan a pesar de que la oposición votó en contra.", "Мэр, чей срок заканчивается в мае, представил план, несмотря на то что оппозиция проголосовала против."], ["Los vecinos exigieron que se revisara el proyecto.", "Жители потребовали пересмотреть проект."]],
     canDo: ["строить относительные предложения с cuyo", "выражать уступку с a pesar de que", "передавать приказы и требования"]
   },
   {
@@ -15682,6 +15735,7 @@ const LEARNING_MODULES = [
     lessons: [],
     tables: [["Conectores: все связки", "Связки текста"], ["Muletillas", "Muletillas"], ["Es que, lo que pasa es que", "Es que…"]],
     task: "Запишите на диктофон 3-минутную речь по спорной теме: позиция, два аргумента с примерами, возможное возражение и ответ на него. Прослушайте запись и выпишите повторы и слова, которых не хватило.",
+    example: [["Entiendo tu punto de vista, pero no estoy del todo de acuerdo: los datos muestran lo contrario.", "Я понимаю твою точку зрения, но не совсем согласен: данные говорят об обратном."], ["Perdona que te interrumpa, ¿podrías aclarar a qué te refieres con «eficiencia»?", "Прости, что перебиваю: не мог бы ты уточнить, что ты имеешь в виду под «эффективностью»?"]],
     canDo: ["аргументировать позицию", "учитывать возражения", "вежливо перебивать и уточнять"]
   },
   {
@@ -15690,6 +15744,7 @@ const LEARNING_MODULES = [
     lessons: [],
     tables: [["Письма и сообщения: обращение", "Письма"], ["Abreviaturas", "Сокращения"], ["Concordancia de tiempos: полная таблица", "Согласование времён"]],
     task: "Напишите формальную жалобу в компанию на 150–180 слов: обращение, суть проблемы, требование (le ruego que + subjuntivo) и вежливое завершение. Затем перескажите ту же ситуацию другу неформально.",
+    example: [["Estimados señores: Me dirijo a ustedes para presentar una reclamación por el pedido n.º 4521.", "Уважаемые господа! Обращаюсь к вам с претензией по заказу № 4521."], ["Les ruego que me devuelvan el importe en un plazo de quince días. Atentamente,", "Прошу вернуть мне сумму в течение пятнадцати дней. С уважением,"]],
     canDo: ["писать формальное письмо по структуре", "переключаться между бытовым и формальным тоном", "согласовывать времена в сложном тексте"]
   }
 ];
@@ -15806,7 +15861,7 @@ function learningModuleMarkup(module, index, isCurrent) {
       <p class="learning-module-goal">${module.goal}</p>
       ${lessons ? `<div class="learning-module-part"><h4>Уроки учебника</h4><ol class="learning-module-lessons">${lessons}</ol></div>` : ""}
       ${tables ? `<div class="learning-module-part"><h4>Шпаргалки</h4><div class="learning-item-links">${tables}</div></div>` : ""}
-      <div class="learning-module-part"><h4>Задание</h4>${check(`plan:${module.id}:task`, module.task)}</div>
+      <div class="learning-module-part"><h4>Задание</h4>${check(`plan:${module.id}:task`, module.task)}<details class="learning-module-example"><summary>Пример ответа</summary><div class="learning-module-example-body">${module.example.map(([spanish, russian]) => `<p><span lang="es">${spanish}</span><span>${russian}</span></p>`).join("")}</div></details></div>
       <div class="learning-module-part"><h4>Могу</h4>${module.canDo.map((item, canIndex) => check(`plan:${module.id}:can:${canIndex}`, item)).join("")}</div>
     </div>
   </details>`;
@@ -17256,7 +17311,7 @@ function validateData() {
   LEARNING_MODULES.forEach((module) => {
     if (moduleIds.has(module.id) || !module.id.startsWith(`${module.level}-`)) issues.push("Некорректный или повторяющийся ID модуля плана: " + module.id);
     moduleIds.add(module.id);
-    if (!module.title || !module.goal || !module.task || !module.canDo?.length || !Array.isArray(module.lessons) || !module.tables?.length) issues.push("Неполный модуль плана: " + module.id);
+    if (!module.title || !module.goal || !module.task || !module.canDo?.length || !Array.isArray(module.lessons) || !module.tables?.length || !module.example?.length || module.example.some((pair) => !pair[0] || !pair[1])) issues.push("Неполный модуль плана: " + module.id);
     module.lessons.forEach((id) => {
       if (moduleLessonIds.has(id)) issues.push(`Урок ${id} входит в несколько модулей плана`);
       moduleLessonIds.add(id);

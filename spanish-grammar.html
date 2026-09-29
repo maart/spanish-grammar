@@ -4199,7 +4199,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.47 · обновлено: 29.09.2026 23:16 CEST</span>
+        <span>Версия MVP 1.48 · обновлено: 29.09.2026 23:19 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -12585,6 +12585,15 @@ function disclosureButton({ open, target, label, hideLabel = `Скрыть ${lab
   </button>`;
 }
 
+// Делегированные обработчики: по одному слушателю на документ для каждого типа события.
+// Разметку можно перерисовывать сколько угодно — привязывать кнопки заново не нужно.
+// toggle у <details> не всплывает, поэтому его слушатель работает на фазе перехвата.
+const DELEGATED_HANDLERS = { click: [], change: [], input: [], keydown: [], toggle: [] };
+
+function onDelegated(type, selector, handler) {
+  DELEGATED_HANDLERS[type].push([selector, handler]);
+}
+
 // Экран перерисовывается целиком, поэтому после перерисовки фокус (и при необходимости прокрутка)
 // возвращаются на элемент, который пользователь только что нажал.
 function rerenderAndFocus(render, selector, { keepScroll = false } = {}) {
@@ -13613,17 +13622,14 @@ function favoriteMaterialButton(kind, id, label) {
   return `<button class="favorite-button favorite-material" type="button" data-favorite-${kind}="${id}" aria-pressed="${saved}" aria-label="${saved ? "Убрать из избранного" : "Добавить в избранное"}: ${escapeHTML(label)}" title="Избранное">${saved ? "★" : "☆"}</button>`;
 }
 
-function bindFavoriteMaterialButtons(root) {
-  $all("[data-favorite-table], [data-favorite-lesson]", root).forEach((button) => button.addEventListener("click", (event) => {
-    const target = event.currentTarget;
+onDelegated("click", "[data-favorite-table], [data-favorite-lesson]", (_event, target) => {
     const kind = target.dataset.favoriteTable ? "table" : "lesson";
     const id = kind === "table" ? target.dataset.favoriteTable : Number(target.dataset.favoriteLesson);
     const saved = toggleFavoriteMaterial(kind, id);
     target.textContent = saved ? "★" : "☆";
     target.setAttribute("aria-pressed", String(saved));
     target.setAttribute("aria-label", (saved ? "Убрать из избранного" : "Добавить в избранное") + target.getAttribute("aria-label").replace(/^[^:]*/, ""));
-  }));
-}
+});
 
 function savedMaterialsCard() {
   const tables = state.favoriteTables.map((id) => INDEXED_TABLES.find((item) => item.id === id)).filter(Boolean);
@@ -15118,7 +15124,6 @@ function renderUsefulTableCard(item) {
   bindClickAll(section, "[data-open-tense]", (event) => {
     openTenseFromVerb(event.currentTarget.dataset.openTense);
   });
-  bindFavoriteMaterialButtons(section);
   bindClickAll(section, "[data-table-jump-related]", (event) => {
     openTableFromLink(event.currentTarget.dataset.tableJumpRelated);
   });
@@ -16495,7 +16500,7 @@ function renderLearningPlan() {
 
 function renderLearningPlanContent() {
   const content = clearContent();
-  const level = LEARNING_LEVELS.find((item) => item.id === state.learningLevel) || LEARNING_LEVELS[0];
+  const level = currentLearningLevel();
   const levelButtons = LEARNING_LEVELS.map((item) => {
     const selected = item.id === level.id;
     const { done, total } = learningLevelCounts(item);
@@ -16544,7 +16549,7 @@ function renderLearningPlanContent() {
   }
   if (state.learningCheck?.level === level.id) body = learningCheckMarkup(level);
   const header = document.createElement("section");
-  header.className = "info-card";
+  header.className = "info-card learning-plan";
   header.innerHTML = `
     <div class="card-head"><div><h2>План обучения</h2><p class="muted">Маршрут по Учебнику и Шпаргалкам по уровням CEFR.</p></div></div>
     ${learningPlanNoticeMarkup()}
@@ -16555,78 +16560,101 @@ function renderLearningPlanContent() {
     </div>
   `;
   content.appendChild(header);
-  const selectLevel = (levelId) => { state.learningCheck = null; state.learningLevel = levelId; persist("learningLevel"); renderLearningPlan(); };
-  bindClickAll(header, "[data-learning-level]", (event) => selectLevel(event.currentTarget.dataset.learningLevel));
-  $all("[data-learning-level]", header).forEach((button, index, buttons) => button.addEventListener("keydown", (event) => {
-    const direction = event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : event.key === "Home" ? -Infinity : event.key === "End" ? Infinity : 0;
-    if (!direction) return;
-    event.preventDefault();
-    const nextIndex = direction === -Infinity ? 0 : direction === Infinity ? buttons.length - 1 : (index + direction + buttons.length) % buttons.length;
-    buttons[nextIndex].focus();
-  }));
-  bindClickAll(header, "[data-go-learning-level]", (event) => { selectLevel(event.currentTarget.dataset.goLearningLevel); scrollAppTop(); });
-  bindClickAll(header, "[data-textbook-open]", (event) => openTextbookLessonFromPlan(Number(event.currentTarget.dataset.textbookOpen)));
-  bindClickAll(header, "[data-textbook-review]", (event) => openTextbookLessonFromPlan(Number(event.currentTarget.dataset.textbookReview), { mistakes: true }));
-  const rerenderCheck = (focusSelector) => {
-    renderLearningPlan();
-    requestAnimationFrame(() => {
-      const target = focusSelector ? document.querySelector(focusSelector) : document.querySelector("#learning-check-title");
-      target?.scrollIntoView({ behavior: "auto", block: focusSelector ? "center" : "start" });
-      target?.focus({ preventScroll: true });
-    });
-  };
-  bindClickAll(header, "[data-check-start]", () => { startLearningCheck(level.id); rerenderCheck(); });
-  bindClickAll(header, "[data-check-restart]", () => { startLearningCheck(level.id); rerenderCheck(); });
-  bindClickAll(header, "[data-check-exit]", () => { state.learningCheck = null; renderLearningPlan(); requestAnimationFrame(() => document.querySelector("[data-check-start]")?.scrollIntoView({ behavior: "auto", block: "center" })); });
-  $all("[data-check-answer]", header).forEach((input) => input.addEventListener("input", (event) => { state.learningCheck.answers[event.currentTarget.dataset.checkAnswer] = event.currentTarget.value; }));
-  bindClickAll(header, "[data-check-choice]", (event) => {
-    const index = event.currentTarget.dataset.checkChoice;
-    const value = event.currentTarget.dataset.checkValue;
-    state.learningCheck.answers[index] = value;
-    rerenderAndFocus(renderLearningPlan, attrSelector("data-check-choice", index) + attrSelector("data-check-value", value), { keepScroll: true });
-  });
-  bindClickAll(header, "[data-check-submit]", () => {
-    const check = state.learningCheck;
-    const blank = check.items.findIndex((_entry, index) => normalizeTextbookAnswer(check.answers[index]) === "");
-    if (blank >= 0) {
-      const left = check.items.filter((_entry, index) => normalizeTextbookAnswer(check.answers[index]) === "").length;
-      check.message = `Осталось без ответа: ${left}.`;
-      rerenderCheck(`[data-check-question="${blank}"] input, [data-check-question="${blank}"] button`);
-      return;
-    }
-    check.message = "";
-    check.submitted = true;
-    const results = learningCheckResults();
-    saveLearningCheckResult(level.id, Math.round(results.filter(Boolean).length / results.length * 100));
-    rerenderCheck();
-  });
-  bindClickAll(header, "[data-dismiss-learning-notice]", () => { appStorage.remove("msg:learningPlanNotice"); renderLearningPlan(); });
-  $all("[data-learning-done]", header).forEach((input) => input.addEventListener("change", (event) => {
-    const key = event.currentTarget.dataset.learningDone;
-    if (event.currentTarget.checked) state.learningProgress[key] = "done";
-    else delete state.learningProgress[key];
-    persist("learningProgress");
-    rerenderAndFocus(renderLearningPlan, attrSelector("data-learning-done", key), { keepScroll: true });
-  }));
-  $all("[data-learning-module]", header).forEach((detail) => detail.addEventListener("toggle", () => {
-    state.learningDetails[`plan:${detail.dataset.learningModule}`] = detail.open;
-    persist("learningDetails");
-  }));
-  bindClickAll(header, "[data-open-learning-module]", (event) => {
-    const detail = $all("[data-learning-module]", header).find((item) => item.dataset.learningModule === event.currentTarget.dataset.openLearningModule);
-    if (!detail) return;
-    detail.open = true;
-    const target = detail.querySelector("[data-learning-done]:not(:checked)") || detail.querySelector("summary");
-    target.scrollIntoView({ behavior: "smooth", block: "center" });
-    target.focus({ preventScroll: true });
-  });
-  bindClickAll(header, "[data-reset-learning]", () => {
-    if (!window.confirm(`Сбросить отметки уровня ${level.label}? Задания и пункты «Могу» станут неотмеченными; прогресс уроков в Учебнике сохранится.`)) return;
-    Object.keys(state.learningProgress).filter((key) => key.startsWith(`plan:${level.id}-`)).forEach((key) => delete state.learningProgress[key]);
-    persist("learningProgress");
-    renderLearningPlan();
+}
+
+function currentLearningLevel() {
+  return LEARNING_LEVELS.find((item) => item.id === state.learningLevel) || LEARNING_LEVELS[0];
+}
+
+function selectLearningLevel(levelId) {
+  state.learningCheck = null;
+  state.learningLevel = levelId;
+  persist("learningLevel");
+  renderLearningPlan();
+}
+
+// Итоговая проверка перерисовывается вместе с Планом; фокус — на заголовок проверки или на нужный пункт.
+function rerenderLearningCheck(focusSelector = "") {
+  renderLearningPlan();
+  requestAnimationFrame(() => {
+    const target = document.querySelector(focusSelector || "#learning-check-title");
+    target?.scrollIntoView({ behavior: "auto", block: focusSelector ? "center" : "start" });
+    target?.focus({ preventScroll: true });
   });
 }
+
+onDelegated("click", ".learning-plan [data-learning-level]", (_event, target) => selectLearningLevel(target.dataset.learningLevel));
+onDelegated("keydown", ".learning-plan [data-learning-level]", (event, target) => {
+  const buttons = $all(".learning-plan [data-learning-level]");
+  const index = buttons.indexOf(target);
+  const direction = event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : event.key === "Home" ? -Infinity : event.key === "End" ? Infinity : 0;
+  if (!direction) return;
+  event.preventDefault();
+  const nextIndex = direction === -Infinity ? 0 : direction === Infinity ? buttons.length - 1 : (index + direction + buttons.length) % buttons.length;
+  buttons[nextIndex].focus();
+});
+onDelegated("click", ".learning-plan [data-go-learning-level]", (_event, target) => { selectLearningLevel(target.dataset.goLearningLevel); scrollAppTop(); });
+onDelegated("click", ".learning-plan [data-textbook-open]", (_event, target) => openTextbookLessonFromPlan(Number(target.dataset.textbookOpen)));
+onDelegated("click", ".learning-plan [data-textbook-review]", (_event, target) => openTextbookLessonFromPlan(Number(target.dataset.textbookReview), { mistakes: true }));
+onDelegated("click", ".learning-plan [data-check-start], .learning-plan [data-check-restart]", () => { startLearningCheck(currentLearningLevel().id); rerenderLearningCheck(); });
+onDelegated("click", ".learning-plan [data-check-exit]", () => {
+  state.learningCheck = null;
+  renderLearningPlan();
+  requestAnimationFrame(() => document.querySelector("[data-check-start]")?.scrollIntoView({ behavior: "auto", block: "center" }));
+});
+onDelegated("input", ".learning-plan [data-check-answer]", (_event, target) => { state.learningCheck.answers[target.dataset.checkAnswer] = target.value; });
+onDelegated("click", ".learning-plan [data-check-choice]", (_event, target) => {
+  const index = target.dataset.checkChoice;
+  const value = target.dataset.checkValue;
+  state.learningCheck.answers[index] = value;
+  rerenderAndFocus(renderLearningPlan, attrSelector("data-check-choice", index) + attrSelector("data-check-value", value), { keepScroll: true });
+});
+onDelegated("click", ".learning-plan [data-check-submit]", () => {
+  const check = state.learningCheck;
+  const blank = check.items.findIndex((_entry, index) => normalizeTextbookAnswer(check.answers[index]) === "");
+  if (blank >= 0) {
+    const left = check.items.filter((_entry, index) => normalizeTextbookAnswer(check.answers[index]) === "").length;
+    check.message = `Осталось без ответа: ${left}.`;
+    rerenderLearningCheck(`[data-check-question="${blank}"] input, [data-check-question="${blank}"] button`);
+    return;
+  }
+  check.message = "";
+  check.submitted = true;
+  const results = learningCheckResults();
+  saveLearningCheckResult(currentLearningLevel().id, Math.round(results.filter(Boolean).length / results.length * 100));
+  rerenderLearningCheck();
+});
+onDelegated("click", ".learning-plan [data-dismiss-learning-notice]", () => { appStorage.remove("msg:learningPlanNotice"); renderLearningPlan(); });
+onDelegated("change", ".learning-plan [data-learning-done]", (_event, target) => {
+  const key = target.dataset.learningDone;
+  if (target.checked) state.learningProgress[key] = "done";
+  else delete state.learningProgress[key];
+  persist("learningProgress");
+  rerenderAndFocus(renderLearningPlan, attrSelector("data-learning-done", key), { keepScroll: true });
+});
+// Сохраняется только отличие от умолчания (текущий модуль раскрыт, остальные свёрнуты):
+// toggle приходит и при отрисовке раскрытого модуля, и такой модуль не должен «залипать» раскрытым.
+onDelegated("toggle", ".learning-plan [data-learning-module]", (_event, target) => {
+  const key = `plan:${target.dataset.learningModule}`;
+  if (target.open === target.classList.contains("is-current")) delete state.learningDetails[key];
+  else state.learningDetails[key] = target.open;
+  persist("learningDetails");
+});
+onDelegated("click", ".learning-plan [data-open-learning-module]", (_event, target) => {
+  const detail = document.querySelector(".learning-plan " + attrSelector("data-learning-module", target.dataset.openLearningModule));
+  if (!detail) return;
+  detail.open = true;
+  const focusTarget = detail.querySelector("[data-learning-done]:not(:checked)") || detail.querySelector("summary");
+  focusTarget.scrollIntoView({ behavior: "smooth", block: "center" });
+  focusTarget.focus({ preventScroll: true });
+});
+onDelegated("click", ".learning-plan [data-reset-learning]", () => {
+  const level = currentLearningLevel();
+  if (!window.confirm(`Сбросить отметки уровня ${level.label}? Задания и пункты «Могу» станут неотмеченными; прогресс уроков в Учебнике сохранится.`)) return;
+  Object.keys(state.learningProgress).filter((key) => key.startsWith(`plan:${level.id}-`)).forEach((key) => delete state.learningProgress[key]);
+  persist("learningProgress");
+  renderLearningPlan();
+});
 
 function textbookText(value) {
   if (value && typeof value === "object" && ("ru" in value || "es" in value)) return value[state.textbookLanguage] || value.ru || value.es || "";
@@ -16989,7 +17017,6 @@ function bindTextbookControls(root, activeLesson = null) {
     rerenderAndFocus(renderTextbook, attrSelector("data-textbook-toggle", exerciseId));
   });
   root.querySelector("[data-textbook-catalog]")?.addEventListener("click", openTextbookCatalog);
-  bindFavoriteMaterialButtons(root);
   root.querySelector("[data-textbook-plan]")?.addEventListener("click", (event) => openLearningPlanForLesson(Number(event.currentTarget.dataset.textbookPlan)));
   $all("[data-textbook-answer]", root).forEach((input) => input.addEventListener("input", (event) => {
     if (!activeLesson) return;
@@ -18421,10 +18448,15 @@ $all("[data-more-view]").forEach((item) => {
   });
 });
 // Ссылки «Уроки учебника» во Временах, Глаголах и Шпаргалках открывают урок из любой вкладки.
-document.addEventListener("click", (event) => {
-  const lessonLink = event.target.closest("[data-open-lesson]");
-  if (lessonLink) openTextbookLesson(Number(lessonLink.dataset.openLesson));
-});
+onDelegated("click", "[data-open-lesson]", (_event, target) => openTextbookLesson(Number(target.dataset.openLesson)));
+// Подключение делегированных обработчиков (регистрации onDelegated выше; валидатор этот участок не выполняет).
+Object.keys(DELEGATED_HANDLERS).forEach((type) => document.addEventListener(type, (event) => {
+  if (!(event.target instanceof Element)) return;
+  DELEGATED_HANDLERS[type].forEach(([selector, handler]) => {
+    const target = type === "toggle" ? (event.target.matches(selector) ? event.target : null) : event.target.closest(selector);
+    if (target) handler(event, target);
+  });
+}, type === "toggle"));
 document.addEventListener("click", (event) => {
   if (!$("#tabMoreMenu").hidden && !event.target.closest("#tabMoreMenu, #tabMoreButton")) setTabMoreMenu(false);
 });

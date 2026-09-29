@@ -4199,7 +4199,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.46 · обновлено: 29.09.2026 23:15 CEST</span>
+        <span>Версия MVP 1.47 · обновлено: 29.09.2026 23:16 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -6363,6 +6363,18 @@ const TENSE_FILTERS = {
   }
 };
 
+// Единая шкала уровней: идентификаторы в данных — строчные ("a1"), подписи — через levelLabel ("A1").
+// A0 — внутренняя стартовая ступень справочника, A1–C2 — уровни CEFR / PCIC.
+const CEFR_LEVEL_IDS = Object.freeze(["a0", "a1", "a2", "b1", "b2", "c1", "c2"]);
+
+function levelLabel(levelId) {
+  return String(levelId || "").toUpperCase();
+}
+
+function levelRangeLabel(fromId, toId) {
+  return fromId === toId ? levelLabel(fromId) : `${levelLabel(fromId)}–${levelLabel(toId)}`;
+}
+
 // Уроки учебника по времени: первый — урок, где вводятся формы; его уровень (PCIC) и есть уровень времени.
 const TENSE_LESSONS = {
   presente: [48, 49, 50, 51, 52],
@@ -6400,7 +6412,7 @@ const VERB_LESSONS = {
 
 function tenseLevel(id) {
   const lessonId = TENSE_LESSONS[id]?.[0];
-  return lessonId ? textbookLessonLevel(lessonId).toUpperCase() : TENSE_LEVELS[id] || "справка";
+  return lessonId ? levelLabel(textbookLessonLevel(lessonId)) : TENSE_LEVELS[id] || "справка";
 }
 
 // Примеры употребления глагола — предложения из упражнений уроков о глаголах (42–99, 115) с подставленным ответом.
@@ -6452,7 +6464,7 @@ function verbTextbookExamplesMarkup(verb) {
 function lessonLinksMarkup(lessonIds = [], title = "Уроки учебника") {
   const lessons = lessonIds.map((id) => lessonById(id)).filter(Boolean);
   if (!lessons.length) return "";
-  return `<section class="cross-links" aria-label="${title}"><h4>${title}</h4><div class="cross-links-list">${lessons.map((lesson) => `<button class="small-button" type="button" data-open-lesson="${lesson.id}">${lesson.id}. ${escapeHTML(lesson.title.ru)} <span class="cross-links-level">${textbookLessonLevel(lesson.id).toUpperCase()}</span></button>`).join("")}</div></section>`;
+  return `<section class="cross-links" aria-label="${title}"><h4>${title}</h4><div class="cross-links-list">${lessons.map((lesson) => `<button class="small-button" type="button" data-open-lesson="${lesson.id}">${lesson.id}. ${escapeHTML(lesson.title.ru)} <span class="cross-links-level">${levelLabel(textbookLessonLevel(lesson.id))}</span></button>`).join("")}</div></section>`;
 }
 
 const TENSE_CONTRASTS = {
@@ -9812,14 +9824,10 @@ const TABLE_FILTER_GROUPS = {
   time: ["Числа, время и даты"],
 };
 
+// В фильтре шпаргалок C1 и C2 объединены в одну ступень.
 const TABLE_LEVELS = Object.freeze([
   { id: "all", label: "Все уровни", badge: "" },
-  { id: "a0", label: "A0", badge: "A0" },
-  { id: "a1", label: "A1", badge: "A1" },
-  { id: "a2", label: "A2", badge: "A2" },
-  { id: "b1", label: "B1", badge: "B1" },
-  { id: "b2", label: "B2", badge: "B2" },
-  { id: "c1", label: "C1–C2", badge: "C1" }
+  ...CEFR_LEVEL_IDS.filter((id) => id !== "c2").map((id) => ({ id, label: id === "c1" ? "C1–C2" : levelLabel(id), badge: levelLabel(id) }))
 ]);
 
 const TABLE_LEVEL_ORDER = Object.freeze(TABLE_LEVELS.filter((level) => level.id !== "all").map((level) => level.id));
@@ -10012,11 +10020,11 @@ const MOODS = [
 ];
 
 const LEARNING_LEVELS = [
-  { id: "a0", label: "A0", title: "Старт с нуля", description: "Подготовительная ступень до A1: чтение, первые фразы, числа и время." },
-  { id: "a1", label: "A1", title: "Базовое общение", description: "Простое взаимодействие в знакомых бытовых ситуациях." },
-  { id: "a2", label: "A2", title: "Повседневная самостоятельность", description: "Общение в регулярно встречающихся ситуациях и рассказ о прошлом, настоящем и планах." },
-  { id: "b1", label: "B1", title: "Уверенное самостоятельное общение", description: "Самостоятельное общение на знакомые темы, рассказ о событиях и объяснение мнения." },
-  { id: "b2", label: "B2", title: "Свободное взаимодействие", description: "Уверенное взаимодействие с носителями языка и точное обсуждение широкого круга тем." },
+  { id: "a0", label: levelLabel("a0"), title: "Старт с нуля", description: "Подготовительная ступень до A1: чтение, первые фразы, числа и время." },
+  { id: "a1", label: levelLabel("a1"), title: "Базовое общение", description: "Простое взаимодействие в знакомых бытовых ситуациях." },
+  { id: "a2", label: levelLabel("a2"), title: "Повседневная самостоятельность", description: "Общение в регулярно встречающихся ситуациях и рассказ о прошлом, настоящем и планах." },
+  { id: "b1", label: levelLabel("b1"), title: "Уверенное самостоятельное общение", description: "Самостоятельное общение на знакомые темы, рассказ о событиях и объяснение мнения." },
+  { id: "b2", label: levelLabel("b2"), title: "Свободное взаимодействие", description: "Уверенное взаимодействие с носителями языка и точное обсуждение широкого круга тем." },
   { id: "after", label: "После B2", title: "C1 и C2", description: "Учебник заканчивается на B2, поэтому здесь нет модулей и прогресса — только ориентиры и официальные материалы." }
 ];
 
@@ -10275,7 +10283,7 @@ const state = {
     : null,
   textbookVisibleFeedback: {},
   textbookOpenExercises: {},
-  textbookLevel: ["a1", "a2", "b1", "b2"].includes(appStorage.get("msg:textbookLevel")) ? appStorage.get("msg:textbookLevel") : "all",
+  textbookLevel: appStorage.get("msg:textbookLevel") || "all",
   textbookOpenGroups: readStoredObject("msg:textbookOpenGroups"),
   textbookProgress: readTextbookProgress()
 };
@@ -15221,9 +15229,7 @@ function tableLevelMeta(levelId) {
 }
 
 function tableLevelLabel(item) {
-  const from = tableLevelMeta(item.minLevel).badge;
-  const to = tableLevelMeta(item.maxLevel).badge;
-  return from === to ? from : `${from}–${to}`;
+  return levelRangeLabel(item.minLevel, item.maxLevel);
 }
 
 function tableLevelBadge(item) {
@@ -16780,7 +16786,7 @@ function textbookLessonLevel(lessonId) {
 
 function textbookLevelBadge(lessonId) {
   const level = textbookLessonLevel(lessonId);
-  return level ? `<span class="level-badge textbook-level-badge" title="${escapeHTML(textbookUi("Уровень по Plan Curricular del Instituto Cervantes", "Nivel según el Plan Curricular del Instituto Cervantes"))}">${level.toUpperCase()}</span>` : "";
+  return level ? `<span class="level-badge textbook-level-badge" title="${escapeHTML(textbookUi("Уровень по Plan Curricular del Instituto Cervantes", "Nivel según el Plan Curricular del Instituto Cervantes"))}">${levelLabel(level)}</span>` : "";
 }
 
 const TEXTBOOK_COURSE_GROUPS = [
@@ -16832,6 +16838,7 @@ function renderTextbookCatalog(content) {
 }
 
 function renderTextbookCatalogContent(content) {
+  if (!TEXTBOOK_LEVEL_IDS.includes(state.textbookLevel)) state.textbookLevel = "all";
   const lessonCount = TEXTBOOK_LESSONS.length;
   const completed = TEXTBOOK_LESSONS.filter((lesson) => textbookProgressFor(lesson).done).length;
   const lastLesson = lessonById(Number(appStorage.get("msg:textbookLesson")));
@@ -16860,7 +16867,7 @@ function renderTextbookCatalogContent(content) {
   const header = infoSection({ className: "info-card textbook-dashboard", html: `
     <div class="textbook-toolbar"><div><h2>${escapeHTML(textbookUi("Учебник", "Curso"))}</h2><p class="muted">${escapeHTML(textbookUi(`${TEXTBOOK_LESSONS.length} ${pluralizeInteractiveLessons(TEXTBOOK_LESSONS.length)} по базовой грамматике.`, `${TEXTBOOK_LESSONS.length} ${TEXTBOOK_LESSONS.length === 1 ? "lección interactiva" : "lecciones interactivas"} de gramática básica.`))}</p></div>${textbookLanguageButtons()}</div>
     <div class="textbook-progress"><p><strong>${escapeHTML(textbookUi("Пройдено", "Completado"))}: ${completed}/${lessonCount}</strong></p><progress max="${lessonCount}" value="${completed}" aria-label="${escapeHTML(textbookUi("Прогресс учебника", "Progreso del curso"))}"></progress><div class="textbook-actions"><button class="small-button primary" type="button" data-textbook-open="${next.id}">${escapeHTML(planLesson ? textbookUi("Продолжить по плану", "Seguir el plan") : textbookUi("Продолжить", "Continuar"))}: ${next.id}</button><span class="muted">${escapeHTML(textbookUi("Все уроки доступны сразу.", "Todas las lecciones están disponibles."))}</span></div></div>
-    <div class="textbook-level-filter" role="group" aria-label="${escapeHTML(textbookUi("Фильтр по уровню", "Filtro por nivel"))}">${["all", ...TEXTBOOK_LEVEL_IDS].map((level) => `<button class="small-button ${state.textbookLevel === level ? "is-active" : ""}" type="button" data-textbook-level="${level}" aria-pressed="${state.textbookLevel === level}">${level === "all" ? escapeHTML(textbookUi("Все уровни", "Todos los niveles")) : `${level.toUpperCase()} · ${TEXTBOOK_LESSON_LEVELS[level].length}`}</button>`).join("")}<span class="muted">${escapeHTML(textbookUi("Уровни — по Plan Curricular del Instituto Cervantes: в книге их нет.", "Niveles según el Plan Curricular del Instituto Cervantes: el libro no los indica."))}</span></div>
+    <div class="textbook-level-filter" role="group" aria-label="${escapeHTML(textbookUi("Фильтр по уровню", "Filtro por nivel"))}">${["all", ...TEXTBOOK_LEVEL_IDS].map((level) => `<button class="small-button ${state.textbookLevel === level ? "is-active" : ""}" type="button" data-textbook-level="${level}" aria-pressed="${state.textbookLevel === level}">${level === "all" ? escapeHTML(textbookUi("Все уровни", "Todos los niveles")) : `${levelLabel(level)} · ${TEXTBOOK_LESSON_LEVELS[level].length}`}</button>`).join("")}<span class="muted">${escapeHTML(textbookUi("Уровни — по Plan Curricular del Instituto Cervantes: в книге их нет.", "Niveles según el Plan Curricular del Instituto Cervantes: el libro no los indica."))}</span></div>
     <div class="textbook-actions" role="group" aria-label="${escapeHTML(textbookUi("Управление темами", "Control de temas"))}"><button class="small-button" type="button" data-textbook-groups="open">${escapeHTML(textbookUi("Раскрыть все темы", "Abrir todos los temas"))}</button><button class="small-button" type="button" data-textbook-groups="close">${escapeHTML(textbookUi("Скрыть все темы", "Cerrar todos los temas"))}</button></div>
     <div class="textbook-catalog">${cards}</div>
   ` });

@@ -1013,36 +1013,115 @@ input[type="search"] {
   flex: none;
 }
 
-.saved-materials h3 {
-  margin: 14px 0 6px;
-  font-size: 15px;
-}
-
-.saved-materials-list {
-  display: grid;
-  gap: 6px;
+.cards-sections h2 {
   margin: 0;
-  padding-left: 18px;
 }
 
-.saved-materials-list li {
+.cards-section-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.cards-section-tabs .small-button {
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.cards-section-tabs .small-button.is-active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.cards-section-tabs small {
+  margin-left: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0.8;
+}
+
+.saved-materials-toolbar {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 4px 12px;
+  align-items: center;
+  gap: 8px 12px;
+  margin-top: 12px;
 }
 
-.saved-materials-list .link-button:last-child {
+.saved-material-list {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.saved-material {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+
+.saved-material-main {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.saved-material-main .saved-material-title {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.saved-material-main > span:last-child {
+  flex: none;
+}
+
+.saved-material-title {
+  color: var(--text);
+  font-weight: 700;
+  text-align: left;
+  text-decoration: none;
+}
+
+.saved-material-number {
   color: var(--muted);
-  font-size: 12px;
   font-weight: 700;
 }
 
-.saved-materials-open {
+.saved-material-meta,
+.saved-material-links {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.saved-material progress {
+  width: 100%;
+  height: 6px;
+}
+
+.saved-material-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  margin-top: 4px;
+}
+
+.saved-material-actions .link-button {
   text-align: left;
-  text-decoration: none;
-  color: var(--text);
+}
+
+.saved-material-remove {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -3667,6 +3746,15 @@ select {
     white-space: nowrap;
   }
 
+  .cards-section-tabs .small-button {
+    padding-inline: 4px;
+  }
+
+  .cards-section-tabs small {
+    display: block;
+    margin: 1px 0 0;
+  }
+
   .learning-level-tabs [role="tab"] small {
     display: block;
     margin: 1px 0 0;
@@ -4213,7 +4301,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.53 · обновлено: 29.09.2026 23:51 CEST</span>
+        <span>Версия MVP 1.54 · обновлено: 30.09.2026 00:00 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -10310,6 +10398,10 @@ const state = {
   cardsQuery: "",
   favoriteTables: readStoredArray("msg:favoriteTables", (id) => typeof id === "string"),
   favoriteLessons: readStoredArray("msg:favoriteLessons", Number.isInteger),
+  cardsSection: ["verbs", "tables", "lessons"].includes(appStorage.get("msg:cardsSection")) ? appStorage.get("msg:cardsSection") : "verbs",
+  favoriteLessonsSort: ["recent", "number", "unfinished"].includes(appStorage.get("msg:favoriteLessonsSort")) ? appStorage.get("msg:favoriteLessonsSort") : "recent",
+  favoriteTablesQuery: "",
+  materialUndo: null,
   cardsSort: appStorage.get("msg:cardsSort") || "recent",
   cardsFilter: ["all", "reviewed", "unreviewed", "mistakes", "mastered"].includes(appStorage.get("msg:cardsFilter"))
     ? appStorage.get("msg:cardsFilter")
@@ -12833,6 +12925,7 @@ function applyRouteHash() {
     resetVerbLanding();
   } else if (views.includes(route)) {
     state.view = route;
+    if (route === "cards") resolveCardsSection();
     if (route === "tenses") state.focusedTense = null;
     if (route === "tables") {
       state.focusedTable = null;
@@ -12843,6 +12936,12 @@ function applyRouteHash() {
       state.textbookVisibleFeedback = {};
       state.textbookOpenExercises = {};
     }
+  } else if (route.startsWith("cards-")) {
+    const section = route.slice(6);
+    if (!CARDS_SECTIONS.some((item) => item.id === section)) return false;
+    state.view = "cards";
+    state.cardsSection = section;
+    persist("cardsSection");
   } else if (route.startsWith("lesson-")) {
     const lessonId = Number(route.slice(7));
     if (!Number.isInteger(lessonId) || !TEXTBOOK_LESSONS.some((lesson) => lesson.id === lessonId)) return false;
@@ -13879,6 +13978,7 @@ function setView(view, { updateRoute = true } = {}) {
     clearVerbSearchContext();
   } else {
     state.view = view;
+    if (view === "cards") resolveCardsSection();
     clearVerbSearchContext();
   }
   syncActiveTab(view);
@@ -17252,32 +17352,22 @@ onDelegated("click", "[data-favorite-table], [data-favorite-lesson]", (_event, t
     target.setAttribute("aria-label", (saved ? "Убрать из избранного" : "Добавить в избранное") + target.getAttribute("aria-label").replace(/^[^:]*/, ""));
 });
 
-function savedMaterialsCard() {
-  const tables = state.favoriteTables.map((id) => INDEXED_TABLES.find((item) => item.id === id)).filter(Boolean);
-  const lessons = state.favoriteLessons.map((id) => lessonById(id)).filter(Boolean);
-  const card = document.createElement("section");
-  card.className = "info-card saved-materials";
-  const row = (open, label, removeAttr) => `<li>${open}<button class="link-button" type="button" ${removeAttr}>убрать</button></li>`;
-  card.innerHTML = `
-    <h2>Шпаргалки и уроки</h2>
-    ${tables.length || lessons.length ? "" : `<p class="muted">Сохраняйте нужные шпаргалки и уроки звёздочкой ☆ в их заголовке — они появятся здесь.</p>`}
-    ${tables.length ? `<h3>Шпаргалки · ${tables.length}</h3><ul class="saved-materials-list">${tables.map((item) => row(`<a href="#${tableRoute(item)}">${escapeHTML(item.title)}</a>`, "", `data-remove-favorite-table="${item.id}"`)).join("")}</ul>` : ""}
-    ${lessons.length ? `<h3>Уроки · ${lessons.length}</h3><ul class="saved-materials-list">${lessons.map((lesson) => row(`<button class="link-button saved-materials-open" type="button" data-open-lesson="${lesson.id}">${lesson.id}. ${escapeHTML(lesson.title.ru)}</button>`, "", `data-remove-favorite-lesson="${lesson.id}"`)).join("")}</ul>` : ""}
-  `;
-  $all("[data-remove-favorite-table]", card).forEach((button) => button.addEventListener("click", () => { toggleFavoriteMaterial("table", button.dataset.removeFavoriteTable); renderCards(); }));
-  $all("[data-remove-favorite-lesson]", card).forEach((button) => button.addEventListener("click", () => { toggleFavoriteMaterial("lesson", Number(button.dataset.removeFavoriteLesson)); renderCards(); }));
-  return card;
-}
-
 function renderCards() {
   const content = clearContent();
   if (state.cardQuiz.length > 0) {
     renderCardQuiz(content);
     return;
   }
-  content.appendChild(cardsDashboardSection());
-  content.appendChild(state.cards.length === 0 ? cardsEmptySection() : cardsStudyListSection());
-  content.appendChild(savedMaterialsCard());
+  if (!CARDS_SECTIONS.some((section) => section.id === state.cardsSection)) state.cardsSection = "verbs";
+  content.appendChild(cardsSectionTabs());
+  if (state.cardsSection === "tables") {
+    content.appendChild(favoriteTablesSection());
+  } else if (state.cardsSection === "lessons") {
+    content.appendChild(withTextbookProgressCache(favoriteLessonsSection));
+  } else {
+    if (state.cards.length > 0 || state.cardUndo) content.appendChild(cardsDashboardSection());
+    content.appendChild(state.cards.length === 0 ? cardsEmptySection() : cardsStudyListSection());
+  }
 }
 
 // Панель вкладки «Избранное»: быстрый старт проверки, прогресс и настройки квиза.
@@ -17311,12 +17401,12 @@ function cardsDashboardSection() {
   }).join("");
 
   const header = document.createElement("section");
-  header.className = "info-card cards-dashboard";
+  header.className = "info-card cards-section cards-dashboard";
   header.innerHTML = `
     <div class="cards-dashboard-head">
       <div>
-        <h2>Избранное</h2>
-        <p class="cards-purpose">Глаголы для повторения · ${state.cards.length} ${pluralizeVerbs(state.cards.length)}${state.favoriteTables.length || state.favoriteLessons.length ? ` · шпаргалок: ${state.favoriteTables.length} · уроков: ${state.favoriteLessons.length}` : ""}</p>
+        <h2>Глаголы для повторения</h2>
+        <p class="cards-purpose">${state.cards.length} ${pluralizeVerbs(state.cards.length)} · проверка спряжений и инфинитивов</p>
       </div>
     </div>
     ${state.cards.length > 0
@@ -17397,91 +17487,22 @@ function cardsDashboardSection() {
     </div>` : ""}
   `;
 
-  header.querySelectorAll("[data-preset]").forEach((button) => button.addEventListener("click", () => startQuizPreset(button.dataset.preset)));
-  header.querySelectorAll("[data-cards-dashboard-filter]").forEach((button) => button.addEventListener("click", () => {
-    state.cardsFilter = button.dataset.cardsDashboardFilter;
-    state.cardsQuery = "";
-    persist("cardsFilter");
-    renderCards();
-    requestAnimationFrame(() => document.querySelector(".verb-list-card")?.scrollIntoView({ behavior: "smooth", block: "start" }));
-  }));
-  header.querySelector("[data-undo-remove]")?.addEventListener("click", restoreLastRemovedCard);
-  header.querySelector("[data-toggle-quiz-settings]")?.addEventListener("click", () => {
-    state.showQuizSettings = !state.showQuizSettings;
-    renderCards();
-  });
-  header.querySelector("[data-toggle-quiz-panel]")?.addEventListener("click", () => {
-    state.showQuizPanel = !state.showQuizPanel;
-    persist("showQuizPanel");
-    renderCards();
-  });
-  header.querySelector("[data-resume-quiz]")?.addEventListener("click", resumeCardQuiz);
-  header.querySelector("[data-discard-quiz]")?.addEventListener("click", () => {
-    clearSavedQuizSession();
-    renderCards();
-  });
-  header.querySelectorAll("[data-quiz-type]").forEach((button) => button.addEventListener("click", () => {
-    state.quizConfig.type = button.dataset.quizType;
-    saveQuizConfig();
-    renderCards();
-  }));
-  header.querySelectorAll("[data-tense]").forEach((button) => button.addEventListener("click", () => {
-    const id = button.dataset.tense;
-    state.quizConfig.tenses = state.quizConfig.tenses.includes(id)
-      ? state.quizConfig.tenses.filter((tense) => tense !== id)
-      : [...state.quizConfig.tenses, id];
-    saveQuizConfig();
-    renderCards();
-  }));
-  header.querySelectorAll("[data-person]").forEach((button) => button.addEventListener("click", () => {
-    const person = Number(button.dataset.person);
-    state.quizConfig.persons = state.quizConfig.persons.includes(person)
-      ? state.quizConfig.persons.filter((index) => index !== person)
-      : [...state.quizConfig.persons, person].sort((a, b) => a - b);
-    saveQuizConfig();
-    renderCards();
-  }));
-  header.querySelectorAll("[data-count]").forEach((button) => button.addEventListener("click", () => {
-    state.quizConfig.count = Number(button.dataset.count);
-    saveQuizConfig();
-    renderCards();
-  }));
-  header.querySelectorAll("[data-tense-action]").forEach((button) => button.addEventListener("click", () => {
-    const action = button.dataset.tenseAction;
-    state.quizConfig.tenses = action === "all" ? getAllTenseIds() : action === "basic" ? [...BASIC_QUIZ_TENSES] : [];
-    saveQuizConfig();
-    renderCards();
-  }));
-  header.querySelectorAll("[data-person-action]").forEach((button) => button.addEventListener("click", () => {
-    state.quizConfig.persons = button.dataset.personAction === "all" ? PEOPLE.map((_, index) => index) : [];
-    saveQuizConfig();
-    renderCards();
-  }));
-  header.querySelector("#startCardQuiz")?.addEventListener("click", () => startCardQuiz());
   return header;
 }
 
 // Пустое избранное: предложение добавить базовые глаголы.
 function cardsEmptySection() {
   const emptyCard = document.createElement("section");
-  emptyCard.className = "info-card verb-list-card";
-  const suggestedCards = COMMON_VERB_SUGGESTIONS.filter((verb) => BASE_VERBS.includes(verb)).slice(0, 5);
+  emptyCard.className = "info-card cards-section verb-list-card";
+  const suggestedCards = starterVerbs();
   emptyCard.innerHTML = `
-    <h2>Избранное пока пусто</h2>
+    <h2>Глаголов пока нет</h2>
     <p class="muted">Добавьте базовый набор для первой проверки. Отдельные глаголы можно выбирать звездочкой в разделе «Глаголы».</p>
     <button class="small-button primary" type="button" data-add-starter>Добавить 5 базовых глаголов</button>
     <div class="starter-verb-links" aria-label="Посмотреть базовые глаголы">
       ${suggestedCards.map((verb) => `<button class="starter-verb-link" type="button" data-starter-verb="${verb}" lang="es">${escapeHTML(displayInfinitive(verb))}</button>`).join("")}
     </div>
   `;
-  emptyCard.querySelectorAll("[data-starter-verb]").forEach((button) => button.addEventListener("click", () => {
-    openVerbFromReference(button.dataset.starterVerb);
-  }));
-  emptyCard.querySelector("[data-add-starter]").addEventListener("click", () => {
-    state.cards = [...new Set([...state.cards, ...suggestedCards])];
-    saveCards();
-    renderCards();
-  });
   return emptyCard;
 }
 
@@ -17489,7 +17510,7 @@ function cardsEmptySection() {
 function cardsStudyListSection() {
   const studyCounts = studyCardCounts();
   const listCard = document.createElement("section");
-  listCard.className = "info-card verb-list-card";
+  listCard.className = "info-card cards-section verb-list-card";
   const visibleCards = visibleStudyCards();
   listCard.innerHTML = `
     <h2>Глаголы к изучению</h2>
@@ -17546,39 +17567,320 @@ function cardsStudyListSection() {
       </div>
     </div>`;
   }
-  listCard.querySelector("#cardsSearch").addEventListener("input", (event) => {
-    state.cardsQuery = event.target.value;
-    renderCards();
-    requestAnimationFrame(() => {
-      const input = document.getElementById("cardsSearch");
-      input?.focus();
-      input?.setSelectionRange(input.value.length, input.value.length);
-    });
-  });
-  listCard.querySelector("#cardsSort").addEventListener("change", (event) => {
-    state.cardsSort = event.target.value;
-    persist("cardsSort");
-    renderCards();
-  });
-  listCard.querySelectorAll("[data-cards-filter]").forEach((button) => button.addEventListener("click", () => {
-    state.cardsFilter = button.dataset.cardsFilter;
-    persist("cardsFilter");
-    renderCards();
-  }));
-  listCard.querySelector("[data-clear-cards-search]")?.addEventListener("click", () => {
-    state.cardsQuery = "";
-    renderCards();
-  });
-  listCard.querySelector("[data-show-all-cards]")?.addEventListener("click", () => {
-    state.cardsFilter = "all";
-    persist("cardsFilter");
-    renderCards();
-  });
-  listCard.querySelectorAll("[data-quiz-verb]").forEach((button) => button.addEventListener("click", () => {
-    startSingleVerbQuiz(button.dataset.quizVerb);
-  }));
   return listCard;
 }
+
+function starterVerbs() {
+  return COMMON_VERB_SUGGESTIONS.filter((verb) => BASE_VERBS.includes(verb)).slice(0, 5);
+}
+
+// Поиск перерисовывает вкладку, поэтому фокус и курсор возвращаются в конец поля.
+function rerenderCardsKeepingInput(selector) {
+  renderCards();
+  requestAnimationFrame(() => {
+    const input = document.querySelector(selector);
+    input?.focus();
+    input?.setSelectionRange(input.value.length, input.value.length);
+  });
+}
+
+// Обработчики вкладки «Глаголы» в Избранном (панель квиза, пустое состояние, список).
+function inCards(selector) {
+  return selector.split(",").map((part) => `.cards-section ${part.trim()}`).join(", ");
+}
+
+onDelegated("click", inCards("[data-preset]"), (_event, target) => startQuizPreset(target.dataset.preset));
+onDelegated("click", inCards("[data-cards-dashboard-filter]"), (_event, target) => {
+  state.cardsFilter = target.dataset.cardsDashboardFilter;
+  state.cardsQuery = "";
+  persist("cardsFilter");
+  renderCards();
+  requestAnimationFrame(() => document.querySelector(".verb-list-card")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+});
+onDelegated("click", inCards("[data-undo-remove]"), () => restoreLastRemovedCard());
+onDelegated("click", inCards("[data-toggle-quiz-settings]"), () => {
+  state.showQuizSettings = !state.showQuizSettings;
+  rerenderAndFocus(renderCards, "[data-toggle-quiz-settings]", { keepScroll: true });
+});
+onDelegated("click", inCards("[data-toggle-quiz-panel]"), () => {
+  state.showQuizPanel = !state.showQuizPanel;
+  persist("showQuizPanel");
+  rerenderAndFocus(renderCards, "[data-toggle-quiz-panel]", { keepScroll: true });
+});
+onDelegated("click", inCards("[data-resume-quiz]"), () => resumeCardQuiz());
+onDelegated("click", inCards("[data-discard-quiz]"), () => {
+  clearSavedQuizSession();
+  renderCards();
+});
+// Настройки квиза: после изменения сохраняются и перерисовываются, фокус остаётся на нажатой кнопке.
+function updateQuizConfig(change, focusSelector) {
+  change(state.quizConfig);
+  saveQuizConfig();
+  rerenderAndFocus(renderCards, focusSelector, { keepScroll: true });
+}
+onDelegated("click", inCards("[data-quiz-type]"), (_event, target) => updateQuizConfig((cfg) => { cfg.type = target.dataset.quizType; }, attrSelector("data-quiz-type", target.dataset.quizType)));
+onDelegated("click", inCards("[data-tense]"), (_event, target) => updateQuizConfig((cfg) => {
+  const id = target.dataset.tense;
+  cfg.tenses = cfg.tenses.includes(id) ? cfg.tenses.filter((tense) => tense !== id) : [...cfg.tenses, id];
+}, attrSelector("data-tense", target.dataset.tense)));
+onDelegated("click", inCards("[data-person]"), (_event, target) => updateQuizConfig((cfg) => {
+  const person = Number(target.dataset.person);
+  cfg.persons = cfg.persons.includes(person) ? cfg.persons.filter((index) => index !== person) : [...cfg.persons, person].sort((a, b) => a - b);
+}, attrSelector("data-person", target.dataset.person)));
+onDelegated("click", inCards("[data-count]"), (_event, target) => updateQuizConfig((cfg) => { cfg.count = Number(target.dataset.count); }, attrSelector("data-count", target.dataset.count)));
+onDelegated("click", inCards("[data-tense-action]"), (_event, target) => updateQuizConfig((cfg) => {
+  const action = target.dataset.tenseAction;
+  cfg.tenses = action === "all" ? getAllTenseIds() : action === "basic" ? [...BASIC_QUIZ_TENSES] : [];
+}, attrSelector("data-tense-action", target.dataset.tenseAction)));
+onDelegated("click", inCards("[data-person-action]"), (_event, target) => updateQuizConfig((cfg) => {
+  cfg.persons = target.dataset.personAction === "all" ? PEOPLE.map((_, index) => index) : [];
+}, attrSelector("data-person-action", target.dataset.personAction)));
+onDelegated("click", inCards("#startCardQuiz"), () => startCardQuiz());
+onDelegated("click", inCards("[data-starter-verb]"), (_event, target) => openVerbFromReference(target.dataset.starterVerb));
+onDelegated("click", inCards("[data-add-starter]"), () => {
+  state.cards = [...new Set([...state.cards, ...starterVerbs()])];
+  saveCards();
+  renderCards();
+});
+onDelegated("input", inCards("#cardsSearch"), (_event, target) => {
+  state.cardsQuery = target.value;
+  rerenderCardsKeepingInput("#cardsSearch");
+});
+onDelegated("change", inCards("#cardsSort"), (_event, target) => {
+  state.cardsSort = target.value;
+  persist("cardsSort");
+  rerenderAndFocus(renderCards, "#cardsSort");
+});
+onDelegated("click", inCards("[data-cards-filter]"), (_event, target) => {
+  state.cardsFilter = target.dataset.cardsFilter;
+  persist("cardsFilter");
+  rerenderAndFocus(renderCards, attrSelector("data-cards-filter", state.cardsFilter), { keepScroll: true });
+});
+onDelegated("click", inCards("[data-clear-cards-search]"), () => {
+  state.cardsQuery = "";
+  rerenderAndFocus(renderCards, "#cardsSearch");
+});
+onDelegated("click", inCards("[data-show-all-cards]"), () => {
+  state.cardsFilter = "all";
+  persist("cardsFilter");
+  rerenderAndFocus(renderCards, attrSelector("data-cards-filter", "all"), { keepScroll: true });
+});
+onDelegated("click", inCards("[data-quiz-verb]"), (_event, target) => startSingleVerbQuiz(target.dataset.quizVerb));
+
+// ─── Вкладки Избранного: Глаголы (квиз и список), Шпаргалки, Уроки ───
+const CARDS_SECTIONS = Object.freeze([
+  { id: "verbs", label: "Глаголы" },
+  { id: "tables", label: "Шпаргалки" },
+  { id: "lessons", label: "Уроки" }
+]);
+
+function favoriteTableItems() {
+  return state.favoriteTables.map((id) => INDEXED_TABLES.find((item) => item.id === id)).filter(Boolean);
+}
+
+function favoriteLessonItems() {
+  return state.favoriteLessons.map((id) => lessonById(id)).filter(Boolean);
+}
+
+function cardsSectionCount(sectionId) {
+  if (sectionId === "tables") return favoriteTableItems().length;
+  if (sectionId === "lessons") return favoriteLessonItems().length;
+  return state.cards.length;
+}
+
+// При входе в раздел: если выбранная вкладка пуста, а в другой что-то есть, открывается первая непустая.
+function resolveCardsSection() {
+  if (cardsSectionCount(state.cardsSection) > 0) return;
+  const filled = CARDS_SECTIONS.find((section) => cardsSectionCount(section.id) > 0);
+  if (filled) state.cardsSection = filled.id;
+}
+
+function cardsSectionTabs() {
+  const card = document.createElement("section");
+  card.className = "info-card cards-section cards-sections";
+  card.innerHTML = html`<h2>Избранное</h2>
+    <div class="cards-section-tabs" role="tablist" aria-label="Разделы избранного">${CARDS_SECTIONS.map((section) => {
+      const selected = section.id === state.cardsSection;
+      const count = cardsSectionCount(section.id);
+      return html`<button class="small-button ${selected ? "is-active" : ""}" id="cards-section-${section.id}" role="tab" type="button" tabindex="${selected ? "0" : "-1"}" aria-selected="${String(selected)}" aria-label="${section.label}: ${count}" data-cards-section="${section.id}">${section.label}<small>${count}</small></button>`;
+    })}</div>`;
+  return card;
+}
+
+function selectCardsSection(sectionId) {
+  state.cardsSection = sectionId;
+  state.materialUndo = null;
+  persist("cardsSection");
+  updateRouteHash(`cards-${sectionId}`);
+  rerenderAndFocus(renderCards, attrSelector("data-cards-section", sectionId), { keepScroll: true });
+}
+
+onDelegated("click", inCards("[data-cards-section]"), (_event, target) => selectCardsSection(target.dataset.cardsSection));
+onDelegated("keydown", inCards("[data-cards-section]"), (event, target) => {
+  const index = CARDS_SECTIONS.findIndex((section) => section.id === target.dataset.cardsSection);
+  const step = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+  if (!step) return;
+  event.preventDefault();
+  selectCardsSection(CARDS_SECTIONS[(index + step + CARDS_SECTIONS.length) % CARDS_SECTIONS.length].id);
+});
+onDelegated("click", inCards("[data-cards-go]"), (_event, target) => setView(target.dataset.cardsGo));
+
+// Удаление шпаргалки или урока из избранного можно отменить: запись возвращается на прежнее место.
+function removeFavoriteMaterial(kind, id) {
+  const key = kind === "table" ? "favoriteTables" : "favoriteLessons";
+  const index = state[key].indexOf(id);
+  if (index < 0) return;
+  toggleFavoriteMaterial(kind, id);
+  state.materialUndo = { kind, id, index };
+}
+
+function restoreFavoriteMaterial() {
+  const undo = state.materialUndo;
+  if (!undo) return;
+  const key = undo.kind === "table" ? "favoriteTables" : "favoriteLessons";
+  if (!state[key].includes(undo.id)) {
+    state[key].splice(Math.min(undo.index, state[key].length), 0, undo.id);
+    persist(key);
+  }
+  state.materialUndo = null;
+}
+
+function materialUndoMarkup(kind) {
+  const undo = state.materialUndo;
+  if (!undo || undo.kind !== kind) return "";
+  const text = kind === "table"
+    ? html`Шпаргалка <strong>${INDEXED_TABLES.find((item) => item.id === undo.id)?.title || ""}</strong> убрана из избранного.`
+    : html`Урок <strong>${undo.id}. ${lessonById(undo.id)?.title.ru || ""}</strong> убран из избранного.`;
+  return html`<div class="cards-undo" role="status"><p>${text}</p><button class="small-button" type="button" data-undo-material>Отменить</button></div>`;
+}
+
+function savedMaterialsEmptyMarkup(text, view, label) {
+  return html`<div class="cards-empty-state"><p class="muted">${text}</p><div class="cards-empty-actions"><button class="small-button primary" type="button" data-cards-go="${view}">${label}</button></div></div>`;
+}
+
+onDelegated("click", inCards("[data-remove-favorite-table]"), (_event, target) => {
+  removeFavoriteMaterial("table", target.dataset.removeFavoriteTable);
+  rerenderAndFocus(renderCards, "[data-undo-material]", { keepScroll: true });
+});
+onDelegated("click", inCards("[data-remove-favorite-lesson]"), (_event, target) => {
+  removeFavoriteMaterial("lesson", Number(target.dataset.removeFavoriteLesson));
+  rerenderAndFocus(renderCards, "[data-undo-material]", { keepScroll: true });
+});
+onDelegated("click", inCards("[data-undo-material]"), () => {
+  restoreFavoriteMaterial();
+  rerenderAndFocus(renderCards, attrSelector("data-cards-section", state.cardsSection), { keepScroll: true });
+});
+
+// Вкладка «Шпаргалки»: название, раздел, уровни и уроки по теме; поиск — когда шпаргалок больше восьми.
+const FAVORITE_TABLES_SEARCH_FROM = 9;
+
+function favoriteTablesSection() {
+  const tables = favoriteTableItems();
+  const query = normalize(state.favoriteTablesQuery);
+  const visible = query ? tables.filter((item) => normalize(`${item.title} ${item.group || ""} ${item.subgroup || ""}`).includes(query)) : tables;
+  const card = document.createElement("section");
+  card.className = "info-card cards-section saved-materials";
+  const rows = visible.map((item) => {
+    const lessons = (item.lessons || []).map((id) => lessonById(id)).filter(Boolean);
+    const links = lessons.map((lesson, index) => html`${index ? " · " : ""}<button class="link-button" type="button" data-open-lesson="${lesson.id}">${lesson.id}. ${lesson.title.ru}</button>`);
+    return html`<li class="saved-material">
+      <div class="saved-material-main"><a class="saved-material-title" href="#${tableRoute(item)}">${item.title}</a>${rawHtml(tableLevelBadge(item))}</div>
+      <p class="saved-material-meta">${[item.group, item.subgroup].filter(Boolean).join(" · ")}</p>
+      ${lessons.length ? html`<p class="saved-material-links">Уроки по теме: ${links}</p>` : ""}
+      <div class="saved-material-actions"><button class="link-button saved-material-remove" type="button" data-remove-favorite-table="${item.id}" aria-label="Убрать из избранного: ${item.title}">убрать</button></div>
+    </li>`;
+  });
+  const search = tables.length >= FAVORITE_TABLES_SEARCH_FROM
+    ? html`<div class="saved-materials-toolbar"><input id="favoriteTablesSearch" type="search" aria-label="Поиск по сохранённым шпаргалкам" placeholder="Найти шпаргалку" value="${state.favoriteTablesQuery}"><span class="cards-list-summary">Показано: ${visible.length} из ${tables.length}</span></div>`
+    : "";
+  const body = !tables.length
+    ? savedMaterialsEmptyMarkup("Сохраняйте нужные шпаргалки звёздочкой ☆ в их заголовке — они появятся здесь.", "tables", "Открыть Шпаргалки")
+    : visible.length
+      ? html`<ul class="saved-material-list">${rows}</ul>`
+      : html`<div class="cards-empty-state"><p class="muted">По запросу ничего не найдено.</p><div class="cards-empty-actions"><button class="small-button" type="button" data-clear-favorite-tables-search>Сбросить поиск</button></div></div>`;
+  card.innerHTML = html`<h2>Шпаргалки</h2>
+    <p class="muted">Уровни — по Plan Curricular del Instituto Cervantes. Из шпаргалки можно сразу перейти к урокам по той же теме.</p>
+    ${materialUndoMarkup("table")}${search}${body}`;
+  return card;
+}
+
+onDelegated("input", inCards("#favoriteTablesSearch"), (_event, target) => {
+  state.favoriteTablesQuery = target.value;
+  rerenderCardsKeepingInput("#favoriteTablesSearch");
+});
+onDelegated("click", inCards("[data-clear-favorite-tables-search]"), () => {
+  state.favoriteTablesQuery = "";
+  rerenderAndFocus(renderCards, "#favoriteTablesSearch");
+});
+
+// Вкладка «Уроки»: прогресс из Учебника, одна кнопка по состоянию урока и модуль Плана, в который он входит.
+const FAVORITE_LESSON_SORTS = Object.freeze({
+  recent: "Недавно добавленные",
+  number: "По номеру",
+  unfinished: "Сначала незаконченные"
+});
+
+function favoriteLessonAction(lesson) {
+  const progress = textbookProgressFor(lesson);
+  if (progress.wrong > 0 && progress.wrong / progress.checked >= LEARNING_REVIEW_ERROR_SHARE) return { mode: "mistakes", label: "Повторить ошибки" };
+  if (progress.done) return { mode: "open", label: "Открыть" };
+  return { mode: "continue", label: progress.answered > 0 || progress.checked > 0 ? "Продолжить" : "Начать" };
+}
+
+function favoriteLessonStatus(progress) {
+  if (progress.done) return `Пройден · ✓ ${progress.correct}/${progress.total}`;
+  if (!progress.answered && !progress.checked) return `Не начат · ${progress.total} зад.`;
+  return `Заполнено ${progress.answered}/${progress.total} · ✓ ${progress.correct}${progress.wrong ? ` · ошибок: ${progress.wrong}` : ""}`;
+}
+
+function sortedFavoriteLessons() {
+  const lessons = favoriteLessonItems();
+  if (state.favoriteLessonsSort === "number") return [...lessons].sort((a, b) => a.id - b.id);
+  if (state.favoriteLessonsSort === "unfinished") return [...lessons].sort((a, b) => Number(textbookProgressFor(a).done) - Number(textbookProgressFor(b).done));
+  return lessons;
+}
+
+function favoriteLessonsSection() {
+  const lessons = sortedFavoriteLessons();
+  const done = lessons.filter((lesson) => textbookProgressFor(lesson).done).length;
+  const card = document.createElement("section");
+  card.className = "info-card cards-section saved-materials";
+  const rows = lessons.map((lesson) => {
+    const progress = textbookProgressFor(lesson);
+    const action = favoriteLessonAction(lesson);
+    const module = learningModuleForLesson(lesson.id);
+    return html`<li class="saved-material">
+      <div class="saved-material-main"><span class="saved-material-number">${lesson.id}</span><button class="link-button saved-material-title" type="button" data-open-lesson="${lesson.id}">${lesson.title.ru}</button>${rawHtml(textbookLevelBadge(lesson.id))}</div>
+      <p class="saved-material-meta">${favoriteLessonStatus(progress)} · ≈ ${textbookLessonMinutes(lesson)} мин</p>
+      <progress max="${progress.total}" value="${progress.correct}" aria-label="Верных ответов: ${progress.correct} из ${progress.total}"></progress>
+      <div class="saved-material-actions">
+        <button class="small-button ${action.mode === "open" ? "" : "primary"}" type="button" data-favorite-lesson-go="${lesson.id}" data-mode="${action.mode}">${action.label}</button>
+        ${module ? html`<button class="link-button" type="button" data-favorite-lesson-plan="${lesson.id}">План: ${levelLabel(module.level)} · ${module.title}</button>` : ""}
+        <button class="link-button saved-material-remove" type="button" data-remove-favorite-lesson="${lesson.id}" aria-label="Убрать из избранного: урок ${lesson.id}">убрать</button>
+      </div>
+    </li>`;
+  });
+  const toolbar = lessons.length > 1
+    ? html`<div class="saved-materials-toolbar"><select id="favoriteLessonsSort" aria-label="Сортировка уроков">${Object.entries(FAVORITE_LESSON_SORTS).map(([id, label]) => html`<option value="${id}" ${state.favoriteLessonsSort === id ? "selected" : ""}>${label}</option>`)}</select><span class="cards-list-summary">Пройдено: ${done} из ${lessons.length}</span></div>`
+    : "";
+  card.innerHTML = html`<h2>Уроки</h2>
+    <p class="muted">Кнопка открывает урок на первом незаконченном упражнении, а если ошибок 20% и больше — на ошибках.</p>
+    ${materialUndoMarkup("lesson")}${toolbar}
+    ${lessons.length ? html`<ul class="saved-material-list">${rows}</ul>` : savedMaterialsEmptyMarkup("Сохраняйте уроки звёздочкой ☆ в заголовке урока — здесь будет виден их прогресс.", "textbook", "Открыть Учебник")}`;
+  return card;
+}
+
+onDelegated("change", inCards("#favoriteLessonsSort"), (_event, target) => {
+  state.favoriteLessonsSort = target.value;
+  persist("favoriteLessonsSort");
+  rerenderAndFocus(renderCards, "#favoriteLessonsSort");
+});
+onDelegated("click", inCards("[data-favorite-lesson-go]"), (_event, target) => {
+  const lessonId = Number(target.dataset.favoriteLessonGo);
+  if (target.dataset.mode === "open") openTextbookLesson(lessonId);
+  else openTextbookLessonFromPlan(lessonId, { mistakes: target.dataset.mode === "mistakes" });
+});
+onDelegated("click", inCards("[data-favorite-lesson-plan]"), (_event, target) => openLearningPlanForLesson(Number(target.dataset.favoriteLessonPlan)));
 
 function saveQuizSession() {
   if (state.cardQuiz.length === 0) return;

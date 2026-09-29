@@ -1119,6 +1119,12 @@ const learningPlanScaffold = [
   ["lesson levels", "const TEXTBOOK_LESSON_LEVELS = {"],
   ["legacy progress migration", "function migrateLearningProgress()"],
   ["back to plan", "data-textbook-plan"],
+  // Favorites tab: three sections — verbs (quiz and list), saved cheat sheets, saved lessons.
+  ["favorites sections", "const CARDS_SECTIONS = Object.freeze(["],
+  ["favorites verbs", '{ id: "verbs", label: "Глаголы" }'],
+  ["favorites tables", '{ id: "tables", label: "Шпаргалки" }'],
+  ["favorites lessons", '{ id: "lessons", label: "Уроки" }'],
+  ["favorites routes", 'route.startsWith("cards-")'],
 ];
 for (const [part, expected] of learningPlanScaffold) {
   if (!html.includes(expected)) {

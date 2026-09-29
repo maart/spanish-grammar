@@ -4154,7 +4154,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.39 · обновлено: 29.09.2026 18:44 CEST</span>
+        <span>Версия MVP 1.40 · обновлено: 29.09.2026 19:02 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -14061,6 +14061,17 @@ function renderVerbListItem(verb, { showBadges = true, isBestMatch = false, show
   return row;
 }
 
+// Сильная основа: yo в indefinido без ударного окончания (tuve, hice, di) или особая основа futuro (tendré).
+// Смена гласной в 3-м лице (pidió, durmió) сюда не относится.
+function hasStrongStem(verb) {
+  const simpleVerb = baseVerb(verb);
+  const yo = formsFor(simpleVerb).indefinido?.[0] || "";
+  return Boolean(irregularFutureStem(simpleVerb)) || (yo !== "" && !/[éí]$/.test(yo));
+}
+
+// У глаголов на -car/-gar/-zar меняется только написание: busqué / busque, llegué / llegue, crucé / cruce.
+const ORTHOGRAPHIC_EXCEPTION_LABELS = ["indefinido: орфографическая замена", "subjuntivo: особая форма"];
+
 function verbListBadges(info) {
   const verb = info.infinitive;
   const reflexive = isReflexive(verb);
@@ -14078,8 +14089,11 @@ function verbListBadges(info) {
   const exceptions = verbExceptionLabels(verb);
   const tooltip = exceptions.length > 0 ? exceptions.join(" · ") : "Неправильный";
 
+  // Порядок — от самого заметного отличия: особая основа (tengo, tuve, tendré) важнее смены гласной в presente.
   if (hasCompletelyIrregularProfile(verb)) {
     badges.push(`<span class="badge-special" title="${escapeHTML(tooltip)}">особый</span>`);
+  } else if (hasStrongStem(verb)) {
+    badges.push(`<span class="badge-irregular" title="${escapeHTML(tooltip)}">особая основа</span>`);
   } else if (
     hasStemChange(verb, "e", "ie") ||
     hasStemChange(verb, "o", "ue") ||
@@ -14092,12 +14106,12 @@ function verbListBadges(info) {
     if (hasStemChange(verb, "e", "i")) changes.push("e→i");
     if (hasStemChange(verb, "u", "ue")) changes.push("u→ue");
     badges.push(`<span class="badge-stem" title="${escapeHTML(tooltip)}">смена ${changes.join(", ")}</span>`);
-  } else if (hasIndefinidoSpecialStem(verb) || irregularFutureStem(verb)) {
-    badges.push(`<span class="badge-irregular" title="${escapeHTML(tooltip)}">особая основа</span>`);
   } else if (hasYoIrregular(verb)) {
     badges.push(`<span class="badge-yo" title="${escapeHTML(tooltip)}">yo особ.</span>`);
   } else if (hasIrregularParticiple(verb)) {
     badges.push(`<span class="badge-part" title="${escapeHTML(tooltip)}">part.</span>`);
+  } else if (hasOrthographicIndefinidoChange(baseVerb(verb)) && exceptions.every((label) => ORTHOGRAPHIC_EXCEPTION_LABELS.includes(label))) {
+    badges.push(`<span class="badge-regular" title="Правильный глагол; меняется только написание перед -é: ${escapeHTML(orthographicIndefinido(baseVerb(verb))[0])}">орфогр.</span>`);
   } else {
     badges.push(`<span class="badge-irregular" title="${escapeHTML(tooltip)}">неправ.</span>`);
   }
@@ -16484,6 +16498,10 @@ function renderTextbookCatalog(content) {
   bindTextbookControls(header);
 }
 
+function normalizeTheoryText(value) {
+  return String(value).replace(/\([^)]*\)/g, " ").replace(/[↔…→.,;:!?¡¿—–"«»]/g, " ").replace(/\s+/g, " ").trim().toLocaleLowerCase("es-ES");
+}
+
 function renderTextbookLesson(content, lesson) {
   const progress = textbookProgressFor(lesson);
   const saved = textbookLessonState(lesson.id);
@@ -16493,8 +16511,10 @@ function renderTextbookLesson(content, lesson) {
   const theory = theoryBlocks.map((block) => {
     const attention = block.attention ? '<p class="textbook-attention"><strong>' + escapeHTML(textbookUi("Внимание:", "Atención:")) + '</strong> ' + escapeHTML(textbookText(block.attention)) + '</p>' : "";
     const rules = (block.rules || []).map((rule) => '<li>' + escapeHTML(textbookText(rule)) + '</li>').join("");
-    const examples = block.examples.map((example) => '<li lang="es">' + escapeHTML(example) + '</li>').join("");
-    return '<section class="textbook-theory"><h3>' + escapeHTML(textbookText(block.title)) + '</h3><p>' + escapeHTML(textbookText(block.body)) + '</p>' + (rules ? '<ul class="textbook-rule-list">' + rules + '</ul>' : "") + attention + '<ul class="textbook-example-list">' + examples + '</ul></section>';
+    // Примеры, которые уже процитированы в строках правил выше, повторно не показываются.
+    const ruleText = normalizeTheoryText((block.rules || []).map((rule) => typeof rule === "string" ? rule : `${rule.es || ""} ${rule.ru || ""}`).join(" "));
+    const examples = block.examples.filter((example) => !ruleText.includes(normalizeTheoryText(example))).map((example) => '<li lang="es">' + escapeHTML(example) + '</li>').join("");
+    return '<section class="textbook-theory"><h3>' + escapeHTML(textbookText(block.title)) + '</h3><p>' + escapeHTML(textbookText(block.body)) + '</p>' + (rules ? '<ul class="textbook-rule-list">' + rules + '</ul>' : "") + attention + (examples ? '<ul class="textbook-example-list">' + examples + '</ul>' : "") + '</section>';
   }).join("");
   const exercises = lesson.exercises.map((exercise) => {
     const exerciseProgress = textbookExerciseProgress(exercise, saved);

@@ -4111,9 +4111,44 @@ select {
   margin-top: 12px;
   padding-top: 12px;
   border-top: 1px solid var(--line);
+}
+
+.table-related h4 {
+  margin: 0;
   color: var(--muted);
-  font-size: 13px;
-  font-weight: 800;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+/* Подвал шпаргалки: уроки учебника и связанные шпаргалки отделены от таблицы общей плашкой. */
+.table-card-footer {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent-2);
+  border-radius: 10px;
+  background: var(--surface-2);
+}
+
+.table-card-footer .cross-links,
+.table-card-footer .table-related {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.table-card-footer h4 {
+  color: var(--accent-2);
+  letter-spacing: 0.03em;
+}
+
+.table-card-footer .table-related + .cross-links,
+.table-card-footer .cross-links + .table-related {
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
 }
 
 .table-related-links {
@@ -4197,6 +4232,7 @@ select {
   .toc-toggle,
   .tense-toc-toggle,
   .table-related,
+  .table-card-footer,
   .brand-stats,
   .app-footer {
     display: none !important;
@@ -4301,7 +4337,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.55 · обновлено: 30.09.2026 00:18 CEST</span>
+        <span>Версия MVP 1.56 · обновлено: 30.09.2026 00:26 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -15313,6 +15349,7 @@ function renderUsefulTableCard(item) {
   const summary = item.summary || tableSummary(item);
   const mistake = item.mistake || tableMistake(item);
   const related = item.related ? relatedTablesMarkup(item.related) : "";
+  const lessonLinks = lessonLinksMarkup(item.lessons);
   const section = infoSection({
     id: `table-${index}`,
     className: "info-card table-card is-open",
@@ -15329,8 +15366,7 @@ function renderUsefulTableCard(item) {
       <div class="table-summary"><strong>Главное:</strong> ${summary}</div>
       <div class="table-wrap">${LINKED_TABLE_HTML[index]}</div>
       ${mistake ? `<div class="table-mistake"><strong>Типичная ошибка:</strong> ${mistake}</div>` : ""}
-      ${lessonLinksMarkup(item.lessons)}
-      ${related}
+      ${lessonLinks || related ? `<footer class="table-card-footer">${lessonLinks}${related}</footer>` : ""}
     `
   });
   bindClickAll(section, "[data-open-tense]", (event) => {
@@ -15395,7 +15431,7 @@ function relatedTablesMarkup(indices) {
   if (items.length === 0) return "";
   return `
     <div class="table-related">
-      <strong>Связанные шпаргалки:</strong>
+      <h4>Связанные шпаргалки</h4>
       <div class="table-related-links">
         ${items.map((item) => `<button class="small-button" type="button" data-table-jump-related="${tableRoute(item)}">${item.title}</button>`).join("")}
       </div>

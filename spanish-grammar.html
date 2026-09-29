@@ -172,6 +172,20 @@ h1 {
   cursor: pointer;
 }
 
+.topbar.is-compact {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.topbar.is-compact h1 {
+  font-size: clamp(20px, 4vw, 26px);
+}
+
+.topbar.is-compact .brand-kicker,
+.topbar.is-compact .brand-stats {
+  display: none;
+}
+
 h2 {
   margin-bottom: 4px;
   font-size: 25px;
@@ -972,6 +986,68 @@ input[type="search"] {
   accent-color: var(--success);
 }
 
+.textbook-accent-keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 8px 0;
+}
+
+.textbook-accent-keys .small-button {
+  min-width: 36px;
+  min-height: 34px;
+  padding: 4px 8px;
+  font-size: 15px;
+}
+
+.material-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.material-title-row h2 {
+  margin-bottom: 0;
+}
+
+.favorite-material {
+  flex: none;
+}
+
+.saved-materials h3 {
+  margin: 14px 0 6px;
+  font-size: 15px;
+}
+
+.saved-materials-list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 18px;
+}
+
+.saved-materials-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+}
+
+.saved-materials-list .link-button:last-child {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.saved-materials-open {
+  text-align: left;
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 700;
+}
+
 .cross-links {
   display: grid;
   gap: 6px;
@@ -995,6 +1071,17 @@ input[type="search"] {
 .cross-links-list .small-button {
   text-align: left;
   white-space: normal;
+}
+
+.verb-textbook-examples {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding-left: 18px;
+}
+
+.verb-textbook-examples [lang="es"] {
+  font-weight: 700;
 }
 
 .cross-links-level {
@@ -3031,6 +3118,42 @@ td.irregular {
   font-size: 17px;
 }
 
+.table-catalog-links[hidden] {
+  display: none;
+}
+
+.table-catalog-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.table-catalog-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.table-catalog-toggle::after {
+  content: "▾";
+  margin-left: auto;
+  color: var(--accent);
+  transition: transform 160ms ease;
+}
+
+.table-catalog-toggle[aria-expanded="false"]::after {
+  transform: rotate(-90deg);
+}
+
 .table-catalog-links {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -4173,20 +4296,20 @@ select {
         <button class="tab" data-view="tenses" type="button" aria-label="Времена"><svg class="tab-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg><span class="tab-label-full">Времена</span><span class="tab-label-mobile">Времена</span></button>
         <button class="tab" data-view="moods" data-mobile-more type="button" aria-label="Наклонения"><svg class="tab-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg><span class="tab-label-full">Наклонения</span><span class="tab-label-mobile">Наклонения</span></button>
         <button class="tab" data-view="tables" data-mobile-more type="button" aria-label="Шпаргалки"><svg class="tab-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16M10 10v10"/></svg><span class="tab-label-full">Шпаргалки</span><span class="tab-label-mobile">Шпаргалки</span></button>
-        <button class="tab" data-view="textbook" type="button" aria-label="Учебник"><svg class="tab-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3H19v15H7.5A2.5 2.5 0 0 0 5 20.5z"/><path d="M5 20.5V5.5"/></svg><span class="tab-label-full">Учебник</span><span class="tab-label-mobile">Курс</span></button>
-        <button class="tab" data-view="learning-plan" data-mobile-more type="button" aria-label="План"><svg class="tab-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg><span class="tab-label-full">План</span><span class="tab-label-mobile">План</span></button>
-        <button class="tab" data-view="cards" type="button" aria-label="Избранное"><svg class="tab-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 4 2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 16.3l-4.8 2.6.9-5.4-3.9-3.8 5.4-.8z"/></svg><span class="tab-label-full">Избранное</span><span class="tab-label-mobile">Избранное</span></button>
+        <button class="tab" data-view="textbook" type="button" aria-label="Учебник"><svg class="tab-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5.5A2.5 2.5 0 0 1 7.5 3H19v15H7.5A2.5 2.5 0 0 0 5 20.5z"/><path d="M5 20.5V5.5"/></svg><span class="tab-label-full">Учебник</span><span class="tab-label-mobile">Учебник</span></button>
+        <button class="tab" data-view="learning-plan" type="button" aria-label="План"><svg class="tab-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg><span class="tab-label-full">План</span><span class="tab-label-mobile">План</span></button>
+        <button class="tab" data-view="cards" data-mobile-more type="button" aria-label="Избранное"><svg class="tab-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 4 2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 16.3l-4.8 2.6.9-5.4-3.9-3.8 5.4-.8z"/></svg><span class="tab-label-full">Избранное</span><span class="tab-label-mobile">Избранное</span></button>
         <button class="tab-more-button" id="tabMoreButton" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="tabMoreMenu"><svg class="tab-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="18" cy="12" r="1.3"/></svg><span>Ещё</span></button>
         <div class="tab-more-menu" id="tabMoreMenu" role="menu" aria-label="Другие разделы" hidden>
           <button class="tab-more-item" type="button" role="menuitem" data-more-view="moods"><svg class="tab-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg><span>Наклонения</span></button>
           <button class="tab-more-item" type="button" role="menuitem" data-more-view="tables"><svg class="tab-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16M10 10v10"/></svg><span>Шпаргалки</span></button>
-          <button class="tab-more-item" type="button" role="menuitem" data-more-view="learning-plan"><svg class="tab-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg><span>План</span></button>
+          <button class="tab-more-item" type="button" role="menuitem" data-more-view="cards"><svg class="tab-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 4 2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 16.3l-4.8 2.6.9-5.4-3.9-3.8 5.4-.8z"/></svg><span>Избранное</span></button>
         </div>
       </nav>
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.42 · обновлено: 29.09.2026 19:06 CEST</span>
+        <span>Версия MVP 1.43 · обновлено: 29.09.2026 19:14 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -6388,6 +6511,52 @@ const VERB_LESSONS = {
 function tenseLevel(id) {
   const lessonId = TENSE_LESSONS[id]?.[0];
   return lessonId ? textbookLessonLevel(lessonId).toUpperCase() : TENSE_LEVELS[id] || "справка";
+}
+
+// Примеры употребления глагола — предложения из упражнений уроков о глаголах (42–99, 115) с подставленным ответом.
+// Берутся только формы, которые однозначно принадлежат одному глаголу (fue — ser и ir — пропускается);
+// уроки о прилагательных и предлогах не используются, чтобы como или para не попали к comer и parar.
+const VERB_EXAMPLE_LESSON_IDS = new Set([...Array.from({ length: 58 }, (_value, index) => 42 + index), 115]);
+let textbookVerbExampleIndex = null;
+
+function buildTextbookVerbExampleIndex() {
+  const sentences = [];
+  TEXTBOOK_LESSONS.filter((lesson) => VERB_EXAMPLE_LESSON_IDS.has(lesson.id)).forEach((lesson) => lesson.exercises.forEach((exercise) => exercise.items.forEach((item) => {
+    const answer = String(Array.isArray(item.answer) ? item.answer[0] : item.answer);
+    if (item.prompt.split("___").length !== 2 || answer.split(" ").length > 3) return;
+    const sentence = item.prompt.replace("___", answer)
+      .replace(/\s*\([^)]*\)/g, "")
+      .replace(/\s+([.,?!…])/g, "$1")
+      .replace(/\s+/g, " ").trim()
+      .replace(/(^|—\s*|[¿¡«]|[.?!]\s+)([a-zñáéíóú])/g, (_match, before, letter) => before + letter.toLocaleUpperCase("es-ES"));
+    if (sentence.length < 12 || sentence.length > 90 || /[а-яё]/i.test(sentence)) return;
+    const penalty = (/…/.test(sentence) ? 2 : 0) + (/^[^—¿¡]{1,20}:/.test(sentence) ? 2 : 0) + sentence.length / 100;
+    sentences.push({ lessonId: lesson.id, sentence, penalty, words: answer.toLocaleLowerCase("es-ES").split(" ") });
+  })));
+  const answerWords = new Set(sentences.flatMap((item) => item.words));
+  const owners = new Map();
+  BASE_VERBS.forEach((verb) => Object.values(formsFor(verb)).flat().forEach((form) => String(form).toLocaleLowerCase("es-ES").split(" ").forEach((word) => {
+    if (!answerWords.has(word)) return;
+    if (!owners.has(word)) owners.set(word, new Set());
+    owners.get(word).add(verb);
+  })));
+  const byVerb = new Map();
+  sentences.forEach((item) => {
+    const verbs = new Set(item.words.flatMap((word) => owners.get(word)?.size === 1 ? [...owners.get(word)] : []));
+    verbs.forEach((verb) => {
+      if (!byVerb.has(verb)) byVerb.set(verb, []);
+      if (!byVerb.get(verb).some((example) => example.sentence === item.sentence)) byVerb.get(verb).push(item);
+    });
+  });
+  byVerb.forEach((examples) => examples.sort((a, b) => a.penalty - b.penalty));
+  return byVerb;
+}
+
+function verbTextbookExamplesMarkup(verb) {
+  textbookVerbExampleIndex ||= buildTextbookVerbExampleIndex();
+  const examples = (textbookVerbExampleIndex.get(baseVerb(verb)) || []).slice(0, 3);
+  if (!examples.length) return "";
+  return `<section class="cross-links" aria-label="Примеры из учебника"><h4>Примеры из учебника</h4><ul class="verb-textbook-examples">${examples.map((example) => `<li><span lang="es">${escapeHTML(example.sentence)}</span> <button class="link-button" type="button" data-open-lesson="${example.lessonId}">урок ${example.lessonId}</button></li>`).join("")}</ul></section>`;
 }
 
 function lessonLinksMarkup(lessonIds = [], title = "Уроки учебника") {
@@ -10150,6 +10319,7 @@ const state = {
     : "all",
   tableLevelCumulative: appStorage.get("msg:tableLevelCumulative") !== "false",
   focusedTable: null,
+  tableOpenGroups: {},
   tableReturnVerb: null,
   showTenseToc: true,
   tenseFilter: ["basic", "frequent", "all"].includes(appStorage.get("msg:tenseFilter"))
@@ -10174,6 +10344,8 @@ const state = {
   showQuizSettings: false,
   showQuizPanel: appStorage.get("msg:showQuizPanel") === "true",
   cardsQuery: "",
+  favoriteTables: (() => { const stored = readStoredJSON("msg:favoriteTables", []); return Array.isArray(stored) ? stored.filter((id) => typeof id === "string") : []; })(),
+  favoriteLessons: (() => { const stored = readStoredJSON("msg:favoriteLessons", []); return Array.isArray(stored) ? stored.filter(Number.isInteger) : []; })(),
   cardsSort: appStorage.get("msg:cardsSort") || "recent",
   cardsFilter: ["all", "reviewed", "unreviewed", "mistakes", "mastered"].includes(appStorage.get("msg:cardsFilter"))
     ? appStorage.get("msg:cardsFilter")
@@ -12530,6 +12702,8 @@ function syncActiveTab(view = state.view) {
     else item.removeAttribute("aria-current");
   });
   $("#tabMoreButton")?.classList.toggle("is-active", $all("[data-more-view]").some((item) => item.dataset.moreView === view));
+  // Полная шапка с описанием нужна только на стартовой вкладке; в остальных разделах она сжимается.
+  $(".topbar")?.classList.toggle("is-compact", view !== "verbs");
 }
 
 function setTabMoreMenu(open) {
@@ -13498,6 +13672,49 @@ function formMatchReason(match) {
   return `Найдено по форме: ${match.form} = ${match.person}, ${match.tense}`;
 }
 
+// Кроме глаголов в избранное можно сохранить шпаргалки (по постоянному id) и уроки учебника.
+function toggleFavoriteMaterial(kind, id) {
+  const key = kind === "table" ? "favoriteTables" : "favoriteLessons";
+  const list = state[key];
+  state[key] = list.includes(id) ? list.filter((item) => item !== id) : [id, ...list];
+  appStorage.set(kind === "table" ? "msg:favoriteTables" : "msg:favoriteLessons", JSON.stringify(state[key]));
+  return state[key].includes(id);
+}
+
+function favoriteMaterialButton(kind, id, label) {
+  const saved = (kind === "table" ? state.favoriteTables : state.favoriteLessons).includes(id);
+  return `<button class="favorite-button favorite-material" type="button" data-favorite-${kind}="${id}" aria-pressed="${saved}" aria-label="${saved ? "Убрать из избранного" : "Добавить в избранное"}: ${escapeHTML(label)}" title="Избранное">${saved ? "★" : "☆"}</button>`;
+}
+
+function bindFavoriteMaterialButtons(root) {
+  $all("[data-favorite-table], [data-favorite-lesson]", root).forEach((button) => button.addEventListener("click", (event) => {
+    const target = event.currentTarget;
+    const kind = target.dataset.favoriteTable ? "table" : "lesson";
+    const id = kind === "table" ? target.dataset.favoriteTable : Number(target.dataset.favoriteLesson);
+    const saved = toggleFavoriteMaterial(kind, id);
+    target.textContent = saved ? "★" : "☆";
+    target.setAttribute("aria-pressed", String(saved));
+    target.setAttribute("aria-label", (saved ? "Убрать из избранного" : "Добавить в избранное") + target.getAttribute("aria-label").replace(/^[^:]*/, ""));
+  }));
+}
+
+function savedMaterialsCard() {
+  const tables = state.favoriteTables.map((id) => INDEXED_TABLES.find((item) => item.id === id)).filter(Boolean);
+  const lessons = state.favoriteLessons.map((id) => TEXTBOOK_LESSONS.find((lesson) => lesson.id === id)).filter(Boolean);
+  const card = document.createElement("section");
+  card.className = "info-card saved-materials";
+  const row = (open, label, removeAttr) => `<li>${open}<button class="link-button" type="button" ${removeAttr}>убрать</button></li>`;
+  card.innerHTML = `
+    <h2>Шпаргалки и уроки</h2>
+    ${tables.length || lessons.length ? "" : `<p class="muted">Сохраняйте нужные шпаргалки и уроки звёздочкой ☆ в их заголовке — они появятся здесь.</p>`}
+    ${tables.length ? `<h3>Шпаргалки · ${tables.length}</h3><ul class="saved-materials-list">${tables.map((item) => row(`<a href="#${tableRoute(item)}">${escapeHTML(item.title)}</a>`, "", `data-remove-favorite-table="${item.id}"`)).join("")}</ul>` : ""}
+    ${lessons.length ? `<h3>Уроки · ${lessons.length}</h3><ul class="saved-materials-list">${lessons.map((lesson) => row(`<button class="link-button saved-materials-open" type="button" data-open-lesson="${lesson.id}">${lesson.id}. ${escapeHTML(lesson.title.ru)}</button>`, "", `data-remove-favorite-lesson="${lesson.id}"`)).join("")}</ul>` : ""}
+  `;
+  $all("[data-remove-favorite-table]", card).forEach((button) => button.addEventListener("click", () => { toggleFavoriteMaterial("table", button.dataset.removeFavoriteTable); renderCards(); }));
+  $all("[data-remove-favorite-lesson]", card).forEach((button) => button.addEventListener("click", () => { toggleFavoriteMaterial("lesson", Number(button.dataset.removeFavoriteLesson)); renderCards(); }));
+  return card;
+}
+
 function saveCards() {
   appStorage.set("msg:cards", JSON.stringify(state.cards));
 }
@@ -13663,7 +13880,12 @@ function renderVerbCard(verb) {
 
   // Спряжение — главное в карточке, поэтому связанные шпаргалки и уроки идут после таблицы.
   const verbLessons = lessonLinksMarkup(VERB_LESSONS[baseVerb(verb)]);
-  if (verbLessons) node.querySelector(".table-wrap").insertAdjacentHTML("afterend", verbLessons);
+  node.querySelector(".table-wrap").insertAdjacentHTML("afterend", `<div data-verb-examples></div>${verbLessons}`);
+  // Индекс примеров строится один раз (~0,3 с), поэтому карточка показывается сразу, а примеры — следом.
+  setTimeout(() => {
+    const slot = node.querySelector("[data-verb-examples]");
+    if (slot?.isConnected) slot.outerHTML = verbTextbookExamplesMarkup(verb);
+  }, 0);
   const cheatsheets = verbCheatsheetsMarkup(verb);
   if (cheatsheets) {
     node.querySelector(".table-wrap").insertAdjacentHTML("afterend", cheatsheets);
@@ -14051,7 +14273,7 @@ function renderVerbResults(content, results, selectedPanel) {
     status.textContent = state.selectedVerb
       ? `Открыт глагол ${displayInfinitive(state.selectedVerb)}.`
       : matchedForm
-        ? `Форма «${state.query.trim()}»: ${displayInfinitive(verbs[0])} · ${matchedForm.person}, ${matchedForm.tense}. Enter откроет карточку.`
+        ? `Enter откроет карточку ${displayInfinitive(verbs[0])}.`
       : isSearchMode
         ? `Найдено глаголов: ${verbs.length}. Enter откроет первое совпадение.`
         : "";
@@ -14096,7 +14318,7 @@ function renderVerbResults(content, results, selectedPanel) {
     <div class="card-head">
       <div>
         <h2>${state.query ? `Найдено: ${verbs.length}` : showingAllVerbs ? "Все глаголы" : "Частые глаголы"}</h2>
-        <p class="muted">${state.query ? (matchedForm ? `Введенная форма относится к ${displayInfinitive(verbs[0])}: ${matchedForm.person}, ${matchedForm.tense}.` : "Выберите глагол, чтобы открыть карточку с основными временами.") : "Рейтинг по письменной прессе Испании. Нажмите на глагол или найдите другой через поиск."}</p>
+        ${matchedForm ? "" : `<p class="muted">${state.query ? "Выберите глагол, чтобы открыть карточку с основными временами." : "Рейтинг по письменной прессе Испании. Нажмите на глагол или найдите другой через поиск."}</p>`}
       </div>
     </div>
     <div class="verb-list" ${isDefaultSuggestionPage ? `id="commonVerbList"` : ""}></div>
@@ -14875,15 +15097,18 @@ function tableSearchRank(item, query) {
   return 2;
 }
 
-function tableCatalogSection(title, description, tables) {
+function tableCatalogSection(title, description, tables, { collapsible = false, open = true } = {}) {
+  const heading = collapsible
+    ? `<h2><button class="table-catalog-toggle" type="button" data-table-group-toggle="${escapeHTML(title)}" aria-expanded="${open}">${title} <span class="filter-count">${tables.length}</span></button></h2>`
+    : `<h2>${title} <span class="filter-count">${tables.length}</span></h2>`;
   return infoSection({
     className: "info-card table-catalog-group",
     html: `
       <header>
-        <h2>${title} <span class="filter-count">${tables.length}</span></h2>
+        ${heading}
         ${description ? `<p class="muted">${description}</p>` : ""}
       </header>
-      <div class="table-catalog-links">
+      <div class="table-catalog-links" ${open ? "" : "hidden"}>
         ${tables.map((item) => `
           <button class="table-catalog-link" type="button" data-table-open="${item.index}">
             <span class="table-catalog-title"><span>${item.title}</span>${tableLevelBadge(item)}</span>
@@ -14902,9 +15127,29 @@ function fillTableCatalog(catalog, visibleTables) {
     const ranked = [...visibleTables].sort((a, b) => tableSearchRank(a, query) - tableSearchRank(b, query) || a.index - b.index);
     catalog.appendChild(tableCatalogSection("Результаты поиска", "Сначала совпадения в названии, затем в описании и тексте шпаргалок.", ranked));
   } else {
+    // Полный каталог — 155 шпаргалок, поэтому без фильтров разделы свёрнуты; фильтр раскрывает найденное.
+    const collapsible = state.tableFilter === "all" && state.tableLevel === "all" && !state.tableSubgroup;
+    if (collapsible) {
+      const tools = document.createElement("div");
+      tools.className = "table-catalog-tools";
+      tools.innerHTML = `<button class="small-button" type="button" data-table-groups="open">Раскрыть все разделы</button><button class="small-button" type="button" data-table-groups="close">Свернуть все</button>`;
+      catalog.appendChild(tools);
+    }
     TABLE_GROUPS.forEach((group) => {
       const groupTables = visibleTables.filter((item) => item.group === group.title);
-      if (groupTables.length > 0) catalog.appendChild(tableCatalogSection(group.title, group.description, groupTables));
+      if (groupTables.length > 0) catalog.appendChild(tableCatalogSection(group.title, group.description, groupTables, { collapsible, open: !collapsible || Boolean(state.tableOpenGroups[group.title]) }));
+    });
+    bindClickAll(catalog, "[data-table-group-toggle]", (event) => {
+      const button = event.currentTarget;
+      const open = button.getAttribute("aria-expanded") !== "true";
+      state.tableOpenGroups[button.dataset.tableGroupToggle] = open;
+      button.setAttribute("aria-expanded", String(open));
+      button.closest(".table-catalog-group").querySelector(".table-catalog-links").hidden = !open;
+    });
+    bindClickAll(catalog, "[data-table-groups]", (event) => {
+      const open = event.currentTarget.dataset.tableGroups === "open";
+      TABLE_GROUPS.forEach((group) => { state.tableOpenGroups[group.title] = open; });
+      fillTableCatalog(catalog, visibleTables);
     });
   }
   if (visibleTables.length === 0) {
@@ -14947,7 +15192,7 @@ function renderUsefulTableCard(item) {
         </span>
         ${tableLevelButton(item)}
       </p>
-      <h2>${item.title}</h2>
+      <div class="material-title-row"><h2>${item.title}</h2>${favoriteMaterialButton("table", item.id, item.title)}</div>
       <p class="muted">${item.description}</p>
       <div class="table-summary"><strong>Главное:</strong> ${summary}</div>
       <div class="table-wrap">${LINKED_TABLE_HTML[index]}</div>
@@ -14959,6 +15204,7 @@ function renderUsefulTableCard(item) {
   bindClickAll(section, "[data-open-tense]", (event) => {
     openTenseFromVerb(event.currentTarget.dataset.openTense);
   });
+  bindFavoriteMaterialButtons(section);
   bindClickAll(section, "[data-table-jump-related]", (event) => {
     openTableFromLink(event.currentTarget.dataset.tableJumpRelated);
   });
@@ -16724,7 +16970,7 @@ function renderTextbookLesson(content, lesson) {
       ? textbookUi("Свернуть упражнение", "Cerrar ejercicio")
       : textbookUi("Раскрыть упражнение", "Abrir ejercicio");
     const exerciseMeta = `${textbookUi("Заполнено", "Respondidas")} ${exerciseProgress.answered}/${exerciseProgress.total}${showFeedback ? ` · ✓ ${exerciseProgress.correct}/${exerciseProgress.checked}` : ""}`;
-    return `<article class="textbook-exercise" data-textbook-exercise="${exercise.id}"><div class="textbook-exercise-head"><div><h4>${escapeHTML(textbookUi("Упражнение", "Ejercicio"))} ${exercise.id}</h4><p>${escapeHTML(textbookText(exercise.instruction))}</p></div><span class="textbook-exercise-meta">${escapeHTML(exerciseMeta)}</span><button class="small-button textbook-exercise-toggle" type="button" data-textbook-toggle="${exercise.id}" aria-expanded="${isOpen}" aria-controls="${bodyId}">${escapeHTML(toggleLabel)}</button></div><div class="textbook-exercise-body" id="${bodyId}"${isOpen ? "" : " hidden"}><ol class="textbook-question-list">${exercise.items.map((item, index) => renderTextbookQuestion(lesson, exercise, item, index, saved, showFeedback)).join("")}</ol><div class="textbook-actions"><button class="small-button primary" type="button" data-textbook-check="${exercise.id}" aria-pressed="${showFeedback}">${escapeHTML(buttonLabel)}</button></div></div></article>`;
+    return `<article class="textbook-exercise" data-textbook-exercise="${exercise.id}"><div class="textbook-exercise-head"><div><h4>${escapeHTML(textbookUi("Упражнение", "Ejercicio"))} ${exercise.id}</h4><p>${escapeHTML(textbookText(exercise.instruction))}</p></div><span class="textbook-exercise-meta">${escapeHTML(exerciseMeta)}</span><button class="small-button textbook-exercise-toggle" type="button" data-textbook-toggle="${exercise.id}" aria-expanded="${isOpen}" aria-controls="${bodyId}">${escapeHTML(toggleLabel)}</button></div><div class="textbook-exercise-body" id="${bodyId}"${isOpen ? "" : " hidden"}><ol class="textbook-question-list">${exercise.items.map((item, index) => renderTextbookQuestion(lesson, exercise, item, index, saved, showFeedback)).join("")}</ol>${exercise.kind === "choice" ? "" : `<div class="textbook-accent-keys" role="group" aria-label="${escapeHTML(textbookUi("Вставить букву в поле ответа", "Insertar letra en la respuesta"))}">${QUIZ_CHARACTERS.map((char) => `<button class="small-button" type="button" data-textbook-char="${char}" lang="es">${char}</button>`).join("")}</div>`}<div class="textbook-actions"><button class="small-button primary" type="button" data-textbook-check="${exercise.id}" aria-pressed="${showFeedback}">${escapeHTML(buttonLabel)}</button></div></div></article>`;
   }).join("");
   const remaining = progress.total - progress.checked;
   const summary = progress.done
@@ -16739,7 +16985,7 @@ function renderTextbookLesson(content, lesson) {
   const tablesMarkup = lessonTables.length ? '<section class="textbook-related"><h3>' + escapeHTML(textbookUi("Шпаргалки по теме", "Tablas de consulta")) + '</h3><div class="textbook-actions">' + lessonTables.map((table) => '<a class="small-button" href="#' + tableRoute(table) + '">' + escapeHTML(table.title) + "</a>").join("") + "</div></section>" : "";
   const related = relatedLessons.length ? '<section class="textbook-related"><h3>' + escapeHTML(textbookUi("Связанные уроки", "Lecciones relacionadas")) + '</h3><div class="textbook-actions">' + relatedLessons.map((item) => '<button class="small-button" type="button" data-textbook-open="' + item.id + '">▶ ' + item.id + ". " + escapeHTML(textbookText(item.title)) + "</button>").join("") + "</div></section>" : "";
   const section = infoSection({ className: "info-card textbook-lesson", html: `
-    <div class="textbook-lesson-toolbar"><div class="textbook-lesson-controls"><button class="small-button" type="button" data-textbook-catalog>← ${escapeHTML(textbookUi("К оглавлению", "Índice"))}</button>${learningModuleForLesson(lesson.id) ? `<button class="small-button" type="button" data-textbook-plan="${lesson.id}">← ${escapeHTML(textbookUi("К плану", "Al plan"))}</button>` : ""}${textbookLanguageButtons()}</div><div class="textbook-lesson-heading"><h2>${lesson.id}. ${escapeHTML(textbookText(lesson.title))} ${textbookLevelBadge(lesson.id)}</h2><p class="muted">${escapeHTML(textbookText(lesson.goal))}</p></div></div>
+    <div class="textbook-lesson-toolbar"><div class="textbook-lesson-controls"><button class="small-button" type="button" data-textbook-catalog>← ${escapeHTML(textbookUi("К оглавлению", "Índice"))}</button>${learningModuleForLesson(lesson.id) ? `<button class="small-button" type="button" data-textbook-plan="${lesson.id}">← ${escapeHTML(textbookUi("К плану", "Al plan"))}</button>` : ""}${textbookLanguageButtons()}</div><div class="textbook-lesson-heading"><div class="material-title-row"><h2>${lesson.id}. ${escapeHTML(textbookText(lesson.title))} ${textbookLevelBadge(lesson.id)}</h2>${favoriteMaterialButton("lesson", lesson.id, textbookText(lesson.title))}</div><p class="muted">${escapeHTML(textbookText(lesson.goal))}</p></div></div>
     <div class="textbook-summary"><span><strong>${escapeHTML(textbookUi("Верно", "Correctas"))}: ${progress.correct}/${progress.checked}</strong> · ${escapeHTML(textbookUi("Заполнено", "Respondidas"))}: ${progress.answered}/${progress.total}</span><span class="textbook-status ${progress.done ? "is-done" : ""}">${escapeHTML(progress.done ? textbookUi("Урок пройден", "Lección completada") : textbookUi("В работе", "En curso"))}</span></div>
     <div class="textbook-theory-grid">${theory}</div>
     ${related}
@@ -16811,6 +17057,7 @@ function bindTextbookControls(root, activeLesson = null) {
     requestAnimationFrame(() => document.querySelector('[data-textbook-toggle="' + exerciseId + '"]')?.focus({ preventScroll: true }));
   });
   root.querySelector("[data-textbook-catalog]")?.addEventListener("click", openTextbookCatalog);
+  bindFavoriteMaterialButtons(root);
   root.querySelector("[data-textbook-plan]")?.addEventListener("click", (event) => openLearningPlanForLesson(Number(event.currentTarget.dataset.textbookPlan)));
   $all("[data-textbook-answer]", root).forEach((input) => input.addEventListener("input", (event) => {
     if (!activeLesson) return;
@@ -16822,6 +17069,28 @@ function bindTextbookControls(root, activeLesson = null) {
     const question = event.currentTarget.closest("[data-textbook-question]");
     hideTextbookExerciseFeedback(activeLesson.id, key, question);
   }));
+  // Кнопки á é í ó ú ü ñ вставляют букву в последнее активное поле этого упражнения (или в первое пустое).
+  let lastTextbookInput = null;
+  $all("[data-textbook-answer]", root).forEach((input) => input.addEventListener("focus", (event) => { lastTextbookInput = event.currentTarget; }));
+  $all("[data-textbook-char]", root).forEach((button) => {
+    button.addEventListener("mousedown", (event) => event.preventDefault());
+    button.addEventListener("click", (event) => {
+      const exercise = event.currentTarget.closest("[data-textbook-exercise]");
+      const active = document.activeElement;
+      const input = active?.matches?.("[data-textbook-answer]") && exercise.contains(active)
+        ? active
+        : lastTextbookInput && exercise.contains(lastTextbookInput)
+          ? lastTextbookInput
+          : $all("[data-textbook-answer]", exercise).find((item) => !item.value) || exercise.querySelector("[data-textbook-answer]");
+      if (!input) return;
+      const start = input.selectionStart ?? input.value.length;
+      const end = input.selectionEnd ?? start;
+      input.value = input.value.slice(0, start) + event.currentTarget.dataset.textbookChar + input.value.slice(end);
+      input.focus();
+      input.setSelectionRange(start + 1, start + 1);
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+  });
   $all("[data-textbook-answer]", root).forEach((input) => input.addEventListener("keydown", (event) => {
     if (event.key !== "Enter" || event.isComposing) return;
     event.preventDefault();
@@ -16963,7 +17232,7 @@ function renderCards() {
     <div class="cards-dashboard-head">
       <div>
         <h2>Избранное</h2>
-        <p class="cards-purpose">Избранные глаголы для повторения · ${state.cards.length} ${pluralizeVerbs(state.cards.length)}</p>
+        <p class="cards-purpose">Глаголы для повторения · ${state.cards.length} ${pluralizeVerbs(state.cards.length)}${state.favoriteTables.length || state.favoriteLessons.length ? ` · шпаргалок: ${state.favoriteTables.length} · уроков: ${state.favoriteLessons.length}` : ""}</p>
       </div>
     </div>
     ${state.cards.length > 0
@@ -16977,8 +17246,8 @@ function renderCards() {
             </div>
           </div>`
         : `<div class="cards-primary-actions">
-            <button class="small-button primary" type="button" data-preset="quick">Начать проверку · ${quickCount}</button>
-            ${mistakeCards.length > 0 ? `<button class="small-button" type="button" data-preset="mistakes">Повторить ошибки · ${mistakeCards.length}</button>` : ""}
+            <button class="small-button primary" type="button" data-preset="quick">Быстрая проверка · ${quickCount} ${quickCount === 1 ? "вопрос" : quickCount < 5 ? "вопроса" : "вопросов"}</button>
+            ${mistakeCards.length > 0 ? `<button class="small-button" type="button" data-preset="mistakes">Повторить ошибки · ${mistakeCards.length} ${pluralizeVerbs(mistakeCards.length)}</button>` : ""}
             <button class="small-button" type="button" data-toggle-quiz-panel aria-expanded="${state.showQuizPanel}">${state.showQuizPanel ? "Скрыть режимы" : "Режимы квиза"}</button>
           </div>`
       : ""}
@@ -17128,6 +17397,7 @@ function renderCards() {
       renderCards();
     });
     content.appendChild(emptyCard);
+    content.appendChild(savedMaterialsCard());
     return;
   }
 
@@ -17221,6 +17491,7 @@ function renderCards() {
     startSingleVerbQuiz(button.dataset.quizVerb);
   }));
   content.appendChild(listCard);
+  content.appendChild(savedMaterialsCard());
 }
 
 function saveQuizSession() {

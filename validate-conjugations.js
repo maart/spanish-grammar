@@ -1,18 +1,20 @@
 #!/usr/bin/env node
 // Spanish Grammar Conjugation Validation Script
-// Usage: node validate-conjugations.js
+// Usage: node validate-conjugations.js [path/to/spanish-grammar.html]
 
 const fs = require("fs");
 const path = require("path");
 
 // ─── Extract JS from HTML ───────────────────────────────────────────────────
-const htmlPath = path.join(__dirname, "spanish-grammar.html");
+const htmlPath = process.argv[2] ? path.resolve(process.argv[2]) : path.join(__dirname, "spanish-grammar.html");
 const html = fs.readFileSync(htmlPath, "utf-8");
 const scriptMatch = html.match(/<script>([\s\S]*?)<\/script>/);
 if (!scriptMatch) {
   console.error("ERROR: Could not find <script> tag in HTML file");
   process.exit(1);
 }
+// Полный текст скрипта нужен статическим проверкам (см. раздел «Static integrity checks»).
+const fullScriptCode = scriptMatch[1];
 let jsCode = scriptMatch[1];
 
 // Cut off DOM initialization code (event listeners, render calls, etc.)
@@ -38,7 +40,7 @@ const sandbox = {
 // Execute the JS in the sandbox
 const fn = new Function(
   ...Object.keys(sandbox),
-  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, TENSE_EXAMPLES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, VERB_TENSE_GROUPS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize, generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer, cardAccuracy, isCardMastered, cardNeedsReview, cardsForFilter, studyCardCounts, validateData };"
+  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, TENSE_EXAMPLES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, VERB_TENSE_GROUPS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize, generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer, cardAccuracy, isCardMastered, cardNeedsReview, cardsForFilter, studyCardCounts, validateData, staticChecksData: { TRANSLATIONS, TENSES, TENSE_EXAMPLES, TENSE_LESSONS, USEFUL_TABLES, TABLE_GROUPS, MOODS, LEARNING_MODULES, TEXTBOOK_LESSONS, BASE_VERBS, LEARNING_AFTER_B2 } };"
 );
 const api = fn(...Object.values(sandbox));
 
@@ -1796,6 +1798,132 @@ for (const message of validateData()) {
   });
 }
 
+// ─── Static integrity checks ────────────────────────────────────────────────
+// Проверки исходника страницы: id и data-атрибуты в разметке, неиспользуемый код
+// и текст данных, который выводится в HTML без экранирования. Работают с текстом
+// файла, без DOM. Сообщения выводятся по-русски, как и остальные замечания.
+const scriptText = fullScriptCode;
+const styleMatch = html.match(/<style>([\s\S]*?)<\/style>/);
+const styleText = styleMatch ? styleMatch[1] : "";
+const toKebab = (name) => name.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`);
+
+// ─── 1. Duplicate and malformed literal ids ─────────────────────────────────
+// Id без подстановок ${…}: один и тот же id в двух местах ломает getElementById.
+// Исключения — только взаимоисключающие ветки одного шаблона. Таких случаев сейчас
+// нет, поэтому список пуст; новую запись нужно обосновать комментарием здесь.
+const ID_EXCEPTIONS = new Set();
+const idLines = new Map();
+let checkedIds = 0;
+for (const match of html.matchAll(/(?<=[\s`'"{])id="([^"]*)"/g)) {
+  const id = match[1];
+  if (id.includes("${")) continue;
+  checkedIds++;
+  const line = html.slice(0, match.index).split("\n").length;
+  if (id === "" || /\s/.test(id)) {
+    issues.push({ verb: "static-html", tense: "malformed-id", person: "-", expected: "непустой id без пробелов", actual: `id="${id}" (строка ${line})`, severity: "high" });
+    continue;
+  }
+  if (!idLines.has(id)) idLines.set(id, []);
+  idLines.get(id).push(line);
+}
+for (const [id, lines] of idLines) {
+  if (lines.length > 1 && !ID_EXCEPTIONS.has(id)) {
+    issues.push({ verb: "static-html", tense: "duplicate-id", person: "-", expected: "один id на страницу", actual: `id="${id}" в строках ${lines.join(", ")}`, severity: "high" });
+  }
+}
+
+// ─── 2–3. data-* attributes: written but never read, read but never written ─
+// Писатели: литеральные data-x в разметке, динамические data-префикс${…} и присваивания dataset.x = …
+// Читатели: селекторы [data-x], dataset.x, attr(data-x) в CSS и строки "data-x" в коде.
+// Префикс динамического имени (data-favorite-${kind}) считается записанным для всех имён с этим префиксом.
+const DATA_ATTR_MARKUP = /(?<=[\s`'"{])data-([a-z][a-z0-9-]*)(?=[=\s>`])/g;
+const DATA_ATTR_DYNAMIC = /(?<=[\s`'"{])data-([a-z][a-z0-9-]*-)\$\{/g;
+const markupAttrs = new Set([...html.matchAll(DATA_ATTR_MARKUP)].map((m) => m[1]));
+const dynamicAttrPrefixes = [...html.matchAll(DATA_ATTR_DYNAMIC)].map((m) => m[1]);
+const jsWrittenAttrs = new Set([...scriptText.matchAll(/dataset\.([a-zA-Z]\w*)\s*=(?!=)/g)].map((m) => toKebab(m[1])));
+const readAttrs = new Set([
+  ...[...scriptText.matchAll(/\[data-([a-z][a-z0-9-]*)/g)].map((m) => m[1]),
+  ...[...styleText.matchAll(/\[data-([a-z][a-z0-9-]*)/g)].map((m) => m[1]),
+  ...[...styleText.matchAll(/attr\(data-([a-z][a-z0-9-]*)\)/g)].map((m) => m[1]),
+  ...[...scriptText.matchAll(/["'`]data-([a-z][a-z0-9-]*)["'`]/g)].map((m) => m[1]),
+  ...[...scriptText.matchAll(/dataset\.([a-zA-Z]\w*)/g)].map((m) => toKebab(m[1])),
+]);
+const isWrittenAttr = (name) =>
+  markupAttrs.has(name) || jsWrittenAttrs.has(name) || dynamicAttrPrefixes.some((prefix) => name.startsWith(prefix));
+
+for (const name of markupAttrs) {
+  if (!readAttrs.has(name)) {
+    issues.push({ verb: "static-html", tense: "unread-data-attr", person: "-", expected: "атрибут читается кодом или CSS", actual: `data-${name} записан в разметке, но нигде не читается`, severity: "high" });
+  }
+}
+// Обработчик или селектор, для которого атрибут нигде не записывается, никогда не сработает.
+for (const name of readAttrs) {
+  if (!isWrittenAttr(name)) {
+    issues.push({ verb: "static-script", tense: "dead-data-reader", person: "-", expected: "атрибут записан в разметке или JS", actual: `[data-${name}] читается, но нигде не записывается`, severity: "low" });
+  }
+}
+
+// ─── 4–5. Unused top-level functions and constants ──────────────────────────
+// Ссылка — любое вхождение имени, кроме объявления и свойства после точки (obj.name).
+// Строки, целиком состоящие из комментария, не учитываются. Имена, которые
+// возвращаются в песочницу валидатора (api), считаются используемыми.
+const codeForRefs = scriptText.split("\n").filter((line) => !/^\s*\/\//.test(line)).join("\n");
+function countReferences(source, name) {
+  let count = 0;
+  const pattern = new RegExp(`(?<![\\w$])${name.replace(/\$/g, "\\$")}(?![\\w$])`, "g");
+  for (const match of source.matchAll(pattern)) {
+    const before = source.slice(Math.max(0, match.index - 3), match.index);
+    if (before.endsWith(".") && !before.endsWith("...")) continue;
+    count++;
+  }
+  return count;
+}
+const exportedNames = new Set(Object.keys(api));
+const topFunctions = [...scriptText.matchAll(/^(?:async )?function\s+([A-Za-z_$][\w$]*)\s*\(/gm)].map((m) => m[1]);
+const topConsts = [...scriptText.matchAll(/^(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=/gm)].map((m) => m[1]);
+for (const name of topFunctions) {
+  if (!exportedNames.has(name) && countReferences(codeForRefs, name) <= 1) {
+    issues.push({ verb: "static-script", tense: "unused-function", person: "-", expected: "функция вызывается или передаётся", actual: `function ${name}() нигде не используется`, severity: "low" });
+  }
+}
+for (const name of topConsts) {
+  if (!exportedNames.has(name) && countReferences(codeForRefs, name) <= 1) {
+    issues.push({ verb: "static-script", tense: "unused-const", person: "-", expected: "константа используется", actual: `const ${name} нигде не используется`, severity: "high" });
+  }
+}
+
+// ─── 6. Unescaped text in data ──────────────────────────────────────────────
+// Текст данных выводится через html`…` или escapeHTML. Поля table и extra выводятся
+// как HTML осознанно (таблицы шпаргалок, блоки наклонений), их не проверяем.
+// В остальных полях запрещены "<" (начало тега) и "&" без сущности. Одиночный ">"
+// не проверяем: в тексте он безопасен (стрелки вида «->»). Поля title попадают в
+// атрибуты (aria-label), поэтому в них запрещены кавычки.
+const HTML_DATA_KEYS = new Set(["table", "extra"]);
+const ATTRIBUTE_DATA_KEYS = new Set(["title"]);
+const staticData = api.staticChecksData;
+let checkedStrings = 0;
+function visitDataStrings(value, trail, visit) {
+  if (typeof value === "string") {
+    visit(value, trail);
+  } else if (Array.isArray(value)) {
+    value.forEach((item) => visitDataStrings(item, trail, visit));
+  } else if (value && typeof value === "object") {
+    for (const [key, item] of Object.entries(value)) visitDataStrings(item, [...trail, key], visit);
+  }
+}
+for (const [dataName, data] of Object.entries(staticData)) {
+  visitDataStrings(data, [dataName], (text, trail) => {
+    checkedStrings++;
+    const where = trail.join(".");
+    if (!trail.some((key) => HTML_DATA_KEYS.has(key)) && (/</.test(text) || /&(?!(?:[a-zA-Z]+|#\d+|#x[\da-fA-F]+);)/.test(text))) {
+      issues.push({ verb: "static-data", tense: "unescaped-text", person: "-", expected: "в тексте нет «<» и «&» без сущности", actual: `${where}: ${JSON.stringify(text.slice(0, 80))}`, severity: "high" });
+    }
+    if (trail.some((key) => ATTRIBUTE_DATA_KEYS.has(key)) && text.includes('"')) {
+      issues.push({ verb: "static-data", tense: "quote-in-attribute", person: "-", expected: "в значении атрибута нет кавычек", actual: `${where}: ${JSON.stringify(text.slice(0, 80))}`, severity: "high" });
+    }
+  });
+}
+
 // ─── Output report ──────────────────────────────────────────────────────────
 const severityOrder = { high: 0, medium: 1, low: 2 };
 issues.sort((a, b) => severityOrder[a.severity] - severityOrder[b.severity] || a.verb.localeCompare(b.verb));
@@ -1821,6 +1949,9 @@ console.log(`Translations complete: ${BASE_VERBS.length - issues.filter((issue) 
 console.log(`Search cases checked: ${SEARCH_CASES.length}`);
 console.log(`Quiz cases checked: ${QUIZ_CASES.length}`);
 console.log(`Tense examples checked: ${tenseExampleCount}`);
+console.log(`Static ids checked: ${checkedIds}`);
+console.log(`Static data attributes checked: ${markupAttrs.size}`);
+console.log(`Static functions checked: ${topFunctions.length}`);
 console.log(`Total issues found: ${issues.length}`);
 console.log(`  High severity:   ${highIssues.length}`);
 console.log(`  Medium severity: ${mediumIssues.length}`);

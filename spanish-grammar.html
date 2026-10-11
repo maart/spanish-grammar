@@ -4337,7 +4337,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.61 · обновлено: 11.10.2026 15:12 CEST</span>
+        <span>Версия MVP 1.62 · обновлено: 11.10.2026 15:17 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -18058,6 +18058,95 @@ function startCardQuiz(mode = "new", options = {}) {
   beginCardQuiz(questions);
 }
 
+// Квиз во вкладке «Избранное». Экран квиза рисуется в #content карточкой .study-card (класса .cards-section у него нет),
+// поэтому селекторы привязаны к .study-card. Проверка ответа, переход и пауза — функции верхнего уровня:
+// их вызывают и кнопки, и Enter в поле, и горячие клавиши (горячие клавиши остаются в bindQuizHotkeys).
+
+// Проверка ответа: «Проверить», «Не знаю» и Enter в поле. После ответа повторный вызов ничего не делает.
+function checkCardQuizAnswer(skip = false) {
+  const question = state.cardQuiz[state.cardQuizIndex];
+  if (!question || state.cardQuizAnswered) return;
+  const val = skip ? "" : document.querySelector("#quizAnswerInput")?.value || "";
+  if (!skip && !val.trim()) return;
+  const result = skip ? { status: "wrong", message: "Ответ не указан." } : evaluateAnswer(val, question);
+  const isCorrect = result.status === "correct";
+  state.cardQuizInput = val;
+  state.cardQuizAnswered = true;
+  state.cardQuizTotal += 1;
+  if (isCorrect) {
+    state.cardQuizCorrect += 1;
+  }
+  state.cardQuizAttempts.push({
+    question: { ...question },
+    userAnswer: val.trim(),
+    correct: isCorrect,
+    status: result.status
+  });
+  recordCardAttempt(question, result);
+  saveQuizSession();
+  renderCards();
+}
+
+// «Дальше →» и стрелка вправо после ответа.
+function nextCardQuizQuestion() {
+  state.cardQuizIndex += 1;
+  state.cardQuizInput = "";
+  state.cardQuizAnswered = false;
+  saveQuizSession();
+  renderCards();
+}
+
+onDelegated("input", ".study-card #quizAnswerInput", (_event, target) => {
+  state.cardQuizInput = target.value;
+  saveQuizSession();
+});
+onDelegated("keydown", ".study-card #quizAnswerInput", (event) => {
+  if (event.key !== "Enter") return;
+  event.preventDefault();
+  checkCardQuizAnswer();
+});
+onDelegated("click", ".study-card [data-quiz-character]", (_event, target) => {
+  const input = document.querySelector("#quizAnswerInput");
+  if (!input) return;
+  const start = input.selectionStart ?? input.value.length;
+  const end = input.selectionEnd ?? start;
+  input.setRangeText(target.dataset.quizCharacter, start, end, "end");
+  input.focus();
+});
+onDelegated("click", ".study-card #checkAnswer", () => checkCardQuizAnswer());
+onDelegated("click", ".study-card #skipAnswer", () => checkCardQuizAnswer(true));
+onDelegated("click", ".study-card #nextQuestion", () => nextCardQuizQuestion());
+onDelegated("click", ".study-card [data-pause]", () => pauseCardQuiz());
+onDelegated("click", ".study-card [data-answer-verb]", (_event, target) => {
+  clearQuizHotkeys();
+  openVerbFromReference(target.dataset.answerVerb);
+});
+onDelegated("click", ".study-card [data-answer-tense]", (_event, target) => {
+  clearQuizHotkeys();
+  openTenseFromVerb(target.dataset.answerTense);
+});
+onDelegated("click", ".study-card [data-remove]", (_event, target) => {
+  const verb = target.dataset.remove;
+  const index = state.cards.indexOf(verb);
+  state.cardUndo = { verb, index };
+  state.cards = state.cards.filter((item) => item !== verb);
+  saveCards();
+  renderCards();
+});
+onDelegated("click", ".study-card [data-undo-remove]", () => restoreLastRemovedCard());
+onDelegated("click", ".study-card [data-result-verb]", (_event, target) => {
+  clearQuizHotkeys();
+  openVerbFromReference(target.dataset.resultVerb);
+});
+onDelegated("click", ".study-card [data-result-tense]", (_event, target) => {
+  clearQuizHotkeys();
+  openTenseFromVerb(target.dataset.resultTense);
+});
+onDelegated("click", ".study-card #retryMistakes", () => startCardQuiz("mistakes"));
+onDelegated("click", ".study-card #restartQuiz", () => startCardQuiz("same"));
+onDelegated("click", ".study-card #backToCards", () => stopCardQuiz());
+onDelegated("click", ".study-card [data-stop]", () => stopCardQuiz());
+
 function renderCardQuiz(content) {
   const question = state.cardQuiz[state.cardQuizIndex];
   if (!question) {
@@ -18127,76 +18216,12 @@ function renderCardQuiz(content) {
   `;
   content.appendChild(card);
 
-  card.querySelector("[data-answer-verb]")?.addEventListener("click", (event) => {
-    clearQuizHotkeys();
-    openVerbFromReference(event.currentTarget.dataset.answerVerb);
-  });
-  card.querySelector("[data-answer-tense]")?.addEventListener("click", (event) => {
-    clearQuizHotkeys();
-    openTenseFromVerb(event.currentTarget.dataset.answerTense);
-  });
 
   const input = card.querySelector("#quizAnswerInput");
-  if (input) {
-    input.focus();
-    input.addEventListener("input", () => {
-      state.cardQuizInput = input.value;
-      saveQuizSession();
-    });
-    input.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        handleCheckAnswer();
-      }
-    });
-    card.querySelectorAll("[data-quiz-character]").forEach((button) => {
-      button.addEventListener("click", () => {
-        const start = input.selectionStart ?? input.value.length;
-        const end = input.selectionEnd ?? start;
-        input.setRangeText(button.dataset.quizCharacter, start, end, "end");
-        input.focus();
-      });
-    });
-  }
+  if (input) input.focus();
 
-  const handleCheckAnswer = (skip = false) => {
-    const val = skip ? "" : input?.value || "";
-    if (!skip && !val.trim()) return;
-    const result = skip ? { status: "wrong", message: "Ответ не указан." } : evaluateAnswer(val, question);
-    const isCorrect = result.status === "correct";
-    state.cardQuizInput = val;
-    state.cardQuizAnswered = true;
-    state.cardQuizTotal += 1;
-    if (isCorrect) {
-      state.cardQuizCorrect += 1;
-    }
-    state.cardQuizAttempts.push({
-      question: { ...question },
-      userAnswer: val.trim(),
-      correct: isCorrect,
-      status: result.status
-    });
-    recordCardAttempt(question, result);
-    saveQuizSession();
-    renderCards();
-  };
 
-  const handleNext = () => {
-    state.cardQuizIndex += 1;
-    state.cardQuizInput = "";
-    state.cardQuizAnswered = false;
-    saveQuizSession();
-    if (state.cardQuizIndex >= state.cardQuiz.length) {
-      renderCards();
-      return;
-    }
-    renderCards();
-  };
 
-  card.querySelector("#checkAnswer")?.addEventListener("click", () => handleCheckAnswer());
-  card.querySelector("#skipAnswer")?.addEventListener("click", () => handleCheckAnswer(true));
-  card.querySelector("#nextQuestion")?.addEventListener("click", handleNext);
-  card.querySelector("[data-pause]")?.addEventListener("click", pauseCardQuiz);
 
   const handleGlobalKeydown = (e) => {
     if (state.cardQuiz.length === 0) return;
@@ -18207,7 +18232,7 @@ function renderCardQuiz(content) {
     }
     if (state.cardQuizAnswered && e.key === "ArrowRight") {
       e.preventDefault();
-      handleNext();
+      nextCardQuizQuestion();
       return;
     }
   };
@@ -18278,29 +18303,6 @@ function renderCardQuizResults(content) {
     </div>
   `;
   content.appendChild(card);
-  card.querySelectorAll("[data-remove]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const verb = btn.dataset.remove;
-      const index = state.cards.indexOf(verb);
-      state.cardUndo = { verb, index };
-      state.cards = state.cards.filter((item) => item !== verb);
-      saveCards();
-      renderCards();
-    });
-  });
-  card.querySelector("[data-undo-remove]")?.addEventListener("click", restoreLastRemovedCard);
-  card.querySelectorAll("[data-result-verb]").forEach((button) => button.addEventListener("click", () => {
-    clearQuizHotkeys();
-    openVerbFromReference(button.dataset.resultVerb);
-  }));
-  card.querySelectorAll("[data-result-tense]").forEach((button) => button.addEventListener("click", () => {
-    clearQuizHotkeys();
-    openTenseFromVerb(button.dataset.resultTense);
-  }));
-  card.querySelector("#retryMistakes")?.addEventListener("click", () => startCardQuiz("mistakes"));
-  card.querySelector("#restartQuiz")?.addEventListener("click", () => startCardQuiz("same"));
-  card.querySelector("#backToCards")?.addEventListener("click", stopCardQuiz);
-  card.querySelector("[data-stop]")?.addEventListener("click", stopCardQuiz);
 
   const handleResultsKeydown = (e) => {
     if (e.key === "Escape") {

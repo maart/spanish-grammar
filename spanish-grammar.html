@@ -4337,7 +4337,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.57 · обновлено: 11.10.2026 13:49 CEST</span>
+        <span>Версия MVP 1.58 · обновлено: 11.10.2026 13:53 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -15118,9 +15118,77 @@ function formatFormula(value) {
 }
 
 // ═══════ 12. Вкладка «Шпаргалки» ═══════
+// Помощники вкладки: открытая сейчас шпаргалка (карточка рисуется только для неё) и список видимых в каталоге.
+function focusedTableItem() {
+  return Number.isInteger(state.focusedTable) ? INDEXED_TABLES[state.focusedTable] : null;
+}
+
+function visibleTableList() {
+  return INDEXED_TABLES.filter((item) => tableMatchesFilter(item));
+}
+
+// Обработчики вкладки «Шпаргалки». Контейнеры: тулбар открытой шпаргалки, каталог (.table-catalog)
+// и карточка шпаргалки (.table-card). Перерисовка не требует повторной привязки.
+onDelegated("click", ".focused-table-toolbar [data-table-return-verb]", () => {
+  const verb = state.tableReturnVerb;
+  state.tableReturnVerb = null;
+  if (verb) selectVerb(verb, { keepReturnQuery: false });
+});
+onDelegated("click", ".focused-table-toolbar [data-table-back]", () => {
+  state.focusedTable = null;
+  state.tableReturnVerb = null;
+  renderTables();
+  updateRouteHash("tables");
+  scrollToCard("tablesTop");
+});
+onDelegated("click", ".focused-table-toolbar [data-table-previous]", (_event, target) => {
+  openTableByIndex(Number(target.dataset.tablePrevious));
+});
+onDelegated("click", ".focused-table-toolbar [data-table-next]", (_event, target) => {
+  openTableByIndex(Number(target.dataset.tableNext));
+});
+onDelegated("click", ".table-catalog [data-table-group-toggle]", (_event, target) => {
+  const open = target.getAttribute("aria-expanded") !== "true";
+  state.tableOpenGroups[target.dataset.tableGroupToggle] = open;
+  target.setAttribute("aria-expanded", String(open));
+  target.closest(".table-catalog-group").querySelector(".table-catalog-links").hidden = !open;
+});
+onDelegated("click", ".table-catalog [data-table-groups]", (_event, target) => {
+  const open = target.dataset.tableGroups === "open";
+  TABLE_GROUPS.forEach((group) => { state.tableOpenGroups[group.title] = open; });
+  fillTableCatalog(target.closest(".table-catalog"), visibleTableList());
+});
+onDelegated("click", ".table-catalog [data-table-open]", (_event, target) => {
+  openTableByIndex(Number(target.dataset.tableOpen));
+});
+onDelegated("click", ".table-catalog [data-reset-table-filters]", () => {
+  state.tableQuery = "";
+  state.tableFilter = "all";
+  state.tableSubgroup = "";
+  state.tableLevel = "all";
+  persist("tableFilter", "tableSubgroup", "tableLevel");
+  renderTables();
+});
+onDelegated("click", ".table-card [data-open-tense]", (_event, target) => {
+  openTenseFromVerb(target.dataset.openTense);
+});
+onDelegated("click", ".table-card [data-table-jump-related]", (_event, target) => {
+  openTableFromLink(target.dataset.tableJumpRelated);
+});
+onDelegated("click", ".table-card [data-table-context-group]", () => {
+  const item = focusedTableItem();
+  openTableCatalog({ filterId: tableFilterIdForGroup(item.group) });
+});
+onDelegated("click", ".table-card [data-table-context-subgroup]", () => {
+  const item = focusedTableItem();
+  openTableCatalog({ filterId: tableFilterIdForGroup(item.group), subgroup: item.subgroup });
+});
+onDelegated("click", ".table-card [data-table-context-level]", () => {
+  openTableCatalog({ levelId: focusedTableItem().minLevel, cumulative: false });
+});
 function renderTables() {
   const content = clearContent();
-  const focusedTable = Number.isInteger(state.focusedTable) ? INDEXED_TABLES[state.focusedTable] : null;
+  const focusedTable = focusedTableItem();
 
   if (focusedTable) {
     const returnVerb = state.tableReturnVerb && BASE_VERBS.includes(state.tableReturnVerb) ? state.tableReturnVerb : null;
@@ -15150,28 +15218,10 @@ function renderTables() {
     });
     content.appendChild(toolbar);
     content.appendChild(renderUsefulTableCard(focusedTable));
-    bindClickAll(toolbar, "[data-table-return-verb]", () => {
-      const verb = state.tableReturnVerb;
-      state.tableReturnVerb = null;
-      if (verb) selectVerb(verb, { keepReturnQuery: false });
-    });
-    bindClickAll(toolbar, "[data-table-back]", () => {
-      state.focusedTable = null;
-      state.tableReturnVerb = null;
-      renderTables();
-      updateRouteHash("tables");
-      scrollToCard("tablesTop");
-    });
-    bindClickAll(toolbar, "[data-table-previous]", (event) => {
-      openTableByIndex(Number(event.currentTarget.dataset.tablePrevious));
-    });
-    bindClickAll(toolbar, "[data-table-next]", (event) => {
-      openTableByIndex(Number(event.currentTarget.dataset.tableNext));
-    });
     return;
   }
 
-  const visibleTables = INDEXED_TABLES.filter((item) => tableMatchesFilter(item));
+  const visibleTables = visibleTableList();
   const subgroups = getSubgroupsForFilter(state.tableFilter);
   const cumulativeDisabled = state.tableLevel === "all";
   const nav = infoSection({
@@ -15255,7 +15305,7 @@ function renderTables() {
   fillTableCatalog(catalog, visibleTables);
   nav.querySelector("#tableSearchInput").addEventListener("input", (event) => {
     state.tableQuery = event.target.value;
-    const matches = INDEXED_TABLES.filter((item) => tableMatchesFilter(item));
+    const matches = visibleTableList();
     nav.querySelector("[data-table-shown]").textContent = `Показано: ${matches.length} из ${INDEXED_TABLES.length}.`;
     fillTableCatalog(catalog, matches);
   });
@@ -15313,18 +15363,6 @@ function fillTableCatalog(catalog, visibleTables) {
       const groupTables = visibleTables.filter((item) => item.group === group.title);
       if (groupTables.length > 0) catalog.appendChild(tableCatalogSection(group.title, group.description, groupTables, { collapsible, open: !collapsible || Boolean(state.tableOpenGroups[group.title]) }));
     });
-    bindClickAll(catalog, "[data-table-group-toggle]", (event) => {
-      const button = event.currentTarget;
-      const open = button.getAttribute("aria-expanded") !== "true";
-      state.tableOpenGroups[button.dataset.tableGroupToggle] = open;
-      button.setAttribute("aria-expanded", String(open));
-      button.closest(".table-catalog-group").querySelector(".table-catalog-links").hidden = !open;
-    });
-    bindClickAll(catalog, "[data-table-groups]", (event) => {
-      const open = event.currentTarget.dataset.tableGroups === "open";
-      TABLE_GROUPS.forEach((group) => { state.tableOpenGroups[group.title] = open; });
-      fillTableCatalog(catalog, visibleTables);
-    });
   }
   if (visibleTables.length === 0) {
     catalog.appendChild(infoSection({
@@ -15335,17 +15373,6 @@ function fillTableCatalog(catalog, visibleTables) {
       `
     }));
   }
-  bindClickAll(catalog, "[data-table-open]", (event) => {
-    openTableByIndex(Number(event.currentTarget.dataset.tableOpen));
-  });
-  bindClickAll(catalog, "[data-reset-table-filters]", () => {
-    state.tableQuery = "";
-    state.tableFilter = "all";
-    state.tableSubgroup = "";
-    state.tableLevel = "all";
-    persist("tableFilter", "tableSubgroup", "tableLevel");
-    renderTables();
-  });
 }
 
 function renderUsefulTableCard(item) {
@@ -15372,21 +15399,6 @@ function renderUsefulTableCard(item) {
       ${mistake ? `<div class="table-mistake"><strong>Типичная ошибка:</strong> ${mistake}</div>` : ""}
       ${lessonLinks || related ? `<footer class="table-card-footer">${lessonLinks}${related}</footer>` : ""}
     `
-  });
-  bindClickAll(section, "[data-open-tense]", (event) => {
-    openTenseFromVerb(event.currentTarget.dataset.openTense);
-  });
-  bindClickAll(section, "[data-table-jump-related]", (event) => {
-    openTableFromLink(event.currentTarget.dataset.tableJumpRelated);
-  });
-  bindClickAll(section, "[data-table-context-group]", () => {
-    openTableCatalog({ filterId: tableFilterIdForGroup(item.group) });
-  });
-  bindClickAll(section, "[data-table-context-subgroup]", () => {
-    openTableCatalog({ filterId: tableFilterIdForGroup(item.group), subgroup: item.subgroup });
-  });
-  bindClickAll(section, "[data-table-context-level]", () => {
-    openTableCatalog({ levelId: item.minLevel, cumulative: false });
   });
   return section;
 }

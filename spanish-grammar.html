@@ -4337,7 +4337,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.60 · обновлено: 11.10.2026 15:10 CEST</span>
+        <span>Версия MVP 1.61 · обновлено: 11.10.2026 15:12 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -12887,10 +12887,6 @@ function attrSelector(name, value) {
   return `[${name}="${CSS.escape(String(value))}"]`;
 }
 
-function bindClickAll(root, selector, handler) {
-  $all(selector, root).forEach((element) => element.addEventListener("click", handler));
-}
-
 function scrollAppTop() {
   $(SELECTORS.shell).scrollIntoView({ behavior: "smooth", block: "start" });
 }
@@ -14819,6 +14815,28 @@ onDelegated("click", "#content [data-contrast-tense]", (_event, target) => {
   updateRouteHash(`tense-${nextId}`);
   scrollToCard(`tense-${nextId}`);
 });
+onDelegated("click", "#content [data-signals]", (_event, target) => {
+  const tenseId = target.dataset.signals;
+  state.openSignalsTense = state.openSignalsTense === tenseId ? null : tenseId;
+  renderTenses();
+  scrollToCard(`tense-${tenseId}`);
+});
+onDelegated("click", "#content [data-exceptions]", (_event, target) => {
+  const tenseId = target.dataset.exceptions;
+  state.openExceptionTense = state.openExceptionTense === tenseId ? null : tenseId;
+  renderTenses();
+  scrollToCard(`tense-${tenseId}`);
+});
+onDelegated("click", "#content [data-tense-examples]", (_event, target) => {
+  const tenseId = target.dataset.tenseExamples;
+  state.openMoreExamplesTense = state.openMoreExamplesTense === tenseId ? null : tenseId;
+  renderTenses();
+  scrollToCard(`tense-${tenseId}`);
+});
+onDelegated("click", "#content [data-open-verb]", (_event, target) => {
+  openVerbFromReference(target.dataset.openVerb);
+});
+
 function renderTenses() {
   const content = clearContent();
   const focusedTense = tenseById(state.focusedTense);
@@ -14958,21 +14976,6 @@ function renderTenseCard(tense) {
       ${disclosureButton({ open: exceptionsOpen, target: tense.id, label: "Исключения", hideLabel: "Скрыть исключения", action: "exceptions" })}
     </div>
   `;
-  section.querySelector("[data-signals]").addEventListener("click", () => {
-    state.openSignalsTense = state.openSignalsTense === tense.id ? null : tense.id;
-    renderTenses();
-    scrollToCard(`tense-${tense.id}`);
-  });
-  section.querySelector("[data-exceptions]").addEventListener("click", () => {
-    state.openExceptionTense = state.openExceptionTense === tense.id ? null : tense.id;
-    renderTenses();
-    scrollToCard(`tense-${tense.id}`);
-  });
-  section.querySelector("[data-tense-examples]")?.addEventListener("click", () => {
-    state.openMoreExamplesTense = state.openMoreExamplesTense === tense.id ? null : tense.id;
-    renderTenses();
-    scrollToCard(`tense-${tense.id}`);
-  });
   if (formationOpen) {
     section.insertAdjacentHTML("beforeend", `<div class="tense-detail-block">${formationTable(tense)}</div>`);
   }
@@ -15272,42 +15275,45 @@ function renderTables() {
     <p class="table-filter-summary" aria-live="polite"><span data-table-shown>Показано: ${visibleTables.length} из ${INDEXED_TABLES.length}.</span> Уровни — по Plan Curricular del Instituto Cervantes: у шпаргалки, связанной с уроками, показан диапазон от её уровня до уровней этих уроков;</p>
   `});
   content.appendChild(nav);
-  nav.querySelector("[data-table-filter]")?.addEventListener("change", (event) => {
-    state.tableFilter = event.currentTarget.value;
-    state.tableSubgroup = "";
-    persist("tableFilter", "tableSubgroup");
-    renderTables();
-  });
-  nav.querySelector("[data-table-level]")?.addEventListener("change", (event) => {
-    state.tableLevel = event.currentTarget.value;
-    state.tableSubgroup = "";
-    persist("tableLevel", "tableSubgroup");
-    renderTables();
-  });
-  nav.querySelector("[data-table-level-cumulative]")?.addEventListener("change", (event) => {
-    state.tableLevelCumulative = event.currentTarget.checked;
-    state.tableSubgroup = "";
-    persist("tableLevelCumulative", "tableSubgroup");
-    renderTables();
-  });
-  nav.querySelector("[data-table-subgroup]")?.addEventListener("change", (event) => {
-    state.tableSubgroup = event.currentTarget.value;
-    persist("tableSubgroup");
-    renderTables();
-  });
 
   const catalog = document.createElement("div");
   catalog.className = "table-catalog";
   catalog.setAttribute("aria-label", "Оглавление шпаргалок");
   content.appendChild(catalog);
   fillTableCatalog(catalog, visibleTables);
-  nav.querySelector("#tableSearchInput").addEventListener("input", (event) => {
-    state.tableQuery = event.target.value;
-    const matches = visibleTableList();
-    nav.querySelector("[data-table-shown]").textContent = `Показано: ${matches.length} из ${INDEXED_TABLES.length}.`;
-    fillTableCatalog(catalog, matches);
-  });
 }
+
+// Фильтры и поиск каталога шпаргалок. Панель фильтров перерисовывается целиком, поэтому
+// изменения слушает одна делегированная регистрация; поле поиска перерисовывает только каталог.
+onDelegated("change", "#content [data-table-filter]", (_event, target) => {
+  state.tableFilter = target.value;
+  state.tableSubgroup = "";
+  persist("tableFilter", "tableSubgroup");
+  renderTables();
+});
+onDelegated("change", "#content [data-table-level]", (_event, target) => {
+  state.tableLevel = target.value;
+  state.tableSubgroup = "";
+  persist("tableLevel", "tableSubgroup");
+  renderTables();
+});
+onDelegated("change", "#content [data-table-level-cumulative]", (_event, target) => {
+  state.tableLevelCumulative = target.checked;
+  state.tableSubgroup = "";
+  persist("tableLevelCumulative", "tableSubgroup");
+  renderTables();
+});
+onDelegated("change", "#content [data-table-subgroup]", (_event, target) => {
+  state.tableSubgroup = target.value;
+  persist("tableSubgroup");
+  renderTables();
+});
+onDelegated("input", "#content #tableSearchInput", (_event, target) => {
+  state.tableQuery = target.value;
+  const matches = visibleTableList();
+  document.querySelector("[data-table-shown]").textContent = `Показано: ${matches.length} из ${INDEXED_TABLES.length}.`;
+  fillTableCatalog(document.querySelector(".table-catalog"), matches);
+});
 
 // При поиске: сначала совпадения в названии, затем в теме и описании, затем в тексте таблицы.
 function tableSearchRank(item, query) {
@@ -18494,11 +18500,6 @@ function renderTenseExceptions(tenseId) {
       linkVerbExamples(item.examples)
     ])));
   }
-  block.addEventListener("click", (event) => {
-    const button = event.target.closest("[data-open-verb]");
-    if (!button) return;
-    openVerbFromReference(button.dataset.openVerb);
-  });
   return block;
 }
 

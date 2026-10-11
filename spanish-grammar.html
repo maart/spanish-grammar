@@ -4096,6 +4096,62 @@ select {
     border-radius: 8px 0 0 8px;
     box-shadow: 0 4px 14px color-mix(in srgb, var(--text) 20%, transparent);
   }
+
+  /* Области нажатия: видимый размер не меняется, для мелких кнопок расширяется зона через ::after; высота строк таблиц сохраняется. */
+  .irregular-form-link,
+  .conjugation-table tbody th .verb-link-button,
+  .selected-verb-panel table th .verb-link-button,
+  .mood-tense-links .verb-link-button {
+    position: relative;
+  }
+
+  .irregular-form-link::after,
+  .conjugation-table tbody th .verb-link-button::after,
+  .selected-verb-panel table th .verb-link-button::after,
+  .mood-tense-links .verb-link-button::after {
+    content: "";
+    position: absolute;
+    inset: -7px -4px;
+  }
+
+  .conjugation-table tbody th .verb-link-button::after,
+  .selected-verb-panel table th .verb-link-button::after,
+  .mood-tense-links .verb-link-button::after {
+    inset: -5px 0;
+  }
+
+  .quiz-character-button {
+    min-width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+
+  .textbook-answer-input {
+    min-height: 44px;
+  }
+
+  .table-catalog-toggle {
+    min-height: 44px;
+    padding-block: 8px;
+  }
+
+  .table-context-link,
+  .table-context-level,
+  .saved-material-title,
+  .saved-material-remove {
+    min-height: 32px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .app-footer a {
+    display: inline-block;
+    padding-block: 8px;
+  }
+
+  .footer-backup .small-button {
+    min-height: 36px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -4343,7 +4399,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.67 · обновлено: 11.10.2026 16:00 CEST</span>
+        <span>Версия MVP 1.68 · обновлено: 11.10.2026 16:08 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>

@@ -4409,7 +4409,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.70 · обновлено: 12.10.2026 00:54 CEST</span>
+        <span>Версия MVP 1.71 · обновлено: 12.10.2026 01:12 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -4424,7 +4424,7 @@ select {
       <article class="verb-card">
         <div class="card-head">
           <div>
-            <h2></h2>
+            <h2 tabindex="-1"></h2>
             <p class="muted"></p>
           </div>
           <button class="favorite-button" type="button" aria-label="Добавить в избранное" title="Избранное">☆</button>
@@ -13101,6 +13101,22 @@ function rerenderAndFocus(render, selector, { keepScroll = false } = {}) {
   });
 }
 
+// То же, но фокус получает первый найденный селектор из списка (порядок — от лучшего к запасному).
+function rerenderAndFocusFirst(render, selectors, { keepScroll = false } = {}) {
+  const scrollY = window.scrollY;
+  render();
+  requestAnimationFrame(() => {
+    if (keepScroll) window.scrollTo(0, scrollY);
+    for (const selector of selectors) {
+      const target = document.querySelector(selector);
+      if (target) {
+        target.focus({ preventScroll: true });
+        return;
+      }
+    }
+  });
+}
+
 function attrSelector(name, value) {
   return `[${name}="${CSS.escape(String(value))}"]`;
 }
@@ -13133,6 +13149,16 @@ function setTabMoreMenu(open) {
   menu.hidden = !open;
   button.setAttribute("aria-expanded", String(open));
   if (open) menu.querySelector("[aria-current]") ? menu.querySelector("[aria-current]").focus() : menu.querySelector("button")?.focus();
+}
+
+// Пункт меню «Ещё» закрывается, и его кнопка пропадает из порядка Tab: фокус переносим на заголовок раздела.
+function focusContentHeading() {
+  requestAnimationFrame(() => {
+    const heading = document.querySelector("#content h2");
+    if (!heading) return;
+    heading.setAttribute("tabindex", "-1");
+    heading.focus({ preventScroll: true });
+  });
 }
 
 function updateRouteHash(route, { replace = false } = {}) {
@@ -14126,12 +14152,33 @@ function toggleCard(verb) {
   state.cardFeedback = { verb, added: !wasSaved };
   saveCards();
   render();
+  // Сразу после нажатия фокус возвращается на звезду (или на «Отменить», если глагол убран из избранного).
+  focusVerbStarAfterToggle(verb);
   window.setTimeout(() => {
     if (state.cardFeedback?.verb === verb) {
+      // Отложенная перерисовка только сбрасывает подсказку. Фокус возвращаем, если пользователь
+      // не ушёл с этой звезды (или фокус никуда не делся, то есть на BODY).
+      const keepFocus = isFocusOnVerbStar(verb);
+      // Если фокус на другом элементе с id (например, в поле поиска) или на «Отменить», возвращаем его и после перерисовки.
+      const active = document.activeElement;
+      const otherFocus = active?.id ? `#${CSS.escape(active.id)}` : active?.matches?.("[data-undo-remove]") ? "[data-undo-remove]" : "";
       state.cardFeedback = null;
       render();
+      if (keepFocus) focusVerbStarAfterToggle(verb);
+      else if (otherFocus) document.querySelector(otherFocus)?.focus({ preventScroll: true });
     }
   }, 900);
+}
+
+function isFocusOnVerbStar(verb) {
+  const active = document.activeElement;
+  return !active || active === document.body || active.matches(attrSelector("data-verb-favorite", verb));
+}
+
+function focusVerbStarAfterToggle(verb) {
+  const star = attrSelector("data-verb-favorite", verb);
+  const target = document.querySelector(`.verb-card ${star}`) || document.querySelector(star) || document.querySelector("[data-undo-remove]");
+  target?.focus({ preventScroll: true });
 }
 
 function restoreLastRemovedCard() {
@@ -14142,7 +14189,7 @@ function restoreLastRemovedCard() {
   state.cards = [...new Set(restored)];
   state.cardUndo = null;
   saveCards();
-  renderCards();
+  rerenderAndFocusFirst(renderCards, [attrSelector("data-verb-favorite", verb), attrSelector("data-cards-section", state.cardsSection)], { keepScroll: true });
 }
 
 function rememberRecentVerb(verb) {
@@ -14164,7 +14211,7 @@ function selectVerb(verb, { keepReturnQuery = true, updateRoute = true } = {}) {
   state.query = verb;
   rememberRecentVerb(verb);
   syncActiveTab("verbs");
-  renderVerbs();
+  rerenderAndFocus(renderVerbs, ".verb-card h2");
   if (updateRoute) updateRouteHash(`verb-${encodeURIComponent(verb)}`);
   scrollToCard("content");
 }
@@ -14293,7 +14340,7 @@ function renderVerbCard(verb) {
 
   const favoriteButton = node.querySelector(".favorite-button");
   favoriteButton.textContent = state.cards.includes(verb) ? "★" : "☆";
-  favoriteButton.setAttribute("aria-label", state.cards.includes(verb) ? "Убрать из избранного" : "Добавить в избранное");
+  favoriteButton.setAttribute("aria-label", `${state.cards.includes(verb) ? "Убрать из избранного" : "Добавить в избранное"}: ${info.displayInfinitive}`);
   favoriteButton.title = "Избранное";
   favoriteButton.classList.toggle("is-card-feedback", state.cardFeedback?.verb === verb);
   favoriteButton.dataset.verbFavorite = verb;
@@ -14818,7 +14865,7 @@ function renderVerbListItem(verb, { showBadges = true, isBestMatch = false, show
         ${showBadges ? verbListBadges(info).join("") : ""}
       </span>
     </button>
-    <button class="favorite-button verb-row-favorite" type="button" data-verb-favorite="${escapeHTML(verb)}" aria-label="${state.cards.includes(verb) ? "Убрать из избранного" : "Добавить в избранное"}" title="Избранное">
+    <button class="favorite-button verb-row-favorite" type="button" data-verb-favorite="${escapeHTML(verb)}" aria-label="${escapeHTML(`${state.cards.includes(verb) ? "Убрать из избранного" : "Добавить в избранное"}: ${info.displayInfinitive}`)}" title="Избранное">
       ${state.cards.includes(verb) ? "★" : "☆"}
     </button>
   `;
@@ -15008,7 +15055,8 @@ onDelegated("click", "#content [data-mobile-tense]", (_event, target) => {
 onDelegated("click", "#content [data-formation]", (_event, target) => {
   const tenseId = target.dataset.formation;
   state.openFormationTense = state.openFormationTense === tenseId ? null : tenseId;
-  renderTenses();
+  // У карточки времени два кнопки с data-formation: чип с основой и кнопка «Образование»; фокус возвращаем на нажатую.
+  rerenderAndFocus(renderTenses, `${attrSelector("data-formation", tenseId)}${target.classList.contains("chip") ? ".chip" : ":not(.chip)"}`);
   scrollToCard(`tense-${tenseId}`);
 });
 onDelegated("click", "#content [data-contrast-tense]", (_event, target) => {
@@ -15026,19 +15074,19 @@ onDelegated("click", "#content [data-contrast-tense]", (_event, target) => {
 onDelegated("click", "#content [data-signals]", (_event, target) => {
   const tenseId = target.dataset.signals;
   state.openSignalsTense = state.openSignalsTense === tenseId ? null : tenseId;
-  renderTenses();
+  rerenderAndFocus(renderTenses, attrSelector("data-signals", tenseId));
   scrollToCard(`tense-${tenseId}`);
 });
 onDelegated("click", "#content [data-exceptions]", (_event, target) => {
   const tenseId = target.dataset.exceptions;
   state.openExceptionTense = state.openExceptionTense === tenseId ? null : tenseId;
-  renderTenses();
+  rerenderAndFocus(renderTenses, attrSelector("data-exceptions", tenseId));
   scrollToCard(`tense-${tenseId}`);
 });
 onDelegated("click", "#content [data-tense-examples]", (_event, target) => {
   const tenseId = target.dataset.tenseExamples;
   state.openMoreExamplesTense = state.openMoreExamplesTense === tenseId ? null : tenseId;
-  renderTenses();
+  rerenderAndFocus(renderTenses, attrSelector("data-tense-examples", tenseId));
   scrollToCard(`tense-${tenseId}`);
 });
 onDelegated("click", "#content [data-open-verb]", (_event, target) => {
@@ -15344,12 +15392,24 @@ onDelegated("click", ".focused-table-toolbar [data-table-return-verb]", () => {
   if (verb) selectVerb(verb, { keepReturnQuery: false });
 });
 onDelegated("click", ".focused-table-toolbar [data-table-back]", () => {
+  const openerIndex = state.focusedTable;
   state.focusedTable = null;
   state.tableReturnVerb = null;
   renderTables();
   updateRouteHash("tables");
   scrollToCard("tablesTop");
+  focusCatalogEntryAfterBack(openerIndex);
 });
+// Возврат в каталог: фокус на ссылку шпаргалки, из которой открыли; если её группа свёрнута — на заголовок группы.
+function focusCatalogEntryAfterBack(index) {
+  const item = INDEXED_TABLES[index];
+  if (!item) return;
+  requestAnimationFrame(() => {
+    const link = document.querySelector(attrSelector("data-table-open", index));
+    const groupToggle = document.querySelector(attrSelector("data-table-group-toggle", item.group));
+    (link?.offsetParent ? link : groupToggle)?.focus({ preventScroll: true });
+  });
+}
 onDelegated("click", ".focused-table-toolbar [data-table-previous]", (_event, target) => {
   openTableByIndex(Number(target.dataset.tablePrevious));
 });
@@ -15604,7 +15664,7 @@ function renderUsefulTableCard(item) {
         </span>
         ${tableLevelButton(item)}
       </p>
-      <div class="material-title-row"><h2>${item.title}</h2>${favoriteMaterialButton("table", item.id, item.title)}</div>
+      <div class="material-title-row"><h2 tabindex="-1">${item.title}</h2>${favoriteMaterialButton("table", item.id, item.title)}</div>
       <p class="muted">${item.description}</p>
       <div class="table-summary"><strong>Главное:</strong> ${summary}</div>
       <div class="table-wrap">${LINKED_TABLE_HTML[index]}</div>
@@ -15649,7 +15709,7 @@ function openTableByIndex(index, { updateRoute = true } = {}) {
   const item = INDEXED_TABLES[index];
   if (!item) return;
   state.focusedTable = index;
-  renderTables();
+  rerenderAndFocus(renderTables, ".table-card h2");
   if (updateRoute) updateRouteHash(tableRoute(item));
   requestAnimationFrame(() => scrollToCard("tablesTop"));
 }
@@ -16799,11 +16859,12 @@ function currentLearningLevel() {
   return LEARNING_LEVELS.find((item) => item.id === state.learningLevel) || LEARNING_LEVELS[0];
 }
 
-function selectLearningLevel(levelId) {
+function selectLearningLevel(levelId, { focusTab = false } = {}) {
   state.learningCheck = null;
   state.learningLevel = levelId;
   persist("learningLevel");
-  renderLearningPlan();
+  if (focusTab) rerenderAndFocus(renderLearningPlan, attrSelector("data-learning-level", levelId), { keepScroll: true });
+  else renderLearningPlan();
 }
 
 // Итоговая проверка перерисовывается вместе с Планом; фокус — на заголовок проверки или на нужный пункт.
@@ -16816,7 +16877,7 @@ function rerenderLearningCheck(focusSelector = "") {
   });
 }
 
-onDelegated("click", ".learning-plan [data-learning-level]", (_event, target) => selectLearningLevel(target.dataset.learningLevel));
+onDelegated("click", ".learning-plan [data-learning-level]", (_event, target) => selectLearningLevel(target.dataset.learningLevel, { focusTab: true }));
 onDelegated("keydown", ".learning-plan [data-learning-level]", (event, target) => {
   const buttons = $all(".learning-plan [data-learning-level]");
   const index = buttons.indexOf(target);
@@ -18039,8 +18100,11 @@ onDelegated("click", inCards("[data-remove-favorite-lesson]"), (_event, target) 
   rerenderAndFocus(renderCards, "[data-undo-material]", { keepScroll: true });
 });
 onDelegated("click", inCards("[data-undo-material]"), () => {
+  const undo = state.materialUndo;
   restoreFavoriteMaterial();
-  rerenderAndFocus(renderCards, attrSelector("data-cards-section", state.cardsSection), { keepScroll: true });
+  // Фокус — на кнопку «убрать» восстановленной записи; если её нет в текущем списке, на вкладку раздела.
+  const restoredSelector = undo ? attrSelector(undo.kind === "table" ? "data-remove-favorite-table" : "data-remove-favorite-lesson", undo.id) : "";
+  rerenderAndFocusFirst(renderCards, [restoredSelector, attrSelector("data-cards-section", state.cardsSection)].filter(Boolean), { keepScroll: true });
 });
 
 // Вкладка «Шпаргалки»: название, раздел, уровни и уроки по теме; поиск — когда шпаргалок больше восьми.
@@ -18572,7 +18636,7 @@ function resetActiveCardQuiz() {
 function pauseCardQuiz() {
   saveQuizSession();
   resetActiveCardQuiz();
-  renderCards();
+  rerenderAndFocus(renderCards, "[data-resume-quiz]");
 }
 
 function stopCardQuiz() {
@@ -19141,6 +19205,7 @@ $all("[data-more-view]").forEach((item) => {
   item.addEventListener("click", () => {
     setTabMoreMenu(false);
     setView(item.dataset.moreView);
+    focusContentHeading();
   });
 });
 // Ссылки «Уроки учебника» во Временах, Глаголах и Шпаргалках открывают урок из любой вкладки.

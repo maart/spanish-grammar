@@ -4337,7 +4337,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.63 · обновлено: 11.10.2026 15:22 CEST</span>
+        <span>Версия MVP 1.64 · обновлено: 11.10.2026 15:24 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -19068,7 +19068,8 @@ document.addEventListener("keydown", (e) => {
     return;
   }
 
-  if (!isInput && /^[1-7]$/.test(e.key)) {
+  // На экране квиза цифры не переключают вкладки: квиз закрывается Escape или кнопками.
+  if (!isInput && !isCardQuizScreenActive() && /^[1-7]$/.test(e.key)) {
     const views = ["verbs", "tenses", "moods", "tables", "textbook", "learning-plan", "cards"];
     setView(views[parseInt(e.key) - 1]);
     e.preventDefault();

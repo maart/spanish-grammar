@@ -4337,7 +4337,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.62 · обновлено: 11.10.2026 15:17 CEST</span>
+        <span>Версия MVP 1.63 · обновлено: 11.10.2026 15:22 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -17159,6 +17159,12 @@ function bindQuizHotkeys(handler) {
   activeQuizKeydownCleanup = () => document.removeEventListener("keydown", handler);
 }
 
+// Экран квиза открыт: идёт квиз или показаны его результаты. Пауза и «Закрыть» очищают cardQuiz,
+// сохранённая, но не возобновлённая сессия после перезагрузки в cardQuiz не попадает.
+function isCardQuizScreenActive() {
+  return state.view === "cards" && state.cardQuiz.length > 0;
+}
+
 function selectedQuizPersons() {
   const persons = Array.isArray(state.quizConfig.persons) ? state.quizConfig.persons : [];
   const valid = [...new Set(persons.filter((index) => Number.isInteger(index) && index >= 0 && index < PEOPLE.length))];
@@ -19072,6 +19078,8 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     // В непустом поиске по шпаргалкам Escape очищает ввод и не уводит со страницы.
     if (e.target.id === "tableSearchInput" && e.target.value) return;
+    // На экране квиза Escape обрабатывает квиз (пауза или «Закрыть»), здесь ничего не делаем.
+    if (isCardQuizScreenActive()) return;
     if (state.view !== "verbs") {
       setView("verbs");
       e.preventDefault();

@@ -1848,8 +1848,10 @@ const readAttrs = new Set([
   ...[...scriptText.matchAll(/["'`]data-([a-z][a-z0-9-]*)["'`]/g)].map((m) => m[1]),
   ...[...scriptText.matchAll(/dataset\.([a-zA-Z]\w*)/g)].map((m) => toKebab(m[1])),
 ]);
+// disclosureButton({ action: "x" }) пишет атрибут data-${action}: имена берём из значений action в вызовах.
+const disclosureActionAttrs = new Set([...scriptText.matchAll(/disclosureButton\(\{[^}]*?\baction:\s*"([a-z][a-z0-9-]*)"/g)].map((m) => m[1]));
 const isWrittenAttr = (name) =>
-  markupAttrs.has(name) || jsWrittenAttrs.has(name) || dynamicAttrPrefixes.some((prefix) => name.startsWith(prefix));
+  markupAttrs.has(name) || jsWrittenAttrs.has(name) || disclosureActionAttrs.has(name) || dynamicAttrPrefixes.some((prefix) => name.startsWith(prefix));
 
 for (const name of markupAttrs) {
   if (!readAttrs.has(name)) {

@@ -760,6 +760,11 @@ input[type="search"] {
   opacity: 0.8;
 }
 
+.learning-level-tabs .small-button.is-active small,
+.cards-section-tabs .small-button.is-active small {
+  opacity: 1;
+}
+
 .learning-plan-reset {
   margin: 12px 0 0;
 }
@@ -2165,7 +2170,7 @@ td.irregular {
 .verb-row-meta span.badge-yo,
 .verb-passport span.badge-yo {
   background: color-mix(in srgb, #8b5cf6 15%, transparent);
-  color: color-mix(in srgb, #7c3aed 70%, var(--text));
+  color: color-mix(in srgb, #7c3aed 55%, var(--text));
 }
 
 .verb-row-meta span.badge-part,
@@ -2897,7 +2902,7 @@ td.irregular {
 }
 
 .quiz-feedback.is-almost {
-  color: #8a5a00;
+  color: var(--warning-text);
   background: color-mix(in srgb, #e6a700 15%, transparent);
 }
 
@@ -2962,6 +2967,11 @@ td.irregular {
 .quiz-character-button:focus-visible {
   border-color: var(--accent-2);
   color: var(--accent-2);
+}
+
+::placeholder {
+  color: var(--muted);
+  opacity: 1;
 }
 
 .quiz-input {
@@ -4399,7 +4409,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.69 · обновлено: 12.10.2026 00:40 CEST</span>
+        <span>Версия MVP 1.70 · обновлено: 12.10.2026 00:54 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -19048,6 +19058,8 @@ const VIEW_RENDERERS = {
 
 function applyTheme() {
   document.body.classList.toggle("dark", state.dark);
+  // Полоса прокрутки окна берёт color-scheme корневого элемента, а не body.
+  document.documentElement.style.colorScheme = state.dark ? "dark" : "light";
   document.querySelector('meta[name="theme-color"]')?.setAttribute("content", state.dark ? "#191a17" : "#f6f3ee");
   const themeToggle = $(SELECTORS.themeToggle);
   const themeLabel = state.dark ? "Включить светлую тему" : "Включить тёмную тему";

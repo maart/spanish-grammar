@@ -4337,7 +4337,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.65 · обновлено: 11.10.2026 15:33 CEST</span>
+        <span>Версия MVP 1.66 · обновлено: 11.10.2026 15:41 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -10307,12 +10307,163 @@ function readTextbookProgress() {
   Object.entries(stored.lessons).forEach(([lessonId, lesson]) => {
     if (!allowedLessonIds.has(lessonId) || !lesson || typeof lesson !== "object") return;
     lessons[lessonId] = {
-      answers: lesson.answers && typeof lesson.answers === "object" && !Array.isArray(lesson.answers) ? lesson.answers : {},
-      checked: lesson.checked && typeof lesson.checked === "object" && !Array.isArray(lesson.checked) ? lesson.checked : {},
-      attempts: lesson.attempts && typeof lesson.attempts === "object" && !Array.isArray(lesson.attempts) ? lesson.attempts : {}
+      answers: pickEntries(lesson.answers, (answer) => typeof answer === "string"),
+      checked: pickEntries(lesson.checked, (result) => isPlainObject(result) && typeof result.correct === "boolean"),
+      attempts: pickEntries(lesson.attempts, (count) => storedNumber(count, null) !== null)
     };
   });
   return { version: 2, lessons };
+}
+
+// Нормализаторы: значения из localStorage (и из импортированного файла) читаются здесь, а не в state как есть.
+// Корректные данные проходят без изменений; ничего не пишется обратно в хранилище при чтении.
+function isPlainObject(value) {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+// Число из хранилища: конечное и не меньше нуля, иначе запасное значение. Строки с числами принимаются.
+function storedNumber(value, fallback = 0) {
+  const number = typeof value === "string" && value.trim() !== "" ? Number(value) : value;
+  return Number.isFinite(number) && number >= 0 ? number : fallback;
+}
+
+// Процент 0–100 или null.
+function storedPercent(value) {
+  const number = storedNumber(value, null);
+  return number !== null && number <= 100 ? number : null;
+}
+
+// Дата: строка, которую понимает Date.parse, или метка времени; иначе null.
+function storedDate(value) {
+  if (typeof value === "string") return Number.isNaN(Date.parse(value)) ? null : value;
+  return storedNumber(value, null);
+}
+
+// Оставляет только записи объекта, для которых keep(значение) — true.
+function pickEntries(value, keep) {
+  return isPlainObject(value) ? Object.fromEntries(Object.entries(value).filter(([, item]) => keep(item))) : {};
+}
+
+// Статистика «Избранного» (msg:cardStats): только известные глаголы, числа не меньше нуля, correct не больше attempts.
+function normalizeCardStats(value) {
+  if (!isPlainObject(value)) return {};
+  return Object.fromEntries(Object.entries(value).flatMap(([verb, stats]) => {
+    if (!BASE_VERBS.includes(verb) || !isPlainObject(stats)) return [];
+    const attempts = storedNumber(stats.attempts);
+    return [[verb, {
+      attempts,
+      correct: Math.min(storedNumber(stats.correct), attempts),
+      mistakes: storedNumber(stats.mistakes),
+      streak: storedNumber(stats.streak),
+      lastReviewed: storedDate(stats.lastReviewed)
+    }]];
+  }));
+}
+
+// Итоговые проверки уровней (msg:learningLevelChecks): только известные уровни, баллы 0–100, passedAt — дата или отсутствует.
+function normalizeLearningChecks(value) {
+  if (!isPlainObject(value)) return {};
+  const levelIds = LEARNING_LEVELS.map((level) => level.id);
+  return Object.fromEntries(Object.entries(value).flatMap(([levelId, record]) => {
+    if (!levelIds.includes(levelId) || !isPlainObject(record)) return [];
+    const checked = {};
+    const best = storedPercent(record.best);
+    const last = storedPercent(record.last);
+    const passedAt = storedDate(record.passedAt);
+    if (best !== null) checked.best = best;
+    if (last !== null) checked.last = last;
+    if (passedAt !== null) checked.passedAt = passedAt;
+    return [[levelId, checked]];
+  }));
+}
+
+// Отметки плана (msg:learningProgress): «освоено» — true (ранний формат) или "done"; другие значения пункт не отмечают.
+function normalizeLearningProgress(value) {
+  return pickEntries(value, (status) => status === true || status === "done");
+}
+
+// Раскрытие модулей плана (msg:learningDetails): только логические значения.
+function normalizeLearningDetails(value) {
+  return pickEntries(value, (open) => typeof open === "boolean");
+}
+
+// Открытые группы учебника (msg:textbookOpenGroups): индексы групп и логические значения.
+function normalizeTextbookOpenGroups(value) {
+  return Object.fromEntries(Object.entries(pickEntries(value, (open) => typeof open === "boolean")).filter(([index]) => /^\d+$/.test(index)));
+}
+
+// Настройки квиза по умолчанию (то же, что при первом запуске).
+function defaultQuizConfig() {
+  return { type: "infinitive", tenses: ["presente"], persons: PEOPLE.map((_person, index) => index), count: 5 };
+}
+
+// Настройки квиза (msg:quizConfig): только известные тип, времена, лица и количество; остальное — по умолчанию.
+// Вызывается после загрузки всех данных: QUIZ_TYPE_LABELS, QUIZ_COUNTS и QUIZ_TENSES объявлены ниже state.
+function normalizeQuizConfig(value) {
+  const source = isPlainObject(value) ? value : {};
+  const defaults = defaultQuizConfig();
+  const tenseIds = getAllTenseIds();
+  // Пустой список допустим (пользователь снял все отметки), но если в непустом списке нет ни одного допустимого значения, берём умолчание.
+  const pickList = (list, keep, fallback) => {
+    if (!Array.isArray(list)) return fallback;
+    const kept = [...new Set(list.filter(keep))];
+    return kept.length === 0 && list.length > 0 ? fallback : kept;
+  };
+  return {
+    type: Object.keys(QUIZ_TYPE_LABELS).includes(source.type) ? source.type : defaults.type,
+    tenses: pickList(source.tenses, (id) => tenseIds.includes(id), defaults.tenses),
+    persons: pickList(source.persons, (index) => Number.isInteger(index) && index >= 0 && index < PEOPLE.length, defaults.persons),
+    count: QUIZ_COUNTS.includes(source.count) ? source.count : defaults.count
+  };
+}
+
+// Вопрос сохранённой проверки: известный глагол, известный тип, строки вопроса и ответа; для спряжения — время и лицо.
+function normalizeQuizQuestion(value) {
+  if (!isPlainObject(value) || !BASE_VERBS.includes(value.verb) || !Object.keys(QUIZ_TYPE_LABELS).includes(value.type)) return null;
+  if (typeof value.question !== "string" || typeof value.answer !== "string") return null;
+  if (value.type === "conjugation") {
+    if (!getAllTenseIds().includes(value.tense) || !Number.isInteger(value.person) || value.person < 0 || value.person >= PEOPLE.length) return null;
+  } else if (!Array.isArray(value.acceptedAnswers)) {
+    return null;
+  }
+  const { acceptedAnswers, ...rest } = value;
+  return Array.isArray(acceptedAnswers) ? { ...rest, acceptedAnswers: acceptedAnswers.filter((answer) => typeof answer === "string") } : rest;
+}
+
+// Попытка сохранённой проверки: вопрос проходит нормализацию, остальные поля — базовые типы.
+function normalizeQuizAttempt(value) {
+  if (!isPlainObject(value)) return null;
+  const question = normalizeQuizQuestion(value.question);
+  if (!question) return null;
+  return {
+    question,
+    userAnswer: typeof value.userAnswer === "string" ? value.userAnswer : "",
+    correct: value.correct === true,
+    status: typeof value.status === "string" ? value.status : value.correct === true ? "correct" : "wrong"
+  };
+}
+
+// Сохранённая проверка (msg:quizSession): оставляем только корректные вопросы и попытки.
+// Без единого корректного вопроса сессия не восстанавливается (null).
+function normalizeSavedQuizSession(value) {
+  if (!isPlainObject(value) || !Array.isArray(value.cardQuiz)) return null;
+  const cardQuiz = value.cardQuiz.map(normalizeQuizQuestion).filter(Boolean);
+  if (cardQuiz.length === 0) return null;
+  const cardQuizTotal = storedNumber(value.cardQuizTotal);
+  const session = {
+    cardQuiz,
+    cardQuizIndex: Math.min(Math.floor(storedNumber(value.cardQuizIndex)), cardQuiz.length),
+    cardQuizInput: typeof value.cardQuizInput === "string" ? value.cardQuizInput : "",
+    cardQuizAnswered: value.cardQuizAnswered === true,
+    cardQuizCorrect: Math.min(storedNumber(value.cardQuizCorrect), cardQuizTotal),
+    cardQuizTotal,
+    cardQuizAttempts: Array.isArray(value.cardQuizAttempts) ? value.cardQuizAttempts.map(normalizeQuizAttempt).filter(Boolean) : [],
+    cardQuizSnapshot: Array.isArray(value.cardQuizSnapshot) ? value.cardQuizSnapshot.map(normalizeQuizQuestion).filter(Boolean) : [],
+    cardQuizAllVerbs: [...new Set(cardQuiz.map((question) => question.verb))]
+  };
+  const savedAt = storedDate(value.savedAt);
+  if (savedAt !== null) session.savedAt = savedAt;
+  return session;
 }
 
 // До MVP 1.35 план хранил отметки по номеру пункта («a1:7»); модулям они не соответствуют.
@@ -10354,9 +10505,9 @@ const state = {
     if (stored === "c1" || stored === "c2") return "after";
     return LEARNING_LEVELS.some((level) => level.id === stored) ? stored : "a1";
   })(),
-  learningProgress: migrateLearningProgress(),
-  learningDetails: readLearningDetails(),
-  learningChecks: readStoredObject("msg:learningLevelChecks"),
+  learningProgress: normalizeLearningProgress(migrateLearningProgress()),
+  learningDetails: normalizeLearningDetails(readLearningDetails()),
+  learningChecks: normalizeLearningChecks(readStoredObject("msg:learningLevelChecks")),
   learningCheck: null,
   query: "",
   selectedVerb: null,
@@ -10378,7 +10529,7 @@ const state = {
   showImperativoPronouns: false,
   showMoodMoreExamples: false,
   tableQuery: "",
-  tableFilter: appStorage.get("msg:tableFilter") || "all",
+  tableFilter: TABLE_FILTERS.some((filter) => filter.id === appStorage.get("msg:tableFilter")) ? appStorage.get("msg:tableFilter") : "all",
   tableSubgroup: appStorage.get("msg:tableSubgroup") || "",
   tableLevel: (() => {
     const stored = appStorage.get("msg:tableLevel");
@@ -10403,26 +10554,21 @@ const state = {
   cardFeedback: null,
   searchCursor: -1,
   cards: knownVerbList(readStoredJSON("msg:cards", readStoredJSON("msg:favorites", []))),
-  quizConfig: readStoredJSON("msg:quizConfig", {
-    type: "infinitive",
-    tenses: ["presente"],
-    persons: [0, 1, 2, 3, 4, 5],
-    count: 5
-  }),
+  quizConfig: readStoredJSON("msg:quizConfig", defaultQuizConfig()),
   showQuizSettings: false,
   showQuizPanel: appStorage.get("msg:showQuizPanel") === "true",
   cardsQuery: "",
   favoriteTables: readStoredArray("msg:favoriteTables", (id) => typeof id === "string"),
-  favoriteLessons: readStoredArray("msg:favoriteLessons", Number.isInteger),
+  favoriteLessons: readStoredArray("msg:favoriteLessons", (id) => Number.isInteger(id) && id >= 1 && id <= TEXTBOOK_LAST_LESSON_ID),
   cardsSection: ["verbs", "tables", "lessons"].includes(appStorage.get("msg:cardsSection")) ? appStorage.get("msg:cardsSection") : "verbs",
   favoriteLessonsSort: ["recent", "number", "unfinished"].includes(appStorage.get("msg:favoriteLessonsSort")) ? appStorage.get("msg:favoriteLessonsSort") : "recent",
   favoriteTablesQuery: "",
   materialUndo: null,
-  cardsSort: appStorage.get("msg:cardsSort") || "recent",
+  cardsSort: ["recent", "alphabetical", "difficult", "irregular"].includes(appStorage.get("msg:cardsSort")) ? appStorage.get("msg:cardsSort") : "recent",
   cardsFilter: ["all", "reviewed", "unreviewed", "mistakes", "mastered"].includes(appStorage.get("msg:cardsFilter"))
     ? appStorage.get("msg:cardsFilter")
     : "all",
-  cardStats: readStoredJSON("msg:cardStats", {}),
+  cardStats: normalizeCardStats(readStoredJSON("msg:cardStats", {})),
   savedQuizSession: readStoredJSON("msg:quizSession", null),
   cardUndo: null,
   cardQuiz: [],
@@ -10442,7 +10588,7 @@ const state = {
   textbookVisibleFeedback: {},
   textbookOpenExercises: {},
   textbookLevel: appStorage.get("msg:textbookLevel") || "all",
-  textbookOpenGroups: readStoredObject("msg:textbookOpenGroups"),
+  textbookOpenGroups: normalizeTextbookOpenGroups(readStoredObject("msg:textbookOpenGroups")),
   textbookProgress: readTextbookProgress()
 };
 
@@ -19156,6 +19302,16 @@ document.addEventListener("keydown", (e) => {
     }
   }
 });
+
+// Настройки и сохранённая проверка, чьи допустимые значения объявлены ниже state, проверяем до первой отрисовки.
+function normalizeStoredSettingsAfterLoad() {
+  state.quizConfig = normalizeQuizConfig(state.quizConfig);
+  state.savedQuizSession = normalizeSavedQuizSession(state.savedQuizSession);
+  state.textbookLevel = TEXTBOOK_LEVEL_IDS.includes(state.textbookLevel) ? state.textbookLevel : "all";
+  state.favoriteTables = state.favoriteTables.filter((id) => INDEXED_TABLES.some((item) => item.id === id));
+  if (!INDEXED_TABLES.some((item) => item.subgroup === state.tableSubgroup)) state.tableSubgroup = "";
+}
+normalizeStoredSettingsAfterLoad();
 
 if (!window.location.hash) updateRouteHash("verbs", { replace: true });
 if (!applyRouteHash()) {

@@ -4399,7 +4399,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.68 · обновлено: 11.10.2026 16:08 CEST</span>
+        <span>Версия MVP 1.69 · обновлено: 12.10.2026 00:40 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -14563,16 +14563,6 @@ function verbTenseLabel(tense) {
     imperativo_negativo: "Imperativo -"
   };
   return labels[tense.id] || tense.name;
-}
-
-function selectedTenseOnlyTable(verb, tenseId) {
-  const info = verbInfo(verb);
-  const table = document.createElement("table");
-  table.innerHTML = `<thead><tr>${PEOPLE.map((person) => `<th>${person}</th>`).join("")}</tr></thead>`;
-  const body = document.createElement("tbody");
-  body.innerHTML = `<tr>${PEOPLE.map((_, index) => `<td class="irregular" lang="es">${info.forms[tenseId]?.[index] || "-"}</td>`).join("")}</tr>`;
-  table.appendChild(body);
-  return table;
 }
 
 function regularFormsForComparison(verb, tenseId) {

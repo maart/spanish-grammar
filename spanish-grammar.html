@@ -3557,6 +3557,12 @@ select {
 
 @media (max-width: 560px) {
   .textbook-exercise-head { grid-template-columns: 1fr; grid-template-areas: "heading" "toggle" "meta"; }
+  .textbook-lesson,
+  .textbook-lesson-toolbar { grid-template-columns: minmax(0, 1fr); }
+  .textbook-lesson-toolbar { justify-items: stretch; }
+  .textbook-lesson-heading,
+  .textbook-lesson-heading .material-title-row,
+  .textbook-lesson-heading h2 { min-width: 0; }
   .textbook-exercise-meta { justify-self: start; }
   .textbook-exercise-toggle { width: 100%; }
 
@@ -3601,11 +3607,12 @@ select {
 
   h1 {
     font-size: 19px;
-    white-space: nowrap;
+    white-space: normal;
   }
 
   .brand-block {
     gap: 8px;
+    min-width: 0;
   }
 
   .tab,
@@ -3728,9 +3735,8 @@ select {
   .focused-tense-paging .small-button {
     flex: 1 1 0;
     min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    white-space: normal;
+    text-align: center;
   }
 
   .filter-tabs {
@@ -4337,7 +4343,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.66 · обновлено: 11.10.2026 15:41 CEST</span>
+        <span>Версия MVP 1.67 · обновлено: 11.10.2026 16:00 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>

@@ -4337,7 +4337,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.58 · обновлено: 11.10.2026 13:53 CEST</span>
+        <span>Версия MVP 1.59 · обновлено: 11.10.2026 14:47 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -14011,6 +14011,64 @@ function setView(view, { updateRoute = true } = {}) {
 }
 
 // ═══════ 10. Вкладка «Глаголы»: карточка глагола, поиск, список ═══════
+// Обработчики вкладки «Глаголы». Карточка глагола и список перерисовываются целиком, поэтому
+// клики слушает одна делегированная регистрация. Глагол читается из data-атрибута кнопки.
+let verbSearchView = null; // контейнеры текущего поиска; заполняет renderVerbs, нужны обработчику ввода
+onDelegated("input", "#searchInput", (_event, target) => {
+  const { content, results, selectedPanel } = verbSearchView;
+  state.query = target.value;
+  state.previousVerbQuery = null;
+  state.verbCardMode = "basic";
+  state.searchCursor = -1;
+  state.selectedVerb = null;
+  updateRouteHash("verbs", { replace: true });
+  renderVerbResults(content, results, selectedPanel);
+});
+onDelegated("click", ".selected-verb-panel .return-results-button", () => {
+  const returnScrollY = state.previousVerbScrollY;
+  state.query = state.previousVerbQuery;
+  state.previousVerbQuery = null;
+  state.previousVerbScrollY = null;
+  state.selectedVerb = null;
+  state.verbCardMode = "basic";
+  updateRouteHash("verbs");
+  renderVerbs();
+  requestAnimationFrame(() => document.getElementById("searchInput")?.focus());
+  requestAnimationFrame(() => window.scrollTo({ top: Number.isFinite(returnScrollY) ? returnScrollY : 0, behavior: "smooth" }));
+});
+onDelegated("click", "#content [data-verb-favorite]", (_event, target) => {
+  toggleCard(target.dataset.verbFavorite);
+});
+onDelegated("click", "#content [data-verb-pick]", (_event, target) => {
+  selectVerb(target.dataset.verbPick, { keepReturnQuery: state.view === "verbs" });
+});
+onDelegated("click", "#content [data-verb-suggestion]", (_event, target) => {
+  selectVerb(target.dataset.verbSuggestion, { keepReturnQuery: false });
+});
+onDelegated("click", "#content [data-clear-recent]", () => {
+  state.recentVerbs = [];
+  appStorage.remove("msg:recentVerbs");
+  renderVerbs();
+});
+onDelegated("click", "#content [data-common-limit]", (_event, target) => {
+  state.commonVerbLimit = target.dataset.commonLimit === "all" ? "all" : Number(target.dataset.commonLimit);
+  renderVerbs();
+  if (state.commonVerbLimit !== "all") requestAnimationFrame(() => scrollToCard("commonVerbList"));
+});
+onDelegated("click", ".selected-verb-panel [data-verb-mode]", (_event, target) => {
+  state.verbCardMode = target.dataset.verbMode;
+  renderVerbs();
+  scrollToCard("content");
+});
+onDelegated("click", ".selected-verb-panel [data-verb-cheatsheet]", (_event, target) => {
+  openCheatsheetFromVerb(target.dataset.verb, Number(target.dataset.verbCheatsheet));
+});
+onDelegated("click", ".conjugation-table [data-open-tense]", (_event, target) => {
+  openTenseFromVerb(target.dataset.openTense);
+});
+onDelegated("click", ".conjugation-table [data-open-exception]", (_event, target) => {
+  openExceptionFromVerb(target.dataset.openException);
+});
 function renderVerbCard(verb) {
   const template = $(SELECTORS.verbTemplate);
   const node = template.content.firstElementChild.cloneNode(true);
@@ -14024,25 +14082,13 @@ function renderVerbCard(verb) {
   favoriteButton.setAttribute("aria-label", state.cards.includes(verb) ? "Убрать из избранного" : "Добавить в избранное");
   favoriteButton.title = "Избранное";
   favoriteButton.classList.toggle("is-card-feedback", state.cardFeedback?.verb === verb);
-  favoriteButton.addEventListener("click", () => toggleCard(verb));
+  favoriteButton.dataset.verbFavorite = verb;
 
   if (state.previousVerbQuery) {
     const returnButton = document.createElement("button");
     returnButton.className = "small-button return-results-button";
     returnButton.type = "button";
     returnButton.textContent = `← К результатам: «${state.previousVerbQuery}»`;
-    returnButton.addEventListener("click", () => {
-      const returnScrollY = state.previousVerbScrollY;
-      state.query = state.previousVerbQuery;
-      state.previousVerbQuery = null;
-      state.previousVerbScrollY = null;
-      state.selectedVerb = null;
-      state.verbCardMode = "basic";
-      updateRouteHash("verbs");
-      renderVerbs();
-      requestAnimationFrame(() => document.getElementById("searchInput")?.focus());
-      requestAnimationFrame(() => window.scrollTo({ top: Number.isFinite(returnScrollY) ? returnScrollY : 0, behavior: "smooth" }));
-    });
     node.querySelector(".card-head").insertAdjacentElement("afterend", returnButton);
   }
 
@@ -14070,9 +14116,6 @@ function renderVerbCard(verb) {
   const cheatsheets = verbCheatsheetsMarkup(verb);
   if (cheatsheets) {
     node.querySelector(".table-wrap").insertAdjacentHTML("afterend", cheatsheets);
-    node.querySelectorAll("[data-verb-cheatsheet]").forEach((button) => {
-      button.addEventListener("click", () => openCheatsheetFromVerb(verb, Number(button.dataset.verbCheatsheet)));
-    });
   }
 
   const wrap = node.querySelector(".table-wrap");
@@ -14088,13 +14131,6 @@ function renderVerbCard(verb) {
       ${hasIrregularFormsInTenses(info, activeTenseIds) ? `<span class="irregular-legend">Формы не по шаблону</span>` : ""}
     </div>
   `);
-  node.querySelectorAll("[data-verb-mode]").forEach((button) => {
-    button.addEventListener("click", () => {
-      state.verbCardMode = button.dataset.verbMode;
-      renderVerbs();
-      scrollToCard("content");
-    });
-  });
   if (state.verbCardMode === "all") {
     wrap.classList.add("verb-tense-groups");
     VERB_TENSE_GROUPS.forEach((group, index) => {
@@ -14137,7 +14173,7 @@ function verbCheatsheetsMarkup(verb) {
     <section class="verb-cheatsheets" aria-label="Связанные шпаргалки">
       <div class="verb-cheatsheets-heading"><strong>Связанные шпаргалки</strong><span>по теме глагола</span></div>
       <div class="verb-cheatsheet-links">
-        ${items.map((item) => `<button class="small-button verb-cheatsheet-link" type="button" data-verb-cheatsheet="${item.index}">${escapeHTML(item.title)}</button>`).join("")}
+        ${items.map((item) => `<button class="small-button verb-cheatsheet-link" type="button" data-verb-cheatsheet="${item.index}" data-verb="${escapeHTML(verb)}">${escapeHTML(item.title)}</button>`).join("")}
       </div>
     </section>
   `;
@@ -14298,15 +14334,6 @@ function conjugationTable(info, tenseIds = MAIN_VERB_TENSE_IDS) {
     body.appendChild(row);
   });
   table.appendChild(body);
-  table.addEventListener("click", (event) => {
-    const button = event.target.closest("[data-open-tense]");
-    if (button) {
-      openTenseFromVerb(button.dataset.openTense);
-      return;
-    }
-    const exceptionButton = event.target.closest("[data-open-exception]");
-    if (exceptionButton) openExceptionFromVerb(exceptionButton.dataset.openException);
-  });
   return table;
 }
 
@@ -14401,16 +14428,8 @@ function renderVerbs() {
   results.className = "list-grid";
   results.id = "verbSearchResults";
   content.appendChild(searchPanel);
+  verbSearchView = { content, results, selectedPanel };
 
-  searchPanel.querySelector("#searchInput").addEventListener("input", (event) => {
-    state.query = event.target.value;
-    state.previousVerbQuery = null;
-    state.verbCardMode = "basic";
-    state.searchCursor = -1;
-    state.selectedVerb = null;
-    updateRouteHash("verbs", { replace: true });
-    renderVerbResults(content, results, selectedPanel);
-  });
   renderVerbResults(content, results, selectedPanel);
 }
 
@@ -14471,11 +14490,6 @@ function renderVerbResults(content, results, selectedPanel) {
       `;
       const recentList = recentCard.querySelector(".verb-list");
       recentVerbs.forEach((verb) => recentList.appendChild(renderVerbListItem(verb, { showBadges: false })));
-      recentCard.querySelector("[data-clear-recent]").addEventListener("click", () => {
-        state.recentVerbs = [];
-        appStorage.remove("msg:recentVerbs");
-        renderVerbs();
-      });
       results.appendChild(recentCard);
     }
   }
@@ -14523,13 +14537,6 @@ function renderVerbResults(content, results, selectedPanel) {
   if (isDefaultSuggestionPage) {
     list.classList.add("is-suggestions");
     visibleCommonVerbs.forEach((verb) => list.appendChild(renderVerbListItem(verb, { showBadges: true })));
-    listCard.querySelectorAll("[data-common-limit]").forEach((button) => {
-      button.addEventListener("click", () => {
-        state.commonVerbLimit = button.dataset.commonLimit === "all" ? "all" : Number(button.dataset.commonLimit);
-        renderVerbs();
-        if (state.commonVerbLimit !== "all") requestAnimationFrame(() => scrollToCard("commonVerbList"));
-      });
-    });
   } else {
     verbs.forEach((verb, index) => list.appendChild(renderVerbListItem(verb, { isBestMatch: isSearchMode && index === 0 })));
   }
@@ -14585,11 +14592,6 @@ function renderEmptyVerbSearch(rawQuery) {
       </div>
     </div>
   `;
-  card.querySelectorAll("[data-verb-suggestion]").forEach((button) => {
-    button.addEventListener("click", () => {
-      selectVerb(button.dataset.verbSuggestion, { keepReturnQuery: false });
-    });
-  });
   return card;
 }
 
@@ -14612,7 +14614,7 @@ function renderVerbListItem(verb, { showBadges = true, isBestMatch = false, show
         ${showBadges ? verbListBadges(info).join("") : ""}
       </span>
     </button>
-    <button class="favorite-button verb-row-favorite" type="button" aria-label="${state.cards.includes(verb) ? "Убрать из избранного" : "Добавить в избранное"}" title="Избранное">
+    <button class="favorite-button verb-row-favorite" type="button" data-verb-favorite="${escapeHTML(verb)}" aria-label="${state.cards.includes(verb) ? "Убрать из избранного" : "Добавить в избранное"}" title="Избранное">
       ${state.cards.includes(verb) ? "★" : "☆"}
     </button>
   `;
@@ -14624,10 +14626,6 @@ function renderVerbListItem(verb, { showBadges = true, isBestMatch = false, show
   if (feedback) {
     row.insertAdjacentHTML("beforeend", `<div class="favorite-feedback" role="status">${state.cardFeedback.added ? "Добавлено в избранное" : "Убрано из избранного"}</div>`);
   }
-  row.querySelector(".verb-pick").addEventListener("click", () => {
-    selectVerb(verb, { keepReturnQuery: state.view === "verbs" });
-  });
-  row.querySelector(".verb-row-favorite").addEventListener("click", () => toggleCard(verb));
   return row;
 }
 

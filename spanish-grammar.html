@@ -4337,7 +4337,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.56 · обновлено: 30.09.2026 00:26 CEST</span>
+        <span>Версия MVP 1.57 · обновлено: 11.10.2026 13:49 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -14738,6 +14738,89 @@ function hasIrregularBehavior(info) {
 }
 
 // ═══════ 11. Вкладка «Времена» ═══════
+// Обработчики вкладки «Времена». Разметка времён рендерится в #content; все атрибуты ниже
+// встречаются только в этой вкладке. Клик обрабатывает одна делегированная регистрация,
+// поэтому перерисовка не требует повторной привязки.
+onDelegated("click", "#content [data-show-all-tenses]", () => {
+  state.focusedTense = null;
+  state.returnMood = null;
+  state.openMoreExamplesTense = null;
+  renderTenses();
+  updateRouteHash("tenses");
+  scrollToCard("tensesTop");
+});
+onDelegated("click", "#content [data-return-mood]", (_event, target) => {
+  state.selectedMood = target.dataset.returnMood;
+  persist("selectedMood");
+  resetMoodDetailState();
+  state.view = "moods";
+  state.focusedTense = null;
+  state.returnMood = null;
+  syncActiveTab("moods");
+  renderMoods();
+  updateRouteHash(`mood-${state.selectedMood}`);
+  scrollToCard("content");
+});
+onDelegated("click", "#content [data-focus-tense]", (_event, target) => {
+  const nextId = target.dataset.focusTense;
+  if (!nextId) return;
+  state.focusedTense = nextId;
+  state.openMoreExamplesTense = null;
+  state.openFormationTense = null;
+  state.openSignalsTense = null;
+  state.openExceptionTense = null;
+  renderTenses();
+  updateRouteHash(`tense-${nextId}`);
+  scrollToCard(`tense-${nextId}`);
+});
+onDelegated("click", "#content [data-toggle-tense-toc]", () => {
+  state.showTenseToc = !state.showTenseToc;
+  renderTenses();
+  scrollToCard("tensesTop");
+});
+onDelegated("click", "#content [data-tense-filter]", (_event, target) => {
+  state.tenseFilter = target.dataset.tenseFilter;
+  persist("tenseFilter");
+  renderTenses();
+  scrollToCard("tensesTop");
+});
+onDelegated("click", "#content [data-jump]", (_event, target) => {
+  state.focusedTense = target.dataset.jump;
+  state.returnMood = null;
+  state.openMoreExamplesTense = null;
+  renderTenses();
+  updateRouteHash(`tense-${state.focusedTense}`);
+  scrollToCard(`tense-${state.focusedTense}`);
+});
+onDelegated("click", "#content [data-mobile-tense]", (_event, target) => {
+  const tenseId = target.dataset.mobileTense;
+  const closing = state.openMobileTense === tenseId;
+  state.openMobileTense = closing ? null : tenseId;
+  state.openFormationTense = null;
+  state.openSignalsTense = null;
+  state.openExceptionTense = null;
+  state.openMoreExamplesTense = null;
+  renderTenses();
+  scrollToCard(`tense-${tenseId}`);
+});
+onDelegated("click", "#content [data-formation]", (_event, target) => {
+  const tenseId = target.dataset.formation;
+  state.openFormationTense = state.openFormationTense === tenseId ? null : tenseId;
+  renderTenses();
+  scrollToCard(`tense-${tenseId}`);
+});
+onDelegated("click", "#content [data-contrast-tense]", (_event, target) => {
+  const nextId = target.dataset.contrastTense;
+  if (!tenseById(nextId)) return;
+  state.focusedTense = nextId;
+  state.openMoreExamplesTense = null;
+  state.openFormationTense = null;
+  state.openSignalsTense = null;
+  state.openExceptionTense = null;
+  renderTenses();
+  updateRouteHash(`tense-${nextId}`);
+  scrollToCard(`tense-${nextId}`);
+});
 function renderTenses() {
   const content = clearContent();
   const focusedTense = tenseById(state.focusedTense);
@@ -14767,38 +14850,6 @@ function renderTenses() {
     });
     content.appendChild(focusNav);
     content.appendChild(renderTenseCard(focusedTense));
-    bindClickAll(focusNav, "[data-show-all-tenses]", () => {
-      state.focusedTense = null;
-      state.returnMood = null;
-      state.openMoreExamplesTense = null;
-      renderTenses();
-      updateRouteHash("tenses");
-      scrollToCard("tensesTop");
-    });
-    bindClickAll(focusNav, "[data-return-mood]", (event) => {
-      state.selectedMood = event.currentTarget.dataset.returnMood;
-      persist("selectedMood");
-      resetMoodDetailState();
-      state.view = "moods";
-      state.focusedTense = null;
-      state.returnMood = null;
-      syncActiveTab("moods");
-      renderMoods();
-      updateRouteHash(`mood-${state.selectedMood}`);
-      scrollToCard("content");
-    });
-    bindClickAll(focusNav, "[data-focus-tense]", (event) => {
-      const nextId = event.currentTarget.dataset.focusTense;
-      if (!nextId) return;
-      state.focusedTense = nextId;
-      state.openMoreExamplesTense = null;
-      state.openFormationTense = null;
-      state.openSignalsTense = null;
-      state.openExceptionTense = null;
-      renderTenses();
-      updateRouteHash(`tense-${nextId}`);
-      scrollToCard(`tense-${nextId}`);
-    });
     return;
   }
 
@@ -14856,26 +14907,6 @@ function renderTenses() {
     ` : ""}
   `});
   content.appendChild(nav);
-  bindClickAll(nav, "[data-toggle-tense-toc]", () => {
-    state.showTenseToc = !state.showTenseToc;
-    renderTenses();
-    scrollToCard("tensesTop");
-  });
-  bindClickAll(nav, "[data-tense-filter]", (event) => {
-    const button = event.currentTarget;
-    state.tenseFilter = button.dataset.tenseFilter;
-    persist("tenseFilter");
-    renderTenses();
-    scrollToCard("tensesTop");
-  });
-  bindClickAll(nav, "[data-jump]", (event) => {
-    state.focusedTense = event.currentTarget.dataset.jump;
-    state.returnMood = null;
-    state.openMoreExamplesTense = null;
-    renderTenses();
-    updateRouteHash(`tense-${state.focusedTense}`);
-    scrollToCard(`tense-${state.focusedTense}`);
-  });
 
   visibleGroups.forEach((group) => {
     content.appendChild(groupHeading(group.title, group.description));
@@ -14929,21 +14960,6 @@ function renderTenseCard(tense) {
       ${disclosureButton({ open: exceptionsOpen, target: tense.id, label: "Исключения", hideLabel: "Скрыть исключения", action: "exceptions" })}
     </div>
   `;
-  bindClickAll(section, "[data-mobile-tense]", () => {
-    const closing = state.openMobileTense === tense.id;
-    state.openMobileTense = closing ? null : tense.id;
-    state.openFormationTense = null;
-    state.openSignalsTense = null;
-    state.openExceptionTense = null;
-    state.openMoreExamplesTense = null;
-    renderTenses();
-    scrollToCard(`tense-${tense.id}`);
-  });
-  bindClickAll(section, "[data-formation]", () => {
-    state.openFormationTense = state.openFormationTense === tense.id ? null : tense.id;
-    renderTenses();
-    scrollToCard(`tense-${tense.id}`);
-  });
   section.querySelector("[data-signals]").addEventListener("click", () => {
     state.openSignalsTense = state.openSignalsTense === tense.id ? null : tense.id;
     renderTenses();
@@ -14953,18 +14969,6 @@ function renderTenseCard(tense) {
     state.openExceptionTense = state.openExceptionTense === tense.id ? null : tense.id;
     renderTenses();
     scrollToCard(`tense-${tense.id}`);
-  });
-  bindClickAll(section, "[data-contrast-tense]", (event) => {
-    const nextId = event.currentTarget.dataset.contrastTense;
-    if (!tenseById(nextId)) return;
-    state.focusedTense = nextId;
-    state.openMoreExamplesTense = null;
-    state.openFormationTense = null;
-    state.openSignalsTense = null;
-    state.openExceptionTense = null;
-    renderTenses();
-    updateRouteHash(`tense-${nextId}`);
-    scrollToCard(`tense-${nextId}`);
   });
   section.querySelector("[data-tense-examples]")?.addEventListener("click", () => {
     state.openMoreExamplesTense = state.openMoreExamplesTense === tense.id ? null : tense.id;

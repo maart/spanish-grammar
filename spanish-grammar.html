@@ -4337,7 +4337,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.64 · обновлено: 11.10.2026 15:24 CEST</span>
+        <span>Версия MVP 1.65 · обновлено: 11.10.2026 15:33 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -16443,12 +16443,24 @@ function saveLearningCheckResult(levelId, percent) {
   persist("learningChecks");
 }
 
+// Значения из сохранённой проверки уровня (хранилище, импорт) выводим только как проверенные числа и даты.
+function storedPercentText(value) {
+  const number = typeof value === "number" || (typeof value === "string" && value.trim() !== "") ? Number(value) : NaN;
+  return Number.isFinite(number) ? `${number}%` : "—";
+}
+
+function storedDateText(value) {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? "" : date.toLocaleDateString("ru-RU");
+}
+
 function learningCheckCardMarkup(level) {
   if (!learningModulesFor(level.id).some((module) => module.lessons.length)) return "";
   const record = state.learningChecks[level.id];
-  const passed = record?.passedAt ? ` Уровень подтверждён ${new Date(record.passedAt).toLocaleDateString("ru-RU")}.` : "";
-  const result = record ? `<p><strong>Лучший результат: ${record.best}%, последний: ${record.last}%.</strong>${passed}</p>` : "";
-  return `<section class="learning-check-card"><div><h3>Итоговая проверка ${level.label}</h3><p class="muted">${LEARNING_CHECK_SIZE} случайных заданий из уроков уровня, не меньше одного из каждого модуля; 5–10 минут. Уровень подтверждён при ${Math.round(LEARNING_CHECK_PASS_SHARE * 100)}% верных. Ответы не попадают в уроки.</p>${result}</div><button class="small-button primary" type="button" data-check-start>${record ? "Пройти ещё раз" : "Начать проверку"}</button></section>`;
+  const passedDate = record?.passedAt ? storedDateText(record.passedAt) : "";
+  const passed = passedDate ? ` Уровень подтверждён ${escapeHTML(passedDate)}.` : "";
+  const result = record ? `<p><strong>Лучший результат: ${storedPercentText(record.best)}, последний: ${storedPercentText(record.last)}.</strong>${passed}</p>` : "";
+  return `<section class="learning-check-card"><div><h3>Итоговая проверка ${escapeHTML(level.label)}</h3><p class="muted">${LEARNING_CHECK_SIZE} случайных заданий из уроков уровня, не меньше одного из каждого модуля; 5–10 минут. Уровень подтверждён при ${Math.round(LEARNING_CHECK_PASS_SHARE * 100)}% верных. Ответы не попадают в уроки.</p>${result}</div><button class="small-button primary" type="button" data-check-start>${record ? "Пройти ещё раз" : "Начать проверку"}</button></section>`;
 }
 
 function learningCheckMarkup(level) {
@@ -16551,9 +16563,10 @@ function learningLevelBodyMarkup(level) {
   const lessonLine = lesson ? `<small>${nextLesson.status === "started" ? "Начатый урок" : "Следующий урок"}: ${lesson.id}. ${escapeHTML(lesson.title.ru)} · ≈ ${textbookLessonMinutes(lesson)} мин</small>` : "";
   const pendingLine = pending && lesson ? `<p class="plan-next-extra">${learningPendingText(pending.module)} <button class="link-button" type="button" data-open-learning-module="${pending.module.id}">Открыть модуль</button></p>` : "";
   const goNext = nextLevel ? `<button class="small-button primary" type="button" data-go-learning-level="${nextLevel.id}">Перейти к ${nextLevel.label}</button>` : "";
+  const passedDate = storedDateText(record?.passedAt);
   let nextStepMarkup;
   if (record?.passedAt) {
-    nextStepMarkup = `<div class="plan-next-step"><div><p><strong>Уровень ${level.label} подтверждён итоговой проверкой</strong></p><small>${new Date(record.passedAt).toLocaleDateString("ru-RU")}, лучший результат ${record.best}%.${lesson ? " Оставшиеся уроки можно пройти для закрепления." : ""}</small></div><div class="plan-next-actions">${goNext}${lesson ? `<button class="small-button" type="button" data-textbook-open="${lesson.id}">Продолжить уроки</button>` : ""}</div></div>`;
+    nextStepMarkup = `<div class="plan-next-step"><div><p><strong>Уровень ${escapeHTML(level.label)} подтверждён итоговой проверкой</strong></p><small>${passedDate ? `${escapeHTML(passedDate)}, ` : ""}лучший результат ${storedPercentText(record.best)}.${lesson ? " Оставшиеся уроки можно пройти для закрепления." : ""}</small></div><div class="plan-next-actions">${goNext}${lesson ? `<button class="small-button" type="button" data-textbook-open="${lesson.id}">Продолжить уроки</button>` : ""}</div></div>`;
   } else if (lesson) {
     nextStepMarkup = `<div class="plan-next-step"><div>${nowTitle}${lessonLine}${pendingLine}</div><button class="small-button primary" type="button" data-textbook-open="${lesson.id}">Продолжить</button></div>`;
   } else if (pending) {
@@ -17300,6 +17313,12 @@ function cardStatsFor(verb) {
   return state.cardStats[verb] || { attempts: 0, correct: 0, mistakes: 0, streak: 0, lastReviewed: null };
 }
 
+// Счётчик из сохранённой статистики (хранилище, импорт): конечное число не меньше нуля, иначе 0.
+function storedCount(value) {
+  const number = Number(value);
+  return Number.isFinite(number) && number > 0 ? number : 0;
+}
+
 function cardAccuracy(stats) {
   return stats.attempts > 0 ? Math.round((stats.correct / stats.attempts) * 100) : 0;
 }
@@ -17580,7 +17599,9 @@ function cardsStudyListSection() {
   const list = listCard.querySelector(".verb-list");
   visibleCards.forEach((verb) => {
     const stats = cardStatsFor(verb);
-    const accuracy = cardAccuracy(stats);
+    const attempts = storedCount(stats.attempts);
+    const correct = storedCount(stats.correct);
+    const accuracy = cardAccuracy({ attempts, correct });
     const mastered = isCardMastered(verb);
     const needsReview = cardNeedsReview(verb);
     const status = stats.attempts === 0 ? "Не проверялся" : mastered ? "Освоен" : needsReview ? "Повторить" : "В работе";
@@ -17591,9 +17612,9 @@ function cardsStudyListSection() {
       <div class="cards-study-meta">
         <span class="${statusClass}" title="${mastered ? "Минимум 3 ответа, точность от 80% и серия от 2" : "Статус изучения"}">${status}</span>
       </div>
-      <div class="cards-study-progress" title="${stats.correct} правильных из ${stats.attempts}">
+      <div class="cards-study-progress" title="${correct} правильных из ${attempts}">
         <span class="cards-study-progress-track" role="progressbar" aria-label="Точность: ${accuracy}%" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${accuracy}"><i style="width: ${accuracy}%"></i></span>
-        <strong>${stats.attempts > 0 ? `${accuracy}%` : "—"}</strong>
+        <strong>${attempts > 0 ? `${accuracy}%` : "—"}</strong>
       </div>
       <button class="study-verb-quiz" type="button" data-quiz-verb="${verb}" aria-label="Проверить 5 форм глагола ${escapeHTML(displayInfinitive(verb))}" title="Проверить 5 форм"><span aria-hidden="true">▶</span> Проверить 5 форм</button>
     </div>`);
@@ -18141,10 +18162,12 @@ onDelegated("click", ".study-card [data-remove]", (_event, target) => {
 });
 onDelegated("click", ".study-card [data-undo-remove]", () => restoreLastRemovedCard());
 onDelegated("click", ".study-card [data-result-verb]", (_event, target) => {
+  if (!BASE_VERBS.includes(target.dataset.resultVerb)) return;
   clearQuizHotkeys();
   openVerbFromReference(target.dataset.resultVerb);
 });
 onDelegated("click", ".study-card [data-result-tense]", (_event, target) => {
+  if (!tenseById(target.dataset.resultTense)) return;
   clearQuizHotkeys();
   openTenseFromVerb(target.dataset.resultTense);
 });
@@ -18282,8 +18305,8 @@ function renderCardQuizResults(content) {
             <span>Правильно<strong>${escapeHTML(attempt.question.answer)}</strong></span>
           </div>
           <div class="quiz-result-links">
-            <button class="small-button" type="button" data-result-verb="${attempt.question.verb}">Открыть глагол</button>
-            ${attempt.question.tense ? `<button class="small-button" type="button" data-result-tense="${attempt.question.tense}">Посмотреть время</button>` : ""}
+            <button class="small-button" type="button" data-result-verb="${escapeHTML(String(attempt.question.verb))}">Открыть глагол</button>
+            ${attempt.question.tense ? `<button class="small-button" type="button" data-result-tense="${escapeHTML(String(attempt.question.tense))}">Посмотреть время</button>` : ""}
           </div>
         </div>
       `).join("")}

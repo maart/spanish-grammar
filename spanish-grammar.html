@@ -4337,7 +4337,7 @@ select {
 
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.59 · обновлено: 11.10.2026 14:47 CEST</span>
+        <span>Версия MVP 1.60 · обновлено: 11.10.2026 15:10 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -15695,6 +15695,47 @@ const MOOD_TAB_LABELS = {
 };
 
 // ═══════ 13. Вкладка «Наклонения» ═══════
+// Обработчики вкладки «Наклонения». Выбор и панель наклонения перерисовываются целиком, поэтому
+// клики слушает одна делегированная регистрация. Наклонение для ссылок на времена читается из data-mood-panel панели.
+onDelegated("click", "#content [data-mood], #content [data-choose-mood]", (_event, target) => {
+  selectMood(target.dataset.mood || target.dataset.chooseMood);
+});
+onDelegated("click", "#content [data-chooser-step]", (_event, target) => {
+  state.moodChooserStep = target.dataset.chooserStep;
+  renderMoods();
+});
+onDelegated("click", "#content [data-toggle-mood-chooser]", () => {
+  state.showMoodChooser = !state.showMoodChooser;
+  if (state.showMoodChooser) state.moodChooserStep = "start";
+  renderMoods();
+});
+onDelegated("click", "[data-mood-panel] [data-open-tense]", (_event, target) => {
+  openTenseFromMood(target.dataset.openTense, target.closest("[data-mood-panel]").dataset.moodPanel);
+});
+onDelegated("click", "#content [data-toggle-mood-confusion]", () => {
+  state.showMoodConfusion = !state.showMoodConfusion;
+  renderMoods();
+});
+onDelegated("click", "#content [data-toggle-mood-advanced]", () => {
+  state.showMoodAdvanced = !state.showMoodAdvanced;
+  renderMoods();
+});
+onDelegated("click", "#content [data-toggle-mood-triggers]", () => {
+  state.showMoodMoreTriggers = !state.showMoodMoreTriggers;
+  renderMoods();
+});
+onDelegated("click", "#content [data-toggle-imperativo-irregulars]", () => {
+  state.showImperativoIrregulars = !state.showImperativoIrregulars;
+  renderMoods();
+});
+onDelegated("click", "#content [data-toggle-imperativo-pronouns]", () => {
+  state.showImperativoPronouns = !state.showImperativoPronouns;
+  renderMoods();
+});
+onDelegated("click", "#content [data-toggle-mood-examples]", () => {
+  state.showMoodMoreExamples = !state.showMoodMoreExamples;
+  renderMoods();
+});
 function renderMoods() {
   const content = clearContent();
   const selected = MOODS.find((mood) => mood.id === state.selectedMood) || MOODS[0];
@@ -15729,28 +15770,13 @@ function renderMoods() {
     </div>
   `;
   content.appendChild(selector);
-  selector.querySelectorAll("[data-mood], [data-choose-mood]").forEach((button) => {
-    button.addEventListener("click", () => {
-      selectMood(button.dataset.mood || button.dataset.chooseMood);
-    });
-  });
-  selector.querySelectorAll("[data-chooser-step]").forEach((button) => {
-    button.addEventListener("click", () => {
-      state.moodChooserStep = button.dataset.chooserStep;
-      renderMoods();
-    });
-  });
-  selector.querySelector("[data-toggle-mood-chooser]").addEventListener("click", () => {
-    state.showMoodChooser = !state.showMoodChooser;
-    if (state.showMoodChooser) state.moodChooserStep = "start";
-    renderMoods();
-  });
 
   if (state.showMoodChooser) return;
 
   const section = document.createElement("section");
   section.className = "info-card";
   section.id = `mood-panel-${selected.id}`;
+  section.dataset.moodPanel = selected.id;
   section.setAttribute("role", "region");
   section.setAttribute("aria-labelledby", selected.id === "condicional" ? "mood-related-condicional" : `mood-tab-${selected.id}`);
   section.innerHTML = `
@@ -15787,33 +15813,6 @@ function renderMoods() {
     ` : ""}
   `;
   content.appendChild(section);
-  section.querySelectorAll("[data-open-tense]").forEach((button) => {
-    button.addEventListener("click", () => openTenseFromMood(button.dataset.openTense, selected.id));
-  });
-  section.querySelector("[data-toggle-mood-confusion]")?.addEventListener("click", () => {
-    state.showMoodConfusion = !state.showMoodConfusion;
-    renderMoods();
-  });
-  section.querySelector("[data-toggle-mood-advanced]")?.addEventListener("click", () => {
-    state.showMoodAdvanced = !state.showMoodAdvanced;
-    renderMoods();
-  });
-  section.querySelector("[data-toggle-mood-triggers]")?.addEventListener("click", () => {
-    state.showMoodMoreTriggers = !state.showMoodMoreTriggers;
-    renderMoods();
-  });
-  section.querySelector("[data-toggle-imperativo-irregulars]")?.addEventListener("click", () => {
-    state.showImperativoIrregulars = !state.showImperativoIrregulars;
-    renderMoods();
-  });
-  section.querySelector("[data-toggle-imperativo-pronouns]")?.addEventListener("click", () => {
-    state.showImperativoPronouns = !state.showImperativoPronouns;
-    renderMoods();
-  });
-  section.querySelector("[data-toggle-mood-examples]")?.addEventListener("click", () => {
-    state.showMoodMoreExamples = !state.showMoodMoreExamples;
-    renderMoods();
-  });
 }
 
 function selectMood(moodId, { updateRoute = true } = {}) {

@@ -40,7 +40,7 @@ const sandbox = {
 // Execute the JS in the sandbox
 const fn = new Function(
   ...Object.keys(sandbox),
-  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, TENSE_EXAMPLES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, VERB_TENSE_GROUPS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize, generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer, cardAccuracy, isCardMastered, cardNeedsReview, cardsForFilter, studyCardCounts, validateData, staticChecksData: { TRANSLATIONS, TENSES, TENSE_EXAMPLES, TENSE_LESSONS, USEFUL_TABLES, TABLE_GROUPS, MOODS, LEARNING_MODULES, TEXTBOOK_LESSONS, BASE_VERBS, LEARNING_AFTER_B2 } };"
+  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, TENSE_EXAMPLES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, VERB_TENSE_GROUPS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize, generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer, cardAccuracy, isCardMastered, cardNeedsReview, cardsForFilter, studyCardCounts, validateData, normalizeTextbookAnswer, diagnoseVerbMistake, staticChecksData: { TRANSLATIONS, TENSES, TENSE_EXAMPLES, TENSE_LESSONS, USEFUL_TABLES, TABLE_GROUPS, MOODS, LEARNING_MODULES, TEXTBOOK_LESSONS, BASE_VERBS, LEARNING_AFTER_B2 } };"
 );
 const api = fn(...Object.values(sandbox));
 
@@ -61,7 +61,7 @@ const {
   isReflexive, baseVerb, state, filteredVerbs,
   generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer,
   cardAccuracy, isCardMastered, cardNeedsReview, cardsForFilter, studyCardCounts,
-  validateData,
+  validateData, normalizeTextbookAnswer, diagnoseVerbMistake,
 } = api;
 
 // ─── Reference data: known correct conjugations ─────────────────────────────
@@ -1278,7 +1278,43 @@ for (const testCase of SEARCH_CASES) {
   }
 }
 
+const describeDiagnosis = (mistake) => mistake ? `${mistake.kind}: ${mistake.user} = ${mistake.userLabel} | ${mistake.expectedLabel}` : "null";
 const QUIZ_CASES = [
+  {
+    label: "textbook answer ignores punctuation",
+    actual: () => normalizeTextbookAnswer("¿Sí, la tengo!"),
+    expected: "sí la tengo",
+  },
+  {
+    label: "diagnosis: wrong person",
+    actual: () => describeDiagnosis(diagnoseVerbMistake("fui", "fue", ["(ir, él)"], 59)),
+    expected: "person: fui = yo | él/ella",
+  },
+  {
+    label: "diagnosis: compound vs simple tense in a sentence",
+    actual: () => describeDiagnosis(diagnoseVerbMistake("Ayer he comido mucho.", "Ayer comí mucho.", ["(comer)"], 62)),
+    expected: "tense: he comido = pretérito perfecto | pretérito indefinido",
+  },
+  {
+    label: "diagnosis: lesson tense resolves habla (imperativo tú, not presente él)",
+    actual: () => describeDiagnosis(diagnoseVerbMistake("hablas", "habla", ["(hablar, tú)"], 73)),
+    expected: "tense: hablas = presente | imperativo",
+  },
+  {
+    label: "diagnosis: ser instead of estar",
+    actual: () => describeDiagnosis(diagnoseVerbMistake("es", "está", ["Completa con ser o estar."], 44)),
+    expected: "verb: es = ser | estar",
+  },
+  {
+    label: "diagnosis: no verb named in the task (casa is not casar)",
+    actual: () => describeDiagnosis(diagnoseVerbMistake("casa", "casas", ["casa"], 3)),
+    expected: "null",
+  },
+  {
+    label: "quiz explains a wrong person",
+    actual: () => evaluateAnswer("hablas", { type: "conjugation", verb: "hablar", tense: "presente", person: 0, answer: "hablo" }).message,
+    expected: "Ответ пока неверный: «hablas» — форма для tú; здесь нужна форма для yo.",
+  },
   {
     label: "infinitive count",
     actual: () => generateInfinitiveQuestions(["tener", "hacer"], 2).length,

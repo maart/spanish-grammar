@@ -3493,6 +3493,7 @@ td.irregular {
 .textbook-feedback { margin-top: 8px; font-size: 13px; }
 .textbook-feedback strong { color: var(--text); }
 .textbook-feedback-note { display: block; margin-top: 4px; }
+.answer-diff-mark { border-radius: 4px; padding: 0 2px; background: var(--accent-soft); color: var(--text); font-weight: 700; }
 .textbook-exercise-toggle:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
@@ -4408,7 +4409,7 @@ select {
       <p id="viewAnnouncer" class="sr-only" role="status" aria-live="polite"></p>
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.76 · обновлено: 12.10.2026 20:38 CEST</span>
+        <span>Версия MVP 1.77 · обновлено: 12.10.2026 20:46 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -4442,8 +4443,8 @@ select {
 //  5. Данные: уровни и страница «C1 и C2» для Плана
 //  6. Хранилище (localStorage) и состояние приложения
 //  7. Данные: учебник (уроки, теория, связи, уровни, группы каталога)
-//  8. Утилиты: экранирование и шаблон html, делегированные события, перерисовка
-//  9. Спряжение: правила, исключения, формы (formsFor, verbInfo)
+//  8. Утилиты: экранирование и шаблон html, делегированные события, перерисовка, пословный diff
+//  9. Спряжение: правила, исключения, формы (formsFor, verbInfo), разбор неверной формы
 // 10. Вкладка «Глаголы»: карточка глагола, поиск, список
 // 11. Вкладка «Времена»
 // 12. Вкладка «Шпаргалки»
@@ -13042,7 +13043,7 @@ function disclosureButton({ open, target, label, hideLabel = `Скрыть ${lab
   </button>`;
 }
 
-// ═══════ 8. Утилиты: экранирование и шаблон html, делегированные события, перерисовка ═══════
+// ═══════ 8. Утилиты: экранирование и шаблон html, делегированные события, перерисовка, пословный diff ═══════
 function escapeHTML(str) {
   return String(str)
     .replace(/&/g, "&amp;")
@@ -13311,7 +13312,59 @@ function stem(verb) {
   return baseVerb(verb).slice(0, -2);
 }
 
-// ═══════ 9. Спряжение: правила, исключения, формы (formsFor, verbInfo) ═══════
+// Пословное сравнение ответа с образцом (наибольшая общая подпоследовательность слов).
+// Возвращает шаги { type: "same" | "user" | "expected", word }: "user" — лишнее или неверное слово ответа,
+// "expected" — слово образца, которого в ответе нет.
+function diffWords(userWords, expectedWords) {
+  const rows = userWords.length;
+  const cols = expectedWords.length;
+  const table = Array.from({ length: rows + 1 }, () => new Array(cols + 1).fill(0));
+  for (let i = rows - 1; i >= 0; i -= 1) {
+    for (let j = cols - 1; j >= 0; j -= 1) {
+      table[i][j] = userWords[i] === expectedWords[j] ? table[i + 1][j + 1] + 1 : Math.max(table[i + 1][j], table[i][j + 1]);
+    }
+  }
+  const steps = [];
+  let i = 0;
+  let j = 0;
+  while (i < rows || j < cols) {
+    if (i < rows && j < cols && userWords[i] === expectedWords[j]) {
+      steps.push({ type: "same", word: expectedWords[j] });
+      i += 1;
+      j += 1;
+    } else if (j < cols && (i === rows || table[i][j + 1] >= table[i + 1][j])) {
+      steps.push({ type: "expected", word: expectedWords[j] });
+      j += 1;
+    } else {
+      steps.push({ type: "user", word: userWords[i] });
+      i += 1;
+    }
+  }
+  return steps;
+}
+
+// Участки расхождения: подряд идущие шаги "user"/"expected" между совпадающими словами.
+// before/after — совпадающие слова по краям (нужны составным формам: «he comido», «me levanto»).
+function diffSegments(steps) {
+  const segments = [];
+  let current = null;
+  steps.forEach((step, index) => {
+    if (step.type === "same") {
+      if (current) {
+        current.after = step.word;
+        segments.push(current);
+        current = null;
+      }
+      return;
+    }
+    if (!current) current = { user: [], expected: [], before: steps[index - 1]?.word || "", after: "" };
+    current[step.type].push(step.word);
+  });
+  if (current) segments.push(current);
+  return segments;
+}
+
+// ═══════ 9. Спряжение: правила, исключения, формы (formsFor, verbInfo), разбор неверной формы ═══════
 function regularPresent(verb) {
   const generated = generatedPresent(verb);
   if (generated) return generated;
@@ -14304,6 +14357,144 @@ function setView(view, { updateRoute = true } = {}) {
     const savedPosition = previousView !== view ? state.viewScrollPositions[view] : null;
     window.scrollTo({ top: Number.isFinite(savedPosition) ? savedPosition : 0, behavior: "auto" });
   });
+}
+
+// ── Разбор неверного ответа: какой формой глагола оказалось слово ученика ──
+// Глаголы берутся только из текста задания (инфинитив в условии или в подсказке), поэтому «casas»
+// в упражнении про существительные не принимается за форму casar.
+const DIAGNOSIS_TENSE_LABELS = {
+  presente: "presente",
+  perfecto: "pretérito perfecto",
+  indefinido: "pretérito indefinido",
+  imperfecto: "pretérito imperfecto",
+  pluscuamperfecto: "pluscuamperfecto",
+  futuro: "futuro",
+  futuro_perfecto: "futuro perfecto",
+  condicional: "condicional",
+  condicional_compuesto: "condicional compuesto",
+  subjuntivo_presente: "presente de subjuntivo",
+  subjuntivo_perfecto: "perfecto de subjuntivo",
+  subjuntivo_imperfecto: "imperfecto de subjuntivo",
+  subjuntivo_pluscuamperfecto: "pluscuamperfecto de subjuntivo",
+  imperativo_afirmativo: "imperativo",
+  imperativo_negativo: "imperativo negativo"
+};
+const DIAGNOSIS_NONFINITE_LABELS = ["infinitivo", "gerundio", "participio"];
+const IMPERATIVE_PEOPLE = ["-", "tú", "usted", "nosotros", "vosotros", "ustedes"];
+
+let infinitiveLookup = null;
+
+function verbKeyForWord(word) {
+  if (!infinitiveLookup) {
+    infinitiveLookup = new Map(BASE_VERBS.map((verb) => [verb, verb]));
+    Object.entries(DISPLAY_INFINITIVES).forEach(([verb, shown]) => infinitiveLookup.set(shown, verb));
+  }
+  return infinitiveLookup.get(word);
+}
+
+// Глаголы, инфинитивы которых встречаются в текстах задания; у возвратного добавляется и простой глагол.
+function verbsMentionedIn(texts) {
+  const verbs = new Set();
+  texts.join(" ").toLocaleLowerCase("es-ES").split(/[^\p{L}]+/u).forEach((word) => {
+    const verb = word && verbKeyForWord(word);
+    if (!verb) return;
+    verbs.add(verb);
+    if (isReflexive(verb) && BASE_VERBS.includes(baseVerb(verb))) verbs.add(baseVerb(verb));
+  });
+  return verbs;
+}
+
+// Форма (одно или несколько слов, как в ответе) → где она встречается: { verb, tense, person }.
+// Для formas_no_personales person — номер в DIAGNOSIS_NONFINITE_LABELS.
+function formIndexFor(verbs) {
+  const index = new Map();
+  const add = (form, entry) => {
+    const key = normalizeTextbookAnswer(form);
+    if (!key || key === "-") return;
+    if (!index.has(key)) index.set(key, []);
+    index.get(key).push(entry);
+  };
+  verbs.forEach((verb) => {
+    const forms = formsFor(verb);
+    Object.keys(DIAGNOSIS_TENSE_LABELS).forEach((tense) => {
+      forms[tense]?.forEach((form, person) => add(form, { verb, tense, person }));
+    });
+    forms.formas_no_personales.slice(0, 3).forEach((form, person) => add(form, { verb, tense: "formas_no_personales", person }));
+  });
+  return index;
+}
+
+function diagnosisPersonLabel(tense, person) {
+  if (tense === "formas_no_personales") return DIAGNOSIS_NONFINITE_LABELS[person];
+  return tense.startsWith("imperativo") ? IMPERATIVE_PEOPLE[person] : PEOPLE[person];
+}
+
+// Сравнивает толкования слова ученика и правильного слова и возвращает { kind, userLabel, expectedLabel }:
+// kind "person" — то же время, другое лицо; "tense" — то же лицо, другое время; "both"; "verb" — другой глагол.
+// Пара выбирается по ключу: тема урока для правильного слова (время из lessonTenses, затем любое, кроме imperativo:
+// у правильных глаголов habla — и presente él, и imperativo tú), затем наименьшее различие, затем тема урока для
+// слова ученика. Если лучшие пары всё равно объясняют ошибку по-разному, разбора нет — лучше промолчать.
+function describeFormMistake(userEntries, expectedEntries, lessonTenses = new Set()) {
+  const rank = (tense) => lessonTenses.has(tense) ? 0 : tense.startsWith("imperativo") ? 2 : 1;
+  let best = [];
+  let bestKey = null;
+  userEntries.forEach((user) => {
+    expectedEntries.forEach((expected) => {
+      const difference = user.verb !== expected.verb ? 3 : Number(user.tense !== expected.tense) + Number(user.person !== expected.person);
+      if (difference === 0) return;
+      const key = [rank(expected.tense), difference, rank(user.tense)];
+      const order = bestKey ? key.findIndex((value, index) => value !== bestKey[index]) : -1;
+      if (!bestKey || (order >= 0 && key[order] < bestKey[order])) {
+        bestKey = key;
+        best = [];
+      } else if (order >= 0) {
+        return;
+      }
+      best.push({ user, expected });
+    });
+  });
+  if (!best.length) return null;
+  const unique = (values) => [...new Set(values)].join(" / ");
+  if (bestKey[1] === 3) {
+    const userVerbs = best.map((pair) => displayInfinitive(pair.user.verb));
+    const expectedVerbs = best.map((pair) => displayInfinitive(pair.expected.verb));
+    if (userVerbs.some((verb) => expectedVerbs.includes(verb))) return null;
+    return { kind: "verb", userLabel: unique(userVerbs), expectedLabel: unique(expectedVerbs) };
+  }
+  const { user, expected } = best[0];
+  if (best.some((pair) => pair.user.tense !== user.tense || pair.expected.tense !== expected.tense)) return null;
+  const userPeople = unique(best.map((pair) => diagnosisPersonLabel(user.tense, pair.user.person)));
+  const expectedPeople = unique(best.map((pair) => diagnosisPersonLabel(expected.tense, pair.expected.person)));
+  const tenseLabel = (tense, people) => tense === "formas_no_personales" ? people : DIAGNOSIS_TENSE_LABELS[tense];
+  if (user.tense === expected.tense) return { kind: "person", userLabel: userPeople, expectedLabel: expectedPeople };
+  if (user.person === expected.person) return { kind: "tense", userLabel: tenseLabel(user.tense, userPeople), expectedLabel: tenseLabel(expected.tense, expectedPeople) };
+  const formLabel = (tense, people) => tense === "formas_no_personales" ? people : `${DIAGNOSIS_TENSE_LABELS[tense]}, ${people}`;
+  return { kind: "both", userLabel: formLabel(user.tense, userPeople), expectedLabel: formLabel(expected.tense, expectedPeople) };
+}
+
+// Разбор ответа: { user, expected, ...describeFormMistake } для первого участка расхождения, который удалось
+// объяснить формами глаголов из задания, или null. Участок пробуется и вместе с соседним совпавшим словом:
+// так находятся составные формы («he comido» против «comí»), местоимения возвратных глаголов и «no» в imperativo.
+// lessonId задаёт времена урока (TENSE_LESSONS) для выбора между равными толкованиями.
+function diagnoseVerbMistake(answer, expected, contextTexts, lessonId) {
+  const userWords = normalizeTextbookAnswer(answer).split(" ").filter(Boolean);
+  const expectedWords = normalizeTextbookAnswer(expected).split(" ").filter(Boolean);
+  if (!userWords.length || !expectedWords.length) return null;
+  const verbs = verbsMentionedIn(contextTexts);
+  if (!verbs.size) return null;
+  const index = formIndexFor(verbs);
+  const lessonTenses = new Set(Object.keys(TENSE_LESSONS).filter((tense) => TENSE_LESSONS[tense].includes(lessonId)));
+  for (const segment of diffSegments(diffWords(userWords, expectedWords))) {
+    const spans = [[[], []], [[], [segment.after]], [[segment.before], []], [[segment.before], [segment.after]]];
+    for (const [before, after] of spans) {
+      const user = [...before, ...segment.user, ...after].filter(Boolean).join(" ");
+      const right = [...before, ...segment.expected, ...after].filter(Boolean).join(" ");
+      if (!user || !right || user === right || !index.has(user) || !index.has(right)) continue;
+      const mistake = describeFormMistake(index.get(user), index.get(right), lessonTenses);
+      if (mistake) return { user, expected: right, ...mistake };
+    }
+  }
+  return null;
 }
 
 // ═══════ 10. Вкладка «Глаголы»: карточка глагола, поиск, список ═══════
@@ -16767,6 +16958,14 @@ function learningCheckCardMarkup(level) {
   return `<section class="learning-check-card"><div><h3>Итоговая проверка ${escapeHTML(level.label)}</h3><p class="muted">${LEARNING_CHECK_SIZE} случайных заданий из уроков уровня, не меньше одного из каждого модуля; 5–10 минут. Уровень подтверждён при ${Math.round(LEARNING_CHECK_PASS_SHARE * 100)}% верных. Ответы не попадают в уроки.</p>${result}</div><button class="small-button primary" type="button" data-check-start>${record ? "Пройти ещё раз" : "Начать проверку"}</button></section>`;
 }
 
+// Итоговая проверка всегда по-русски, поэтому разбор ошибки берётся на русском, а не на языке Учебника.
+function learningCheckFeedback(answer, item, exercise, lessonId) {
+  if (!answer) return `<p class="textbook-feedback"><strong>Нет ответа.</strong> Правильный ответ: <span lang="es">${escapeHTML([item.answer].flat()[0])}</span>.</p>`;
+  const details = textbookMistakeDetails(answer, item, exercise, lessonId, (ru) => ru);
+  const diagnosis = details.diagnosis ? html`<span class="textbook-feedback-note"><strong>Разбор:</strong> ${details.diagnosis}</span>` : "";
+  return `<p class="textbook-feedback"><strong>Неверно.</strong>${textbookAccentOnlyMistake(answer, item.answer) ? " Почти: проверьте тильду." : ""} Правильный ответ: <span lang="es">${details.answerMarkup}</span>.${diagnosis}</p>`;
+}
+
 function learningCheckMarkup(level) {
   const check = state.learningCheck;
   const results = check.submitted ? learningCheckResults() : [];
@@ -16777,10 +16976,9 @@ function learningCheckMarkup(level) {
     const control = exercise.kind === "choice"
       ? `<div class="textbook-choice-row" role="group" aria-label="${prompt}">${textbookItemOptions(exercise, item).map((option) => `<button class="small-button ${answer === option ? "is-selected" : ""}" type="button" data-check-choice="${index}" data-check-value="${escapeHTML(option)}" aria-pressed="${answer === option}" ${check.submitted ? "disabled" : ""}>${escapeHTML(option)}</button>`).join("")}</div>`
       : `<label><span class="sr-only">${prompt}</span><input class="textbook-answer-input" type="text" autocomplete="off" spellcheck="false" lang="es" value="${escapeHTML(answer)}" data-check-answer="${index}" aria-label="${prompt}" aria-describedby="learning-check-context-${index}" ${check.submitted ? "readonly" : ""}></label>`;
-    const expected = Array.isArray(item.answer) ? item.answer[0] : item.answer;
     const feedback = !check.submitted ? "" : results[index]
       ? `<p class="textbook-feedback"><strong>Верно.</strong></p>`
-      : `<p class="textbook-feedback"><strong>${answer ? "Неверно." : "Нет ответа."}</strong>${textbookAccentOnlyMistake(answer, item.answer) ? " Почти: проверьте тильду." : ""} Правильный ответ: <span lang="es">${escapeHTML(expected)}</span>.</p>`;
+      : learningCheckFeedback(answer, item, exercise, lesson.id);
     const stateClass = check.submitted ? (results[index] ? " is-correct" : " is-wrong") : "";
     return `<li class="textbook-question${stateClass}" data-check-question="${index}"><small class="learning-check-context" id="learning-check-context-${index}">Урок ${lesson.id} · ${escapeHTML(textbookText(exercise.instruction))}</small><span class="textbook-prompt"><span lang="es">${markRussianHints(prompt)}</span></span>${control}${feedback}</li>`;
   }).join("");
@@ -17010,8 +17208,9 @@ function saveTextbookProgress() {
   persist("textbookProgress");
 }
 
+// Знаки препинания и кавычки на проверку не влияют: «sí la tengo» засчитывается за «Sí, la tengo.». Тильды влияют.
 function normalizeTextbookAnswer(value) {
-  return String(value ?? "").trim().replace(/^[¿¡]+/u, "").replace(/[.?!]+$/u, "").replace(/\s+/gu, " ").toLocaleLowerCase("es-ES");
+  return String(value ?? "").toLocaleLowerCase("es-ES").replace(/[¿¡?!.,;:«»"“”…]/gu, " ").replace(/\s+/gu, " ").trim();
 }
 
 // Ответ отличается от правильного только тильдами: засчитывается как ошибка, но с подсказкой.
@@ -17070,17 +17269,53 @@ function computeTextbookProgress(lesson) {
   return { total, answered, checked, correct, wrong: checked - correct, unanswered: total - answered, done: total > 0 && checked === total && answered === total };
 }
 
-function textbookFeedback(item, checked, showFeedback, lesson, submitted = "") {
+// Разбор неверного ответа для урока и итоговой проверки Плана. answer — ближайший к ответу ученика вариант
+// правильного ответа; answerMarkup — он же, где у ответа из нескольких слов выделены слова, которых у ученика
+// нет или которые у него другие; diagnosis — какой формой глагола оказался ответ (diagnoseVerbMistake), на языке ui.
+function textbookMistakeDetails(submitted, item, exercise, lessonId, ui = textbookUi) {
+  const words = (value) => normalizeTextbookAnswer(value).split(" ").filter(Boolean);
+  const userWords = words(submitted);
+  const variants = [item.answer].flat().map((answer) => {
+    const steps = diffWords(userWords, words(answer));
+    return { answer, steps, same: steps.filter((step) => step.type === "same").length };
+  });
+  const closest = variants.reduce((best, variant) => variant.same > best.same ? variant : best);
+  const accentOnly = textbookAccentOnlyMistake(submitted, item.answer);
+  let answerMarkup = escapeHTML(closest.answer);
+  if (!accentOnly && exercise.kind !== "choice" && closest.same > 0 && words(closest.answer).length > 1) {
+    // Слова образца идут в diff по порядку; токен с внутренней пунктуацией («sí,no») может дать несколько слов.
+    const expectedSteps = closest.steps.filter((step) => step.type !== "user");
+    let position = 0;
+    answerMarkup = closest.answer.split(/(\s+)/).map((token) => {
+      const count = words(token).length;
+      const missing = expectedSteps.slice(position, position + count).some((step) => step.type === "expected");
+      position += count;
+      return missing ? html`<mark class="answer-diff-mark">${token}</mark>` : escapeHTML(token);
+    }).join("");
+  }
+  const mistake = accentOnly || !userWords.length ? null : diagnoseVerbMistake(submitted, closest.answer, [item.prompt, exercise.instruction.ru, exercise.instruction.es], lessonId);
+  return { answer: closest.answer, answerMarkup, diagnosis: mistake ? verbMistakeMessage(mistake, ui) : "" };
+}
+
+function verbMistakeMessage({ kind, user, userLabel, expectedLabel }, ui = textbookUi) {
+  if (kind === "person") return ui(`«${user}» — форма для ${userLabel}; здесь нужна форма для ${expectedLabel}.`, `«${user}» es la forma de ${userLabel}; aquí hace falta la de ${expectedLabel}.`);
+  if (kind === "tense") return ui(`«${user}» — это ${userLabel}; здесь нужен ${expectedLabel}.`, `«${user}» está en ${userLabel}; aquí hace falta ${expectedLabel}.`);
+  if (kind === "both") return ui(`«${user}» — это ${userLabel}; здесь нужно: ${expectedLabel}.`, `«${user}» es ${userLabel}; aquí hace falta: ${expectedLabel}.`);
+  return ui(`«${user}» — форма глагола ${userLabel}; здесь нужен ${expectedLabel}.`, `«${user}» es una forma de ${userLabel}; aquí hace falta ${expectedLabel}.`);
+}
+
+function textbookFeedback(item, checked, showFeedback, lesson, exercise, submitted = "") {
   if (!showFeedback) return "";
   if (!checked) return `<p class="textbook-feedback" role="status" tabindex="-1"><strong>${escapeHTML(textbookUi("Ответьте на этот пункт.", "Responde a este apartado."))}</strong> ${escapeHTML(textbookUi("Он не будет засчитан, пока поле пустое.", "No se contará mientras esté vacío."))}</p>`;
   if (checked.correct) return `<p class="textbook-feedback" tabindex="-1"><strong>${escapeHTML(textbookUi("Верно.", "Correcto."))}</strong> ${escapeHTML(textbookUi("Продолжайте.", "Continúa."))}</p>`;
-  const answer = Array.isArray(item.answer) ? item.answer[0] : item.answer;
+  const details = textbookMistakeDetails(submitted, item, exercise, lesson.id);
   const note = textbookText(item.note) || textbookText(TEXTBOOK_LESSON_FEEDBACK[lesson.id]);
-  const noteMarkup = note ? `<span class="textbook-feedback-note"><strong>${escapeHTML(textbookUi("Правило:", "Regla:"))}</strong> ${escapeHTML(note)}</span>` : "";
+  const diagnosisMarkup = details.diagnosis ? html`<span class="textbook-feedback-note"><strong>${textbookUi("Разбор:", "Análisis:")}</strong> ${details.diagnosis}</span>` : "";
+  const noteMarkup = note ? html`<span class="textbook-feedback-note"><strong>${textbookUi("Правило:", "Regla:")}</strong> ${note}</span>` : "";
   const accentHint = textbookAccentOnlyMistake(submitted, item.answer)
     ? ` ${escapeHTML(textbookUi("Почти: проверьте ударение (тильду).", "Casi: revisa la tilde."))}`
     : "";
-  return `<p class="textbook-feedback" role="status" tabindex="-1"><strong>${escapeHTML(textbookUi("Проверьте ещё раз.", "Revísalo otra vez."))}</strong>${accentHint} ${escapeHTML(textbookUi("Правильный ответ", "Respuesta correcta"))}: <span lang="es">${escapeHTML(answer)}</span>.${noteMarkup}</p>`;
+  return `<p class="textbook-feedback" role="status" tabindex="-1"><strong>${escapeHTML(textbookUi("Проверьте ещё раз.", "Revísalo otra vez."))}</strong>${accentHint} ${escapeHTML(textbookUi("Правильный ответ", "Respuesta correcta"))}: <span lang="es">${details.answerMarkup}</span>.${diagnosisMarkup}${noteMarkup}</p>`;
 }
 
 // Подсказки в скобках вроде «(ты)» или «(сейчас)» внутри испанского задания помечаются как русский текст.
@@ -17098,7 +17333,7 @@ function renderTextbookQuestion(lesson, exercise, item, index, saved, showFeedba
   const control = exercise.kind === "choice"
     ? html`<div class="textbook-choice-row" role="group" aria-label="${item.prompt}">${options}</div>`
     : html`<label><span class="sr-only">${item.prompt}</span><input class="textbook-answer-input" type="text" autocomplete="off" spellcheck="false" lang="es" value="${answer}" data-textbook-answer="${key}" aria-label="${item.prompt}" aria-describedby="textbook-instruction-${exercise.id}"></label>`;
-  return html`<li class="textbook-question${stateClass}" data-textbook-question="${key}"><span class="textbook-prompt"><span lang="es">${rawHtml(markRussianHints(escapeHTML(item.prompt)))}</span></span>${control}${rawHtml(textbookFeedback(item, checked, showFeedback, lesson, answer))}</li>`;
+  return html`<li class="textbook-question${stateClass}" data-textbook-question="${key}"><span class="textbook-prompt"><span lang="es">${rawHtml(markRussianHints(escapeHTML(item.prompt)))}</span></span>${control}${rawHtml(textbookFeedback(item, checked, showFeedback, lesson, exercise, answer))}</li>`;
 }
 
 function textbookLanguageButtons() {
@@ -17610,6 +17845,12 @@ function evaluateAnswer(userInput, question) {
     if (baseAnswer && accentless === quizAnswerKey(baseAnswer, true)) {
       return { status: "almost", message: "Почти верно: у возвратного глагола нужно местоимение." };
     }
+  }
+  if (question.type === "conjugation" && userInput.trim()) {
+    // Если ответ — другая форма того же глагола, подсказываем, какая именно (другое лицо или время).
+    const userEntries = formIndexFor(new Set([question.verb])).get(normalizeTextbookAnswer(userInput)) || [];
+    const mistake = describeFormMistake(userEntries, [{ verb: question.verb, tense: question.tense, person: question.person }], new Set([question.tense]));
+    if (mistake) return { status: "wrong", message: `Ответ пока неверный: ${verbMistakeMessage({ ...mistake, user: userInput.trim() }, (ru) => ru)}` };
   }
   return { status: "wrong", message: "Ответ пока неверный." };
 }

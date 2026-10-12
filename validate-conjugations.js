@@ -474,18 +474,22 @@ const REFERENCE = {
     // RAE, Ortografía 2010: односложные rio, riais пишутся без тильды.
     indefinido: ["reí", "reíste", "rio", "reímos", "reísteis", "rieron"],
     subjuntivo_presente: ["ría", "rías", "ría", "riamos", "riais", "rían"],
+    // reíd: í в зиянии сохраняет тильду (не односложное слово).
+    imperativo_afirmativo: ["-", "ríe", "ría", "riamos", "reíd", "rían"],
     gerund: "riendo",
   },
   sonreir: {
     presente: ["sonrío", "sonríes", "sonríe", "sonreímos", "sonreís", "sonríen"],
     indefinido: ["sonreí", "sonreíste", "sonrió", "sonreímos", "sonreísteis", "sonrieron"],
     subjuntivo_presente: ["sonría", "sonrías", "sonría", "sonriamos", "sonriáis", "sonrían"],
+    imperativo_afirmativo: ["-", "sonríe", "sonría", "sonriamos", "sonreíd", "sonrían"],
     gerund: "sonriendo",
   },
   freir: {
     presente: ["frío", "fríes", "fríe", "freímos", "freís", "fríen"],
     indefinido: ["freí", "freíste", "frio", "freímos", "freísteis", "frieron"],
     subjuntivo_presente: ["fría", "frías", "fría", "friamos", "friais", "frían"],
+    imperativo_afirmativo: ["-", "fríe", "fría", "friamos", "freíd", "frían"],
     gerund: "friendo",
     participle: "frito",
   },

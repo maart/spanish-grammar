@@ -4410,7 +4410,7 @@ select {
       <p id="viewAnnouncer" class="sr-only" role="status" aria-live="polite"></p>
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.74 · обновлено: 12.10.2026 20:14 CEST</span>
+        <span>Версия MVP 1.75 · обновлено: 12.10.2026 20:35 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -13488,14 +13488,15 @@ function regularImperativoAfirmativo(verb) {
   if (isReflexive(verb)) return reflexiveImperativoAfirmativo(verb);
   const present = regularPresent(verb);
   const subj = regularSubjuntivoPresente(verb);
-  return ["-", present[2], subj[2], subj[3], baseVerb(verb).slice(0, -1) + "d", subj[5]];
+  // vosotros строится от написания с тильдой: reír → reíd (ключ глагола — reir).
+  return ["-", present[2], subj[2], subj[3], displayInfinitive(baseVerb(verb)).slice(0, -1) + "d", subj[5]];
 }
 
 function regularImperativoAfirmativoPattern(verb) {
   const simpleVerb = baseVerb(verb);
   const present = regularPresentPattern(simpleVerb);
   const subj = regularSubjuntivoPresentePattern(simpleVerb);
-  const forms = ["-", present[2], subj[2], subj[3], simpleVerb.slice(0, -1) + "d", subj[5]];
+  const forms = ["-", present[2], subj[2], subj[3], displayInfinitive(simpleVerb).slice(0, -1) + "d", subj[5]];
   return isReflexive(verb) ? attachReflexiveImperative(simpleVerb, forms) : forms;
 }
 

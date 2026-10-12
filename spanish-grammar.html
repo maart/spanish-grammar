@@ -4434,7 +4434,7 @@ select {
       </aside>
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.83 · обновлено: 12.10.2026 22:14 CEST</span>
+        <span>Версия MVP 1.84 · обновлено: 12.10.2026 22:28 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -10481,8 +10481,11 @@ function persist(...names) {
 const TEXTBOOK_LAST_LESSON_ID = 125;
 
 function readTextbookProgress() {
+  return normalizeTextbookProgress(readStoredJSON("msg:textbookProgress", null));
+}
+
+function normalizeTextbookProgress(stored) {
   const fallback = { version: 2, lessons: {} };
-  const stored = readStoredJSON("msg:textbookProgress", fallback);
   if (!isPlainObject(stored) || ![1, 2].includes(stored.version) || !isPlainObject(stored.lessons)) return fallback;
   const allowedLessonIds = new Set(Array.from({ length: TEXTBOOK_LAST_LESSON_ID }, (_value, index) => String(index + 1)));
   const lessons = {};
@@ -10663,20 +10666,29 @@ function normalizeQuizAttempt(value) {
 
 // Сохранённая проверка (msg:quizSession): оставляем только корректные вопросы и попытки.
 // Без единого корректного вопроса сессия не восстанавливается (null).
-function normalizeSavedQuizSession(value) {
+function normalizeSavedQuizSession(value, allowedVerbs = BASE_VERBS) {
   if (!isPlainObject(value) || !Array.isArray(value.cardQuiz)) return null;
-  const cardQuiz = value.cardQuiz.map(normalizeQuizQuestion).filter(Boolean);
+  const cursor = Math.min(Math.floor(storedNumber(value.cardQuizIndex)), value.cardQuiz.length);
+  const retained = value.cardQuiz.map((question, index) => ({ question: normalizeQuizQuestion(question), index }))
+    .filter(({ question }) => question && allowedVerbs.includes(question.verb));
+  const cardQuiz = retained.map(({ question }) => question);
   if (cardQuiz.length === 0) return null;
-  const cardQuizTotal = storedNumber(value.cardQuizTotal);
+  const sameQuestion = retained.some(({ index }) => index === cursor);
+  const attempts = Array.isArray(value.cardQuizAttempts)
+    ? value.cardQuizAttempts.map(normalizeQuizAttempt).filter((attempt) => attempt && allowedVerbs.includes(attempt.question.verb)) : [];
+  const filtered = cardQuiz.length !== value.cardQuiz.length || attempts.length !== (value.cardQuizAttempts?.length || 0);
+  const cardQuizTotal = filtered ? attempts.length : storedNumber(value.cardQuizTotal);
   const session = {
     cardQuiz,
-    cardQuizIndex: Math.min(Math.floor(storedNumber(value.cardQuizIndex)), cardQuiz.length),
-    cardQuizInput: typeof value.cardQuizInput === "string" ? value.cardQuizInput : "",
-    cardQuizAnswered: value.cardQuizAnswered === true,
-    cardQuizCorrect: Math.min(storedNumber(value.cardQuizCorrect), cardQuizTotal),
+    // Индекс считается по исходным позициям: одинаковые вопросы тоже различаются.
+    cardQuizIndex: retained.filter(({ index }) => index < cursor).length,
+    cardQuizInput: sameQuestion && typeof value.cardQuizInput === "string" ? value.cardQuizInput : "",
+    cardQuizAnswered: sameQuestion && value.cardQuizAnswered === true,
+    cardQuizCorrect: filtered ? attempts.filter((attempt) => attempt.correct).length : Math.min(storedNumber(value.cardQuizCorrect), cardQuizTotal),
     cardQuizTotal,
-    cardQuizAttempts: Array.isArray(value.cardQuizAttempts) ? value.cardQuizAttempts.map(normalizeQuizAttempt).filter(Boolean) : [],
-    cardQuizSnapshot: Array.isArray(value.cardQuizSnapshot) ? value.cardQuizSnapshot.map(normalizeQuizQuestion).filter(Boolean) : [],
+    cardQuizAttempts: attempts,
+    cardQuizSnapshot: Array.isArray(value.cardQuizSnapshot)
+      ? value.cardQuizSnapshot.map(normalizeQuizQuestion).filter((question) => question && allowedVerbs.includes(question.verb)) : [...cardQuiz],
     cardQuizAllVerbs: [...new Set(cardQuiz.map((question) => question.verb))]
   };
   const savedAt = storedDate(value.savedAt);
@@ -18855,22 +18867,23 @@ function clearSavedQuizSession() {
 }
 
 function resumeCardQuiz() {
-  const session = state.savedQuizSession;
-  if (!session?.cardQuiz?.length) return;
-  state.cardQuiz = session.cardQuiz.filter((question) => state.cards.includes(question.verb));
-  if (state.cardQuiz.length === 0) {
+  const session = normalizeSavedQuizSession(state.savedQuizSession, state.cards);
+  if (!session) {
+    resetActiveCardQuiz();
     clearSavedQuizSession();
     renderCards();
     return;
   }
-  state.cardQuizIndex = Math.min(Number(session.cardQuizIndex) || 0, state.cardQuiz.length);
-  state.cardQuizInput = session.cardQuizInput || "";
-  state.cardQuizAnswered = Boolean(session.cardQuizAnswered);
-  state.cardQuizCorrect = Number(session.cardQuizCorrect) || 0;
-  state.cardQuizTotal = Number(session.cardQuizTotal) || 0;
-  state.cardQuizAttempts = Array.isArray(session.cardQuizAttempts) ? session.cardQuizAttempts : [];
-  state.cardQuizSnapshot = Array.isArray(session.cardQuizSnapshot) ? session.cardQuizSnapshot : [...state.cardQuiz];
-  state.cardQuizAllVerbs = [...new Set(state.cardQuiz.map((question) => question.verb))];
+  state.cardQuiz = session.cardQuiz;
+  state.cardQuizIndex = session.cardQuizIndex;
+  state.cardQuizInput = session.cardQuizInput;
+  state.cardQuizAnswered = session.cardQuizAnswered;
+  state.cardQuizCorrect = session.cardQuizCorrect;
+  state.cardQuizTotal = session.cardQuizTotal;
+  state.cardQuizAttempts = session.cardQuizAttempts;
+  state.cardQuizSnapshot = session.cardQuizSnapshot;
+  state.cardQuizAllVerbs = session.cardQuizAllVerbs;
+  saveQuizSession();
   renderCards();
 }
 
@@ -19954,9 +19967,60 @@ SYSTEM_DARK_QUERY?.addEventListener?.("change", (event) => {
 // ─── Резервная копия: все ключи msg:* из localStorage в одном JSON-файле ───
 const BACKUP_FORMAT = "spanish-grammar-backup";
 
-function exportProgress() {
+// Те же нормализаторы, что при чтении приложения; неизвестные ключи сохраняются как есть.
+const BACKUP_JSON_FIELDS = {
+  "msg:cards": [knownVerbList, "Глаголы в избранном"],
+  "msg:favorites": [knownVerbList, "Избранное старой версии"],
+  "msg:recentVerbs": [knownVerbList, "Недавние глаголы"],
+  "msg:favoriteTables": [(value) => Array.isArray(value) ? value.filter((id) => INDEXED_TABLES.some((item) => item.id === id)) : [], "Избранные шпаргалки"],
+  "msg:favoriteLessons": [(value) => Array.isArray(value) ? value.filter((id) => Number.isInteger(id) && id >= 1 && id <= TEXTBOOK_LAST_LESSON_ID) : [], "Избранные уроки"],
+  "msg:cardStats": [normalizeCardStats, "Статистика глаголов"],
+  "msg:formSchedule": [normalizeFormSchedule, "Расписание повторения"],
+  "msg:quizConfig": [normalizeQuizConfig, "Настройки квиза"],
+  "msg:quizSession": [normalizeSavedQuizSession, "Сохранённый квиз"],
+  "msg:textbookProgress": [normalizeTextbookProgress, "Прогресс учебника"],
+  "msg:textbookOpenGroups": [normalizeTextbookOpenGroups, "Темы учебника"],
+  "msg:learningProgress": [normalizeLearningProgress, "Отметки плана"],
+  "msg:learningProgressLegacy": [(value) => isPlainObject(value) ? value : {}, "Отметки старого плана"],
+  "msg:learningDetails": [normalizeLearningDetails, "Модули плана"],
+  "msg:learningLevelChecks": [normalizeLearningChecks, "Проверки уровней"]
+};
+
+// Порядок полей и форматирование JSON не означают повреждение данных.
+function sameJSONValue(left, right) {
+  if (left === right) return true;
+  if (Array.isArray(left) && Array.isArray(right)) return left.length === right.length && left.every((value, index) => sameJSONValue(value, right[index]));
+  if (isPlainObject(left) && isPlainObject(right)) {
+    const keys = Object.keys(left);
+    return keys.length === Object.keys(right).length && keys.every((key) => Object.hasOwn(right, key) && sameJSONValue(left[key], right[key]));
+  }
+  return false;
+}
+
+function progressBackup() {
   const data = Object.fromEntries(appStorage.keys("msg:").map((key) => [key, appStorage.get(key)]));
-  const backup = { format: BACKUP_FORMAT, version: 1, exportedAt: new Date().toISOString(), data };
+  const recovered = [];
+  let legacyCards = [];
+  try { legacyCards = knownVerbList(JSON.parse(data["msg:favorites"])); }
+  catch (_error) { /* Старый список отсутствует или тоже повреждён. */ }
+  for (const [key, [normalizeValue, label]] of Object.entries(BACKUP_JSON_FIELDS)) {
+    if (!Object.hasOwn(data, key)) continue;
+    let value = null;
+    let readable = true;
+    try { value = JSON.parse(data[key]); }
+    catch (_error) { readable = false; }
+    // При ошибке чтения cards приложение использует старое избранное; копия сохраняет то же восстановление.
+    const normalized = normalizeValue(key === "msg:cards" && !readable ? legacyCards : value);
+    if (!readable || !sameJSONValue(value, normalized)) recovered.push(label);
+    data[key] = JSON.stringify(normalized);
+  }
+  // Копия нового приложения без отметок тоже должна восстанавливаться.
+  if (Object.keys(data).length === 0) data["msg:textbookProgress"] = JSON.stringify(normalizeTextbookProgress(null));
+  return { format: BACKUP_FORMAT, version: 1, exportedAt: new Date().toISOString(), data, recovered };
+}
+
+function exportProgress() {
+  const backup = progressBackup();
   const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
@@ -19965,6 +20029,7 @@ function exportProgress() {
   link.click();
   link.remove();
   setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+  if (backup.recovered.length) window.alert(`В резервной копии восстановлены разделы: ${backup.recovered.join(", ")}. Доступные данные сохранены; повреждённые или неподдерживаемые значения пропущены.`);
 }
 
 function parseBackup(text) {

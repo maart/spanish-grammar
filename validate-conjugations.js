@@ -2575,7 +2575,7 @@ for (const [dataName, data] of Object.entries(staticData)) {
 const assert = require("node:assert/strict");
 const backupCode = fullScriptCode.slice(fullScriptCode.indexOf("const BACKUP_FORMAT ="), fullScriptCode.indexOf('$("#exportProgressButton").addEventListener'));
 const storageFactory = new Function("window", "document", "URL", "Blob", "setTimeout",
-  jsCode + "\n" + backupCode + "\nreturn { appStorage, state, parseBackup, importProgress, exportProgress, textbookCorrect };"
+  jsCode + "\n" + backupCode + "\nrenderCards = () => {}; return { appStorage, state, parseBackup, importProgress, exportProgress, textbookCorrect, resumeCardQuiz, normalizeSavedQuizSession };"
 );
 
 function storageFixture(initial = {}, failProbe = false) {
@@ -2616,7 +2616,132 @@ function storageFixture(initial = {}, failProbe = false) {
 }
 
 const backupFile = (data, version = 1) => ({ text: async () => JSON.stringify({ format: "spanish-grammar-backup", version, data }) });
+const quizQuestion = (verb, answer) => ({ type: "conjugation", verb, tense: "presente", person: 0, question: `${verb} — yo`, answer });
+function pausedQuizFixture(cards, cursor, input = "", answered = false) {
+  const questions = [quizQuestion("ser", "soy"), quizQuestion("estar", "estoy"), quizQuestion("tener", "tengo")];
+  const attempts = questions.slice(0, cursor + Number(answered)).map((question) => ({ question, userAnswer: question.answer, correct: true, status: "correct" }));
+  const session = { cardQuiz: questions, cardQuizIndex: cursor, cardQuizInput: input, cardQuizAnswered: answered, cardQuizCorrect: attempts.length, cardQuizTotal: attempts.length, cardQuizAttempts: attempts, cardQuizSnapshot: questions };
+  return storageFixture({ "msg:cards": JSON.stringify(cards), "msg:quizSession": JSON.stringify(session) });
+}
 const STORAGE_CASES = [
+  ["resume preserves current question after an earlier favourite is removed", () => {
+    const { api, data } = pausedQuizFixture(["estar", "tener"], 1, "estoy");
+    api.resumeCardQuiz();
+    assert.equal(api.state.cardQuiz[api.state.cardQuizIndex].verb, "estar");
+    assert.equal(api.state.cardQuizIndex, 0);
+    assert.equal(api.state.cardQuizInput, "estoy");
+    assert.equal(api.state.cardQuizTotal, 0);
+    assert.equal(api.state.cardQuizCorrect, 0);
+    assert.deepEqual(api.state.cardQuizSnapshot.map(question => question.verb), ["estar", "tener"]);
+    assert.equal(JSON.parse(data.get("msg:quizSession")).cardQuizIndex, 0);
+    api.resumeCardQuiz();
+    assert.equal(api.state.cardQuiz[api.state.cardQuizIndex].verb, "estar");
+  }],
+  ["resume clears an answered current question removed from favourites", () => {
+    const { api } = pausedQuizFixture(["ser", "tener"], 1, "estoy", true);
+    api.resumeCardQuiz();
+    assert.equal(api.state.cardQuiz[api.state.cardQuizIndex].verb, "tener");
+    assert.equal(api.state.cardQuizInput, "");
+    assert.equal(api.state.cardQuizAnswered, false);
+    assert.equal(api.state.cardQuizTotal, 1);
+    assert.equal(api.state.cardQuizCorrect, 1);
+    assert.deepEqual(api.state.cardQuizAttempts.map(attempt => attempt.question.verb), ["ser"]);
+  }],
+  ["resume keeps an unchanged answered question and score", () => {
+    const { api } = pausedQuizFixture(["ser", "estar", "tener"], 1, "estoy", true);
+    api.resumeCardQuiz();
+    assert.equal(api.state.cardQuizIndex, 1);
+    assert.equal(api.state.cardQuizInput, "estoy");
+    assert.equal(api.state.cardQuizAnswered, true);
+    assert.equal(api.state.cardQuizCorrect, 2);
+  }],
+  ["completed quiz stays completed when earlier questions are removed", () => {
+    const { api } = pausedQuizFixture(["estar", "tener"], 3);
+    api.resumeCardQuiz();
+    assert.equal(api.state.cardQuizIndex, api.state.cardQuiz.length);
+    assert.equal(api.state.cardQuizTotal, 2);
+    assert.equal(api.state.cardQuizCorrect, 2);
+  }],
+  ["resume clears a session with no remaining favourites", () => {
+    const { api, data } = pausedQuizFixture([], 1, "estoy");
+    api.resumeCardQuiz();
+    assert.equal(api.state.savedQuizSession, null);
+    assert.equal(api.state.cardQuiz.length, 0);
+    assert.equal(data.has("msg:quizSession"), false);
+  }],
+  ["invalid saved questions before the cursor do not shift the draft", () => {
+    const { api } = storageFixture();
+    const session = api.normalizeSavedQuizSession({ cardQuiz: [null, quizQuestion("estar", "estoy"), quizQuestion("tener", "tengo")], cardQuizIndex: 1, cardQuizInput: "estoy", cardQuizAnswered: false });
+    assert.equal(session.cardQuizIndex, 0);
+    assert.equal(session.cardQuizInput, "estoy");
+    assert.equal(session.cardQuiz[session.cardQuizIndex].verb, "estar");
+  }],
+  ["recovered progress export can be imported without losing other data", async () => {
+    const { api, data, controls } = storageFixture({ "msg:textbookProgress": '{"version":2,"lessons":null}', "msg:cards": '["ser"]', "msg:custom": "keep" });
+    api.exportProgress();
+    const text = await controls.blob.text();
+    const backup = JSON.parse(text);
+    assert.deepEqual(JSON.parse(backup.data["msg:textbookProgress"]), { version: 2, lessons: {} });
+    assert.equal(data.get("msg:textbookProgress"), '{"version":2,"lessons":null}');
+    assert.equal(controls.alerts.length, 1);
+    api.parseBackup(text);
+    const target = storageFixture();
+    await target.api.importProgress({ text: async () => text });
+    assert.equal(target.controls.reloads, 1);
+    const reloaded = storageFixture(Object.fromEntries(target.data));
+    assert.deepEqual(reloaded.api.state.cards, ["ser"]);
+    assert.equal(reloaded.api.appStorage.get("msg:custom"), "keep");
+  }],
+  ["export retains valid lessons beside damaged lesson entries", async () => {
+    const { api, controls } = storageFixture({ "msg:textbookProgress": '{"version":1,"lessons":{"1":{"answers":{"a:0":"sí"}},"2":null,"3":[]}}' });
+    api.exportProgress();
+    const backup = JSON.parse(await controls.blob.text());
+    const progress = JSON.parse(backup.data["msg:textbookProgress"]);
+    assert.deepEqual(Object.keys(progress.lessons), ["1"]);
+    assert.equal(progress.lessons["1"].answers["a:0"], "sí");
+    api.parseBackup(JSON.stringify(backup));
+  }],
+  ["export repairs invalid JSON in known data and preserves unknown keys", async () => {
+    const { api, controls } = storageFixture({ "msg:cards": "{broken", "msg:custom": "{keep untouched" });
+    api.exportProgress();
+    const backup = JSON.parse(await controls.blob.text());
+    assert.deepEqual(JSON.parse(backup.data["msg:cards"]), []);
+    assert.equal(backup.data["msg:custom"], "{keep untouched");
+    api.parseBackup(JSON.stringify(backup));
+    assert.equal(controls.alerts.length, 1);
+  }],
+  ["empty exported progress is an importable backup", async () => {
+    const { api, controls } = storageFixture();
+    api.exportProgress();
+    api.parseBackup(await controls.blob.text());
+  }],
+  ["export round-trip preserves legacy favourites recovered from unreadable cards", async () => {
+    const { api, data, controls } = storageFixture({ "msg:cards": "{broken", "msg:favorites": '["ser"]' });
+    assert.deepEqual(api.state.cards, ["ser"]);
+    api.exportProgress();
+    const text = await controls.blob.text();
+    const target = storageFixture();
+    await target.api.importProgress({ text: async () => text });
+    assert.equal(target.controls.reloads, 1);
+    const reloaded = storageFixture(Object.fromEntries(target.data));
+    assert.deepEqual(reloaded.api.state.cards, ["ser"]);
+    assert.equal(data.get("msg:cards"), "{broken");
+    assert.equal(controls.alerts.length, 1);
+  }],
+  ["export uses fresh textbook progress from another tab", async () => {
+    const { api, data, controls } = storageFixture({ "msg:textbookProgress": '{"version":2,"lessons":{}}' });
+    data.set("msg:textbookProgress", '{"version":2,"lessons":{"1":{"answers":{"a:0":"sí"},"checked":{},"attempts":{}}}}');
+    api.exportProgress();
+    const progress = JSON.parse(JSON.parse(await controls.blob.text()).data["msg:textbookProgress"]);
+    assert.equal(progress.lessons["1"].answers["a:0"], "sí");
+    assert.equal(controls.alerts.length, 0);
+  }],
+  ["equivalent valid data with reordered keys produces no recovery warning", async () => {
+    const { api, controls } = storageFixture({ "msg:cardStats": '{"ser":{"correct":1,"attempts":1,"mistakes":0,"streak":1,"lastReviewed":null}}' });
+    api.exportProgress();
+    api.parseBackup(await controls.blob.text());
+    assert.equal(controls.alerts.length, 0);
+  }],
   ["healthy export includes saves from another tab", async () => {
     const { api, data, controls } = storageFixture({ "msg:cards": '["ser"]' });
     data.set("msg:cards", '["ser","estar"]');

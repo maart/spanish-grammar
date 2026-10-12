@@ -2009,6 +2009,14 @@ for (const name of topConsts) {
   }
 }
 
+// ─── 5b. Manual escaping outside the html template ─────────────────────────
+// Разметка собирается шаблоном html`…`: он экранирует подстановки сам. Ручной escapeHTML остаётся только
+// в определении функции и внутри шаблона (htmlValue); новый вызов означает возврат к старому стилю.
+const manualEscapes = (scriptText.match(/escapeHTML\(/g) || []).length - 2;
+if (manualEscapes > 0) {
+  issues.push({ verb: "static-code", tense: "manual-escape", person: "-", expected: "разметка через html`…` без escapeHTML", actual: `вызовов escapeHTML вне шаблона: ${manualEscapes}`, severity: "high" });
+}
+
 // ─── 6. Unescaped text in data ──────────────────────────────────────────────
 // Текст данных выводится через html`…` или escapeHTML. Поля table и extra выводятся
 // как HTML осознанно (таблицы шпаргалок, блоки наклонений), их не проверяем.

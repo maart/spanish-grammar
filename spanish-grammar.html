@@ -4416,7 +4416,7 @@ select {
       <p id="viewAnnouncer" class="sr-only" role="status" aria-live="polite"></p>
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.78 · обновлено: 12.10.2026 20:50 CEST</span>
+        <span>Версия MVP 1.79 · обновлено: 12.10.2026 21:08 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -6697,13 +6697,13 @@ function verbTextbookExamplesMarkup(verb) {
   textbookVerbExampleIndex ||= buildTextbookVerbExampleIndex();
   const examples = (textbookVerbExampleIndex.get(baseVerb(verb)) || []).slice(0, 3);
   if (!examples.length) return "";
-  return `<section class="cross-links" aria-label="Примеры из учебника"><h4>Примеры из учебника</h4><ul class="verb-textbook-examples">${examples.map((example) => `<li><span lang="es">${escapeHTML(example.sentence)}</span> <button class="link-button" type="button" data-open-lesson="${example.lessonId}">урок ${example.lessonId}</button></li>`).join("")}</ul></section>`;
+  return html`<section class="cross-links" aria-label="Примеры из учебника"><h4>Примеры из учебника</h4><ul class="verb-textbook-examples">${examples.map((example) => html`<li><span lang="es">${example.sentence}</span> <button class="link-button" type="button" data-open-lesson="${example.lessonId}">урок ${example.lessonId}</button></li>`)}</ul></section>`;
 }
 
 function lessonLinksMarkup(lessonIds = [], title = "Уроки учебника") {
   const lessons = lessonIds.map((id) => lessonById(id)).filter(Boolean);
   if (!lessons.length) return "";
-  return `<section class="cross-links" aria-label="${title}"><h4>${title}</h4><div class="cross-links-list">${lessons.map((lesson) => `<button class="small-button" type="button" data-open-lesson="${lesson.id}">${lesson.id}. ${escapeHTML(lesson.title.ru)} <span class="cross-links-level">${levelLabel(textbookLessonLevel(lesson.id))}</span></button>`).join("")}</div></section>`;
+  return html`<section class="cross-links" aria-label="${title}"><h4>${title}</h4><div class="cross-links-list">${lessons.map((lesson) => html`<button class="small-button" type="button" data-open-lesson="${lesson.id}">${lesson.id}. ${lesson.title.ru} <span class="cross-links-level">${levelLabel(textbookLessonLevel(lesson.id))}</span></button>`)}</div></section>`;
 }
 
 const TENSE_CONTRASTS = {
@@ -14700,11 +14700,11 @@ function verbCheatsheetItems(verb) {
 function verbCheatsheetsMarkup(verb) {
   const items = verbCheatsheetItems(verb);
   if (items.length === 0) return "";
-  return `
+  return html`
     <section class="verb-cheatsheets" aria-label="Связанные шпаргалки">
       <div class="verb-cheatsheets-heading"><strong>Связанные шпаргалки</strong><span>по теме глагола</span></div>
       <div class="verb-cheatsheet-links">
-        ${items.map((item) => `<button class="small-button verb-cheatsheet-link" type="button" data-verb-cheatsheet="${item.index}" data-verb="${escapeHTML(verb)}">${escapeHTML(item.title)}</button>`).join("")}
+        ${items.map((item) => html`<button class="small-button verb-cheatsheet-link" type="button" data-verb-cheatsheet="${item.index}" data-verb="${verb}">${item.title}</button>`)}
       </div>
     </section>
   `;
@@ -14759,7 +14759,7 @@ function verbPassport(info) {
   const badges = [];
 
   if (reflexive) {
-    badges.push(`<span class="badge-reflexive" title="Возвратный глагол">-se</span>`);
+    badges.push(html`<span class="badge-reflexive" title="Возвратный глагол">-se</span>`);
   }
 
   const status = rawTags.includes("полностью неправильный")
@@ -14772,18 +14772,18 @@ function verbPassport(info) {
   const tooltip = exceptions.length > 0 ? exceptions.join(" · ") : status;
 
   if (status === "правильный") {
-    badges.push(`<span class="badge-regular" title="Правильный глагол">правильный</span>`);
+    badges.push(html`<span class="badge-regular" title="Правильный глагол">правильный</span>`);
   } else if (status === "полностью неправильный") {
-    badges.push(`<span class="badge-special" title="${escapeHTML(tooltip)}">полностью неправильный</span>`);
+    badges.push(html`<span class="badge-special" title="${tooltip}">полностью неправильный</span>`);
   } else {
-    badges.push(`<span class="badge-irregular" title="${escapeHTML(tooltip)}">неправильный</span>`);
+    badges.push(html`<span class="badge-irregular" title="${tooltip}">неправильный</span>`);
   }
 
   if (rawTags.includes("вспомогательный")) {
-    badges.push(`<span title="Вспомогательный глагол">вспомогательный</span>`);
+    badges.push(html`<span title="Вспомогательный глагол">вспомогательный</span>`);
   }
 
-  return `<div class="verb-passport">${badges.join("")}</div>`;
+  return html`<div class="verb-passport">${badges}</div>`;
 }
 
 function hasYoIrregular(verb) {
@@ -14949,10 +14949,10 @@ function renderVerbs() {
   const searchPanel = document.createElement("section");
   searchPanel.className = "search-panel";
   searchPanel.setAttribute("aria-label", "Поиск глаголов");
-  searchPanel.innerHTML = `
+  searchPanel.innerHTML = html`
     <label for="searchInput">Поиск по глаголу, форме или переводу</label>
     <div class="search-row">
-      <input id="searchInput" type="search" placeholder="Например: tener, tengo, hecho, делать, идти" value="${escapeHTML(state.query)}" autocomplete="off" autocapitalize="none" spellcheck="false" enterkeyhint="search" aria-controls="verbSearchResults" aria-describedby="verbSearchStatus">
+      <input id="searchInput" type="search" placeholder="Например: tener, tengo, hecho, делать, идти" value="${state.query}" autocomplete="off" autocapitalize="none" spellcheck="false" enterkeyhint="search" aria-controls="verbSearchResults" aria-describedby="verbSearchStatus">
     </div>
     <p class="search-status" id="verbSearchStatus" role="status" aria-live="polite"></p>
   `;
@@ -15111,18 +15111,18 @@ function renderEmptyVerbSearch(rawQuery) {
   const suggestions = searchSuggestions(query);
   const card = document.createElement("section");
   card.className = "info-card verb-search-empty";
-  card.innerHTML = `
+  card.innerHTML = html`
     <div>
       <h2>Ничего не найдено</h2>
-      <p class="muted">Нет совпадений для «${escapeHTML(query)}». Ищите испанский инфинитив, любую форму или русский перевод. Ударения можно не ставить.</p>
+      <p class="muted">Нет совпадений для «${query}». Ищите испанский инфинитив, любую форму или русский перевод. Ударения можно не ставить.</p>
     </div>
     <div>
       <h3>Попробуйте эти глаголы</h3>
       <div class="search-suggestions">
         ${suggestions.map((verb) => {
           const info = verbInfo(verb);
-          return `<button class="search-suggestion-button" type="button" data-verb-suggestion="${verb}"><strong lang="es">${escapeHTML(info.displayInfinitive)}</strong><small>${escapeHTML(info.ru)}</small></button>`;
-        }).join("")}
+          return html`<button class="search-suggestion-button" type="button" data-verb-suggestion="${verb}"><strong lang="es">${info.displayInfinitive}</strong><small>${info.ru}</small></button>`;
+        })}
       </div>
     </div>
   `;
@@ -15132,30 +15132,30 @@ function renderEmptyVerbSearch(rawQuery) {
 function renderVerbListItem(verb, { showBadges = true, isBestMatch = false, showSearchMeta = true } = {}) {
   const info = verbInfo(verb);
   const useSearchMeta = showSearchMeta && state.view === "verbs";
-  const infinitiveLabel = useSearchMeta ? highlightSearchMatch(info.displayInfinitive) : escapeHTML(info.displayInfinitive);
-  const translationLabel = useSearchMeta ? highlightSearchMatch(info.ru) : escapeHTML(info.ru);
+  const infinitiveLabel = useSearchMeta ? highlightSearchMatch(info.displayInfinitive) : info.displayInfinitive;
+  const translationLabel = useSearchMeta ? highlightSearchMatch(info.ru) : info.ru;
   const feedback = state.cardFeedback?.verb === verb;
   const row = document.createElement("div");
   row.className = `verb-row ${verb === state.selectedVerb ? "is-active" : ""} ${feedback ? "is-card-feedback" : ""} ${isBestMatch ? "is-best-match" : ""}`;
   row.dataset.verb = verb;
-  row.innerHTML = `
+  row.innerHTML = html`
     <button class="verb-pick" type="button" data-verb-pick="${verb}">
       <span>
         <strong lang="es">${infinitiveLabel}</strong>
         <small>${translationLabel}</small>
       </span>
       <span class="verb-row-meta">
-        ${showBadges ? verbListBadges(info).join("") : ""}
+        ${showBadges ? verbListBadges(info) : ""}
       </span>
     </button>
-    <button class="favorite-button verb-row-favorite" type="button" data-verb-favorite="${escapeHTML(verb)}" aria-label="${escapeHTML(`${state.cards.includes(verb) ? "Убрать из избранного" : "Добавить в избранное"}: ${info.displayInfinitive}`)}" title="Избранное">
+    <button class="favorite-button verb-row-favorite" type="button" data-verb-favorite="${verb}" aria-label="${state.cards.includes(verb) ? "Убрать из избранного" : "Добавить в избранное"}: ${info.displayInfinitive}" title="Избранное">
       ${state.cards.includes(verb) ? "★" : "☆"}
     </button>
   `;
   const reason = useSearchMeta ? searchMatchReason(info) : "";
   if (reason || (useSearchMeta && isBestMatch)) {
     const bestLabel = useSearchMeta && isBestMatch ? "Лучшее совпадение" : "";
-    row.insertAdjacentHTML("beforeend", `<div class="verb-match-note">${[bestLabel, reason].filter(Boolean).join(" · ")}</div>`);
+    row.insertAdjacentHTML("beforeend", html`<div class="verb-match-note">${[bestLabel, reason].filter(Boolean).join(" · ")}</div>`);
   }
   if (feedback) {
     row.insertAdjacentHTML("beforeend", `<div class="favorite-feedback" role="status">${state.cardFeedback.added ? "Добавлено в избранное" : "Убрано из избранного"}</div>`);
@@ -15180,11 +15180,11 @@ function verbListBadges(info) {
   const badges = [];
 
   if (reflexive) {
-    badges.push(`<span class="badge-reflexive" title="Возвратный глагол">-se</span>`);
+    badges.push(html`<span class="badge-reflexive" title="Возвратный глагол">-se</span>`);
   }
 
   if (!hasIrregularBehavior(info)) {
-    badges.push(`<span class="badge-regular" title="Правильный глагол">прав.</span>`);
+    badges.push(html`<span class="badge-regular" title="Правильный глагол">прав.</span>`);
     return badges;
   }
 
@@ -15193,9 +15193,9 @@ function verbListBadges(info) {
 
   // Порядок — от самого заметного отличия: особая основа (tengo, tuve, tendré) важнее смены гласной в presente.
   if (hasCompletelyIrregularProfile(verb)) {
-    badges.push(`<span class="badge-special" title="${escapeHTML(tooltip)}">особый</span>`);
+    badges.push(html`<span class="badge-special" title="${tooltip}">особый</span>`);
   } else if (hasStrongStem(verb)) {
-    badges.push(`<span class="badge-irregular" title="${escapeHTML(tooltip)}">особая основа</span>`);
+    badges.push(html`<span class="badge-irregular" title="${tooltip}">особая основа</span>`);
   } else if (
     hasStemChange(verb, "e", "ie") ||
     hasStemChange(verb, "o", "ue") ||
@@ -15207,15 +15207,15 @@ function verbListBadges(info) {
     if (hasStemChange(verb, "o", "ue")) changes.push("o→ue");
     if (hasStemChange(verb, "e", "i")) changes.push("e→i");
     if (hasStemChange(verb, "u", "ue")) changes.push("u→ue");
-    badges.push(`<span class="badge-stem" title="${escapeHTML(tooltip)}">смена ${changes.join(", ")}</span>`);
+    badges.push(html`<span class="badge-stem" title="${tooltip}">смена ${changes.join(", ")}</span>`);
   } else if (hasYoIrregular(verb)) {
-    badges.push(`<span class="badge-yo" title="${escapeHTML(tooltip)}">yo особ.</span>`);
+    badges.push(html`<span class="badge-yo" title="${tooltip}">yo особ.</span>`);
   } else if (hasIrregularParticiple(verb)) {
-    badges.push(`<span class="badge-part" title="${escapeHTML(tooltip)}">part.</span>`);
+    badges.push(html`<span class="badge-part" title="${tooltip}">part.</span>`);
   } else if (hasOrthographicIndefinidoChange(baseVerb(verb)) && exceptions.every((label) => ORTHOGRAPHIC_EXCEPTION_LABELS.includes(label))) {
-    badges.push(`<span class="badge-regular" title="Правильный глагол; меняется только написание перед -é: ${escapeHTML(orthographicIndefinido(baseVerb(verb))[0])}">орфогр.</span>`);
+    badges.push(html`<span class="badge-regular" title="Правильный глагол; меняется только написание перед -é: ${orthographicIndefinido(baseVerb(verb))[0]}">орфогр.</span>`);
   } else {
-    badges.push(`<span class="badge-irregular" title="${escapeHTML(tooltip)}">неправ.</span>`);
+    badges.push(html`<span class="badge-irregular" title="${tooltip}">неправ.</span>`);
   }
 
   return badges;
@@ -15249,16 +15249,12 @@ function findFormMatch(info, query, mode = "exact") {
 function highlightSearchMatch(value) {
   const source = String(value);
   const query = normalize(state.query);
-  if (!query) return escapeHTML(source);
+  if (!query) return html`${source}`;
   const normalizedSource = normalize(source);
   const start = normalizedSource.indexOf(query);
-  if (start === -1) return escapeHTML(source);
+  if (start === -1) return html`${source}`;
   const end = start + query.length;
-  return [
-    escapeHTML(source.slice(0, start)),
-    `<mark class="search-mark">${escapeHTML(source.slice(start, end))}</mark>`,
-    escapeHTML(source.slice(end))
-  ].join("");
+  return html`${source.slice(0, start)}<mark class="search-mark">${source.slice(start, end)}</mark>${source.slice(end)}`;
 }
 
 function hasIrregularBehavior(info) {
@@ -15754,16 +15750,16 @@ function renderTables() {
     const next = position < groupTables.length - 1 ? groupTables[position + 1] : null;
     const toolbar = infoSection({
       id: "tablesTop",
-      html: `
+      html: html`
         <div class="focused-table-toolbar">
           <div class="focused-table-actions">
-            ${returnVerb ? `<button class="small-button primary" type="button" data-table-return-verb>← К глаголу: ${escapeHTML(verbInfo(returnVerb).displayInfinitive)}</button>` : ""}
+            ${returnVerb ? html`<button class="small-button primary" type="button" data-table-return-verb>← К глаголу: ${verbInfo(returnVerb).displayInfinitive}</button>` : ""}
             <button class="small-button" type="button" data-table-back>К оглавлению</button>
             <span class="focused-table-status">${position + 1} из ${groupTables.length} в разделе</span>
           </div>
           <div class="focused-table-paging" aria-label="Навигация между шпаргалками">
-            <button class="small-button" type="button" data-table-previous="${previous?.index ?? ""}" ${previous ? `aria-label="Предыдущая шпаргалка: ${escapeHTML(previous.title)}"` : "disabled"}>← Ранее</button>
-            <button class="small-button" type="button" data-table-next="${next?.index ?? ""}" ${next ? `aria-label="Следующая шпаргалка: ${escapeHTML(next.title)}"` : "disabled"}>Далее →</button>
+            <button class="small-button" type="button" data-table-previous="${previous?.index ?? ""}" ${previous ? html`aria-label="Предыдущая шпаргалка: ${previous.title}"` : "disabled"}>← Ранее</button>
+            <button class="small-button" type="button" data-table-next="${next?.index ?? ""}" ${next ? html`aria-label="Следующая шпаргалка: ${next.title}"` : "disabled"}>Далее →</button>
           </div>
         </div>
       `
@@ -15778,7 +15774,7 @@ function renderTables() {
   const cumulativeDisabled = state.tableLevel === "all";
   const nav = infoSection({
     id: "tablesTop",
-    html: `
+    html: html`
     <h2>Шпаргалки</h2>
     <p class="muted">Выберите раздел, затем откройте нужную шпаргалку. На экране будет показан только один материал.</p>
     <details class="table-sources">
@@ -15792,31 +15788,31 @@ function renderTables() {
     </details>
     <label class="table-search">
       <span>Поиск по шпаргалкам</span>
-      <input id="tableSearchInput" type="search" placeholder="Например: gustar, por/para" value="${escapeHTML(state.tableQuery)}" autocomplete="off" autocapitalize="none" spellcheck="false" enterkeyhint="search">
+      <input id="tableSearchInput" type="search" placeholder="Например: gustar, por/para" value="${state.tableQuery}" autocomplete="off" autocapitalize="none" spellcheck="false" enterkeyhint="search">
     </label>
     <div class="table-filter-controls">
       <label class="table-filter-control">
         <span>Раздел</span>
         <select data-table-filter aria-label="Раздел шпаргалок">
-          ${TABLE_FILTERS.map((filter) => `<option value="${filter.id}" ${state.tableFilter === filter.id ? "selected" : ""}>${filter.label} · ${countFilteredTables(filter.id)}</option>`).join("")}
+          ${TABLE_FILTERS.map((filter) => html`<option value="${filter.id}" ${state.tableFilter === filter.id ? "selected" : ""}>${filter.label} · ${countFilteredTables(filter.id)}</option>`)}
         </select>
       </label>
-      ${subgroups.length > 1 ? `
+      ${subgroups.length > 1 ? html`
         <label class="table-filter-control">
           <span>Тема</span>
           <select data-table-subgroup aria-label="Тема шпаргалок">
             <option value="">Все темы · ${countFilteredTables(state.tableFilter)}</option>
-            ${subgroups.map((subgroup) => `<option value="${escapeHTML(subgroup)}" ${state.tableSubgroup === subgroup ? "selected" : ""}>${subgroup} · ${countSubgroupTables(state.tableFilter, subgroup)}</option>`).join("")}
+            ${subgroups.map((subgroup) => html`<option value="${subgroup}" ${state.tableSubgroup === subgroup ? "selected" : ""}>${subgroup} · ${countSubgroupTables(state.tableFilter, subgroup)}</option>`)}
           </select>
         </label>
       ` : ""}
       <label class="table-filter-control">
         <span>Рекомендуемый уровень</span>
         <select data-table-level aria-label="Рекомендуемый уровень шпаргалок">
-          ${TABLE_LEVELS.map((level) => `<option value="${level.id}" ${state.tableLevel === level.id ? "selected" : ""}>${level.label} · ${countFilteredTables(state.tableFilter, level.id, state.tableLevelCumulative)}</option>`).join("")}
+          ${TABLE_LEVELS.map((level) => html`<option value="${level.id}" ${state.tableLevel === level.id ? "selected" : ""}>${level.label} · ${countFilteredTables(state.tableFilter, level.id, state.tableLevelCumulative)}</option>`)}
         </select>
       </label>
-      ${cumulativeDisabled ? "" : `
+      ${cumulativeDisabled ? "" : html`
         <label class="table-level-mode" title="В накопительном режиме показываются темы выбранного и всех предыдущих уровней">
           <input type="checkbox" data-table-level-cumulative ${state.tableLevelCumulative ? "checked" : ""}>
           <span>Включая предыдущие уровни</span>
@@ -15878,22 +15874,22 @@ function tableSearchRank(item, query) {
 
 function tableCatalogSection(title, description, tables, { collapsible = false, open = true } = {}) {
   const heading = collapsible
-    ? `<h2><button class="table-catalog-toggle" type="button" data-table-group-toggle="${escapeHTML(title)}" aria-expanded="${open}">${title} <span class="filter-count">${tables.length}</span></button></h2>`
-    : `<h2>${title} <span class="filter-count">${tables.length}</span></h2>`;
+    ? html`<h2><button class="table-catalog-toggle" type="button" data-table-group-toggle="${title}" aria-expanded="${open}">${title} <span class="filter-count">${tables.length}</span></button></h2>`
+    : html`<h2>${title} <span class="filter-count">${tables.length}</span></h2>`;
   return infoSection({
     className: "info-card table-catalog-group",
-    html: `
+    html: html`
       <header>
         ${heading}
-        ${description ? `<p class="muted">${description}</p>` : ""}
+        ${description ? html`<p class="muted">${description}</p>` : ""}
       </header>
       <div class="table-catalog-links" ${open ? "" : "hidden"}>
-        ${tables.map((item) => `
+        ${tables.map((item) => html`
           <button class="table-catalog-link" type="button" data-table-open="${item.index}">
             <span class="table-catalog-title"><span>${item.title}</span>${tableLevelBadge(item)}</span>
-            <small>${item.subgroup ? `<strong>${item.subgroup}.</strong> ` : ""}${item.summary || tableSummary(item)}</small>
+            <small>${item.subgroup ? html`<strong>${item.subgroup}.</strong> ` : ""}${item.summary || tableSummary(item)}</small>
           </button>
-        `).join("")}
+        `)}
       </div>
     `
   });
@@ -15939,20 +15935,20 @@ function renderUsefulTableCard(item) {
   const section = infoSection({
     id: `table-${index}`,
     className: "info-card table-card is-open",
-    html: `
+    html: html`
       <p class="table-context" aria-label="Положение в каталоге шпаргалок">
         <span class="table-context-path">
-          <button class="table-context-link" type="button" data-table-context-group>${escapeHTML(item.group)}</button>
-          ${item.subgroup ? `<span class="table-context-separator" aria-hidden="true">›</span><button class="table-context-link" type="button" data-table-context-subgroup>${escapeHTML(item.subgroup)}</button>` : ""}
+          <button class="table-context-link" type="button" data-table-context-group>${item.group}</button>
+          ${item.subgroup ? html`<span class="table-context-separator" aria-hidden="true">›</span><button class="table-context-link" type="button" data-table-context-subgroup>${item.subgroup}</button>` : ""}
         </span>
         ${tableLevelButton(item)}
       </p>
       <div class="material-title-row"><h2 tabindex="-1">${item.title}</h2>${favoriteMaterialButton("table", item.id, item.title)}</div>
       <p class="muted">${item.description}</p>
       <div class="table-summary"><strong>Главное:</strong> ${summary}</div>
-      <div class="table-wrap">${LINKED_TABLE_HTML[index]}</div>
-      ${mistake ? `<div class="table-mistake"><strong>Типичная ошибка:</strong> ${mistake}</div>` : ""}
-      ${lessonLinks || related ? `<footer class="table-card-footer">${lessonLinks}${related}</footer>` : ""}
+      <div class="table-wrap">${rawHtml(LINKED_TABLE_HTML[index])}</div>
+      ${mistake ? html`<div class="table-mistake"><strong>Типичная ошибка:</strong> ${mistake}</div>` : ""}
+      ${lessonLinks || related ? html`<footer class="table-card-footer">${lessonLinks}${related}</footer>` : ""}
     `
   });
   return section;
@@ -16000,11 +15996,11 @@ function openTableByIndex(index, { updateRoute = true } = {}) {
 function relatedTablesMarkup(indices) {
   const items = indices.map((i) => INDEXED_TABLES[i]).filter(Boolean);
   if (items.length === 0) return "";
-  return `
+  return html`
     <div class="table-related">
       <h4>Связанные шпаргалки</h4>
       <div class="table-related-links">
-        ${items.map((item) => `<button class="small-button" type="button" data-table-jump-related="${tableRoute(item)}">${item.title}</button>`).join("")}
+        ${items.map((item) => html`<button class="small-button" type="button" data-table-jump-related="${tableRoute(item)}">${item.title}</button>`)}
       </div>
     </div>
   `;
@@ -16057,12 +16053,12 @@ function tableLevelLabel(item) {
 }
 
 function tableLevelBadge(item) {
-  return `<span class="table-level-badge" title="Уровни по PCIC: с какого уровня полезна шпаргалка и до какого уровня доходит её материал">${tableLevelLabel(item)}</span>`;
+  return html`<span class="table-level-badge" title="Уровни по PCIC: с какого уровня полезна шпаргалка и до какого уровня доходит её материал">${tableLevelLabel(item)}</span>`;
 }
 
 function tableLevelButton(item) {
   const level = tableLevelMeta(item.minLevel);
-  return `<button class="table-level-badge table-context-level" type="button" data-table-context-level title="Показать шпаргалки уровня ${level.badge}" aria-label="Уровни ${tableLevelLabel(item)}; показать шпаргалки уровня ${level.badge}">${tableLevelLabel(item)}</button>`;
+  return html`<button class="table-level-badge table-context-level" type="button" data-table-context-level title="Показать шпаргалки уровня ${level.badge}" aria-label="Уровни ${tableLevelLabel(item)}; показать шпаргалки уровня ${level.badge}">${tableLevelLabel(item)}</button>`;
 }
 
 function tableFilterIdForGroup(groupTitle) {
@@ -16931,8 +16927,8 @@ function learningModuleMarkup(module, index, isCurrent) {
   const rows = module.lessons.map((id, lessonIndex) => {
     const lesson = lessonById(id);
     const status = learningLessonStatus(id);
-    const minutes = status === "done" ? "" : `<small>≈ ${textbookLessonMinutes(lesson)} мин</small>`;
-    return { status, html: `<li><button class="learning-module-lesson is-${status}" type="button" data-textbook-open="${id}" aria-label="Шаг ${lessonIndex + 1}. Урок ${id}: ${escapeHTML(lesson.title.ru)} — ${labels[status]}"><span class="learning-module-step" aria-hidden="true">${lessonIndex + 1}.</span><span class="learning-module-mark" aria-hidden="true">${marks[status]}</span><span class="learning-module-lesson-title">Урок ${id}. ${escapeHTML(lesson.title.ru)}</span>${minutes}</button></li>` };
+    const minutes = status === "done" ? "" : html`<small>≈ ${textbookLessonMinutes(lesson)} мин</small>`;
+    return { status, html: html`<li><button class="learning-module-lesson is-${status}" type="button" data-textbook-open="${id}" aria-label="Шаг ${lessonIndex + 1}. Урок ${id}: ${lesson.title.ru} — ${labels[status]}"><span class="learning-module-step" aria-hidden="true">${lessonIndex + 1}.</span><span class="learning-module-mark" aria-hidden="true">${marks[status]}</span><span class="learning-module-lesson-title">Урок ${id}. ${lesson.title.ru}</span>${minutes}</button></li>` };
   });
   const openRows = rows.filter((row) => row.status !== "done").map((row) => row.html).join("");
   const doneRows = rows.filter((row) => row.status === "done").map((row) => row.html).join("");
@@ -17027,17 +17023,17 @@ function learningCheckCardMarkup(level) {
   if (!learningModulesFor(level.id).some((module) => module.lessons.length)) return "";
   const record = state.learningChecks[level.id];
   const passedDate = record?.passedAt ? storedDateText(record.passedAt) : "";
-  const passed = passedDate ? ` Уровень подтверждён ${escapeHTML(passedDate)}.` : "";
-  const result = record ? `<p><strong>Лучший результат: ${storedPercentText(record.best)}, последний: ${storedPercentText(record.last)}.</strong>${passed}</p>` : "";
-  return `<section class="learning-check-card"><div><h3>Итоговая проверка ${escapeHTML(level.label)}</h3><p class="muted">${LEARNING_CHECK_SIZE} случайных заданий из уроков уровня, не меньше одного из каждого модуля; 5–10 минут. Уровень подтверждён при ${Math.round(LEARNING_CHECK_PASS_SHARE * 100)}% верных. Ответы не попадают в уроки.</p>${result}</div><button class="small-button primary" type="button" data-check-start>${record ? "Пройти ещё раз" : "Начать проверку"}</button></section>`;
+  const passed = passedDate ? ` Уровень подтверждён ${passedDate}.` : "";
+  const result = record ? html`<p><strong>Лучший результат: ${storedPercentText(record.best)}, последний: ${storedPercentText(record.last)}.</strong>${passed}</p>` : "";
+  return html`<section class="learning-check-card"><div><h3>Итоговая проверка ${level.label}</h3><p class="muted">${LEARNING_CHECK_SIZE} случайных заданий из уроков уровня, не меньше одного из каждого модуля; 5–10 минут. Уровень подтверждён при ${Math.round(LEARNING_CHECK_PASS_SHARE * 100)}% верных. Ответы не попадают в уроки.</p>${result}</div><button class="small-button primary" type="button" data-check-start>${record ? "Пройти ещё раз" : "Начать проверку"}</button></section>`;
 }
 
 // Итоговая проверка всегда по-русски, поэтому разбор ошибки берётся на русском, а не на языке Учебника.
 function learningCheckFeedback(answer, item, exercise, lessonId) {
-  if (!answer) return `<p class="textbook-feedback"><strong>Нет ответа.</strong> Правильный ответ: <span lang="es">${escapeHTML([item.answer].flat()[0])}</span>.</p>`;
+  if (!answer) return html`<p class="textbook-feedback"><strong>Нет ответа.</strong> Правильный ответ: <span lang="es">${[item.answer].flat()[0]}</span>.</p>`;
   const details = textbookMistakeDetails(answer, item, exercise, lessonId, (ru) => ru);
   const diagnosis = details.diagnosis ? html`<span class="textbook-feedback-note"><strong>Разбор:</strong> ${details.diagnosis}</span>` : "";
-  return `<p class="textbook-feedback"><strong>Неверно.</strong>${textbookAccentOnlyMistake(answer, item.answer) ? " Почти: проверьте тильду." : ""} Правильный ответ: <span lang="es">${details.answerMarkup}</span>.${diagnosis}</p>`;
+  return html`<p class="textbook-feedback"><strong>Неверно.</strong>${textbookAccentOnlyMistake(answer, item.answer) ? " Почти: проверьте тильду." : ""} Правильный ответ: <span lang="es">${details.answerMarkup}</span>.${diagnosis}</p>`;
 }
 
 function learningCheckMarkup(level) {
@@ -17046,15 +17042,15 @@ function learningCheckMarkup(level) {
   const questions = check.items.map((entry, index) => {
     const { lesson, exercise, item } = learningCheckEntry(entry);
     const answer = check.answers[index] || "";
-    const prompt = escapeHTML(item.prompt);
+    const prompt = item.prompt;
     const control = exercise.kind === "choice"
-      ? `<div class="textbook-choice-row" role="group" aria-label="${prompt}">${textbookItemOptions(exercise, item).map((option) => `<button class="small-button ${answer === option ? "is-selected" : ""}" type="button" data-check-choice="${index}" data-check-value="${escapeHTML(option)}" aria-pressed="${answer === option}" ${check.submitted ? "disabled" : ""}>${escapeHTML(option)}</button>`).join("")}</div>`
-      : `<label><span class="sr-only">${prompt}</span><input class="textbook-answer-input" type="text" autocomplete="off" spellcheck="false" lang="es" value="${escapeHTML(answer)}" data-check-answer="${index}" aria-label="${prompt}" aria-describedby="learning-check-context-${index}" ${check.submitted ? "readonly" : ""}></label>`;
+      ? html`<div class="textbook-choice-row" role="group" aria-label="${prompt}">${textbookItemOptions(exercise, item).map((option) => html`<button class="small-button ${answer === option ? "is-selected" : ""}" type="button" data-check-choice="${index}" data-check-value="${option}" aria-pressed="${answer === option}" ${check.submitted ? "disabled" : ""}>${option}</button>`)}</div>`
+      : html`<label><span class="sr-only">${prompt}</span><input class="textbook-answer-input" type="text" autocomplete="off" spellcheck="false" lang="es" value="${answer}" data-check-answer="${index}" aria-label="${prompt}" aria-describedby="learning-check-context-${index}" ${check.submitted ? "readonly" : ""}></label>`;
     const feedback = !check.submitted ? "" : results[index]
-      ? `<p class="textbook-feedback"><strong>Верно.</strong></p>`
+      ? html`<p class="textbook-feedback"><strong>Верно.</strong></p>`
       : learningCheckFeedback(answer, item, exercise, lesson.id);
     const stateClass = check.submitted ? (results[index] ? " is-correct" : " is-wrong") : "";
-    return `<li class="textbook-question${stateClass}" data-check-question="${index}"><small class="learning-check-context" id="learning-check-context-${index}">Урок ${lesson.id} · ${escapeHTML(textbookText(exercise.instruction))}</small><span class="textbook-prompt"><span lang="es">${markRussianHints(prompt)}</span></span>${control}${feedback}</li>`;
+    return html`<li class="textbook-question${stateClass}" data-check-question="${index}"><small class="learning-check-context" id="learning-check-context-${index}">Урок ${lesson.id} · ${textbookText(exercise.instruction)}</small><span class="textbook-prompt"><span lang="es">${markRussianHints(prompt)}</span></span>${control}${feedback}</li>`;
   }).join("");
   let summary = `<p class="muted">Ответьте на все ${check.items.length} заданий и нажмите «Проверить». Нужно ${Math.round(LEARNING_CHECK_PASS_SHARE * 100)}% верных.</p>`;
   let actions = `<button class="small-button primary" type="button" data-check-submit>Проверить</button><button class="small-button" type="button" data-check-exit>Выйти без результата</button>`;
@@ -17135,14 +17131,14 @@ function learningLevelBodyMarkup(level) {
   const record = state.learningChecks[level.id];
   const levelLessons = modules.flatMap((module) => module.lessons);
   const left = learningLessonsLeftMinutes(levelLessons);
-  const nowTitle = currentModule ? `<p><strong>Сейчас: модуль ${currentModuleIndex + 1} из ${modules.length} · ${currentModule.title}</strong></p>` : "";
-  const lessonLine = lesson ? `<small>${nextLesson.status === "started" ? "Начатый урок" : "Следующий урок"}: ${lesson.id}. ${escapeHTML(lesson.title.ru)} · ≈ ${textbookLessonMinutes(lesson)} мин</small>` : "";
+  const nowTitle = currentModule ? html`<p><strong>Сейчас: модуль ${currentModuleIndex + 1} из ${modules.length} · ${currentModule.title}</strong></p>` : "";
+  const lessonLine = lesson ? html`<small>${nextLesson.status === "started" ? "Начатый урок" : "Следующий урок"}: ${lesson.id}. ${lesson.title.ru} · ≈ ${textbookLessonMinutes(lesson)} мин</small>` : "";
   const pendingLine = pending && lesson ? `<p class="plan-next-extra">${learningPendingText(pending.module)} <button class="link-button" type="button" data-open-learning-module="${pending.module.id}">Открыть модуль</button></p>` : "";
   const goNext = nextLevel ? `<button class="small-button primary" type="button" data-go-learning-level="${nextLevel.id}">Перейти к ${nextLevel.label}</button>` : "";
   const passedDate = storedDateText(record?.passedAt);
   let nextStepMarkup;
   if (record?.passedAt) {
-    nextStepMarkup = `<div class="plan-next-step"><div><p><strong>Уровень ${escapeHTML(level.label)} подтверждён итоговой проверкой</strong></p><small>${passedDate ? `${escapeHTML(passedDate)}, ` : ""}лучший результат ${storedPercentText(record.best)}.${lesson ? " Оставшиеся уроки можно пройти для закрепления." : ""}</small></div><div class="plan-next-actions">${goNext}${lesson ? `<button class="small-button" type="button" data-textbook-open="${lesson.id}">Продолжить уроки</button>` : ""}</div></div>`;
+    nextStepMarkup = html`<div class="plan-next-step"><div><p><strong>Уровень ${level.label} подтверждён итоговой проверкой</strong></p><small>${passedDate ? `${passedDate}, ` : ""}лучший результат ${storedPercentText(record.best)}.${lesson ? " Оставшиеся уроки можно пройти для закрепления." : ""}</small></div><div class="plan-next-actions">${rawHtml(goNext)}${lesson ? html`<button class="small-button" type="button" data-textbook-open="${lesson.id}">Продолжить уроки</button>` : ""}</div></div>`;
   } else if (lesson) {
     nextStepMarkup = `<div class="plan-next-step"><div>${nowTitle}${lessonLine}${pendingLine}</div><button class="small-button primary" type="button" data-textbook-open="${lesson.id}">Продолжить</button></div>`;
   } else if (pending) {
@@ -17355,17 +17351,17 @@ function textbookMistakeDetails(submitted, item, exercise, lessonId, ui = textbo
   });
   const closest = variants.reduce((best, variant) => variant.same > best.same ? variant : best);
   const accentOnly = textbookAccentOnlyMistake(submitted, item.answer);
-  let answerMarkup = escapeHTML(closest.answer);
+  let answerMarkup = html`${closest.answer}`;
   if (!accentOnly && exercise.kind !== "choice" && closest.same > 0 && words(closest.answer).length > 1) {
     // Слова образца идут в diff по порядку; токен с внутренней пунктуацией («sí,no») может дать несколько слов.
     const expectedSteps = closest.steps.filter((step) => step.type !== "user");
     let position = 0;
-    answerMarkup = closest.answer.split(/(\s+)/).map((token) => {
+    answerMarkup = html`${closest.answer.split(/(\s+)/).map((token) => {
       const count = words(token).length;
       const missing = expectedSteps.slice(position, position + count).some((step) => step.type === "expected");
       position += count;
-      return missing ? html`<mark class="answer-diff-mark">${token}</mark>` : escapeHTML(token);
-    }).join("");
+      return missing ? html`<mark class="answer-diff-mark">${token}</mark>` : token;
+    })}`;
   }
   const mistake = accentOnly || !userWords.length ? null : diagnoseVerbMistake(submitted, closest.answer, [item.prompt, exercise.instruction.ru, exercise.instruction.es], lessonId);
   return { answer: closest.answer, answerMarkup, diagnosis: mistake ? verbMistakeMessage(mistake, ui) : "" };
@@ -17380,21 +17376,22 @@ function verbMistakeMessage({ kind, user, userLabel, expectedLabel }, ui = textb
 
 function textbookFeedback(item, checked, showFeedback, lesson, exercise, submitted = "") {
   if (!showFeedback) return "";
-  if (!checked) return `<p class="textbook-feedback" role="status" tabindex="-1"><strong>${escapeHTML(textbookUi("Ответьте на этот пункт.", "Responde a este apartado."))}</strong> ${escapeHTML(textbookUi("Он не будет засчитан, пока поле пустое.", "No se contará mientras esté vacío."))}</p>`;
-  if (checked.correct) return `<p class="textbook-feedback" tabindex="-1"><strong>${escapeHTML(textbookUi("Верно.", "Correcto."))}</strong> ${escapeHTML(textbookUi("Продолжайте.", "Continúa."))}</p>`;
+  if (!checked) return html`<p class="textbook-feedback" role="status" tabindex="-1"><strong>${textbookUi("Ответьте на этот пункт.", "Responde a este apartado.")}</strong> ${textbookUi("Он не будет засчитан, пока поле пустое.", "No se contará mientras esté vacío.")}</p>`;
+  if (checked.correct) return html`<p class="textbook-feedback" tabindex="-1"><strong>${textbookUi("Верно.", "Correcto.")}</strong> ${textbookUi("Продолжайте.", "Continúa.")}</p>`;
   const details = textbookMistakeDetails(submitted, item, exercise, lesson.id);
   const note = textbookText(item.note) || textbookText(TEXTBOOK_LESSON_FEEDBACK[lesson.id]);
   const diagnosisMarkup = details.diagnosis ? html`<span class="textbook-feedback-note"><strong>${textbookUi("Разбор:", "Análisis:")}</strong> ${details.diagnosis}</span>` : "";
   const noteMarkup = note ? html`<span class="textbook-feedback-note"><strong>${textbookUi("Правило:", "Regla:")}</strong> ${note}</span>` : "";
   const accentHint = textbookAccentOnlyMistake(submitted, item.answer)
-    ? ` ${escapeHTML(textbookUi("Почти: проверьте ударение (тильду).", "Casi: revisa la tilde."))}`
+    ? ` ${textbookUi("Почти: проверьте ударение (тильду).", "Casi: revisa la tilde.")}`
     : "";
-  return `<p class="textbook-feedback" role="status" tabindex="-1"><strong>${escapeHTML(textbookUi("Проверьте ещё раз.", "Revísalo otra vez."))}</strong>${accentHint} ${escapeHTML(textbookUi("Правильный ответ", "Respuesta correcta"))}: <span lang="es">${details.answerMarkup}</span>.${diagnosisMarkup}${noteMarkup}</p>`;
+  return html`<p class="textbook-feedback" role="status" tabindex="-1"><strong>${textbookUi("Проверьте ещё раз.", "Revísalo otra vez.")}</strong>${accentHint} ${textbookUi("Правильный ответ", "Respuesta correcta")}: <span lang="es">${details.answerMarkup}</span>.${diagnosisMarkup}${noteMarkup}</p>`;
 }
 
 // Подсказки в скобках вроде «(ты)» или «(сейчас)» внутри испанского задания помечаются как русский текст.
-function markRussianHints(html) {
-  return html.replace(/\(([^()]*[а-яё][^()]*)\)/gi, '<span lang="ru">($1)</span>');
+function markRussianHints(text) {
+  const parts = String(text).split(/(\([^()]*[а-яё][^()]*\))/i);
+  return html`${parts.map((part, index) => index % 2 ? html`<span lang="ru">${part}</span>` : part)}`;
 }
 
 function renderTextbookQuestion(lesson, exercise, item, index, saved, showFeedback = false) {
@@ -17407,16 +17404,16 @@ function renderTextbookQuestion(lesson, exercise, item, index, saved, showFeedba
   const control = exercise.kind === "choice"
     ? html`<div class="textbook-choice-row" role="group" aria-label="${item.prompt}">${options}</div>`
     : html`<label><span class="sr-only">${item.prompt}</span><input class="textbook-answer-input" type="text" autocomplete="off" spellcheck="false" lang="es" value="${answer}" data-textbook-answer="${key}" aria-label="${item.prompt}" aria-describedby="textbook-instruction-${exercise.id}"></label>`;
-  return html`<li class="textbook-question${stateClass}" data-textbook-question="${key}"><span class="textbook-prompt"><span lang="es">${rawHtml(markRussianHints(escapeHTML(item.prompt)))}</span></span>${control}${rawHtml(textbookFeedback(item, checked, showFeedback, lesson, exercise, answer))}</li>`;
+  return html`<li class="textbook-question${stateClass}" data-textbook-question="${key}"><span class="textbook-prompt"><span lang="es">${markRussianHints(item.prompt)}</span></span>${control}${textbookFeedback(item, checked, showFeedback, lesson, exercise, answer)}</li>`;
 }
 
 function textbookLanguageButtons() {
-  return `<div class="textbook-language-switch" role="group" aria-label="${escapeHTML(textbookUi("Язык учебника", "Idioma del curso"))}"><button class="small-button ${state.textbookLanguage === "ru" ? "is-active" : ""}" type="button" data-textbook-language="ru" aria-pressed="${state.textbookLanguage === "ru"}">RU</button><button class="small-button ${state.textbookLanguage === "es" ? "is-active" : ""}" type="button" data-textbook-language="es" aria-pressed="${state.textbookLanguage === "es"}">ES</button></div>`;
+  return html`<div class="textbook-language-switch" role="group" aria-label="${textbookUi("Язык учебника", "Idioma del curso")}"><button class="small-button ${state.textbookLanguage === "ru" ? "is-active" : ""}" type="button" data-textbook-language="ru" aria-pressed="${state.textbookLanguage === "ru"}">RU</button><button class="small-button ${state.textbookLanguage === "es" ? "is-active" : ""}" type="button" data-textbook-language="es" aria-pressed="${state.textbookLanguage === "es"}">ES</button></div>`;
 }
 
 function textbookLevelBadge(lessonId) {
   const level = textbookLessonLevel(lessonId);
-  return level ? `<span class="level-badge textbook-level-badge" title="${escapeHTML(textbookUi("Уровень по Plan Curricular del Instituto Cervantes", "Nivel según el Plan Curricular del Instituto Cervantes"))}">${levelLabel(level)}</span>` : "";
+  return level ? html`<span class="level-badge textbook-level-badge" title="${textbookUi("Уровень по Plan Curricular del Instituto Cervantes", "Nivel según el Plan Curricular del Instituto Cervantes")}">${levelLabel(level)}</span>` : "";
 }
 
 function renderTextbookCatalog(content) {
@@ -17465,7 +17462,7 @@ function renderTextbookCatalogContent(content) {
       ? `${textbookUi("Пройден", "Completada")} · ✓ ${progress.correct}/${progress.total}`
       : `${textbookUi("Заполнено", "Respondidas")} ${progress.answered}/${progress.total} · ✓ ${progress.correct}`;
     const meta = `${textbookText(lesson.subtitle)} · ${progress.total} ${textbookUi("зад.", "preg.")} · ~${duration} ${textbookUi("мин.", "min.")}`;
-    return `<button class="textbook-lesson-card" type="button" data-textbook-open="${lesson.id}"><span class="textbook-lesson-number">${lesson.id}</span><span><strong>${escapeHTML(textbookText(lesson.title))} ${textbookLevelBadge(lesson.id)}</strong><small>${escapeHTML(meta)}</small></span><span class="textbook-status ${progress.done ? "is-done" : ""}">${escapeHTML(status)}</span></button>`;
+    return html`<button class="textbook-lesson-card" type="button" data-textbook-open="${lesson.id}"><span class="textbook-lesson-number">${lesson.id}</span><span><strong>${textbookText(lesson.title)} ${textbookLevelBadge(lesson.id)}</strong><small>${meta}</small></span><span class="textbook-status ${progress.done ? "is-done" : ""}">${status}</span></button>`;
   };
   const cards = TEXTBOOK_COURSE_GROUPS.map((group, index) => {
     const lessons = group.ids.map((id) => lessonById(id)).filter((lesson) => lesson && (state.textbookLevel === "all" || textbookLessonLevel(lesson.id) === state.textbookLevel));
@@ -17475,14 +17472,14 @@ function renderTextbookCatalogContent(content) {
     const label = textbookText(group.title);
     const lessonList = lessons.map((lesson) => lesson.id + ". " + textbookText(lesson.title)).join(" · ");
     const lessonSummary = textbookUi("Уроки: ", "Lecciones: ") + lessonList;
-    return `<section class="textbook-catalog-group"><button class="textbook-catalog-group-toggle" type="button" data-textbook-group-toggle="${index}" aria-expanded="${isOpen}" aria-controls="${groupId}"><span class="textbook-catalog-group-title"><strong>${escapeHTML(label)}</strong><small>${escapeHTML(lessonSummary)}</small></span></button><div class="textbook-catalog-group-lessons" id="${groupId}" ${isOpen ? "" : "hidden"}>${lessons.map(card).join("")}</div></section>`;
-  }).join("");
-  const header = infoSection({ className: "info-card textbook-dashboard", html: `
-    <div class="textbook-toolbar"><div><h2>${escapeHTML(textbookUi("Учебник", "Curso"))}</h2><p class="muted">${escapeHTML(textbookUi(`${TEXTBOOK_LESSONS.length} ${pluralizeInteractiveLessons(TEXTBOOK_LESSONS.length)} по базовой грамматике.`, `${TEXTBOOK_LESSONS.length} ${TEXTBOOK_LESSONS.length === 1 ? "lección interactiva" : "lecciones interactivas"} de gramática básica.`))}</p></div>${textbookLanguageButtons()}</div>
+    return html`<section class="textbook-catalog-group"><button class="textbook-catalog-group-toggle" type="button" data-textbook-group-toggle="${index}" aria-expanded="${isOpen}" aria-controls="${groupId}"><span class="textbook-catalog-group-title"><strong>${label}</strong><small>${lessonSummary}</small></span></button><div class="textbook-catalog-group-lessons" id="${groupId}" ${isOpen ? "" : "hidden"}>${lessons.map(card)}</div></section>`;
+  });
+  const header = infoSection({ className: "info-card textbook-dashboard", html: html`
+    <div class="textbook-toolbar"><div><h2>${textbookUi("Учебник", "Curso")}</h2><p class="muted">${textbookUi(`${TEXTBOOK_LESSONS.length} ${pluralizeInteractiveLessons(TEXTBOOK_LESSONS.length)} по базовой грамматике.`, `${TEXTBOOK_LESSONS.length} ${TEXTBOOK_LESSONS.length === 1 ? "lección interactiva" : "lecciones interactivas"} de gramática básica.`)}</p></div>${textbookLanguageButtons()}</div>
     ${textbookAboutMarkup()}
-    <div class="textbook-progress"><p><strong>${escapeHTML(textbookUi("Пройдено", "Completado"))}: ${completed}/${lessonCount}</strong></p><progress max="${lessonCount}" value="${completed}" aria-label="${escapeHTML(textbookUi("Прогресс учебника", "Progreso del curso"))}"></progress><div class="textbook-actions"><button class="small-button primary" type="button" data-textbook-open="${next.id}">${escapeHTML(planLesson ? textbookUi("Продолжить по плану", "Seguir el plan") : textbookUi("Продолжить", "Continuar"))}: ${next.id}</button><span class="muted">${escapeHTML(textbookUi("Все уроки доступны сразу.", "Todas las lecciones están disponibles."))}</span></div></div>
-    <div class="textbook-level-filter" role="group" aria-label="${escapeHTML(textbookUi("Фильтр по уровню", "Filtro por nivel"))}">${["all", ...TEXTBOOK_LEVEL_IDS].map((level) => `<button class="small-button ${state.textbookLevel === level ? "is-active" : ""}" type="button" data-textbook-level="${level}" aria-pressed="${state.textbookLevel === level}">${level === "all" ? escapeHTML(textbookUi("Все уровни", "Todos los niveles")) : `${levelLabel(level)} · ${TEXTBOOK_LESSON_LEVELS[level].length}`}</button>`).join("")}<span class="muted">${escapeHTML(textbookUi("Уровни — по Plan Curricular del Instituto Cervantes: в книге их нет.", "Niveles según el Plan Curricular del Instituto Cervantes: el libro no los indica."))}</span></div>
-    <div class="textbook-actions" role="group" aria-label="${escapeHTML(textbookUi("Управление темами", "Control de temas"))}"><button class="small-button" type="button" data-textbook-groups="open">${escapeHTML(textbookUi("Раскрыть все темы", "Abrir todos los temas"))}</button><button class="small-button" type="button" data-textbook-groups="close">${escapeHTML(textbookUi("Скрыть все темы", "Cerrar todos los temas"))}</button></div>
+    <div class="textbook-progress"><p><strong>${textbookUi("Пройдено", "Completado")}: ${completed}/${lessonCount}</strong></p><progress max="${lessonCount}" value="${completed}" aria-label="${textbookUi("Прогресс учебника", "Progreso del curso")}"></progress><div class="textbook-actions"><button class="small-button primary" type="button" data-textbook-open="${next.id}">${planLesson ? textbookUi("Продолжить по плану", "Seguir el plan") : textbookUi("Продолжить", "Continuar")}: ${next.id}</button><span class="muted">${textbookUi("Все уроки доступны сразу.", "Todas las lecciones están disponibles.")}</span></div></div>
+    <div class="textbook-level-filter" role="group" aria-label="${textbookUi("Фильтр по уровню", "Filtro por nivel")}">${["all", ...TEXTBOOK_LEVEL_IDS].map((level) => html`<button class="small-button ${state.textbookLevel === level ? "is-active" : ""}" type="button" data-textbook-level="${level}" aria-pressed="${state.textbookLevel === level}">${level === "all" ? textbookUi("Все уровни", "Todos los niveles") : `${levelLabel(level)} · ${TEXTBOOK_LESSON_LEVELS[level].length}`}</button>`)}<span class="muted">${textbookUi("Уровни — по Plan Curricular del Instituto Cervantes: в книге их нет.", "Niveles según el Plan Curricular del Instituto Cervantes: el libro no los indica.")}</span></div>
+    <div class="textbook-actions" role="group" aria-label="${textbookUi("Управление темами", "Control de temas")}"><button class="small-button" type="button" data-textbook-groups="open">${textbookUi("Раскрыть все темы", "Abrir todos los temas")}</button><button class="small-button" type="button" data-textbook-groups="close">${textbookUi("Скрыть все темы", "Cerrar todos los temas")}</button></div>
     <div class="textbook-catalog">${cards}</div>
   ` });
   content.appendChild(header);
@@ -17505,7 +17502,7 @@ function renderTextbookLesson(content, lesson) {
     const ruleText = normalizeTheoryText((block.rules || []).map((rule) => typeof rule === "string" ? rule : `${rule.es || ""} ${rule.ru || ""}`).join(" "));
     const examples = block.examples.filter((example) => !ruleText.includes(normalizeTheoryText(example))).map((example) => html`<li lang="es">${example}</li>`);
     return html`<section class="textbook-theory"><h3>${textbookText(block.title)}</h3><p>${textbookText(block.body)}</p>${rules.length ? html`<ul class="textbook-rule-list">${rules}</ul>` : ""}${attention}${examples.length ? html`<ul class="textbook-example-list">${examples}</ul>` : ""}</section>`;
-  }).join("");
+  });
   const exercises = lesson.exercises.map((exercise) => {
     const exerciseProgress = textbookExerciseProgress(exercise, saved);
     const feedbackKey = lesson.id + ":" + exercise.id;
@@ -17522,7 +17519,7 @@ function renderTextbookLesson(content, lesson) {
     const exerciseMeta = `${textbookUi("Заполнено", "Respondidas")} ${exerciseProgress.answered}/${exerciseProgress.total}${showFeedback ? ` · ✓ ${exerciseProgress.correct}/${exerciseProgress.checked}` : ""}`;
     const accentKeys = exercise.kind === "choice" ? "" : html`<div class="textbook-accent-keys" role="group" aria-label="${textbookUi("Вставить букву в поле ответа", "Insertar letra en la respuesta")}">${QUIZ_CHARACTERS.map((char) => html`<button class="small-button" type="button" data-textbook-char="${char}" lang="es">${char}</button>`)}</div>`;
     return html`<article class="textbook-exercise" data-textbook-exercise="${exercise.id}"><div class="textbook-exercise-head"><div><h4>${textbookUi("Упражнение", "Ejercicio")} ${exercise.id}</h4><p id="textbook-instruction-${exercise.id}">${textbookText(exercise.instruction)}</p></div><span class="textbook-exercise-meta">${exerciseMeta}</span><button class="small-button textbook-exercise-toggle" type="button" data-textbook-toggle="${exercise.id}" aria-expanded="${isOpen}" aria-controls="${bodyId}">${toggleLabel}</button></div><div class="textbook-exercise-body" id="${bodyId}"${isOpen ? "" : " hidden"}><ol class="textbook-question-list">${exercise.items.map((item, index) => renderTextbookQuestion(lesson, exercise, item, index, saved, showFeedback))}</ol>${accentKeys}<div class="textbook-actions"><button class="small-button primary" type="button" data-textbook-check="${exercise.id}" aria-pressed="${showFeedback}">${buttonLabel}</button></div></div></article>`;
-  }).join("");
+  });
   const remaining = progress.total - progress.checked;
   const summary = progress.done
     ? textbookUi("Все задания проверены. Верно " + progress.correct + " из " + progress.total + ".", "Todos los ejercicios están comprobados. Correctas: " + progress.correct + " de " + progress.total + ".")
@@ -17535,15 +17532,15 @@ function renderTextbookLesson(content, lesson) {
   const lessonTables = INDEXED_TABLES.filter((table) => table.lessons?.includes(lesson.id));
   const tablesMarkup = lessonTables.length ? html`<section class="textbook-related"><h3>${textbookUi("Шпаргалки по теме", "Tablas de consulta")}</h3><div class="textbook-actions">${lessonTables.map((table) => html`<a class="small-button" href="#${tableRoute(table)}">${table.title}</a>`)}</div></section>` : "";
   const related = relatedLessons.length ? html`<section class="textbook-related"><h3>${textbookUi("Связанные уроки", "Lecciones relacionadas")}</h3><div class="textbook-actions">${relatedLessons.map((item) => html`<button class="small-button" type="button" data-textbook-open="${item.id}">▶ ${item.id}. ${textbookText(item.title)}</button>`)}</div></section>` : "";
-  const section = infoSection({ className: "info-card textbook-lesson", html: `
-    <div class="textbook-lesson-toolbar"><div class="textbook-lesson-controls"><button class="small-button" type="button" data-textbook-catalog>← ${escapeHTML(textbookUi("К оглавлению", "Índice"))}</button>${learningModuleForLesson(lesson.id) ? `<button class="small-button" type="button" data-textbook-plan="${lesson.id}">← ${escapeHTML(textbookUi("К плану", "Al plan"))}</button>` : ""}${textbookLanguageButtons()}</div><div class="textbook-lesson-heading"><div class="material-title-row"><h2>${lesson.id}. ${escapeHTML(textbookText(lesson.title))} ${textbookLevelBadge(lesson.id)}</h2>${favoriteMaterialButton("lesson", lesson.id, textbookText(lesson.title))}</div><p class="muted">${escapeHTML(textbookText(lesson.goal))}</p></div></div>
-    <div class="textbook-summary"><span><strong>${escapeHTML(textbookUi("Верно", "Correctas"))}: ${progress.correct}/${progress.checked}</strong> · ${escapeHTML(textbookUi("Заполнено", "Respondidas"))}: ${progress.answered}/${progress.total}</span><span class="textbook-status ${progress.done ? "is-done" : ""}">${escapeHTML(progress.done ? textbookUi("Урок пройден", "Lección completada") : textbookUi("В работе", "En curso"))}</span></div>
+  const section = infoSection({ className: "info-card textbook-lesson", html: html`
+    <div class="textbook-lesson-toolbar"><div class="textbook-lesson-controls"><button class="small-button" type="button" data-textbook-catalog>← ${textbookUi("К оглавлению", "Índice")}</button>${learningModuleForLesson(lesson.id) ? html`<button class="small-button" type="button" data-textbook-plan="${lesson.id}">← ${textbookUi("К плану", "Al plan")}</button>` : ""}${textbookLanguageButtons()}</div><div class="textbook-lesson-heading"><div class="material-title-row"><h2>${lesson.id}. ${textbookText(lesson.title)} ${textbookLevelBadge(lesson.id)}</h2>${favoriteMaterialButton("lesson", lesson.id, textbookText(lesson.title))}</div><p class="muted">${textbookText(lesson.goal)}</p></div></div>
+    <div class="textbook-summary"><span><strong>${textbookUi("Верно", "Correctas")}: ${progress.correct}/${progress.checked}</strong> · ${textbookUi("Заполнено", "Respondidas")}: ${progress.answered}/${progress.total}</span><span class="textbook-status ${progress.done ? "is-done" : ""}">${progress.done ? textbookUi("Урок пройден", "Lección completada") : textbookUi("В работе", "En curso")}</span></div>
     <div class="textbook-theory-grid">${theory}</div>
     ${related}
     ${tablesMarkup}
-    <section><h3>${escapeHTML(textbookUi("Практика", "Práctica"))}</h3>${exercises}</section>
-    <section class="textbook-result" aria-live="polite"><h3>${escapeHTML(textbookUi("Итог урока", "Resultado de la lección"))}</h3><p>${escapeHTML(summary)}</p><div class="textbook-actions"><button class="small-button" type="button" data-textbook-retry="${lesson.id}" ${progress.wrong === 0 ? "disabled" : ""}>${escapeHTML(textbookUi("Повторить ошибки", "Repetir errores"))}</button><button class="small-button danger" type="button" data-textbook-reset="${lesson.id}">${escapeHTML(textbookUi("Сбросить урок", "Reiniciar lección"))}</button></div></section>
-    <nav class="textbook-lesson-nav" aria-label="${escapeHTML(textbookUi("Навигация по урокам", "Navegación de lecciones"))}">${previousButton}${nextButton}</nav>
+    <section><h3>${textbookUi("Практика", "Práctica")}</h3>${exercises}</section>
+    <section class="textbook-result" aria-live="polite"><h3>${textbookUi("Итог урока", "Resultado de la lección")}</h3><p>${summary}</p><div class="textbook-actions"><button class="small-button" type="button" data-textbook-retry="${lesson.id}" ${progress.wrong === 0 ? "disabled" : ""}>${textbookUi("Повторить ошибки", "Repetir errores")}</button><button class="small-button danger" type="button" data-textbook-reset="${lesson.id}">${textbookUi("Сбросить урок", "Reiniciar lección")}</button></div></section>
+    <nav class="textbook-lesson-nav" aria-label="${textbookUi("Навигация по урокам", "Navegación de lecciones")}">${previousButton}${nextButton}</nav>
   ` });
   content.appendChild(section);
 }
@@ -18024,7 +18021,7 @@ function toggleFavoriteMaterial(kind, id) {
 
 function favoriteMaterialButton(kind, id, label) {
   const saved = (kind === "table" ? state.favoriteTables : state.favoriteLessons).includes(id);
-  return `<button class="favorite-button favorite-material" type="button" data-favorite-${kind}="${id}" aria-pressed="${saved}" aria-label="${saved ? "Убрать из избранного" : "Добавить в избранное"}: ${escapeHTML(label)}" title="Избранное">${saved ? "★" : "☆"}</button>`;
+  return html`<button class="favorite-button favorite-material" type="button" data-favorite-${kind}="${id}" aria-pressed="${saved}" aria-label="${saved ? "Убрать из избранного" : "Добавить в избранное"}: ${label}" title="Избранное">${saved ? "★" : "☆"}</button>`;
 }
 
 onDelegated("click", "[data-favorite-table], [data-favorite-lesson]", (_event, target) => {
@@ -18184,12 +18181,12 @@ function cardsEmptySection() {
   const emptyCard = document.createElement("section");
   emptyCard.className = "info-card cards-section verb-list-card";
   const suggestedCards = starterVerbs();
-  emptyCard.innerHTML = `
+  emptyCard.innerHTML = html`
     <h2>Глаголов пока нет</h2>
     <p class="muted">Добавьте базовый набор для первой проверки. Отдельные глаголы можно выбирать звездочкой в разделе «Глаголы».</p>
     <button class="small-button primary" type="button" data-add-starter>Добавить 5 базовых глаголов</button>
     <div class="starter-verb-links" aria-label="Посмотреть базовые глаголы">
-      ${suggestedCards.map((verb) => `<button class="starter-verb-link" type="button" data-starter-verb="${verb}" lang="es">${escapeHTML(displayInfinitive(verb))}</button>`).join("")}
+      ${suggestedCards.map((verb) => html`<button class="starter-verb-link" type="button" data-starter-verb="${verb}" lang="es">${displayInfinitive(verb)}</button>`)}
     </div>
   `;
   return emptyCard;
@@ -18201,11 +18198,11 @@ function cardsStudyListSection() {
   const listCard = document.createElement("section");
   listCard.className = "info-card cards-section verb-list-card";
   const visibleCards = visibleStudyCards();
-  listCard.innerHTML = `
+  listCard.innerHTML = html`
     <h2>Глаголы к изучению</h2>
     <p class="muted">Клик по глаголу откроет его карточку. Спряжения здесь не показываются.</p>
     <div class="cards-list-toolbar">
-      <input id="cardsSearch" type="search" aria-label="Поиск в избранном" placeholder="Найти глагол или перевод" value="${escapeHTML(state.cardsQuery)}">
+      <input id="cardsSearch" type="search" aria-label="Поиск в избранном" placeholder="Найти глагол или перевод" value="${state.cardsQuery}">
       <select id="cardsSort" aria-label="Сортировка избранного">
         <option value="recent" ${state.cardsSort === "recent" ? "selected" : ""}>Недавно добавленные</option>
         <option value="alphabetical" ${state.cardsSort === "alphabetical" ? "selected" : ""}>По алфавиту</option>
@@ -18235,7 +18232,7 @@ function cardsStudyListSection() {
     const statusClass = stats.attempts === 0 ? "is-unreviewed" : mastered ? "is-mastered" : needsReview ? "is-mistake" : "is-progress";
     const row = renderVerbListItem(verb, { showBadges: false, showSearchMeta: false });
     row.classList.add("is-study-card");
-    row.insertAdjacentHTML("beforeend", `<div class="cards-study-footer">
+    row.insertAdjacentHTML("beforeend", html`<div class="cards-study-footer">
       <div class="cards-study-meta">
         <span class="${statusClass}" title="${mastered ? "Минимум 3 ответа, точность от 80% и серия от 2" : "Статус изучения"}">${status}</span>
       </div>
@@ -18243,7 +18240,7 @@ function cardsStudyListSection() {
         <span class="cards-study-progress-track" role="progressbar" aria-label="Точность: ${accuracy}%" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${accuracy}"><i style="width: ${accuracy}%"></i></span>
         <strong>${attempts > 0 ? `${accuracy}%` : "—"}</strong>
       </div>
-      <button class="study-verb-quiz" type="button" data-quiz-verb="${verb}" aria-label="Проверить 5 форм глагола ${escapeHTML(displayInfinitive(verb))}" title="Проверить 5 форм"><span aria-hidden="true">▶</span> Проверить 5 форм</button>
+      <button class="study-verb-quiz" type="button" data-quiz-verb="${verb}" aria-label="Проверить 5 форм глагола ${displayInfinitive(verb)}" title="Проверить 5 форм"><span aria-hidden="true">▶</span> Проверить 5 форм</button>
     </div>`);
     list.appendChild(row);
   });
@@ -18877,29 +18874,27 @@ function renderCardQuiz(content) {
   if (state.cardQuizAnswered) {
     const result = evaluateAnswer(state.cardQuizInput, question);
     const isCorrect = result.status === "correct";
-    const enteredAnswer = state.cardQuizInput
-      ? escapeHTML(state.cardQuizInput)
-      : "Ответ не указан";
-    answerHTML = `
+    const enteredAnswer = state.cardQuizInput || "Ответ не указан";
+    answerHTML = html`
       <input class="quiz-input is-${result.status}" type="text" value="${enteredAnswer}" readonly aria-label="Данный ответ">
       <div class="quiz-feedback is-${result.status}" role="status">
-        ${escapeHTML(result.message)}${!isCorrect ? `<br>Правильный ответ: <strong>${escapeHTML(question.answer)}</strong>` : ""}
+        ${result.message}${!isCorrect ? html`<br>Правильный ответ: <strong>${question.answer}</strong>` : ""}
       </div>
-      ${!isCorrect ? `<div class="quiz-result-links" aria-label="Справочные ссылки">
-        <button class="small-button" type="button" data-answer-verb="${escapeHTML(question.verb)}">Открыть глагол</button>
-        ${question.tense ? `<button class="small-button" type="button" data-answer-tense="${escapeHTML(question.tense)}">Посмотреть время</button>` : ""}
+      ${!isCorrect ? html`<div class="quiz-result-links" aria-label="Справочные ссылки">
+        <button class="small-button" type="button" data-answer-verb="${question.verb}">Открыть глагол</button>
+        ${question.tense ? html`<button class="small-button" type="button" data-answer-tense="${question.tense}">Посмотреть время</button>` : ""}
       </div>` : ""}
     `;
   } else {
-    answerHTML = `
-      <input class="quiz-input" id="quizAnswerInput" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="Ответ" aria-describedby="quizInstruction quizQuestion" placeholder="${placeholder}" value="${escapeHTML(state.cardQuizInput)}">
-      ${!isMeaning ? `<div class="quiz-character-row" aria-label="Испанские символы">
-        ${QUIZ_CHARACTERS.map((character) => `<button class="quiz-character-button" type="button" data-quiz-character="${character}" aria-label="Вставить ${character}">${character}</button>`).join("")}
+    answerHTML = html`
+      <input class="quiz-input" id="quizAnswerInput" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="Ответ" aria-describedby="quizInstruction quizQuestion" placeholder="${placeholder}" value="${state.cardQuizInput}">
+      ${!isMeaning ? html`<div class="quiz-character-row" aria-label="Испанские символы">
+        ${QUIZ_CHARACTERS.map((character) => html`<button class="quiz-character-button" type="button" data-quiz-character="${character}" aria-label="Вставить ${character}">${character}</button>`)}
       </div>` : ""}
     `;
   }
 
-  card.innerHTML = `
+  card.innerHTML = html`
     <div class="study-card-top">
       <span>Вопрос ${state.cardQuizIndex + 1} из ${state.cardQuiz.length}</span>
       <div class="quiz-stats" aria-label="Текущий результат">
@@ -18911,16 +18906,16 @@ function renderCardQuiz(content) {
     <div class="study-progress" role="progressbar" aria-label="Прогресс квиза" aria-valuemin="1" aria-valuemax="${state.cardQuiz.length}" aria-valuenow="${state.cardQuizIndex + 1}"><span style="width: ${progress}%"></span></div>
     <div class="study-face">
       <p class="eyebrow" id="quizInstruction">${eyebrow}</p>
-      <h2 id="quizQuestion" ${isMeaning ? `lang="es"` : ""}>${escapeHTML(questionHeading)}</h2>
+      <h2 id="quizQuestion" ${isMeaning ? html`lang="es"` : ""}>${questionHeading}</h2>
       ${answerHTML}
     </div>
     <div class="study-actions">
       ${!state.cardQuizAnswered
-        ? `
+        ? html`
           <button class="small-button primary" type="button" id="checkAnswer">Проверить</button>
           <button class="small-button danger" type="button" id="skipAnswer">Не знаю</button>
         `
-        : `<button class="small-button primary" type="button" id="nextQuestion">Дальше →</button>`
+        : html`<button class="small-button primary" type="button" id="nextQuestion">Дальше →</button>`
       }
     </div>
   `;
@@ -18978,16 +18973,16 @@ function renderCardQuizResults(content) {
   const mistakesHTML = wrongAttempts.length > 0 ? `
     <div class="quiz-wrong-list is-mistakes">
       <h3>Разобрать ошибки (${wrongAttempts.length})</h3>
-      ${wrongAttempts.map((attempt) => `
+      ${wrongAttempts.map((attempt) => html`
         <div class="quiz-mistake-row">
-          <strong class="quiz-mistake-question">${escapeHTML(quizQuestionLabel(attempt.question))}</strong>
+          <strong class="quiz-mistake-question">${quizQuestionLabel(attempt.question)}</strong>
           <div class="quiz-answer-comparison">
-            <span>Ваш ответ<strong>${attempt.userAnswer ? escapeHTML(attempt.userAnswer) : "Нет ответа"}</strong></span>
-            <span>Правильно<strong>${escapeHTML(attempt.question.answer)}</strong></span>
+            <span>Ваш ответ<strong>${attempt.userAnswer || "Нет ответа"}</strong></span>
+            <span>Правильно<strong>${attempt.question.answer}</strong></span>
           </div>
           <div class="quiz-result-links">
-            <button class="small-button" type="button" data-result-verb="${escapeHTML(String(attempt.question.verb))}">Открыть глагол</button>
-            ${attempt.question.tense ? `<button class="small-button" type="button" data-result-tense="${escapeHTML(String(attempt.question.tense))}">Посмотреть время</button>` : ""}
+            <button class="small-button" type="button" data-result-verb="${attempt.question.verb}">Открыть глагол</button>
+            ${attempt.question.tense ? html`<button class="small-button" type="button" data-result-tense="${attempt.question.tense}">Посмотреть время</button>` : ""}
           </div>
         </div>
       `).join("")}

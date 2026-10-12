@@ -978,13 +978,16 @@ input[type="search"] {
   font-weight: 900;
 }
 
-.learning-module-lesson.is-done .learning-module-mark {
+.learning-module-lesson.is-mastered .learning-module-mark {
   color: var(--success);
 }
 
 .learning-module-lesson.is-started .learning-module-mark {
   color: var(--accent-2);
 }
+
+.learning-module-lesson.is-review .learning-module-mark,
+.textbook-status.is-review { color: var(--danger); font-weight: 900; }
 
 .learning-module-check {
   display: flex;
@@ -4434,7 +4437,7 @@ select {
       </aside>
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.84 · обновлено: 12.10.2026 22:28 CEST</span>
+        <span>Версия MVP 1.85 · обновлено: 12.10.2026 22:41 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -10738,6 +10741,8 @@ const state = {
   learningProgress: normalizeLearningProgress(migrateLearningProgress()),
   learningDetails: normalizeLearningDetails(readLearningDetails()),
   learningChecks: normalizeLearningChecks(readStoredObject("msg:learningLevelChecks")),
+  // Нормализуется после загрузки уроков и модулей, на которые ссылаются вопросы.
+  learningCheckSessions: readStoredObject("msg:learningCheckSessions"),
   learningCheck: null,
   query: "",
   selectedVerb: null,
@@ -10822,12 +10827,6 @@ const state = {
   textbookOpenGroups: normalizeTextbookOpenGroups(readStoredObject("msg:textbookOpenGroups")),
   textbookProgress: readTextbookProgress()
 };
-
-// Если сохранённый уровень уже подтверждён итоговой проверкой, план открывается на следующем неподтверждённом.
-if (state.learningChecks[state.learningLevel]?.passedAt) {
-  const levelIds = LEARNING_LEVELS.map((level) => level.id);
-  state.learningLevel = levelIds.slice(levelIds.indexOf(state.learningLevel) + 1).find((id) => !state.learningChecks[id]?.passedAt) || "after";
-}
 
 // Frequency order from the Spain press subcorpus of CORPES 1.0.
 const COMMON_VERB_SUGGESTIONS = [
@@ -17075,9 +17074,9 @@ function learningReviewLessons(levelId) {
         .filter((result) => !result.correct && result.at)
         .map((result) => dayKey(new Date(result.at)))
         .sort().at(-1) || "";
-      return { lesson, wrong: progress.wrong, checked: progress.checked, share: progress.checked ? progress.wrong / progress.checked : 0, mistakeDay, fresh: mistakeDay === today };
+      return { lesson, completed: progress.completed, wrong: progress.wrong, checked: progress.checked, share: progress.checked ? progress.wrong / progress.checked : 0, mistakeDay, fresh: mistakeDay === today };
     })
-    .filter((item) => item.wrong > 0 && item.share >= LEARNING_REVIEW_ERROR_SHARE)
+    .filter((item) => item.wrong > 0 && (item.completed || item.share >= LEARNING_REVIEW_ERROR_SHARE))
     .sort((a, b) => Number(a.fresh) - Number(b.fresh) || b.share - a.share || a.lesson.id - b.lesson.id);
 }
 
@@ -17098,7 +17097,7 @@ function learningReviewMarkup(level) {
     return html`<li><button class="learning-module-lesson" type="button" data-textbook-review="${lesson.id}" aria-label="Повторить урок ${lesson.id}: ${lesson.title.ru} — ошибок ${wrong} из ${checked}${age ? `, ошибки ${age}` : ""}"><span class="learning-review-share" aria-hidden="true">${Math.round(share * 100)}%</span><span>${lesson.id}. ${lesson.title.ru}</span>${age ? html`<small class="learning-review-age" aria-hidden="true">${age}</small>` : ""}</button></li>`;
   }).join("");
   const more = review.length > shown.length ? `<p class="muted">И ещё ${review.length - shown.length} — появятся здесь, когда вы исправите эти.</p>` : "";
-  return `<section class="learning-review"><h3>Повторить</h3><p class="muted">Уроки ${level.label}, где ошибки — ${Math.round(LEARNING_REVIEW_ERROR_SHARE * 100)}% проверенных ответов или больше. Сначала — ошибки прошлых дней: их полезнее повторить, когда материал немного забылся. Урок откроется на упражнении с ошибками; после исправления он исчезнет из списка.</p><ol class="learning-module-lessons">${items}</ol>${more}</section>`;
+  return `<section class="learning-review"><h3>Повторить</h3><p class="muted">Выполненные уроки ${level.label} с ошибками, а также начатые уроки, где ошибок ${Math.round(LEARNING_REVIEW_ERROR_SHARE * 100)}% или больше. Сначала — ошибки прошлых дней. Урок откроется на упражнении с ошибками; после исправления он исчезнет из списка.</p><ol class="learning-module-lessons">${items}</ol>${more}</section>`;
 }
 
 function openLearningPlanForLesson(lessonId) {
@@ -17120,14 +17119,15 @@ function learningLessonStatus(lessonId) {
   const lesson = lessonById(lessonId);
   if (!lesson) return "todo";
   const progress = textbookProgressFor(lesson);
-  if (progress.done) return "done";
+  if (progress.mastered) return "mastered";
+  if (progress.completed) return "review";
   return progress.answered > 0 || progress.checked > 0 ? "started" : "todo";
 }
 
 function learningModuleSteps(module) {
   const manual = (kind, key) => ({ kind, key, done: learningStatusFor(key) === "done" });
   return [
-    ...module.lessons.map((id) => ({ kind: "lesson", id, done: learningLessonStatus(id) === "done" })),
+    ...module.lessons.map((id) => ({ kind: "lesson", id, done: learningLessonStatus(id) === "mastered" })),
     manual("task", `plan:${module.id}:task`),
     ...module.canDo.map((_, index) => manual("can", `plan:${module.id}:can:${index}`))
   ];
@@ -17151,7 +17151,7 @@ function formatStudyMinutes(minutes) {
 }
 
 function learningLessonsLeftMinutes(lessonIds) {
-  return lessonIds.filter((id) => learningLessonStatus(id) !== "done")
+  return lessonIds.filter((id) => !textbookProgressFor(lessonById(id)).completed)
     .reduce((sum, id) => sum + textbookLessonMinutes(lessonById(id)), 0);
 }
 
@@ -17163,7 +17163,7 @@ function learningLevelNext(levelId) {
   const lesson = lessons.find((item) => item.status === "started") || lessons.find((item) => item.status === "todo") || null;
   const pendingIndex = modules.findIndex((module, moduleIndex) =>
     (!lesson || moduleIndex <= lesson.moduleIndex)
-    && module.lessons.every((id) => learningLessonStatus(id) === "done")
+    && module.lessons.every((id) => textbookProgressFor(lessonById(id)).completed)
     && learningModuleSteps(module).some((step) => step.kind !== "lesson" && !step.done));
   const pending = pendingIndex >= 0 ? { module: modules[pendingIndex], moduleIndex: pendingIndex } : null;
   return { modules, lesson, pending };
@@ -17189,19 +17189,19 @@ function learningPendingText(module) {
 function learningModuleMarkup(module, index, isCurrent) {
   const steps = learningModuleSteps(module);
   const percent = Math.round(steps.filter((step) => step.done).length / steps.length * 100);
-  const marks = { done: "✓", started: "◐", todo: "○" };
-  const labels = { done: "пройден", started: "начат", todo: "не начат" };
+  const marks = { mastered: "✓", review: "↻", started: "◐", todo: "○" };
+  const labels = { mastered: "освоен", review: "выполнен, нужно повторить", started: "начат", todo: "не начат" };
   const rows = module.lessons.map((id, lessonIndex) => {
     const lesson = lessonById(id);
     const status = learningLessonStatus(id);
-    const minutes = status === "done" ? "" : html`<small>≈ ${textbookLessonMinutes(lesson)} мин</small>`;
+    const minutes = ["mastered", "review"].includes(status) ? html`<small>${labels[status]}</small>` : html`<small>≈ ${textbookLessonMinutes(lesson)} мин</small>`;
     return { status, html: html`<li><button class="learning-module-lesson is-${status}" type="button" data-textbook-open="${id}" aria-label="Шаг ${lessonIndex + 1}. Урок ${id}: ${lesson.title.ru} — ${labels[status]}"><span class="learning-module-step" aria-hidden="true">${lessonIndex + 1}.</span><span class="learning-module-mark" aria-hidden="true">${marks[status]}</span><span class="learning-module-lesson-title">Урок ${id}. ${lesson.title.ru}</span>${minutes}</button></li>` };
   });
-  const openRows = rows.filter((row) => row.status !== "done").map((row) => row.html).join("");
-  const doneRows = rows.filter((row) => row.status === "done").map((row) => row.html).join("");
-  const doneCount = rows.filter((row) => row.status === "done").length;
+  const openRows = rows.filter((row) => row.status !== "mastered").map((row) => row.html).join("");
+  const doneRows = rows.filter((row) => row.status === "mastered").map((row) => row.html).join("");
+  const doneCount = rows.filter((row) => row.status === "mastered").length;
   const lessons = rows.length
-    ? `${openRows ? `<ol class="learning-module-lessons">${openRows}</ol>` : ""}${doneRows ? `<details class="learning-module-done"><summary>${openRows ? `Пройдено уроков: ${doneCount}` : `Все уроки пройдены: ${doneCount}`} — показать</summary><ol class="learning-module-lessons">${doneRows}</ol></details>` : ""}`
+    ? `${openRows ? `<ol class="learning-module-lessons">${openRows}</ol>` : ""}${doneRows ? `<details class="learning-module-done"><summary>${openRows ? `Освоено уроков: ${doneCount}` : `Все уроки освоены: ${doneCount}`} — показать</summary><ol class="learning-module-lessons">${doneRows}</ol></details>` : ""}`
     : "";
   const tables = module.tables.map(([titlePart, label]) => learningTableResource(titlePart, label)).filter(Boolean)
     .map((link) => `<a class="small-button" href="${link.href}">${link.label}</a>`).join("");
@@ -17236,9 +17236,51 @@ function learningStatusFor(key) {
 }
 
 // Итоговая проверка уровня: случайные пункты из упражнений его уроков, минимум по одному из каждого модуля.
-// Ответы проверки не записываются в уроки; сохраняется только результат в msg:learningLevelChecks.
+// Ответы не записываются в уроки. Черновики — msg:learningCheckSessions, результаты — msg:learningLevelChecks.
 const LEARNING_CHECK_SIZE = 12;
 const LEARNING_CHECK_PASS_SHARE = 0.8;
+
+function learningCheckItemSignature(entry) {
+  const { exercise, item } = learningCheckEntry(entry);
+  return JSON.stringify([exercise.kind, item.prompt, item.answer, textbookItemOptions(exercise, item)]);
+}
+
+// Если вопрос исчез или изменился, отклоняем весь черновик: ответы не должны сдвигаться на другие вопросы.
+function normalizeLearningCheckSessions(value) {
+  if (!isPlainObject(value)) return {};
+  const sessions = {};
+  for (const level of LEARNING_LEVELS) {
+    const saved = value[level.id];
+    if (!isPlainObject(saved) || saved.level !== level.id || saved.submitted === true || !Array.isArray(saved.items) || !saved.items.length) continue;
+    const modules = learningModulesFor(level.id).filter((module) => module.lessons.length);
+    const pool = modules.flatMap(learningCheckPool);
+    const expectedCount = Math.min(pool.length, Math.max(LEARNING_CHECK_SIZE, modules.length));
+    if (saved.items.length !== expectedCount) continue;
+    const allowed = new Set(pool.map((entry) => `${entry.lessonId}:${entry.exerciseId}:${entry.index}`));
+    const seen = new Set();
+    const items = [];
+    for (const entry of saved.items) {
+      if (!isPlainObject(entry) || !Number.isInteger(entry.lessonId) || typeof entry.exerciseId !== "string" || !Number.isInteger(entry.index)) break;
+      const key = `${entry.lessonId}:${entry.exerciseId}:${entry.index}`;
+      if (!allowed.has(key) || seen.has(key) || entry.signature !== learningCheckItemSignature(entry)) break;
+      seen.add(key);
+      items.push({ lessonId: entry.lessonId, exerciseId: entry.exerciseId, index: entry.index, signature: entry.signature });
+    }
+    if (items.length !== saved.items.length || modules.some((module) => !items.some((entry) => module.lessons.includes(entry.lessonId)))) continue;
+    const answers = Object.fromEntries(Object.entries(pickEntries(saved.answers, (answer) => typeof answer === "string"))
+      .filter(([index]) => /^(0|[1-9]\d*)$/.test(index) && Number(index) < items.length));
+    sessions[level.id] = { level: level.id, items, answers };
+  }
+  return sessions;
+}
+
+state.learningCheckSessions = normalizeLearningCheckSessions(state.learningCheckSessions);
+
+// Повторную незавершённую проверку подтверждённого уровня тоже можно продолжить.
+if (state.learningChecks[state.learningLevel]?.passedAt && !state.learningCheckSessions[state.learningLevel]) {
+  const levelIds = LEARNING_LEVELS.map((level) => level.id);
+  state.learningLevel = levelIds.slice(levelIds.indexOf(state.learningLevel) + 1).find((id) => !state.learningChecks[id]?.passedAt) || "after";
+}
 
 function learningCheckPool(module) {
   return module.lessons.flatMap((lessonId) => {
@@ -17258,7 +17300,27 @@ function startLearningCheck(levelId) {
   const picked = pools.map((pool) => pool[0]).filter(Boolean);
   const rest = shuffle(pools.flatMap((pool) => pool.slice(1)));
   const items = shuffle([...picked, ...rest.slice(0, Math.max(0, LEARNING_CHECK_SIZE - picked.length))]);
-  state.learningCheck = { level: levelId, items, answers: {}, submitted: false, message: "" };
+  if (!items.length) return;
+  state.learningCheck = { level: levelId, items: items.map((entry) => ({ ...entry, signature: learningCheckItemSignature(entry) })), answers: {}, submitted: false, message: "" };
+  saveLearningCheckSession();
+}
+
+function saveLearningCheckSession() {
+  const check = state.learningCheck;
+  if (!check || check.submitted) return;
+  state.learningCheckSessions[check.level] = { level: check.level, items: check.items.map((entry) => ({ ...entry })), answers: { ...check.answers } };
+  persist("learningCheckSessions");
+}
+
+function pauseLearningCheck() {
+  saveLearningCheckSession();
+  state.learningCheck = null;
+}
+
+function resumeLearningCheck(levelId) {
+  const session = normalizeLearningCheckSessions(state.learningCheckSessions)[levelId];
+  if (!session) return;
+  state.learningCheck = { ...session, submitted: false, message: "" };
 }
 
 function learningCheckResults() {
@@ -17292,7 +17354,12 @@ function learningCheckCardMarkup(level) {
   const passedDate = record?.passedAt ? storedDateText(record.passedAt) : "";
   const passed = passedDate ? ` Уровень подтверждён ${passedDate}.` : "";
   const result = record ? html`<p><strong>Лучший результат: ${storedPercentText(record.best)}, последний: ${storedPercentText(record.last)}.</strong>${passed}</p>` : "";
-  return html`<section class="learning-check-card"><div><h3>Итоговая проверка ${level.label}</h3><p class="muted">${LEARNING_CHECK_SIZE} случайных заданий из уроков уровня, не меньше одного из каждого модуля; 5–10 минут. Уровень подтверждён при ${Math.round(LEARNING_CHECK_PASS_SHARE * 100)}% верных. Ответы не попадают в уроки.</p>${result}</div><button class="small-button primary" type="button" data-check-start>${record ? "Пройти ещё раз" : "Начать проверку"}</button></section>`;
+  const session = state.learningCheckSessions[level.id];
+  const answered = session ? Object.values(session.answers).filter((answer) => normalizeTextbookAnswer(answer) !== "").length : 0;
+  const actions = session
+    ? html`<div class="textbook-actions"><button class="small-button primary" type="button" data-check-resume>Продолжить</button><button class="small-button" type="button" data-check-restart>Начать заново</button></div>`
+    : html`<button class="small-button primary" type="button" data-check-start>${record ? "Пройти ещё раз" : "Начать проверку"}</button>`;
+  return html`<section class="learning-check-card"><div><h3>Итоговая проверка ${level.label}</h3><p class="muted">${LEARNING_CHECK_SIZE} случайных заданий из уроков уровня, не меньше одного из каждого модуля; 5–10 минут. Уровень подтверждён при ${Math.round(LEARNING_CHECK_PASS_SHARE * 100)}% верных. Ответы не попадают в уроки.</p>${result}${session ? html`<p role="status">Есть незавершённая проверка: заполнено ${answered} из ${session.items.length}.</p>` : ""}</div>${actions}</section>`;
 }
 
 // Итоговая проверка всегда по-русски, поэтому разбор ошибки берётся на русском, а не на языке Учебника.
@@ -17320,7 +17387,7 @@ function learningCheckMarkup(level) {
     return html`<li class="textbook-question${stateClass}" data-check-question="${index}"><small class="learning-check-context" id="learning-check-context-${index}">Урок ${lesson.id} · ${textbookText(exercise.instruction)}</small><span class="textbook-prompt"><span lang="es">${markRussianHints(prompt)}</span></span>${control}${feedback}</li>`;
   }).join("");
   let summary = `<p class="muted">Ответьте на все ${check.items.length} заданий и нажмите «Проверить». Нужно ${Math.round(LEARNING_CHECK_PASS_SHARE * 100)}% верных.</p>`;
-  let actions = `<button class="small-button primary" type="button" data-check-submit>Проверить</button><button class="small-button" type="button" data-check-exit>Выйти без результата</button>`;
+  let actions = `<button class="small-button primary" type="button" data-check-submit>Проверить</button><button class="small-button" type="button" data-check-exit>Сохранить и выйти</button>`;
   if (check.submitted) {
     const correct = results.filter(Boolean).length;
     const percent = Math.round(correct / results.length * 100);
@@ -17411,9 +17478,10 @@ function learningLevelBodyMarkup(level) {
   } else if (pending) {
     nextStepMarkup = `<div class="plan-next-step"><div>${nowTitle}<small>${learningPendingText(pending.module)}</small></div><button class="small-button primary" type="button" data-open-learning-module="${pending.module.id}">Продолжить</button></div>`;
   } else {
-    nextStepMarkup = `<div class="plan-next-step"><div><p><strong>Уровень завершён</strong></p><small>Все пункты отмечены как освоенные.</small></div>${goNext}</div>`;
+    const reviewCount = levelLessons.filter((id) => learningLessonStatus(id) === "review").length;
+    nextStepMarkup = `<div class="plan-next-step"><div><p><strong>Все задания выполнены</strong></p><small>${reviewCount ? `Нужно повторить уроки: ${reviewCount}. Переход к следующему уровню доступен.` : "Все пункты отмечены как освоенные."}</small></div>${goNext}</div>`;
   }
-  const lessonsDone = levelLessons.filter((id) => learningLessonStatus(id) === "done").length;
+  const lessonsDone = levelLessons.filter((id) => textbookProgressFor(lessonById(id)).completed).length;
   const skipMarkup = record?.passedAt ? ""
     : levelLessons.length
       ? (lessonsDone < levelLessons.length * 0.3 ? `<p class="learning-plan-skip">Уже знаете ${level.label}? <button class="link-button" type="button" data-check-start>Пройдите итоговую проверку</button>: при ${Math.round(LEARNING_CHECK_PASS_SHARE * 100)}% верных уровень будет подтверждён.</p>` : "")
@@ -17421,7 +17489,7 @@ function learningLevelBodyMarkup(level) {
   return `<section class="learning-plan-summary" aria-live="polite"><div class="learning-plan-summary-head"><p><strong>${level.label} · ${level.title}</strong><span class="muted">${level.description}</span></p><p class="learning-plan-percent"><strong>${percent}%</strong><span class="muted">${done} из ${total}</span>${left ? `<span class="muted">уроки: ${formatStudyMinutes(left)}</span>` : ""}</p></div><progress max="100" value="${percent}" aria-label="Освоено на уровне ${level.label}"></progress>${nextStepMarkup}${skipMarkup}</section>
     ${learningReviewMarkup(level)}
     <div class="learning-modules">${modules.map((module, index) => learningModuleMarkup(module, index, index === currentModuleIndex)).join("")}</div>
-    <p class="muted learning-modules-note">${modules.some((module) => module.lessons.length) ? "Уроки отмечаются сами, когда все их упражнения проверены в Учебнике. " : "Учебник начинается с A1, поэтому здесь опора — шпаргалки. "}Задание и пункты «Могу» отмечайте сами.</p>
+    <p class="muted learning-modules-note">${modules.some((module) => module.lessons.length) ? "Урок выполнен, когда все ответы заполнены и проверены. Освоен — когда все ответы верны; с ошибками нужно повторить. Можно продолжать следующие уроки. " : "Учебник начинается с A1, поэтому здесь опора — шпаргалки. "}Задание и пункты «Могу» отмечайте сами.</p>
     ${learningCheckCardMarkup(level)}
     <p class="learning-plan-reset"><button class="small-button" type="button" data-reset-learning>Сбросить отметки ${level.label}</button></p>`;
 }
@@ -17431,7 +17499,7 @@ function currentLearningLevel() {
 }
 
 function selectLearningLevel(levelId, { focusTab = false } = {}) {
-  state.learningCheck = null;
+  pauseLearningCheck();
   state.learningLevel = levelId;
   persist("learningLevel");
   if (focusTab) rerenderAndFocus(renderLearningPlan, attrSelector("data-learning-level", levelId), { keepScroll: true });
@@ -17461,21 +17529,35 @@ onDelegated("keydown", ".learning-plan [data-learning-level]", (event, target) =
 onDelegated("click", ".learning-plan [data-go-learning-level]", (_event, target) => { selectLearningLevel(target.dataset.goLearningLevel); scrollAppTop(); });
 onDelegated("click", ".learning-plan [data-textbook-open]", (_event, target) => openTextbookLessonFromPlan(Number(target.dataset.textbookOpen)));
 onDelegated("click", ".learning-plan [data-textbook-review]", (_event, target) => openTextbookLessonFromPlan(Number(target.dataset.textbookReview), { mistakes: true }));
-onDelegated("click", ".learning-plan [data-check-start], .learning-plan [data-check-restart]", () => { startLearningCheck(currentLearningLevel().id); rerenderLearningCheck(); });
-onDelegated("click", ".learning-plan [data-check-exit]", () => {
-  state.learningCheck = null;
-  renderLearningPlan();
-  requestAnimationFrame(() => document.querySelector("[data-check-start]")?.scrollIntoView({ behavior: "auto", block: "center" }));
+onDelegated("click", ".learning-plan [data-check-start]", () => {
+  const levelId = currentLearningLevel().id;
+  if (state.learningCheckSessions[levelId]) resumeLearningCheck(levelId);
+  else startLearningCheck(levelId);
+  rerenderLearningCheck();
 });
-onDelegated("input", ".learning-plan [data-check-answer]", (_event, target) => { state.learningCheck.answers[target.dataset.checkAnswer] = target.value; });
+onDelegated("click", ".learning-plan [data-check-restart]", () => { startLearningCheck(currentLearningLevel().id); rerenderLearningCheck(); });
+onDelegated("click", ".learning-plan [data-check-resume]", () => { resumeLearningCheck(currentLearningLevel().id); rerenderLearningCheck(); });
+onDelegated("click", ".learning-plan [data-check-exit]", () => {
+  pauseLearningCheck();
+  renderLearningPlan();
+  requestAnimationFrame(() => document.querySelector("[data-check-resume], [data-check-start]")?.scrollIntoView({ behavior: "auto", block: "center" }));
+});
+onDelegated("input", ".learning-plan [data-check-answer]", (_event, target) => {
+  if (!state.learningCheck || state.learningCheck.submitted) return;
+  state.learningCheck.answers[target.dataset.checkAnswer] = target.value;
+  saveLearningCheckSession();
+});
 onDelegated("click", ".learning-plan [data-check-choice]", (_event, target) => {
+  if (!state.learningCheck || state.learningCheck.submitted) return;
   const index = target.dataset.checkChoice;
   const value = target.dataset.checkValue;
   state.learningCheck.answers[index] = value;
+  saveLearningCheckSession();
   rerenderAndFocus(renderLearningPlan, attrSelector("data-check-choice", index) + attrSelector("data-check-value", value), { keepScroll: true });
 });
 onDelegated("click", ".learning-plan [data-check-submit]", () => {
   const check = state.learningCheck;
+  if (!check || check.submitted) return;
   const blank = check.items.findIndex((_entry, index) => normalizeTextbookAnswer(check.answers[index]) === "");
   if (blank >= 0) {
     const left = check.items.filter((_entry, index) => normalizeTextbookAnswer(check.answers[index]) === "").length;
@@ -17487,6 +17569,8 @@ onDelegated("click", ".learning-plan [data-check-submit]", () => {
   check.submitted = true;
   const results = learningCheckResults();
   saveLearningCheckResult(currentLearningLevel().id, Math.round(results.filter(Boolean).length / results.length * 100));
+  delete state.learningCheckSessions[check.level];
+  persist("learningCheckSessions");
   rerenderLearningCheck();
 });
 onDelegated("click", ".learning-plan [data-dismiss-learning-notice]", () => { appStorage.remove("msg:learningPlanNotice"); renderLearningPlan(); });
@@ -17603,7 +17687,16 @@ function computeTextbookProgress(lesson) {
   const answered = exercises.reduce((sum, exercise) => sum + exercise.answered, 0);
   const checked = exercises.reduce((sum, exercise) => sum + exercise.checked, 0);
   const correct = exercises.reduce((sum, exercise) => sum + exercise.correct, 0);
-  return { total, answered, checked, correct, wrong: checked - correct, unanswered: total - answered, done: total > 0 && checked === total && answered === total };
+  const completed = total > 0 && checked === total && answered === total;
+  return { total, answered, checked, correct, wrong: checked - correct, unanswered: total - answered,
+    done: completed, completed, mastered: completed && correct === total, needsReview: checked > correct };
+}
+
+function textbookStatusText(progress) {
+  if (progress.mastered) return textbookUi("Освоен", "Dominada");
+  if (progress.completed) return textbookUi("Выполнен · Нужно повторить", "Completada · Repasar");
+  if (progress.needsReview) return textbookUi("В работе · Нужно повторить", "En curso · Repasar");
+  return progress.answered || progress.checked ? textbookUi("В работе", "En curso") : textbookUi("Не начат", "Sin empezar");
 }
 
 // Разбор неверного ответа для урока и итоговой проверки Плана. answer — ближайший к ответу ученика вариант
@@ -17718,6 +17811,7 @@ function renderTextbookCatalogContent(content) {
   if (!TEXTBOOK_LEVEL_IDS.includes(state.textbookLevel)) state.textbookLevel = "all";
   const lessonCount = TEXTBOOK_LESSONS.length;
   const completed = TEXTBOOK_LESSONS.filter((lesson) => textbookProgressFor(lesson).done).length;
+  const mastered = TEXTBOOK_LESSONS.filter((lesson) => textbookProgressFor(lesson).mastered).length;
   const lastLesson = lessonById(Number(appStorage.get("msg:textbookLesson")));
   const lastStarted = lastLesson && !textbookProgressFor(lastLesson).done && textbookProgressFor(lastLesson).answered > 0 ? lastLesson : null;
   const planLesson = lastStarted ? null : learningPlanNextLesson();
@@ -17725,11 +17819,9 @@ function renderTextbookCatalogContent(content) {
   const card = (lesson) => {
     const progress = textbookProgressFor(lesson);
     const duration = textbookLessonMinutes(lesson);
-    const status = progress.done
-      ? `${textbookUi("Пройден", "Completada")} · ✓ ${progress.correct}/${progress.total}`
-      : `${textbookUi("Заполнено", "Respondidas")} ${progress.answered}/${progress.total} · ✓ ${progress.correct}`;
+    const status = `${textbookStatusText(progress)} · ✓ ${progress.correct}/${progress.total}`;
     const meta = `${textbookText(lesson.subtitle)} · ${progress.total} ${textbookUi("зад.", "preg.")} · ~${duration} ${textbookUi("мин.", "min.")}`;
-    return html`<button class="textbook-lesson-card" type="button" data-textbook-open="${lesson.id}"><span class="textbook-lesson-number">${lesson.id}</span><span><strong>${textbookText(lesson.title)} ${textbookLevelBadge(lesson.id)}</strong><small>${meta}</small></span><span class="textbook-status ${progress.done ? "is-done" : ""}">${status}</span></button>`;
+    return html`<button class="textbook-lesson-card" type="button" data-textbook-open="${lesson.id}"><span class="textbook-lesson-number">${lesson.id}</span><span><strong>${textbookText(lesson.title)} ${textbookLevelBadge(lesson.id)}</strong><small>${meta}</small></span><span class="textbook-status ${progress.mastered ? "is-done" : progress.needsReview ? "is-review" : ""}">${status}</span></button>`;
   };
   const cards = TEXTBOOK_COURSE_GROUPS.map((group, index) => {
     const lessons = group.ids.map((id) => lessonById(id)).filter((lesson) => lesson && (state.textbookLevel === "all" || textbookLessonLevel(lesson.id) === state.textbookLevel));
@@ -17744,7 +17836,7 @@ function renderTextbookCatalogContent(content) {
   const header = infoSection({ className: "info-card textbook-dashboard", html: html`
     <div class="textbook-toolbar"><div><h2>${textbookUi("Учебник", "Curso")}</h2><p class="muted">${textbookUi(`${TEXTBOOK_LESSONS.length} ${pluralizeInteractiveLessons(TEXTBOOK_LESSONS.length)} по базовой грамматике.`, `${TEXTBOOK_LESSONS.length} ${TEXTBOOK_LESSONS.length === 1 ? "lección interactiva" : "lecciones interactivas"} de gramática básica.`)}</p></div>${textbookLanguageButtons()}</div>
     ${textbookAboutMarkup()}
-    <div class="textbook-progress"><p><strong>${textbookUi("Пройдено", "Completado")}: ${completed}/${lessonCount}</strong></p><progress max="${lessonCount}" value="${completed}" aria-label="${textbookUi("Прогресс учебника", "Progreso del curso")}"></progress><div class="textbook-actions"><button class="small-button primary" type="button" data-textbook-open="${next.id}">${planLesson ? textbookUi("Продолжить по плану", "Seguir el plan") : textbookUi("Продолжить", "Continuar")}: ${next.id}</button><span class="muted">${textbookUi("Все уроки доступны сразу.", "Todas las lecciones están disponibles.")}</span></div></div>
+    <div class="textbook-progress"><p><strong>${textbookUi("Выполнено", "Completadas")}: ${completed}/${lessonCount} · ${textbookUi("Освоено", "Dominadas")}: ${mastered}/${lessonCount}</strong></p><progress max="${lessonCount}" value="${completed}" aria-label="${textbookUi("Выполнено уроков", "Lecciones completadas")}"></progress><div class="textbook-actions"><button class="small-button primary" type="button" data-textbook-open="${next.id}">${planLesson ? textbookUi("Продолжить по плану", "Seguir el plan") : textbookUi("Продолжить", "Continuar")}: ${next.id}</button><span class="muted">${textbookUi("Освоен — все ответы верны. Все уроки доступны сразу.", "Dominada: todas las respuestas correctas. Todas las lecciones están disponibles.")}</span></div></div>
     <div class="textbook-level-filter" role="group" aria-label="${textbookUi("Фильтр по уровню", "Filtro por nivel")}">${["all", ...TEXTBOOK_LEVEL_IDS].map((level) => html`<button class="small-button ${state.textbookLevel === level ? "is-active" : ""}" type="button" data-textbook-level="${level}" aria-pressed="${state.textbookLevel === level}">${level === "all" ? textbookUi("Все уровни", "Todos los niveles") : `${levelLabel(level)} · ${TEXTBOOK_LESSON_LEVELS[level].length}`}</button>`)}<span class="muted">${textbookUi("Уровни — по Plan Curricular del Instituto Cervantes: в книге их нет.", "Niveles según el Plan Curricular del Instituto Cervantes: el libro no los indica.")}</span></div>
     <div class="textbook-actions" role="group" aria-label="${textbookUi("Управление темами", "Control de temas")}"><button class="small-button" type="button" data-textbook-groups="open">${textbookUi("Раскрыть все темы", "Abrir todos los temas")}</button><button class="small-button" type="button" data-textbook-groups="close">${textbookUi("Скрыть все темы", "Cerrar todos los temas")}</button></div>
     <div class="textbook-catalog">${cards}</div>
@@ -17789,7 +17881,7 @@ function renderTextbookLesson(content, lesson) {
   });
   const remaining = progress.total - progress.checked;
   const summary = progress.done
-    ? textbookUi("Все задания проверены. Верно " + progress.correct + " из " + progress.total + ".", "Todos los ejercicios están comprobados. Correctas: " + progress.correct + " de " + progress.total + ".")
+    ? textbookUi("Урок выполнен. Верно " + progress.correct + " из " + progress.total + ". " + (progress.mastered ? "Материал освоен." : "Нужно повторить ошибки; можно перейти к следующему уроку."), "Lección completada. Correctas: " + progress.correct + " de " + progress.total + ". " + (progress.mastered ? "Contenido dominado." : "Repasa los errores; puedes seguir con la siguiente lección."))
     : progress.unanswered > 0
       ? textbookUi("Заполните ещё " + progress.unanswered + " заданий, затем проверьте ответы.", "Responde " + progress.unanswered + " apartados más y después comprueba las respuestas.")
       : textbookUi("Проверьте ещё " + remaining + " ответов, чтобы завершить урок.", "Comprueba " + remaining + " respuestas más para completar la lección.");
@@ -17801,7 +17893,7 @@ function renderTextbookLesson(content, lesson) {
   const related = relatedLessons.length ? html`<section class="textbook-related"><h3>${textbookUi("Связанные уроки", "Lecciones relacionadas")}</h3><div class="textbook-actions">${relatedLessons.map((item) => html`<button class="small-button" type="button" data-textbook-open="${item.id}">▶ ${item.id}. ${textbookText(item.title)}</button>`)}</div></section>` : "";
   const section = infoSection({ className: "info-card textbook-lesson", html: html`
     <div class="textbook-lesson-toolbar"><div class="textbook-lesson-controls"><button class="small-button" type="button" data-textbook-catalog>← ${textbookUi("К оглавлению", "Índice")}</button>${learningModuleForLesson(lesson.id) ? html`<button class="small-button" type="button" data-textbook-plan="${lesson.id}">← ${textbookUi("К плану", "Al plan")}</button>` : ""}${textbookLanguageButtons()}</div><div class="textbook-lesson-heading"><div class="material-title-row"><h2>${lesson.id}. ${textbookText(lesson.title)} ${textbookLevelBadge(lesson.id)}</h2>${favoriteMaterialButton("lesson", lesson.id, textbookText(lesson.title))}</div><p class="muted">${textbookText(lesson.goal)}</p></div></div>
-    <div class="textbook-summary"><span><strong>${textbookUi("Верно", "Correctas")}: ${progress.correct}/${progress.checked}</strong> · ${textbookUi("Заполнено", "Respondidas")}: ${progress.answered}/${progress.total}</span><span class="textbook-status ${progress.done ? "is-done" : ""}">${progress.done ? textbookUi("Урок пройден", "Lección completada") : textbookUi("В работе", "En curso")}</span></div>
+    <div class="textbook-summary"><span><strong>${textbookUi("Верно", "Correctas")}: ${progress.correct}/${progress.checked}</strong> · ${textbookUi("Заполнено", "Respondidas")}: ${progress.answered}/${progress.total}</span><span class="textbook-status ${progress.mastered ? "is-done" : progress.needsReview ? "is-review" : ""}">${textbookStatusText(progress)}</span></div>
     <div class="textbook-theory-grid">${theory}</div>
     ${related}
     ${tablesMarkup}
@@ -18783,13 +18875,13 @@ const FAVORITE_LESSON_SORTS = Object.freeze({
 
 function favoriteLessonAction(lesson) {
   const progress = textbookProgressFor(lesson);
-  if (progress.wrong > 0 && progress.wrong / progress.checked >= LEARNING_REVIEW_ERROR_SHARE) return { mode: "mistakes", label: "Повторить ошибки" };
+  if (progress.needsReview && (progress.completed || progress.wrong / progress.checked >= LEARNING_REVIEW_ERROR_SHARE)) return { mode: "mistakes", label: "Повторить ошибки" };
   if (progress.done) return { mode: "open", label: "Открыть" };
   return { mode: "continue", label: progress.answered > 0 || progress.checked > 0 ? "Продолжить" : "Начать" };
 }
 
 function favoriteLessonStatus(progress) {
-  if (progress.done) return `Пройден · ✓ ${progress.correct}/${progress.total}`;
+  if (progress.completed) return `${textbookStatusText(progress)} · ✓ ${progress.correct}/${progress.total}`;
   if (!progress.answered && !progress.checked) return `Не начат · ${progress.total} зад.`;
   return `Заполнено ${progress.answered}/${progress.total} · ✓ ${progress.correct}${progress.wrong ? ` · ошибок: ${progress.wrong}` : ""}`;
 }
@@ -18822,10 +18914,10 @@ function favoriteLessonsSection() {
     </li>`;
   });
   const toolbar = lessons.length > 1
-    ? html`<div class="saved-materials-toolbar"><select id="favoriteLessonsSort" aria-label="Сортировка уроков">${Object.entries(FAVORITE_LESSON_SORTS).map(([id, label]) => html`<option value="${id}" ${state.favoriteLessonsSort === id ? "selected" : ""}>${label}</option>`)}</select><span class="cards-list-summary">Пройдено: ${done} из ${lessons.length}</span></div>`
+    ? html`<div class="saved-materials-toolbar"><select id="favoriteLessonsSort" aria-label="Сортировка уроков">${Object.entries(FAVORITE_LESSON_SORTS).map(([id, label]) => html`<option value="${id}" ${state.favoriteLessonsSort === id ? "selected" : ""}>${label}</option>`)}</select><span class="cards-list-summary">Выполнено: ${done} из ${lessons.length}</span></div>`
     : "";
   card.innerHTML = html`<h2>Уроки</h2>
-    <p class="muted">Кнопка открывает урок на первом незаконченном упражнении, а если ошибок 20% и больше — на ошибках.</p>
+    <p class="muted">Кнопка открывает урок на первом незаконченном упражнении, а в выполненном уроке с ошибками или при ошибках 20% и больше — на ошибках.</p>
     ${materialUndoMarkup("lesson")}${toolbar}
     ${lessons.length ? html`<ul class="saved-material-list">${rows}</ul>` : savedMaterialsEmptyMarkup("Сохраняйте уроки звёздочкой ☆ в заголовке урока — здесь будет виден их прогресс.", "textbook", "Открыть Учебник")}`;
   return card;
@@ -19983,7 +20075,8 @@ const BACKUP_JSON_FIELDS = {
   "msg:learningProgress": [normalizeLearningProgress, "Отметки плана"],
   "msg:learningProgressLegacy": [(value) => isPlainObject(value) ? value : {}, "Отметки старого плана"],
   "msg:learningDetails": [normalizeLearningDetails, "Модули плана"],
-  "msg:learningLevelChecks": [normalizeLearningChecks, "Проверки уровней"]
+  "msg:learningLevelChecks": [normalizeLearningChecks, "Проверки уровней"],
+  "msg:learningCheckSessions": [normalizeLearningCheckSessions, "Незавершённые проверки уровней"]
 };
 
 // Порядок полей и форматирование JSON не означают повреждение данных.
@@ -20046,7 +20139,7 @@ function parseBackup(text) {
   const entries = Object.entries(backup.data).filter(([key]) => key.startsWith("msg:"));
   if (entries.length === 0) throw new Error("В файле нет сохранённых данных.");
   const arrays = new Set(["msg:cards", "msg:favorites", "msg:recentVerbs", "msg:favoriteTables", "msg:favoriteLessons"]);
-  const objects = new Set(["msg:cardStats", "msg:formSchedule", "msg:quizConfig", "msg:textbookProgress", "msg:textbookOpenGroups", "msg:learningProgress", "msg:learningProgressLegacy", "msg:learningDetails", "msg:learningLevelChecks"]);
+  const objects = new Set(["msg:cardStats", "msg:formSchedule", "msg:quizConfig", "msg:textbookProgress", "msg:textbookOpenGroups", "msg:learningProgress", "msg:learningProgressLegacy", "msg:learningDetails", "msg:learningLevelChecks", "msg:learningCheckSessions"]);
   for (const [key, value] of entries) {
     if (typeof value !== "string") throw new Error(`Неверный формат данных: ${key}.`);
     if (!arrays.has(key) && !objects.has(key) && key !== "msg:quizSession") continue;

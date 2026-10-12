@@ -2574,8 +2574,8 @@ for (const [dataName, data] of Object.entries(staticData)) {
 // Выполняем реальные функции HTML, подменяя только браузерные API ввода-вывода.
 const assert = require("node:assert/strict");
 const backupCode = fullScriptCode.slice(fullScriptCode.indexOf("const BACKUP_FORMAT ="), fullScriptCode.indexOf('$("#exportProgressButton").addEventListener'));
-const storageFactory = new Function("window", "document", "URL", "Blob", "setTimeout",
-  jsCode + "\n" + backupCode + "\nrenderCards = () => {}; return { appStorage, state, parseBackup, importProgress, exportProgress, textbookCorrect, resumeCardQuiz, normalizeSavedQuizSession };"
+const storageFactory = new Function("window", "document", "URL", "Blob", "setTimeout", "requestAnimationFrame", "CSS",
+  jsCode + "\n" + backupCode + "\nrenderCards = () => {}; renderLearningPlan = () => {}; return { appStorage, state, parseBackup, importProgress, exportProgress, textbookCorrect, resumeCardQuiz, normalizeSavedQuizSession, lessonById, textbookProgressFor, learningLessonStatus, learningModuleForLesson, learningModuleSteps, learningLevelNext, favoriteLessonStatus, startLearningCheck, selectLearningLevel, learningCheckEntry, learningCheckCardMarkup, handlers: DELEGATED_HANDLERS };"
 );
 
 function storageFixture(initial = {}, failProbe = false) {
@@ -2611,7 +2611,7 @@ function storageFixture(initial = {}, failProbe = false) {
     body: { appendChild() {} }
   };
   const urls = { createObjectURL(blob) { controls.blob = blob; return "blob:test"; }, revokeObjectURL() {} };
-  const api = storageFactory(win, doc, urls, Blob, () => {});
+  const api = storageFactory(win, doc, urls, Blob, () => {}, () => {}, { escape: String });
   return { api, data, controls };
 }
 
@@ -2623,7 +2623,192 @@ function pausedQuizFixture(cards, cursor, input = "", answered = false) {
   const session = { cardQuiz: questions, cardQuizIndex: cursor, cardQuizInput: input, cardQuizAnswered: answered, cardQuizCorrect: attempts.length, cardQuizTotal: attempts.length, cardQuizAttempts: attempts, cardQuizSnapshot: questions };
   return storageFixture({ "msg:cards": JSON.stringify(cards), "msg:quizSession": JSON.stringify(session) });
 }
+function checkedLessonFixture(correctCount) {
+  const fixture = storageFixture();
+  const lesson = fixture.api.lessonById(1);
+  const saved = { answers: {}, checked: {}, attempts: {} };
+  let position = 0;
+  for (const exercise of lesson.exercises) for (const [index, item] of exercise.items.entries()) {
+    const key = `${exercise.id}:${index}`;
+    const correct = position++ < correctCount;
+    saved.answers[key] = correct ? [item.answer].flat()[0] : "incorrect test answer";
+    saved.checked[key] = { correct };
+  }
+  fixture.api.state.textbookProgress.lessons[1] = saved;
+  return fixture;
+}
+
+function triggerLearningAction(api, type, attribute, target = {}) {
+  const entry = api.handlers[type].find(([selector]) => selector.startsWith(".learning-plan ") && selector.includes(`[${attribute}]`));
+  assert.ok(entry, `Missing learning-plan handler for ${attribute}`);
+  entry[1]({}, target);
+}
+
 const STORAGE_CASES = [
+  ["paused level check restores identical questions and typed answers after reload", () => {
+    const { api, data } = storageFixture();
+    api.startLearningCheck("a1");
+    const items = structuredClone(api.state.learningCheck.items);
+    triggerLearningAction(api, "input", "data-check-answer", { dataset: { checkAnswer: "0" }, value: "borrador sí" });
+    triggerLearningAction(api, "click", "data-check-exit");
+    const { api: reloaded } = storageFixture(Object.fromEntries(data));
+    assert.match(String(reloaded.learningCheckCardMarkup({ id: "a1", label: "A1" })), /Продолжить/);
+    triggerLearningAction(reloaded, "click", "data-check-resume");
+    assert.deepEqual(reloaded.state.learningCheck.items, items);
+    assert.equal(reloaded.state.learningCheck.answers[0], "borrador sí");
+    assert.equal(reloaded.state.learningCheck.submitted, false);
+  }],
+  ["switching levels preserves independent check drafts and choice answers", () => {
+    const { api, data } = storageFixture();
+    api.startLearningCheck("a1");
+    triggerLearningAction(api, "click", "data-check-choice", { dataset: { checkChoice: "0", checkValue: "sí" } });
+    api.selectLearningLevel("a2");
+    api.startLearningCheck("a2");
+    triggerLearningAction(api, "input", "data-check-answer", { dataset: { checkAnswer: "0" }, value: "otra respuesta" });
+    api.selectLearningLevel("a1");
+    const { api: reloaded } = storageFixture(Object.fromEntries(data));
+    triggerLearningAction(reloaded, "click", "data-check-resume");
+    assert.equal(reloaded.state.learningCheck.answers[0], "sí");
+    reloaded.selectLearningLevel("a2");
+    triggerLearningAction(reloaded, "click", "data-check-resume");
+    assert.equal(reloaded.state.learningCheck.answers[0], "otra respuesta");
+  }],
+  ["restarting a level check clears only its own answers", () => {
+    const { api, data } = storageFixture();
+    api.startLearningCheck("a1");
+    triggerLearningAction(api, "input", "data-check-answer", { dataset: { checkAnswer: "0" }, value: "keep a1" });
+    api.selectLearningLevel("a2");
+    api.startLearningCheck("a2");
+    triggerLearningAction(api, "input", "data-check-answer", { dataset: { checkAnswer: "0" }, value: "discard a2" });
+    triggerLearningAction(api, "click", "data-check-restart");
+    const reloaded = storageFixture(Object.fromEntries(data)).api;
+    assert.equal(reloaded.state.learningCheckSessions?.a1.answers[0], "keep a1");
+    assert.deepEqual(reloaded.state.learningCheckSessions?.a2.answers, {});
+  }],
+  ["submitting a check clears its draft while retaining the result", () => {
+    const { api, data } = storageFixture();
+    api.startLearningCheck("a1");
+    assert.equal(data.has("msg:learningCheckSessions"), true);
+    api.state.learningCheck.items.forEach((entry, index) => {
+      const item = api.learningCheckEntry(entry).item;
+      triggerLearningAction(api, "input", "data-check-answer", { dataset: { checkAnswer: String(index) }, value: [item.answer].flat()[0] });
+    });
+    triggerLearningAction(api, "click", "data-check-submit");
+    const reloaded = storageFixture(Object.fromEntries(data)).api;
+    assert.equal(reloaded.state.learningChecks.a1.last, 100);
+    assert.equal(reloaded.state.learningCheckSessions?.a1, undefined);
+    assert.doesNotMatch(String(reloaded.learningCheckCardMarkup({ id: "a1", label: "A1" })), /data-check-resume/);
+  }],
+  ["incomplete submission retains the saved draft", () => {
+    const { api, data } = storageFixture();
+    api.startLearningCheck("a1");
+    triggerLearningAction(api, "input", "data-check-answer", { dataset: { checkAnswer: "0" }, value: "keep draft" });
+    triggerLearningAction(api, "click", "data-check-submit");
+    const reloaded = storageFixture(Object.fromEntries(data)).api;
+    assert.equal(reloaded.state.learningCheckSessions?.a1.answers[0], "keep draft");
+    assert.equal(reloaded.state.learningChecks.a1, undefined);
+  }],
+  ["malformed saved check references are discarded without remapping answers", () => {
+    const sessions = { a1: { level: "a1", items: [{ lessonId: 999, exerciseId: "missing", index: 0 }], answers: { 0: "misassigned" } } };
+    const { api, controls } = storageFixture({ "msg:learningCheckSessions": JSON.stringify(sessions) });
+    assert.deepEqual(api.state.learningCheckSessions, {});
+    assert.doesNotMatch(String(api.learningCheckCardMarkup({ id: "a1", label: "A1" })), /data-check-resume/);
+    api.exportProgress();
+    return controls.blob.text().then(text => {
+      assert.deepEqual(JSON.parse(JSON.parse(text).data["msg:learningCheckSessions"]), {});
+      api.parseBackup(text);
+      assert.equal(controls.alerts.length, 1);
+    });
+  }],
+  ["saved level check survives backup export and import", async () => {
+    const { api, controls } = storageFixture();
+    api.startLearningCheck("a1");
+    triggerLearningAction(api, "input", "data-check-answer", { dataset: { checkAnswer: "0" }, value: "copia sí" });
+    const questions = structuredClone(api.state.learningCheck.items);
+    api.exportProgress();
+    const text = await controls.blob.text();
+    const target = storageFixture();
+    await target.api.importProgress({ text: async () => text });
+    const reloaded = storageFixture(Object.fromEntries(target.data)).api;
+    triggerLearningAction(reloaded, "click", "data-check-resume");
+    assert.deepEqual(reloaded.state.learningCheck.items, questions);
+    assert.equal(reloaded.state.learningCheck.answers[0], "copia sí");
+  }],
+  ["invalid question in a saved check discards the entire draft without shifting answers", () => {
+    const { api, data } = storageFixture();
+    api.startLearningCheck("a1");
+    triggerLearningAction(api, "input", "data-check-answer", { dataset: { checkAnswer: "1" }, value: "second answer" });
+    const sessions = JSON.parse(data.get("msg:learningCheckSessions") || "{}");
+    assert.ok(sessions.a1);
+    sessions.a1.items[0].index = 999;
+    const reloaded = storageFixture({ "msg:learningCheckSessions": JSON.stringify(sessions) }).api;
+    assert.deepEqual(reloaded.state.learningCheckSessions, {});
+  }],
+  ["saved check with changed question content is not resumed", () => {
+    const { api, data } = storageFixture();
+    api.startLearningCheck("a1");
+    const sessions = JSON.parse(data.get("msg:learningCheckSessions") || "{}");
+    assert.ok(sessions.a1);
+    sessions.a1.items[0].signature = "outdated question";
+    const reloaded = storageFixture({ "msg:learningCheckSessions": JSON.stringify(sessions) }).api;
+    assert.deepEqual(reloaded.state.learningCheckSessions, {});
+  }],
+  ["a truncated saved check cannot confirm a level with fewer questions", () => {
+    const { api, data } = storageFixture();
+    api.startLearningCheck("a1");
+    const sessions = JSON.parse(data.get("msg:learningCheckSessions"));
+    sessions.a1.items = sessions.a1.items.slice(0, 1);
+    const reloaded = storageFixture({ "msg:learningCheckSessions": JSON.stringify(sessions) }).api;
+    assert.deepEqual(reloaded.state.learningCheckSessions, {});
+  }],
+  ["the plan shortcut resumes a saved check instead of replacing its answers", () => {
+    const { api, data } = storageFixture();
+    api.startLearningCheck("a1");
+    const questions = structuredClone(api.state.learningCheck.items);
+    triggerLearningAction(api, "input", "data-check-answer", { dataset: { checkAnswer: "0" }, value: "keep shortcut" });
+    triggerLearningAction(api, "click", "data-check-exit");
+    const reloaded = storageFixture(Object.fromEntries(data)).api;
+    triggerLearningAction(reloaded, "click", "data-check-start");
+    assert.deepEqual(reloaded.state.learningCheck.items, questions);
+    assert.equal(reloaded.state.learningCheck.answers[0], "keep shortcut");
+  }],
+  ["all wrong completed lesson is reviewable and does not count as mastered", () => {
+    const { api } = checkedLessonFixture(0);
+    const progress = api.textbookProgressFor(api.lessonById(1));
+    assert.equal(progress.completed, true);
+    assert.equal(progress.mastered, false);
+    assert.equal(progress.needsReview, true);
+    assert.equal(api.learningLessonStatus(1), "review");
+    assert.equal(api.learningModuleSteps(api.learningModuleForLesson(1)).find(step => step.id === 1).done, false);
+    assert.match(api.favoriteLessonStatus(progress), /Нужно повторить/);
+    assert.notEqual(api.learningLevelNext("a1").lesson?.id, 1);
+  }],
+  ["a single wrong answer prevents mastery of a completed lesson", () => {
+    const { api } = checkedLessonFixture(34);
+    const progress = api.textbookProgressFor(api.lessonById(1));
+    assert.equal(progress.total, 35);
+    assert.equal(progress.completed, true);
+    assert.equal(progress.mastered, false);
+    assert.equal(progress.needsReview, true);
+  }],
+  ["correcting every answer marks the lesson mastered", () => {
+    const { api } = checkedLessonFixture(35);
+    const progress = api.textbookProgressFor(api.lessonById(1));
+    assert.equal(progress.completed, true);
+    assert.equal(progress.mastered, true);
+    assert.equal(progress.needsReview, false);
+    assert.equal(api.learningLessonStatus(1), "mastered");
+    assert.equal(api.learningModuleSteps(api.learningModuleForLesson(1)).find(step => step.id === 1).done, true);
+    assert.match(api.favoriteLessonStatus(progress), /Освоен/);
+  }],
+  ["an edited unchecked answer invalidates lesson mastery", () => {
+    const { api } = checkedLessonFixture(35);
+    delete api.state.textbookProgress.lessons[1].checked["1.1:0"];
+    const progress = api.textbookProgressFor(api.lessonById(1));
+    assert.equal(progress.completed, false);
+    assert.equal(progress.mastered, false);
+    assert.equal(api.learningLessonStatus(1), "started");
+  }],
   ["resume preserves current question after an earlier favourite is removed", () => {
     const { api, data } = pausedQuizFixture(["estar", "tener"], 1, "estoy");
     api.resumeCardQuiz();

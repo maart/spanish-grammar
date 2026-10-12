@@ -1282,6 +1282,11 @@ for (const testCase of SEARCH_CASES) {
 const describeDiagnosis = (mistake) => mistake ? `${mistake.kind}: ${mistake.user} = ${mistake.userLabel} | ${mistake.expectedLabel}` : "null";
 const QUIZ_CASES = [
   {
+    label: "textbook answer accepts decomposed Spanish accents",
+    actual: () => normalizeTextbookAnswer("¿SI\u0301, man\u0303ana!"),
+    expected: "sí mañana",
+  },
+  {
     label: "textbook answer ignores punctuation",
     actual: () => normalizeTextbookAnswer("¿Sí, la tengo!"),
     expected: "sí la tengo",
@@ -2565,72 +2570,265 @@ for (const [dataName, data] of Object.entries(staticData)) {
   });
 }
 
-// ─── Output report ──────────────────────────────────────────────────────────
-const severityOrder = { high: 0, medium: 1, low: 2 };
-issues.sort((a, b) => severityOrder[a.severity] - severityOrder[b.severity] || a.verb.localeCompare(b.verb));
+// ─── Storage and backup regressions ─────────────────────────────────────────
+// Выполняем реальные функции HTML, подменяя только браузерные API ввода-вывода.
+const assert = require("node:assert/strict");
+const backupCode = fullScriptCode.slice(fullScriptCode.indexOf("const BACKUP_FORMAT ="), fullScriptCode.indexOf('$("#exportProgressButton").addEventListener'));
+const storageFactory = new Function("window", "document", "URL", "Blob", "setTimeout",
+  jsCode + "\n" + backupCode + "\nreturn { appStorage, state, parseBackup, importProgress, exportProgress, textbookCorrect };"
+);
 
-const highIssues = issues.filter((i) => i.severity === "high");
-const mediumIssues = issues.filter((i) => i.severity === "medium");
-const lowIssues = issues.filter((i) => i.severity === "low");
-
-// Summary by category
-const categories = {};
-for (const issue of issues) {
-  const cat = issue.tense.replace(/_.*$/, "");
-  if (!categories[cat]) categories[cat] = { high: 0, medium: 0, low: 0 };
-  categories[cat][issue.severity]++;
+function storageFixture(initial = {}, failProbe = false) {
+  const data = new Map(Object.entries(initial));
+  const controls = { failSet: () => false, failRemove: () => false, reloads: 0, confirms: 0, alerts: [], blob: null, clicks: 0, notice: { hidden: true } };
+  const local = {
+    getItem(key) { return data.get(key) ?? null; },
+    setItem(key, value) {
+      if (failProbe && key === "__msg_storage_probe__") throw new Error("QuotaExceededError");
+      if (controls.failSet(key, String(value))) throw new Error("QuotaExceededError");
+      data.set(key, String(value));
+    },
+    removeItem(key) {
+      if (controls.failRemove(key)) throw new Error("SecurityError");
+      data.delete(key);
+    },
+    key(index) { return [...data.keys()][index] ?? null; },
+    get length() { return data.size; }
+  };
+  const win = {
+    localStorage: local,
+    confirm() { controls.confirms += 1; return true; },
+    alert(message) { controls.alerts.push(message); },
+    location: { reload() { controls.reloads += 1; } }
+  };
+  const doc = {
+    querySelector(selector) {
+      if (selector === "#storageNotice") return controls.notice;
+      if (selector === "#storageExportButton") return { addEventListener() {} };
+      throw new Error(`Unexpected selector in storage fixture: ${selector}`);
+    },
+    createElement() { return { click() { controls.clicks += 1; }, remove() {} }; },
+    body: { appendChild() {} }
+  };
+  const urls = { createObjectURL(blob) { controls.blob = blob; return "blob:test"; }, revokeObjectURL() {} };
+  const api = storageFactory(win, doc, urls, Blob, () => {});
+  return { api, data, controls };
 }
 
-console.log("=".repeat(72));
-console.log("SPANISH GRAMMAR CONJUGATION VALIDATION REPORT");
-console.log("=".repeat(72));
-console.log(`Total verbs checked: ${checkedVerbs.size}`);
-console.log(`Total reference checks: ${Object.keys(REFERENCE).length}`);
-console.log(`Translations complete: ${BASE_VERBS.length - issues.filter((issue) => issue.tense === "translation").length}/${BASE_VERBS.length}`);
-console.log(`Search cases checked: ${SEARCH_CASES.length}`);
-console.log(`Quiz cases checked: ${QUIZ_CASES.length}`);
-console.log(`Tense examples checked: ${tenseExampleCount}`);
-console.log(`Textbook answer words checked for tildes: ${textbookAnswerWords}`);
-console.log(`Derived verbs checked against their base: ${derivedChecked}`);
-console.log(`Verbs checked against the DLE reference: ${dleChecked}`);
-console.log(`Static ids checked: ${checkedIds}`);
-console.log(`Static data attributes checked: ${markupAttrs.size}`);
-console.log(`Static functions checked: ${topFunctions.length}`);
-console.log(`Total issues found: ${issues.length}`);
-console.log(`  High severity:   ${highIssues.length}`);
-console.log(`  Medium severity: ${mediumIssues.length}`);
-console.log(`  Low severity:    ${lowIssues.length}`);
-console.log("");
+const backupFile = (data, version = 1) => ({ text: async () => JSON.stringify({ format: "spanish-grammar-backup", version, data }) });
+const STORAGE_CASES = [
+  ["healthy export includes saves from another tab", async () => {
+    const { api, data, controls } = storageFixture({ "msg:cards": '["ser"]' });
+    data.set("msg:cards", '["ser","estar"]');
+    api.exportProgress();
+    assert.equal(JSON.parse(await controls.blob.text()).data["msg:cards"], '["ser","estar"]');
+  }],
+  ["healthy export excludes keys deleted by another tab", async () => {
+    const { api, data, controls } = storageFixture({ "msg:cards": '["ser"]' });
+    data.delete("msg:cards");
+    assert.equal(api.appStorage.get("msg:cards"), null);
+    api.exportProgress();
+    assert.equal(Object.hasOwn(JSON.parse(await controls.blob.text()).data, "msg:cards"), false);
+  }],
+  ["startup write failure preserves readable saved progress", async () => {
+    const { api, controls } = storageFixture({ "msg:cards": '["ser"]' }, true);
+    assert.deepEqual(api.state.cards, ["ser"]);
+    assert.equal(api.appStorage.persistent, false);
+    assert.equal(controls.notice.hidden, false);
+    api.exportProgress();
+    assert.equal(JSON.parse(await controls.blob.text()).data["msg:cards"], '["ser"]');
+  }],
+  ["null lessons does not prevent startup", () => {
+    const { api } = storageFixture({ "msg:textbookProgress": '{"version":2,"lessons":null}' });
+    assert.deepEqual(api.state.textbookProgress, { version: 2, lessons: {} });
+  }],
+  ["valid lessons survive malformed neighbouring entries", () => {
+    const { api } = storageFixture({ "msg:textbookProgress": '{"version":2,"lessons":{"1":{"answers":{"a:0":"sí"}},"2":null,"3":[]}}' });
+    assert.deepEqual(Object.keys(api.state.textbookProgress.lessons), ["1"]);
+    assert.equal(api.state.textbookProgress.lessons["1"].answers["a:0"], "sí");
+  }],
+  ["failed save exports the latest session value", async () => {
+    const { api, data, controls } = storageFixture({ "msg:cards": '["ser"]' });
+    controls.failSet = () => true;
+    api.appStorage.set("msg:cards", '["ser","estar"]');
+    assert.equal(api.appStorage.get("msg:cards"), '["ser","estar"]');
+    assert.equal(api.appStorage.persistent, false);
+    assert.equal(controls.notice.hidden, false);
+    assert.equal(data.get("msg:cards"), '["ser"]');
+    api.exportProgress();
+    assert.equal(controls.clicks, 1);
+    assert.equal(JSON.parse(await controls.blob.text()).data["msg:cards"], '["ser","estar"]');
+  }],
+  ["failed deletion does not resurrect a stale key", () => {
+    const { api, controls } = storageFixture();
+    api.appStorage.set("msg:quizSession", '{"questions":[]}');
+    controls.failRemove = () => true;
+    api.appStorage.remove("msg:quizSession");
+    assert.equal(api.appStorage.get("msg:quizSession"), null);
+    assert.equal(api.appStorage.keys("msg:").includes("msg:quizSession"), false);
+    assert.equal(api.appStorage.persistent, false);
+  }],
+  ["unsupported backup version leaves existing data intact", async () => {
+    const { api, data, controls } = storageFixture({ "msg:cards": '["ser"]' });
+    await api.importProgress(backupFile({ "msg:cards": '["estar"]' }, 999));
+    assert.equal(data.get("msg:cards"), '["ser"]');
+    assert.equal(controls.confirms, 0);
+    assert.equal(controls.reloads, 0);
+    assert.equal(controls.alerts.length, 1);
+  }],
+  ["mixed malformed backup entries are rejected before replacement", () => {
+    const { api } = storageFixture();
+    assert.throws(() => api.parseBackup(JSON.stringify({ format: "spanish-grammar-backup", version: 1, data: { "msg:cards": '["ser"]', "msg:theme": 42 } })));
+  }],
+  ["malformed progress JSON is rejected before replacement", async () => {
+    const { api, data, controls } = storageFixture({ "msg:cards": '["ser"]' });
+    await api.importProgress(backupFile({ "msg:textbookProgress": "{broken" }));
+    assert.equal(data.get("msg:cards"), '["ser"]');
+    assert.equal(controls.confirms, 0);
+    assert.equal(controls.reloads, 0);
+  }],
+  ["failed first import write preserves original data without reload", async () => {
+    const { api, data, controls } = storageFixture({ "msg:cards": '["ser"]', "msg:theme": "dark", other: "untouched" });
+    controls.failSet = () => true;
+    await api.importProgress(backupFile({ "msg:cards": '["estar"]' }));
+    assert.equal(data.get("msg:cards"), '["ser"]');
+    assert.equal(data.get("msg:theme"), "dark");
+    assert.equal(data.has("msg:newKey"), false);
+    assert.equal(data.get("other"), "untouched");
+    assert.equal(api.appStorage.get("msg:cards"), '["ser"]');
+    assert.equal(controls.reloads, 0);
+    assert.equal(controls.alerts.length, 1);
+  }],
+  ["partial import write is rolled back", async () => {
+    const { api, data, controls } = storageFixture({ "msg:cards": '["ser"]', "msg:theme": "dark" });
+    controls.failSet = (key, value) => key === "msg:theme" && value === "light";
+    await api.importProgress(backupFile({ "msg:cards": '["estar"]', "msg:newKey": "new", "msg:theme": "light" }));
+    assert.equal(data.get("msg:cards"), '["ser"]');
+    assert.equal(data.get("msg:theme"), "dark");
+    assert.equal(controls.reloads, 0);
+  }],
+  ["failed deletion during import is rolled back", async () => {
+    const { api, data, controls } = storageFixture({ "msg:cards": '["ser"]', "msg:theme": "dark" });
+    controls.failRemove = key => key === "msg:theme";
+    await api.importProgress(backupFile({ "msg:cards": '["estar"]' }));
+    assert.equal(data.get("msg:cards"), '["ser"]');
+    assert.equal(data.get("msg:theme"), "dark");
+    assert.equal(controls.reloads, 0);
+  }],
+  ["failed rollback keeps previous session exportable", async () => {
+    const { api, controls } = storageFixture({ "msg:cards": '["ser"]', "msg:theme": "dark" });
+    let writes = 0;
+    controls.failSet = () => ++writes > 2;
+    controls.failRemove = key => key === "msg:newKey";
+    await api.importProgress(backupFile({ "msg:cards": '["estar"]', "msg:newKey": "new", "msg:theme": "light" }));
+    assert.equal(api.appStorage.get("msg:cards"), '["ser"]');
+    assert.equal(api.appStorage.persistent, false);
+    assert.equal(controls.reloads, 0);
+    api.exportProgress();
+    const backup = JSON.parse(await controls.blob.text());
+    assert.equal(backup.data["msg:cards"], '["ser"]');
+    assert.equal(backup.data["msg:theme"], "dark");
+    assert.equal(Object.hasOwn(backup.data, "msg:newKey"), false);
+  }],
+  ["successful import replaces managed data and preserves unrelated keys", async () => {
+    const { api, data, controls } = storageFixture({ "msg:cards": '["ser"]', "msg:theme": "dark", other: "untouched" });
+    await api.importProgress(backupFile({ "msg:cards": '["estar"]' }));
+    assert.equal(data.get("msg:cards"), '["estar"]');
+    assert.equal(data.has("msg:theme"), false);
+    assert.equal(data.get("other"), "untouched");
+    assert.equal(controls.reloads, 1);
+    assert.equal(controls.alerts.length, 0);
+  }],
+  ["Unicode normalization still requires accents and ñ", () => {
+    const { api } = storageFixture();
+    assert.equal(api.textbookCorrect("si\u0301", "sí"), true);
+    assert.equal(api.textbookCorrect("man\u0303ana", "mañana"), true);
+    assert.equal(api.textbookCorrect("si", "sí"), false);
+    assert.equal(api.textbookCorrect("manana", "mañana"), false);
+  }]
+];
 
-if (issues.length > 0) {
-  console.log("-".repeat(72));
-  console.log("ISSUES BY CATEGORY:");
-  console.log("-".repeat(72));
-  for (const [cat, counts] of Object.entries(categories).sort()) {
-    const total = counts.high + counts.medium + counts.low;
-    console.log(`  ${cat}: ${total} issues (high: ${counts.high}, medium: ${counts.medium}, low: ${counts.low})`);
+async function report() {
+  for (const [label, run] of STORAGE_CASES) {
+    try { await run(); }
+    catch (error) {
+      issues.push({ verb: "storage-backup", tense: label, person: "-", expected: "case passes", actual: error.message, severity: "high" });
+    }
   }
-  console.log("");
 
-  console.log("-".repeat(72));
-  console.log("ALL ISSUES:");
-  console.log("-".repeat(72));
+  // ─── Output report ──────────────────────────────────────────────────────────
+  const severityOrder = { high: 0, medium: 1, low: 2 };
+  issues.sort((a, b) => severityOrder[a.severity] - severityOrder[b.severity] || a.verb.localeCompare(b.verb));
+
+  const highIssues = issues.filter((i) => i.severity === "high");
+  const mediumIssues = issues.filter((i) => i.severity === "medium");
+  const lowIssues = issues.filter((i) => i.severity === "low");
+
+  // Summary by category
+  const categories = {};
   for (const issue of issues) {
-    const sev = issue.severity.toUpperCase().padEnd(7);
-    console.log(`  [${sev}] ${issue.verb} / ${issue.tense} / ${issue.person}`);
-    console.log(`          Expected: "${issue.expected}"`);
-    console.log(`          Got:      "${issue.actual}"`);
+    const cat = issue.tense.replace(/_.*$/, "");
+    if (!categories[cat]) categories[cat] = { high: 0, medium: 0, low: 0 };
+    categories[cat][issue.severity]++;
   }
+
+  console.log("=".repeat(72));
+  console.log("SPANISH GRAMMAR CONJUGATION VALIDATION REPORT");
+  console.log("=".repeat(72));
+  console.log(`Total verbs checked: ${checkedVerbs.size}`);
+  console.log(`Total reference checks: ${Object.keys(REFERENCE).length}`);
+  console.log(`Translations complete: ${BASE_VERBS.length - issues.filter((issue) => issue.tense === "translation").length}/${BASE_VERBS.length}`);
+  console.log(`Search cases checked: ${SEARCH_CASES.length}`);
+  console.log(`Quiz cases checked: ${QUIZ_CASES.length}`);
+  console.log(`Storage and backup cases checked: ${STORAGE_CASES.length}`);
+  console.log(`Tense examples checked: ${tenseExampleCount}`);
+  console.log(`Textbook answer words checked for tildes: ${textbookAnswerWords}`);
+  console.log(`Derived verbs checked against their base: ${derivedChecked}`);
+  console.log(`Verbs checked against the DLE reference: ${dleChecked}`);
+  console.log(`Static ids checked: ${checkedIds}`);
+  console.log(`Static data attributes checked: ${markupAttrs.size}`);
+  console.log(`Static functions checked: ${topFunctions.length}`);
+  console.log(`Total issues found: ${issues.length}`);
+  console.log(`  High severity:   ${highIssues.length}`);
+  console.log(`  Medium severity: ${mediumIssues.length}`);
+  console.log(`  Low severity:    ${lowIssues.length}`);
   console.log("");
+
+  if (issues.length > 0) {
+    console.log("-".repeat(72));
+    console.log("ISSUES BY CATEGORY:");
+    console.log("-".repeat(72));
+    for (const [cat, counts] of Object.entries(categories).sort()) {
+      const total = counts.high + counts.medium + counts.low;
+      console.log(`  ${cat}: ${total} issues (high: ${counts.high}, medium: ${counts.medium}, low: ${counts.low})`);
+    }
+    console.log("");
+
+    console.log("-".repeat(72));
+    console.log("ALL ISSUES:");
+    console.log("-".repeat(72));
+    for (const issue of issues) {
+      const sev = issue.severity.toUpperCase().padEnd(7);
+      console.log(`  [${sev}] ${issue.verb} / ${issue.tense} / ${issue.person}`);
+      console.log(`          Expected: "${issue.expected}"`);
+      console.log(`          Got:      "${issue.actual}"`);
+    }
+    console.log("");
+  }
+
+  console.log("=".repeat(72));
+  if (highIssues.length === 0) {
+    console.log("RESULT: PASS (no high-severity issues)");
+    console.log("=".repeat(72));
+    process.exit(0);
+  } else {
+    console.log(`RESULT: FAIL (${highIssues.length} high-severity issue(s) found)`);
+    console.log("=".repeat(72));
+    process.exit(1);
+  }
 }
 
-console.log("=".repeat(72));
-if (highIssues.length === 0) {
-  console.log("RESULT: PASS (no high-severity issues)");
-  console.log("=".repeat(72));
-  process.exit(0);
-} else {
-  console.log(`RESULT: FAIL (${highIssues.length} high-severity issue(s) found)`);
-  console.log("=".repeat(72));
+report().catch((error) => {
+  console.error(error);
   process.exit(1);
-}
+});

@@ -327,6 +327,20 @@ input[type="search"] {
   margin-top: 6px;
 }
 
+.storage-notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--warning);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.storage-notice[hidden] { display: none; }
+.storage-notice p { flex: 1 1 240px; margin: 0; }
+
 .content > *,
 .list-grid > * {
   min-width: 0;
@@ -4414,9 +4428,13 @@ select {
       </nav>
 
       <p id="viewAnnouncer" class="sr-only" role="status" aria-live="polite"></p>
+      <aside class="storage-notice" id="storageNotice" hidden>
+        <p role="status">Прогресс сохраняется только в этой вкладке. Скачайте резервную копию перед закрытием страницы.</p>
+        <button class="small-button" id="storageExportButton" type="button">Скачать прогресс</button>
+      </aside>
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.82 · обновлено: 12.10.2026 21:52 CEST</span>
+        <span>Версия MVP 1.83 · обновлено: 12.10.2026 22:14 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -10291,54 +10309,128 @@ const LEARNING_AFTER_B2 = {
 // В таком случае приложение продолжает работать в текущей сессии без сохранения настроек.
 const appStorage = (() => {
   let backend = null;
+  let persistent = false;
+  let statusChanged = null;
+  // null — отметка удаления: старое значение из localStorage больше не читается.
   const memory = new Map();
 
   try {
     const candidate = window.localStorage;
+    backend = candidate;
+    for (let index = 0; index < candidate.length; index += 1) {
+      const key = candidate.key(index);
+      if (key?.startsWith("msg:")) memory.set(key, candidate.getItem(key));
+    }
     const probe = "__msg_storage_probe__";
     candidate.setItem(probe, "1");
     candidate.removeItem(probe);
-    backend = candidate;
+    persistent = true;
   } catch (_error) {
     backend = null;
   }
 
+  function unavailable() {
+    persistent = false;
+    statusChanged?.();
+  }
+
   return {
     get(key, fallback = null) {
+      if (!persistent) return memory.get(key) ?? fallback;
       try {
-        const value = backend?.getItem(key);
-        return value === null || value === undefined ? memory.get(key) ?? fallback : value;
+        const value = backend.getItem(key);
+        memory.set(key, value);
+        return value ?? fallback;
       } catch (_error) {
+        unavailable();
         return memory.get(key) ?? fallback;
       }
     },
     set(key, value) {
       const normalized = String(value);
       memory.set(key, normalized);
+      if (!persistent) return;
       try {
-        backend?.setItem(key, normalized);
+        backend.setItem(key, normalized);
       } catch (_error) {
-        // Память текущей вкладки уже содержит последнее значение.
+        unavailable();
       }
     },
     remove(key) {
-      memory.delete(key);
+      memory.set(key, null);
+      if (!persistent) return;
       try {
-        backend?.removeItem(key);
+        backend.removeItem(key);
       } catch (_error) {
-        // Удаление из резервной памяти уже выполнено.
+        unavailable();
       }
     },
     keys(prefix = "") {
-      const keys = new Set([...memory.keys()]);
-      try {
-        for (let index = 0; index < (backend?.length || 0); index += 1) keys.add(backend.key(index));
-      } catch (_error) {
-        // Остаются ключи из памяти текущей вкладки.
+      if (persistent) {
+        try {
+          const values = new Map();
+          for (let index = 0; index < backend.length; index += 1) {
+            const key = backend.key(index);
+            if (key?.startsWith(prefix)) values.set(key, backend.getItem(key));
+          }
+          for (const key of memory.keys()) if (key.startsWith(prefix) && !values.has(key)) memory.set(key, null);
+          values.forEach((value, key) => memory.set(key, value));
+          return [...values.keys()].filter((key) => values.get(key) !== null).sort();
+        } catch (_error) {
+          unavailable();
+        }
       }
-      return [...keys].filter((key) => key?.startsWith(prefix)).sort();
+      return [...memory.keys()].filter((key) => key.startsWith(prefix) && memory.get(key) !== null).sort();
     },
-    persistent: Boolean(backend)
+    // Новые значения пишутся до удаления старых ключей. При ошибке откатываем
+    // затронутые ключи; даже если браузер запрещает откат, прежние данные остаются в памяти.
+    replace(entries) {
+      if (!persistent) throw new Error("Сохранение в браузере недоступно.");
+      const previousMemory = new Map(memory);
+      const previous = new Map();
+      const next = new Map(entries);
+      const touched = [];
+      try {
+        for (let index = 0; index < backend.length; index += 1) {
+          const key = backend.key(index);
+          if (key?.startsWith("msg:")) previous.set(key, backend.getItem(key));
+        }
+        for (const key of previousMemory.keys()) if (key.startsWith("msg:") && !previous.has(key)) previousMemory.set(key, null);
+        previous.forEach((value, key) => previousMemory.set(key, value));
+        for (const [key, value] of next) {
+          if (previous.get(key) === value) continue;
+          touched.push(key);
+          backend.setItem(key, value);
+          if (backend.getItem(key) !== value) throw new Error("Запись не сохранилась.");
+        }
+        for (const key of previous.keys()) {
+          if (next.has(key)) continue;
+          touched.push(key);
+          backend.removeItem(key);
+          if (backend.getItem(key) !== null) throw new Error("Удаление не сохранилось.");
+        }
+      } catch (_error) {
+        for (const key of touched.reverse()) {
+          try {
+            if (previous.has(key)) backend.setItem(key, previous.get(key));
+            else backend.removeItem(key);
+          } catch (_rollbackError) {
+            // Данные текущей вкладки восстанавливаются независимо от доступа к localStorage.
+          }
+        }
+        memory.clear();
+        previousMemory.forEach((value, key) => memory.set(key, value));
+        unavailable();
+        throw new Error("Не удалось сохранить копию в браузере. Прежний прогресс доступен в этой вкладке; скачайте его перед закрытием страницы.");
+      }
+      for (const key of memory.keys()) if (key.startsWith("msg:")) memory.set(key, null);
+      next.forEach((value, key) => memory.set(key, value));
+    },
+    onStatusChange(handler) {
+      statusChanged = handler;
+      handler();
+    },
+    get persistent() { return persistent; }
   };
 })();
 
@@ -10391,11 +10483,11 @@ const TEXTBOOK_LAST_LESSON_ID = 125;
 function readTextbookProgress() {
   const fallback = { version: 2, lessons: {} };
   const stored = readStoredJSON("msg:textbookProgress", fallback);
-  if (!stored || ![1, 2].includes(stored.version) || typeof stored.lessons !== "object" || Array.isArray(stored.lessons)) return fallback;
+  if (!isPlainObject(stored) || ![1, 2].includes(stored.version) || !isPlainObject(stored.lessons)) return fallback;
   const allowedLessonIds = new Set(Array.from({ length: TEXTBOOK_LAST_LESSON_ID }, (_value, index) => String(index + 1)));
   const lessons = {};
   Object.entries(stored.lessons).forEach(([lessonId, lesson]) => {
-    if (!allowedLessonIds.has(lessonId) || !lesson || typeof lesson !== "object") return;
+    if (!allowedLessonIds.has(lessonId) || !isPlainObject(lesson)) return;
     lessons[lessonId] = {
       answers: pickEntries(lesson.answers, (answer) => typeof answer === "string"),
       // at — когда пункт впервые получил текущий результат (для «Повторить» в Плане); в старых данных его нет.
@@ -17443,7 +17535,7 @@ function saveTextbookProgress() {
 
 // Знаки препинания и кавычки на проверку не влияют: «sí la tengo» засчитывается за «Sí, la tengo.». Тильды влияют.
 function normalizeTextbookAnswer(value) {
-  return String(value ?? "").toLocaleLowerCase("es-ES").replace(/[¿¡?!.,;:«»"“”…]/gu, " ").replace(/\s+/gu, " ").trim();
+  return String(value ?? "").normalize("NFC").toLocaleLowerCase("es-ES").replace(/[¿¡?!.,;:«»"“”…]/gu, " ").replace(/\s+/gu, " ").trim();
 }
 
 // Ответ отличается от правильного только тильдами: засчитывается как ошибка, но с подсказкой.
@@ -19882,11 +19974,27 @@ function parseBackup(text) {
   } catch (_error) {
     throw new Error("Файл не является JSON.");
   }
-  if (backup?.format !== BACKUP_FORMAT || !backup.data || typeof backup.data !== "object") {
+  if (!isPlainObject(backup) || backup.format !== BACKUP_FORMAT || !isPlainObject(backup.data)) {
     throw new Error("Это не файл резервной копии справочника.");
   }
-  const entries = Object.entries(backup.data).filter(([key, value]) => key.startsWith("msg:") && typeof value === "string");
+  if (backup.version !== 1) throw new Error("Версия резервной копии не поддерживается.");
+  const entries = Object.entries(backup.data).filter(([key]) => key.startsWith("msg:"));
   if (entries.length === 0) throw new Error("В файле нет сохранённых данных.");
+  const arrays = new Set(["msg:cards", "msg:favorites", "msg:recentVerbs", "msg:favoriteTables", "msg:favoriteLessons"]);
+  const objects = new Set(["msg:cardStats", "msg:formSchedule", "msg:quizConfig", "msg:textbookProgress", "msg:textbookOpenGroups", "msg:learningProgress", "msg:learningProgressLegacy", "msg:learningDetails", "msg:learningLevelChecks"]);
+  for (const [key, value] of entries) {
+    if (typeof value !== "string") throw new Error(`Неверный формат данных: ${key}.`);
+    if (!arrays.has(key) && !objects.has(key) && key !== "msg:quizSession") continue;
+    let parsed;
+    try { parsed = JSON.parse(value); }
+    catch (_error) { throw new Error(`Повреждены данные: ${key}.`); }
+    if ((arrays.has(key) && !Array.isArray(parsed))
+      || (objects.has(key) && !isPlainObject(parsed))
+      || (key === "msg:quizSession" && parsed !== null && !isPlainObject(parsed))
+      || (key === "msg:textbookProgress" && (![1, 2].includes(parsed.version) || !isPlainObject(parsed.lessons)))) {
+      throw new Error(`Неверная структура данных: ${key}.`);
+    }
+  }
   return { entries, exportedAt: backup.exportedAt };
 }
 
@@ -19902,13 +20010,24 @@ async function importProgress(file) {
     window.alert(`Не удалось загрузить прогресс: ${error.message}`);
     return;
   }
-  const date = parsed.exportedAt ? new Date(parsed.exportedAt).toLocaleString("ru-RU") : "неизвестной даты";
+  const exportedDate = new Date(parsed.exportedAt);
+  const date = parsed.exportedAt && !Number.isNaN(exportedDate.getTime()) ? exportedDate.toLocaleString("ru-RU") : "неизвестной даты";
   if (!window.confirm(`Загрузить копию от ${date}? Текущие избранное, статистика, прогресс и настройки будут заменены.`)) return;
-  appStorage.keys("msg:").forEach((key) => appStorage.remove(key));
-  parsed.entries.forEach(([key, value]) => appStorage.set(key, value));
+  try {
+    appStorage.replace(parsed.entries);
+  } catch (error) {
+    window.alert(`Не удалось загрузить прогресс: ${error.message}`);
+    return;
+  }
   window.location.reload();
 }
 
+function updateStorageNotice() {
+  $("#storageNotice").hidden = appStorage.persistent;
+}
+
+appStorage.onStatusChange(updateStorageNotice);
+$("#storageExportButton").addEventListener("click", exportProgress);
 $("#exportProgressButton").addEventListener("click", exportProgress);
 $("#importProgressButton").addEventListener("click", () => $("#importProgressInput").click());
 $("#importProgressInput").addEventListener("change", (event) => {

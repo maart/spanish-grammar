@@ -4407,9 +4407,10 @@ select {
         </div>
       </nav>
 
+      <p id="viewAnnouncer" class="sr-only" role="status" aria-live="polite"></p>
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.71 · обновлено: 12.10.2026 01:12 CEST</span>
+        <span>Версия MVP 1.72 · обновлено: 12.10.2026 20:00 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -13125,6 +13126,38 @@ function scrollAppTop() {
   $(SELECTORS.shell).scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+// Названия разделов совпадают с подписями вкладок; используются в заголовке документа и в объявлении.
+const SECTION_NAMES = { verbs: "Глаголы", tenses: "Времена", moods: "Наклонения", tables: "Шпаргалки", textbook: "Учебник", "learning-plan": "План обучения", cards: "Избранное" };
+const APP_TITLE = "Справочник по испанскому";
+let announcedView = null; // раздел, о котором уже объявлено
+let announcerStarted = false; // до конца загрузки ничего не объявляем: диктор и так читает открытый при загрузке раздел
+
+// Заголовок документа: открытая сущность (глагол, время, урок, шпаргалка) и раздел.
+function documentTitleFor() {
+  let detail = "";
+  if (state.view === "verbs" && state.selectedVerb) detail = displayInfinitive(state.selectedVerb);
+  else if (state.view === "tenses" && state.focusedTense) detail = tenseById(state.focusedTense)?.name || "";
+  else if (state.view === "textbook" && state.textbookLesson) {
+    const lesson = lessonById(state.textbookLesson);
+    if (lesson) detail = `Урок ${lesson.id}: ${lesson.title.ru}`;
+  } else if (state.view === "tables" && Number.isInteger(state.focusedTable)) detail = INDEXED_TABLES[state.focusedTable]?.title || "";
+  if (state.view === "verbs" && !detail) return APP_TITLE;
+  return [detail, SECTION_NAMES[state.view], APP_TITLE].filter(Boolean).join(" — ");
+}
+
+// Заголовок обновляется при каждом изменении маршрута. Объявление «Открыт раздел» — только при смене
+// самого раздела: открытие карточки внутри раздела и перерисовка того же раздела не объявляются.
+function announceView(view) {
+  document.title = documentTitleFor();
+  if (!announcerStarted || view === announcedView) return;
+  announcedView = view;
+  const announcer = document.getElementById("viewAnnouncer");
+  if (!announcer || !SECTION_NAMES[view]) return;
+  announcer.textContent = "";
+  // Очистка и текст в следующем кадре: повторный текст того же раздела тоже озвучивается.
+  requestAnimationFrame(() => { announcer.textContent = `Открыт раздел: ${SECTION_NAMES[view]}`; });
+}
+
 function syncActiveTab(view = state.view) {
   $all(SELECTORS.tabs).forEach((tab) => {
     const active = tab.dataset.view === view;
@@ -13140,6 +13173,7 @@ function syncActiveTab(view = state.view) {
   $("#tabMoreButton")?.classList.toggle("is-active", $all("[data-more-view]").some((item) => item.dataset.moreView === view));
   // Полная шапка с описанием нужна только на стартовой вкладке; в остальных разделах она сжимается.
   $(".topbar")?.classList.toggle("is-compact", view !== "verbs");
+  announceView(view);
 }
 
 function setTabMoreMenu(open) {
@@ -13162,6 +13196,8 @@ function focusContentHeading() {
 }
 
 function updateRouteHash(route, { replace = false } = {}) {
+  // Заголовок и объявление обновляем до проверки адреса: открытие карточки меняет title, даже если адрес тот же.
+  announceView(state.view);
   const nextHash = `#${route}`;
   if (window.location.hash === nextHash) return;
   window.history[replace ? "replaceState" : "pushState"](null, "", nextHash);
@@ -16740,13 +16776,13 @@ function learningCheckMarkup(level) {
     const prompt = escapeHTML(item.prompt);
     const control = exercise.kind === "choice"
       ? `<div class="textbook-choice-row" role="group" aria-label="${prompt}">${textbookItemOptions(exercise, item).map((option) => `<button class="small-button ${answer === option ? "is-selected" : ""}" type="button" data-check-choice="${index}" data-check-value="${escapeHTML(option)}" aria-pressed="${answer === option}" ${check.submitted ? "disabled" : ""}>${escapeHTML(option)}</button>`).join("")}</div>`
-      : `<label><span class="sr-only">${prompt}</span><input class="textbook-answer-input" type="text" autocomplete="off" spellcheck="false" lang="es" value="${escapeHTML(answer)}" data-check-answer="${index}" aria-label="${prompt}" ${check.submitted ? "readonly" : ""}></label>`;
+      : `<label><span class="sr-only">${prompt}</span><input class="textbook-answer-input" type="text" autocomplete="off" spellcheck="false" lang="es" value="${escapeHTML(answer)}" data-check-answer="${index}" aria-label="${prompt}" aria-describedby="learning-check-context-${index}" ${check.submitted ? "readonly" : ""}></label>`;
     const expected = Array.isArray(item.answer) ? item.answer[0] : item.answer;
     const feedback = !check.submitted ? "" : results[index]
       ? `<p class="textbook-feedback"><strong>Верно.</strong></p>`
       : `<p class="textbook-feedback"><strong>${answer ? "Неверно." : "Нет ответа."}</strong>${textbookAccentOnlyMistake(answer, item.answer) ? " Почти: проверьте тильду." : ""} Правильный ответ: <span lang="es">${escapeHTML(expected)}</span>.</p>`;
     const stateClass = check.submitted ? (results[index] ? " is-correct" : " is-wrong") : "";
-    return `<li class="textbook-question${stateClass}" data-check-question="${index}"><small class="learning-check-context">Урок ${lesson.id} · ${escapeHTML(textbookText(exercise.instruction))}</small><span class="textbook-prompt"><span lang="es">${markRussianHints(prompt)}</span></span>${control}${feedback}</li>`;
+    return `<li class="textbook-question${stateClass}" data-check-question="${index}"><small class="learning-check-context" id="learning-check-context-${index}">Урок ${lesson.id} · ${escapeHTML(textbookText(exercise.instruction))}</small><span class="textbook-prompt"><span lang="es">${markRussianHints(prompt)}</span></span>${control}${feedback}</li>`;
   }).join("");
   let summary = `<p class="muted">Ответьте на все ${check.items.length} заданий и нажмите «Проверить». Нужно ${Math.round(LEARNING_CHECK_PASS_SHARE * 100)}% верных.</p>`;
   let actions = `<button class="small-button primary" type="button" data-check-submit>Проверить</button><button class="small-button" type="button" data-check-exit>Выйти без результата</button>`;
@@ -17061,7 +17097,7 @@ function renderTextbookQuestion(lesson, exercise, item, index, saved, showFeedba
   const options = textbookItemOptions(exercise, item).map((option) => html`<button class="small-button ${answer === option ? "is-selected" : ""}" type="button" data-textbook-choice="${key}" data-textbook-value="${option}" aria-pressed="${answer === option}">${option}</button>`);
   const control = exercise.kind === "choice"
     ? html`<div class="textbook-choice-row" role="group" aria-label="${item.prompt}">${options}</div>`
-    : html`<label><span class="sr-only">${item.prompt}</span><input class="textbook-answer-input" type="text" autocomplete="off" spellcheck="false" lang="es" value="${answer}" data-textbook-answer="${key}" aria-label="${item.prompt}"></label>`;
+    : html`<label><span class="sr-only">${item.prompt}</span><input class="textbook-answer-input" type="text" autocomplete="off" spellcheck="false" lang="es" value="${answer}" data-textbook-answer="${key}" aria-label="${item.prompt}" aria-describedby="textbook-instruction-${exercise.id}"></label>`;
   return html`<li class="textbook-question${stateClass}" data-textbook-question="${key}"><span class="textbook-prompt"><span lang="es">${rawHtml(markRussianHints(escapeHTML(item.prompt)))}</span></span>${control}${rawHtml(textbookFeedback(item, checked, showFeedback, lesson, answer))}</li>`;
 }
 
@@ -17176,7 +17212,7 @@ function renderTextbookLesson(content, lesson) {
       : textbookUi("Раскрыть упражнение", "Abrir ejercicio");
     const exerciseMeta = `${textbookUi("Заполнено", "Respondidas")} ${exerciseProgress.answered}/${exerciseProgress.total}${showFeedback ? ` · ✓ ${exerciseProgress.correct}/${exerciseProgress.checked}` : ""}`;
     const accentKeys = exercise.kind === "choice" ? "" : html`<div class="textbook-accent-keys" role="group" aria-label="${textbookUi("Вставить букву в поле ответа", "Insertar letra en la respuesta")}">${QUIZ_CHARACTERS.map((char) => html`<button class="small-button" type="button" data-textbook-char="${char}" lang="es">${char}</button>`)}</div>`;
-    return html`<article class="textbook-exercise" data-textbook-exercise="${exercise.id}"><div class="textbook-exercise-head"><div><h4>${textbookUi("Упражнение", "Ejercicio")} ${exercise.id}</h4><p>${textbookText(exercise.instruction)}</p></div><span class="textbook-exercise-meta">${exerciseMeta}</span><button class="small-button textbook-exercise-toggle" type="button" data-textbook-toggle="${exercise.id}" aria-expanded="${isOpen}" aria-controls="${bodyId}">${toggleLabel}</button></div><div class="textbook-exercise-body" id="${bodyId}"${isOpen ? "" : " hidden"}><ol class="textbook-question-list">${exercise.items.map((item, index) => renderTextbookQuestion(lesson, exercise, item, index, saved, showFeedback))}</ol>${accentKeys}<div class="textbook-actions"><button class="small-button primary" type="button" data-textbook-check="${exercise.id}" aria-pressed="${showFeedback}">${buttonLabel}</button></div></div></article>`;
+    return html`<article class="textbook-exercise" data-textbook-exercise="${exercise.id}"><div class="textbook-exercise-head"><div><h4>${textbookUi("Упражнение", "Ejercicio")} ${exercise.id}</h4><p id="textbook-instruction-${exercise.id}">${textbookText(exercise.instruction)}</p></div><span class="textbook-exercise-meta">${exerciseMeta}</span><button class="small-button textbook-exercise-toggle" type="button" data-textbook-toggle="${exercise.id}" aria-expanded="${isOpen}" aria-controls="${bodyId}">${toggleLabel}</button></div><div class="textbook-exercise-body" id="${bodyId}"${isOpen ? "" : " hidden"}><ol class="textbook-question-list">${exercise.items.map((item, index) => renderTextbookQuestion(lesson, exercise, item, index, saved, showFeedback))}</ol>${accentKeys}<div class="textbook-actions"><button class="small-button primary" type="button" data-textbook-check="${exercise.id}" aria-pressed="${showFeedback}">${buttonLabel}</button></div></div></article>`;
   }).join("");
   const remaining = progress.total - progress.checked;
   const summary = progress.done
@@ -18483,7 +18519,7 @@ function renderCardQuiz(content) {
     `;
   } else {
     answerHTML = `
-      <input class="quiz-input" id="quizAnswerInput" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="Ответ" placeholder="${placeholder}" value="${escapeHTML(state.cardQuizInput)}">
+      <input class="quiz-input" id="quizAnswerInput" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="Ответ" aria-describedby="quizInstruction quizQuestion" placeholder="${placeholder}" value="${escapeHTML(state.cardQuizInput)}">
       ${!isMeaning ? `<div class="quiz-character-row" aria-label="Испанские символы">
         ${QUIZ_CHARACTERS.map((character) => `<button class="quiz-character-button" type="button" data-quiz-character="${character}" aria-label="Вставить ${character}">${character}</button>`).join("")}
       </div>` : ""}
@@ -18501,8 +18537,8 @@ function renderCardQuiz(content) {
     </div>
     <div class="study-progress" role="progressbar" aria-label="Прогресс квиза" aria-valuemin="1" aria-valuemax="${state.cardQuiz.length}" aria-valuenow="${state.cardQuizIndex + 1}"><span style="width: ${progress}%"></span></div>
     <div class="study-face">
-      <p class="eyebrow">${eyebrow}</p>
-      <h2 ${isMeaning ? `lang="es"` : ""}>${escapeHTML(questionHeading)}</h2>
+      <p class="eyebrow" id="quizInstruction">${eyebrow}</p>
+      <h2 id="quizQuestion" ${isMeaning ? `lang="es"` : ""}>${escapeHTML(questionHeading)}</h2>
       ${answerHTML}
     </div>
     <div class="study-actions">
@@ -19157,8 +19193,41 @@ function markSpanishText(root) {
   });
 }
 
+// Имя таблицы: ближайший предшествующий заголовок h2–h4 внутри ближайшего подходящего контейнера,
+// иначе aria-label контейнера. Если подходящего текста нет, имя не ставим.
+const TABLE_NAME_CONTAINERS = "section, article, .info-card, .table-card, .table-wrap";
+function tableNameFor(table) {
+  for (let node = table.parentElement?.closest(TABLE_NAME_CONTAINERS); node; node = node.parentElement?.closest(TABLE_NAME_CONTAINERS)) {
+    const headings = [...node.querySelectorAll("h2, h3, h4")].filter((heading) => heading.compareDocumentPosition(table) & Node.DOCUMENT_POSITION_FOLLOWING);
+    const text = headings.at(-1)?.textContent.trim().replace(/\s+/g, " ");
+    if (text) return text;
+    const own = node.getAttribute("aria-label");
+    if (own) return own;
+  }
+  return "";
+}
+
+// Семантика таблицы: заголовки столбцов (scope="col"), заголовки строк (scope="row") и имя таблицы.
+// Уже заданные атрибуты не меняем; стили от этих атрибутов не зависят.
+function prepareTableSemantics(table) {
+  table.tHead?.querySelectorAll("th").forEach((th) => {
+    if (!th.hasAttribute("scope")) th.setAttribute("scope", "col");
+  });
+  Array.from(table.tBodies).forEach((body) => {
+    Array.from(body.rows).forEach((row) => {
+      const first = row.cells[0];
+      if (first?.tagName === "TH" && !first.hasAttribute("scope")) first.setAttribute("scope", "row");
+    });
+  });
+  if (!table.querySelector("caption") && !table.hasAttribute("aria-label") && !table.hasAttribute("aria-labelledby")) {
+    const name = tableNameFor(table);
+    if (name) table.setAttribute("aria-label", name);
+  }
+}
+
 function prepareResponsiveTables(root) {
   root.querySelectorAll("table").forEach((table) => {
+    prepareTableSemantics(table);
     const headRows = table.tHead?.rows;
     const headRow = headRows?.[headRows.length - 1];
     if (!headRow) return;
@@ -19448,6 +19517,10 @@ if (!applyRouteHash()) {
   resetVerbLanding();
   render();
 }
+// Раздел, открытый при загрузке, не объявляем; дальше объявляются только смены разделов.
+announcerStarted = true;
+announcedView = state.view;
+announceView(state.view);
 updateFloatingTopButton();
 warmVerbSearchIndex();
 $("#verbCountStat").textContent = `${BASE_VERBS.length} ${pluralizeVerbs(BASE_VERBS.length)}`;

@@ -4416,7 +4416,7 @@ select {
       <p id="viewAnnouncer" class="sr-only" role="status" aria-live="polite"></p>
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.80 · обновлено: 12.10.2026 21:11 CEST</span>
+        <span>Версия MVP 1.81 · обновлено: 12.10.2026 21:13 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -14101,6 +14101,45 @@ function buildFormsFor(verb) {
 
 const VERB_INFO_CACHE = new Map();
 
+// ── Допустимые варианты форм (RAE/DLE) ──
+// Квиз принимает их наравне с формой из таблицы: -se в imperfecto и pluscuamperfecto de subjuntivo (hablase,
+// hubiese hablado), второе причастие в составных временах (he freído / he frito) и отдельные формы из FORM_VARIANTS.
+const COMPOUND_TENSE_IDS = ["perfecto", "pluscuamperfecto", "futuro_perfecto", "condicional_compuesto", "subjuntivo_perfecto", "subjuntivo_pluscuamperfecto"];
+// Второе причастие, которое DLE приводит в спряжении рядом с основным.
+const PARTICIPLE_VARIANTS = {
+  freir: ["freído"],
+  imprimir: ["imprimido"],
+  proveer: ["proveído"]
+};
+// глагол → время → [лицо → другие допустимые формы].
+const FORM_VARIANTS = {
+  predecir: {
+    futuro: [["prediré", "predeciré"], ["predirás", "predecirás"], ["predirá", "predecirá"], ["prediremos", "predeciremos"], ["prediréis", "predeciréis"], ["predirán", "predecirán"]],
+    condicional: [["prediría", "predeciría"], ["predirías", "predecirías"], ["prediría", "predeciría"], ["prediríamos", "predeciríamos"], ["prediríais", "predeciríais"], ["predirían", "predecirían"]]
+  },
+  contradecir: {
+    futuro: [["contradiré", "contradeciré"], ["contradirás", "contradecirás"], ["contradirá", "contradecirá"], ["contradiremos", "contradeciremos"], ["contradiréis", "contradeciréis"], ["contradirán", "contradecirán"]],
+    condicional: [["contradiría", "contradeciría"], ["contradirías", "contradecirías"], ["contradiría", "contradeciría"], ["contradiríamos", "contradeciríamos"], ["contradiríais", "contradeciríais"], ["contradirían", "contradecirían"]]
+  }
+};
+
+// Форма на -se для формы на -ra: hablara → hablase, habláramos → hablásemos, hubiera hablado → hubiese hablado.
+function subjunctiveSeVariant(form) {
+  return form.split(" ").map((word) => word.replace(/ra(s|mos|is|n)?$/, "se$1")).join(" ");
+}
+
+// Все допустимые ответы для формы глагола: сама форма и её варианты (без повторов).
+function acceptedConjugationForms(verb, tense, person, form) {
+  const simpleVerb = baseVerb(verb);
+  const answers = [form, ...(FORM_VARIANTS[simpleVerb]?.[tense]?.[person] || [])];
+  if (COMPOUND_TENSE_IDS.includes(tense)) {
+    const main = participle(simpleVerb);
+    (PARTICIPLE_VARIANTS[simpleVerb] || []).forEach((variant) => answers.push(form.replace(new RegExp(`${main}$`), variant)));
+  }
+  if (tense === "subjuntivo_imperfecto" || tense === "subjuntivo_pluscuamperfecto") answers.push(...answers.map(subjunctiveSeVariant));
+  return [...new Set(answers)];
+}
+
 function verbInfo(verb) {
   if (VERB_INFO_CACHE.has(verb)) return VERB_INFO_CACHE.get(verb);
   const irregular = IRREGULARS[verb] || IRREGULARS[baseVerb(verb)];
@@ -17923,7 +17962,10 @@ function generateConjugationQuestions(cards, tenses, persons, count) {
 }
 
 function evaluateAnswer(userInput, question) {
-  const candidates = question.acceptedAnswers?.length ? question.acceptedAnswers : [question.answer];
+  // Варианты спряжения вычисляются при проверке, поэтому работают и в сохранённых до их появления сессиях.
+  const candidates = question.type === "conjugation"
+    ? acceptedConjugationForms(question.verb, question.tense, question.person, question.answer)
+    : question.acceptedAnswers?.length ? question.acceptedAnswers : [question.answer];
   const exact = quizAnswerKey(userInput);
   if (candidates.some((answer) => exact === quizAnswerKey(answer))) {
     return { status: "correct", message: "Верно!" };
@@ -18895,10 +18937,13 @@ function renderCardQuiz(content) {
     const result = evaluateAnswer(state.cardQuizInput, question);
     const isCorrect = result.status === "correct";
     const enteredAnswer = state.cardQuizInput || "Ответ не указан";
+    const alternatives = isConjugation
+      ? acceptedConjugationForms(question.verb, question.tense, question.person, question.answer).filter((answer) => quizAnswerKey(answer) !== quizAnswerKey(isCorrect ? state.cardQuizInput : question.answer))
+      : [];
     answerHTML = html`
       <input class="quiz-input is-${result.status}" type="text" value="${enteredAnswer}" readonly aria-label="Данный ответ">
       <div class="quiz-feedback is-${result.status}" role="status">
-        ${result.message}${!isCorrect ? html`<br>Правильный ответ: <strong>${question.answer}</strong>` : ""}
+        ${result.message}${!isCorrect ? html`<br>Правильный ответ: <strong>${question.answer}</strong>` : ""}${alternatives.length ? html`<br>Также верно: <strong>${alternatives.join(", ")}</strong>` : ""}
       </div>
       ${!isCorrect ? html`<div class="quiz-result-links" aria-label="Справочные ссылки">
         <button class="small-button" type="button" data-answer-verb="${question.verb}">Открыть глагол</button>

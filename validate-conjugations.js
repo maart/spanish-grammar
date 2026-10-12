@@ -1333,6 +1333,16 @@ const QUIZ_CASES = [
     expected: "1,true,1,1,true",
   },
   {
+    label: "quiz accepts -se subjunctive and the second participle",
+    actual: () => [
+      evaluateAnswer("hablásemos", { type: "conjugation", verb: "hablar", tense: "subjuntivo_imperfecto", person: 3, answer: "habláramos" }).status,
+      evaluateAnswer("hubiese hablado", { type: "conjugation", verb: "hablar", tense: "subjuntivo_pluscuamperfecto", person: 0, answer: "hubiera hablado" }).status,
+      evaluateAnswer("he freído", { type: "conjugation", verb: "freir", tense: "perfecto", person: 0, answer: "he frito" }).status,
+      evaluateAnswer("hablasemos", { type: "conjugation", verb: "hablar", tense: "subjuntivo_imperfecto", person: 3, answer: "habláramos" }).status,
+    ].join(","),
+    expected: "correct,correct,correct,almost",
+  },
+  {
     label: "quiz explains a wrong person",
     actual: () => evaluateAnswer("hablas", { type: "conjugation", verb: "hablar", tense: "presente", person: 0, answer: "hablo" }).message,
     expected: "Ответ пока неверный: «hablas» — форма для tú; здесь нужна форма для yo.",

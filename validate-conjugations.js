@@ -40,7 +40,7 @@ const sandbox = {
 // Execute the JS in the sandbox
 const fn = new Function(
   ...Object.keys(sandbox),
-  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, TENSE_EXAMPLES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, VERB_TENSE_GROUPS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize, generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer, cardAccuracy, isCardMastered, cardNeedsReview, cardsForFilter, studyCardCounts, validateData, normalizeTextbookAnswer, diagnoseVerbMistake, staticChecksData: { TRANSLATIONS, TENSES, TENSE_EXAMPLES, TENSE_LESSONS, USEFUL_TABLES, TABLE_GROUPS, MOODS, LEARNING_MODULES, TEXTBOOK_LESSONS, BASE_VERBS, LEARNING_AFTER_B2 } };"
+  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, TENSE_EXAMPLES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, VERB_TENSE_GROUPS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize, generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer, cardAccuracy, isCardMastered, cardNeedsReview, cardsForFilter, studyCardCounts, validateData, normalizeTextbookAnswer, diagnoseVerbMistake, scheduleFormReview, dueFormReviews, dayKey, addDays, staticChecksData: { TRANSLATIONS, TENSES, TENSE_EXAMPLES, TENSE_LESSONS, USEFUL_TABLES, TABLE_GROUPS, MOODS, LEARNING_MODULES, TEXTBOOK_LESSONS, BASE_VERBS, LEARNING_AFTER_B2 } };"
 );
 const api = fn(...Object.values(sandbox));
 
@@ -62,6 +62,7 @@ const {
   generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer,
   cardAccuracy, isCardMastered, cardNeedsReview, cardsForFilter, studyCardCounts,
   validateData, normalizeTextbookAnswer, diagnoseVerbMistake,
+  scheduleFormReview, dueFormReviews, dayKey, addDays,
 } = api;
 
 // ─── Reference data: known correct conjugations ─────────────────────────────
@@ -1309,6 +1310,27 @@ const QUIZ_CASES = [
     label: "diagnosis: no verb named in the task (casa is not casar)",
     actual: () => describeDiagnosis(diagnoseVerbMistake("casa", "casas", ["casa"], 3)),
     expected: "null",
+  },
+  {
+    label: "schedule: correct twice in one day promotes once, mistake resets to box 1 for tomorrow",
+    actual: () => {
+      const saved = { schedule: state.formSchedule, cards: state.cards };
+      state.formSchedule = {};
+      state.cards = ["tener"];
+      const question = { type: "conjugation", verb: "tener", tense: "presente", person: 0 };
+      const today = dayKey();
+      scheduleFormReview(question, true);
+      scheduleFormReview(question, true);
+      const afterCorrect = { ...state.formSchedule["tener|presente"] };
+      state.formSchedule["tener|presente"] = { box: 3, due: today };
+      const due = dueFormReviews().length;
+      scheduleFormReview(question, false);
+      const afterMistake = state.formSchedule["tener|presente"];
+      state.formSchedule = saved.schedule;
+      state.cards = saved.cards;
+      return [afterCorrect.box, afterCorrect.due === addDays(today, 1), due, afterMistake.box, afterMistake.due === addDays(today, 1)].join(",");
+    },
+    expected: "1,true,1,1,true",
   },
   {
     label: "quiz explains a wrong person",

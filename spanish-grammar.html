@@ -1197,6 +1197,13 @@ input[type="search"] {
   font-weight: 900;
 }
 
+.learning-review-age {
+  flex: none;
+  margin-left: auto;
+  color: var(--muted);
+  font-weight: 600;
+}
+
 .learning-check-card {
   display: flex;
   flex-wrap: wrap;
@@ -4409,7 +4416,7 @@ select {
       <p id="viewAnnouncer" class="sr-only" role="status" aria-live="polite"></p>
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.77 · обновлено: 12.10.2026 20:46 CEST</span>
+        <span>Версия MVP 1.78 · обновлено: 12.10.2026 20:50 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -10380,7 +10387,9 @@ function readTextbookProgress() {
     if (!allowedLessonIds.has(lessonId) || !lesson || typeof lesson !== "object") return;
     lessons[lessonId] = {
       answers: pickEntries(lesson.answers, (answer) => typeof answer === "string"),
-      checked: pickEntries(lesson.checked, (result) => isPlainObject(result) && typeof result.correct === "boolean"),
+      // at — когда пункт впервые получил текущий результат (для «Повторить» в Плане); в старых данных его нет.
+      checked: Object.fromEntries(Object.entries(pickEntries(lesson.checked, (result) => isPlainObject(result) && typeof result.correct === "boolean"))
+        .map(([key, result]) => [key, storedDate(result.at) ? { correct: result.correct, at: result.at } : { correct: result.correct }])),
       attempts: pickEntries(lesson.attempts, (count) => storedNumber(count, null) !== null)
     };
   });
@@ -10429,6 +10438,40 @@ function normalizeCardStats(value) {
       streak: storedNumber(stats.streak),
       lastReviewed: storedDate(stats.lastReviewed)
     }]];
+  }));
+}
+
+// День в формате YYYY-MM-DD по местному времени: им считаются сроки повторения.
+function dayKey(date = new Date()) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
+// Арифметика дней: обе даты разбираются как полночь UTC, поэтому разница — целое число дней.
+function addDays(day, count) {
+  return new Date(Date.parse(day) + count * 86400000).toISOString().slice(0, 10);
+}
+
+function daysBetween(from, to) {
+  return Math.round((Date.parse(to) - Date.parse(from)) / 86400000);
+}
+
+function isDayKey(value) {
+  return typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(value));
+}
+
+// Повторение по расписанию в квизе спряжений: пара «глагол — время» после верного ответа переходит в следующую
+// коробку и возвращается через столько дней, после ошибки — в первую коробку и назавтра.
+const FORM_REVIEW_INTERVALS = [1, 3, 7, 14, 30];
+
+// Расписание (msg:formSchedule): «глагол|время» → { box: 1–5, due, reviewed } (дни YYYY-MM-DD); неизвестные глаголы,
+// времена и даты отбрасываются, коробка ограничивается 1–5.
+function normalizeFormSchedule(value) {
+  if (!isPlainObject(value)) return {};
+  return Object.fromEntries(Object.entries(value).flatMap(([key, entry]) => {
+    const [verb, tense] = key.split("|");
+    if (!BASE_VERBS.includes(verb) || !TENSES.some((item) => item.id === tense) || !isPlainObject(entry) || !isDayKey(entry.due)) return [];
+    const box = Math.min(FORM_REVIEW_INTERVALS.length, Math.max(1, Math.round(storedNumber(entry.box, 1))));
+    return [[key, { box, due: entry.due, ...(isDayKey(entry.reviewed) ? { reviewed: entry.reviewed } : {}) }]];
   }));
 }
 
@@ -10641,6 +10684,7 @@ const state = {
     ? appStorage.get("msg:cardsFilter")
     : "all",
   cardStats: normalizeCardStats(readStoredJSON("msg:cardStats", {})),
+  formSchedule: normalizeFormSchedule(readStoredJSON("msg:formSchedule", {})),
   savedQuizSession: readStoredJSON("msg:quizSession", null),
   cardUndo: null,
   cardQuiz: [],
@@ -14690,6 +14734,18 @@ function pluralizeVerbs(count) {
   return "глаголов";
 }
 
+function pluralizeDays(count) {
+  if (count % 10 === 1 && count % 100 !== 11) return "день";
+  if ([2, 3, 4].includes(count % 10) && ![12, 13, 14].includes(count % 100)) return "дня";
+  return "дней";
+}
+
+function pluralizeQuestions(count) {
+  if (count % 10 === 1 && count % 100 !== 11) return "вопрос";
+  if ([2, 3, 4].includes(count % 10) && ![12, 13, 14].includes(count % 100)) return "вопроса";
+  return "вопросов";
+}
+
 function pluralizeInteractiveLessons(count) {
   if (count % 10 === 1 && count % 100 !== 11) return "интерактивный урок";
   if ([2, 3, 4].includes(count % 10) && ![12, 13, 14].includes(count % 100)) return "интерактивных урока";
@@ -16744,24 +16800,42 @@ function openTextbookLessonFromPlan(lessonId, { mistakes = false } = {}) {
 // Урок попадает в «Повторить», если ошибки составляют не меньше этой доли проверенных ответов.
 const LEARNING_REVIEW_ERROR_SHARE = 0.2;
 
+// Сначала уроки с ошибками прошлых дней (их полезнее повторить, когда материал немного забылся), затем сегодняшние;
+// внутри — по доле ошибок. mistakeDay — день последней ошибки ("" в старых данных без даты: такие считаются прошлыми).
 function learningReviewLessons(levelId) {
+  const today = dayKey();
   return learningModulesFor(levelId).flatMap((module) => module.lessons)
     .map((id) => {
       const lesson = lessonById(id);
       const progress = textbookProgressFor(lesson);
-      return { lesson, wrong: progress.wrong, checked: progress.checked, share: progress.checked ? progress.wrong / progress.checked : 0 };
+      const mistakeDay = Object.values(textbookLessonState(id).checked)
+        .filter((result) => !result.correct && result.at)
+        .map((result) => dayKey(new Date(result.at)))
+        .sort().at(-1) || "";
+      return { lesson, wrong: progress.wrong, checked: progress.checked, share: progress.checked ? progress.wrong / progress.checked : 0, mistakeDay, fresh: mistakeDay === today };
     })
     .filter((item) => item.wrong > 0 && item.share >= LEARNING_REVIEW_ERROR_SHARE)
-    .sort((a, b) => b.share - a.share || a.lesson.id - b.lesson.id);
+    .sort((a, b) => Number(a.fresh) - Number(b.fresh) || b.share - a.share || a.lesson.id - b.lesson.id);
+}
+
+function mistakeAgeText(mistakeDay) {
+  if (!mistakeDay) return "";
+  const days = daysBetween(mistakeDay, dayKey());
+  if (days <= 0) return "сегодня";
+  if (days === 1) return "вчера";
+  return `${days} ${pluralizeDays(days)} назад`;
 }
 
 function learningReviewMarkup(level) {
   const review = learningReviewLessons(level.id);
   if (!review.length) return "";
   const shown = review.slice(0, 5);
-  const items = shown.map(({ lesson, wrong, checked, share }) => `<li><button class="learning-module-lesson" type="button" data-textbook-review="${lesson.id}" aria-label="Повторить урок ${lesson.id}: ${escapeHTML(lesson.title.ru)} — ошибок ${wrong} из ${checked}"><span class="learning-review-share" aria-hidden="true">${Math.round(share * 100)}%</span><span>${lesson.id}. ${escapeHTML(lesson.title.ru)}</span></button></li>`).join("");
+  const items = shown.map(({ lesson, wrong, checked, share, mistakeDay }) => {
+    const age = mistakeAgeText(mistakeDay);
+    return html`<li><button class="learning-module-lesson" type="button" data-textbook-review="${lesson.id}" aria-label="Повторить урок ${lesson.id}: ${lesson.title.ru} — ошибок ${wrong} из ${checked}${age ? `, ошибки ${age}` : ""}"><span class="learning-review-share" aria-hidden="true">${Math.round(share * 100)}%</span><span>${lesson.id}. ${lesson.title.ru}</span>${age ? html`<small class="learning-review-age" aria-hidden="true">${age}</small>` : ""}</button></li>`;
+  }).join("");
   const more = review.length > shown.length ? `<p class="muted">И ещё ${review.length - shown.length} — появятся здесь, когда вы исправите эти.</p>` : "";
-  return `<section class="learning-review"><h3>Повторить</h3><p class="muted">Уроки ${level.label}, где ошибки — ${Math.round(LEARNING_REVIEW_ERROR_SHARE * 100)}% проверенных ответов или больше. Урок откроется на упражнении с ошибками; после исправления он исчезнет из списка.</p><ol class="learning-module-lessons">${items}</ol>${more}</section>`;
+  return `<section class="learning-review"><h3>Повторить</h3><p class="muted">Уроки ${level.label}, где ошибки — ${Math.round(LEARNING_REVIEW_ERROR_SHARE * 100)}% проверенных ответов или больше. Сначала — ошибки прошлых дней: их полезнее повторить, когда материал немного забылся. Урок откроется на упражнении с ошибками; после исправления он исчезнет из списка.</p><ol class="learning-module-lessons">${items}</ol>${more}</section>`;
 }
 
 function openLearningPlanForLesson(lessonId) {
@@ -17606,7 +17680,9 @@ onDelegated("click", inTextbook("[data-textbook-check]"), (_event, target) => {
       delete saved.checked[key];
       return;
     }
-    saved.checked[key] = { correct: textbookCorrect(saved.answers[key], item.answer) };
+    const correct = textbookCorrect(saved.answers[key], item.answer);
+    const previous = saved.checked[key];
+    saved.checked[key] = { correct, at: previous?.correct === correct && previous.at ? previous.at : new Date().toISOString() };
     saved.attempts[key] = (Number(saved.attempts[key]) || 0) + 1;
   });
   state.textbookVisibleFeedback[feedbackKey] = true;
@@ -17988,6 +18064,9 @@ function cardsDashboardSection() {
   const quickCount = Math.min(5, state.cards.length);
   const studyCounts = studyCardCounts();
   const mistakeCards = cardsForFilter("mistakes");
+  const dueCount = dueFormReviews().length;
+  const dueQuestions = Math.min(dueCount, DUE_REVIEW_LIMIT);
+  const scheduleNote = formScheduleNote(dueCount);
   const hasResume = hasSavedQuizSession();
   const canStartCustom = cfg.type !== "conjugation" || (cfg.tenses.length > 0 && cfg.persons.length > 0);
 
@@ -18028,10 +18107,11 @@ function cardsDashboardSection() {
             </div>
           </div>`
         : `<div class="cards-primary-actions">
-            <button class="small-button primary" type="button" data-preset="quick">Быстрая проверка · ${quickCount} ${quickCount === 1 ? "вопрос" : quickCount < 5 ? "вопроса" : "вопросов"}</button>
+            ${dueCount > 0 ? `<button class="small-button primary" type="button" data-preset="due">На сегодня · ${dueQuestions} ${pluralizeQuestions(dueQuestions)}</button>` : ""}
+            <button class="small-button ${dueCount > 0 ? "" : "primary"}" type="button" data-preset="quick">Быстрая проверка · ${quickCount} ${pluralizeQuestions(quickCount)}</button>
             ${mistakeCards.length > 0 ? `<button class="small-button" type="button" data-preset="mistakes">Повторить ошибки · ${mistakeCards.length} ${pluralizeVerbs(mistakeCards.length)}</button>` : ""}
             <button class="small-button" type="button" data-toggle-quiz-panel aria-expanded="${state.showQuizPanel}">${state.showQuizPanel ? "Скрыть режимы" : "Режимы квиза"}</button>
-          </div>`
+          </div>${scheduleNote ? `<p class="muted cards-schedule-note">${scheduleNote}</p>` : ""}`
       : ""}
     ${state.cards.length > 0 ? `<div class="cards-overview" aria-label="Прогресс изучения">
       <button class="${state.cardsFilter === "reviewed" ? "is-active" : ""}" type="button" data-cards-dashboard-filter="reviewed" aria-pressed="${state.cardsFilter === "reviewed"}"><strong>${studyCounts.reviewed}</strong><span>проверено</span></button>
@@ -18046,6 +18126,7 @@ function cardsDashboardSection() {
         <div><strong>Не проверено</strong><span>Ответов пока не было.</span></div>
         <div><strong>С ошибками</strong><span>Есть ошибки, и глагол ещё не освоен.</span></div>
         <div><strong>Освоено</strong><span>Минимум 3 ответа, точность от 80% и серия от 2.</span></div>
+        <div><strong>На сегодня</strong><span>Время глагола из проверки спряжений после верного ответа возвращается через ${FORM_REVIEW_INTERVALS.slice(0, -1).join(", ")} и ${FORM_REVIEW_INTERVALS.at(-1)} дней, после ошибки — на следующий день.</span></div>
       </div>
     </details>` : `<p class="muted">Глаголы, выбранные для повторения. Результаты сохраняются только на этом устройстве.</p>`}
     ${state.cardUndo && !state.cards.includes(state.cardUndo.verb) ? `<div class="cards-undo" role="status">
@@ -18549,9 +18630,60 @@ function recordCardAttempt(question, result) {
     lastReviewed: new Date().toISOString()
   };
   saveCardStats();
+  if (question.type === "conjugation") scheduleFormReview(question, correct);
+}
+
+// ── Повторение по расписанию: пары «глагол — время» из квиза спряжений (FORM_REVIEW_INTERVALS, раздел 6) ──
+// Квиз спрашивает несколько лиц одного времени, поэтому за день пара продвигается не больше одного раза;
+// ошибка возвращает её в первую коробку в любой момент.
+const DUE_REVIEW_LIMIT = 20;
+
+function scheduleFormReview(question, correct) {
+  const key = `${question.verb}|${question.tense}`;
+  const today = dayKey();
+  const entry = state.formSchedule[key];
+  if (correct && entry?.reviewed === today) return;
+  const box = correct ? Math.min((entry?.box || 0) + 1, FORM_REVIEW_INTERVALS.length) : 1;
+  state.formSchedule[key] = { box, due: addDays(today, correct ? FORM_REVIEW_INTERVALS[box - 1] : 1), reviewed: today };
+  persist("formSchedule");
+}
+
+// Пары глаголов из избранного по сроку: сначала самые просроченные, при равном сроке — из младших коробок.
+function scheduledFormReviews() {
+  return Object.entries(state.formSchedule)
+    .map(([key, entry]) => {
+      const [verb, tense] = key.split("|");
+      return { verb, tense, ...entry };
+    })
+    .filter((item) => state.cards.includes(item.verb) && getAllTenseIds().includes(item.tense))
+    .sort((a, b) => a.due.localeCompare(b.due) || a.box - b.box);
+}
+
+function dueFormReviews() {
+  const today = dayKey();
+  return scheduledFormReviews().filter((item) => item.due <= today);
+}
+
+// Один вопрос на пару (случайное лицо), не больше DUE_REVIEW_LIMIT за подход.
+function dueReviewQuestions() {
+  const persons = PEOPLE.map((_, index) => index);
+  return shuffle(dueFormReviews().slice(0, DUE_REVIEW_LIMIT).flatMap((item) => generateConjugationQuestions([item.verb], [item.tense], persons, 1)));
+}
+
+function formScheduleNote(dueCount) {
+  if (dueCount > DUE_REVIEW_LIMIT) return `Ещё ${dueCount - DUE_REVIEW_LIMIT} — в следующем подходе.`;
+  if (dueCount > 0) return "";
+  const next = scheduledFormReviews()[0];
+  if (!next) return "";
+  const days = daysBetween(dayKey(), next.due);
+  return `На сегодня всё повторено. Следующее повторение ${days === 1 ? "завтра" : `через ${days} ${pluralizeDays(days)}`}.`;
 }
 
 function startQuizPreset(preset) {
+  if (preset === "due") {
+    beginCardQuiz(dueReviewQuestions());
+    return;
+  }
   if (preset === "quick") {
     state.quizConfig = { ...state.quizConfig, type: "infinitive", count: 5 };
     saveQuizConfig();

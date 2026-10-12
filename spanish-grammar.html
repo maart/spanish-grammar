@@ -4410,7 +4410,7 @@ select {
       <p id="viewAnnouncer" class="sr-only" role="status" aria-live="polite"></p>
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.72 · обновлено: 12.10.2026 20:00 CEST</span>
+        <span>Версия MVP 1.73 · обновлено: 12.10.2026 20:02 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -14613,6 +14613,7 @@ function buildVerbExceptionLabels(verb) {
 function conjugationTable(info, tenseIds = MAIN_VERB_TENSE_IDS) {
   const table = document.createElement("table");
   table.className = "conjugation-table";
+  table.setAttribute("aria-label", `Спряжение: ${info.displayInfinitive}`);
   const head = document.createElement("thead");
   head.innerHTML = `<tr><th>Время</th>${PEOPLE.map((person) => `<th>${person}</th>`).join("")}</tr>`;
   table.appendChild(head);
@@ -19252,7 +19253,6 @@ function prepareResponsiveTables(root) {
           const labels = headers.slice(column, column + span).filter(Boolean);
           const label = isSectionRow ? "" : [...new Set(labels)].join(" / ");
           cell.dataset.label = label;
-          if (label) cell.setAttribute("aria-label", label);
           column += span;
         });
       });

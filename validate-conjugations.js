@@ -1802,6 +1802,59 @@ for (const message of validateData()) {
   });
 }
 
+// ─── Textbook answers vs conjugation forms (tilde typos) ─────────────────────
+// Слово ответа, которое отличается от формы движка спряжений только тильдой
+// (estais вместо estáis, reid вместо reíd), почти всегда опечатка в ответе или
+// в движке. Омографы — не глагольные слова, совпадающие с формой без учёта тильды
+// (de/dé, este/esté), — перечислены ниже; новое слово сюда добавляй только после
+// проверки по RAE.
+const TILDE_HOMOGRAPHS = new Set([
+  "de", "este", "esta", "estas", "cómo", "hacia", "té", "mamás", "ejército",
+  "tomás", "césar", "lucio",
+  "rió", // написание книги; принимается наряду с rio (RAE 2010), см. note в 124.4
+]);
+const stripTilde = (word) => word.normalize("NFD").replace(/́/g, "").normalize("NFC");
+const knownForms = new Set(Object.values(api.DISPLAY_INFINITIVES));
+const formsByStripped = new Map();
+for (const verb of BASE_VERBS) {
+  for (const value of Object.values(formsFor(verb))) {
+    for (const form of [value].flat()) {
+      if (typeof form !== "string") continue;
+      for (const word of form.toLowerCase().split(/\s+/)) {
+        if (!word || word === "-") continue;
+        knownForms.add(word);
+        const key = stripTilde(word);
+        if (!formsByStripped.has(key)) formsByStripped.set(key, new Set());
+        formsByStripped.get(key).add(word);
+      }
+    }
+  }
+}
+let textbookAnswerWords = 0;
+for (const lesson of api.staticChecksData.TEXTBOOK_LESSONS) {
+  for (const exercise of lesson.exercises) {
+    exercise.items.forEach((item, index) => {
+      for (const answer of [item.answer].flat()) {
+        for (const word of String(answer).toLowerCase().split(/[\s,.;:¿?¡!()«»"]+/)) {
+          if (!word) continue;
+          textbookAnswerWords++;
+          if (knownForms.has(word) || TILDE_HOMOGRAPHS.has(word)) continue;
+          const forms = formsByStripped.get(stripTilde(word));
+          if (!forms) continue;
+          issues.push({
+            verb: `textbook ${exercise.id} #${index + 1}`,
+            tense: "answer_tilde",
+            person: "-",
+            expected: `форма движка: ${[...forms].join(" / ")} (или омограф в TILDE_HOMOGRAPHS)`,
+            actual: `${word} в ответе «${answer}»`,
+            severity: "high",
+          });
+        }
+      }
+    });
+  }
+}
+
 // ─── Static integrity checks ────────────────────────────────────────────────
 // Проверки исходника страницы: id и data-атрибуты в разметке, неиспользуемый код
 // и текст данных, который выводится в HTML без экранирования. Работают с текстом
@@ -1955,6 +2008,7 @@ console.log(`Translations complete: ${BASE_VERBS.length - issues.filter((issue) 
 console.log(`Search cases checked: ${SEARCH_CASES.length}`);
 console.log(`Quiz cases checked: ${QUIZ_CASES.length}`);
 console.log(`Tense examples checked: ${tenseExampleCount}`);
+console.log(`Textbook answer words checked for tildes: ${textbookAnswerWords}`);
 console.log(`Static ids checked: ${checkedIds}`);
 console.log(`Static data attributes checked: ${markupAttrs.size}`);
 console.log(`Static functions checked: ${topFunctions.length}`);

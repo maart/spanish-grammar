@@ -4416,7 +4416,7 @@ select {
       <p id="viewAnnouncer" class="sr-only" role="status" aria-live="polite"></p>
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.81 · обновлено: 12.10.2026 21:13 CEST</span>
+        <span>Версия MVP 1.82 · обновлено: 12.10.2026 21:52 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -4510,7 +4510,9 @@ const IRREGULARS = {
     presente: ["he", "has", "ha", "hemos", "habéis", "han"],
     indefinido: ["hube", "hubiste", "hubo", "hubimos", "hubisteis", "hubieron"],
     subjuntivo_presente: ["haya", "hayas", "haya", "hayamos", "hayáis", "hayan"],
-    subjuntivo_imperfecto: ["hubiera", "hubieras", "hubiera", "hubiéramos", "hubierais", "hubieran"]
+    subjuntivo_imperfecto: ["hubiera", "hubieras", "hubiera", "hubiéramos", "hubierais", "hubieran"],
+    // DLE: he (также habe); форма почти не употребляется.
+    imperativo_afirmativo: ["-", "he", "haya", "hayamos", "habed", "hayan"]
   },
   tener: {
     ru: "иметь",
@@ -4676,7 +4678,8 @@ const IRREGULARS = {
     participle: "sabido",
     indefinido: ["supe", "supiste", "supo", "supimos", "supisteis", "supieron"],
     subjuntivo_presente: ["sepa", "sepas", "sepa", "sepamos", "sepáis", "sepan"],
-    imperativo_afirmativo: ["-", "sé", "sepa", "sepamos", "sabed", "sepan"]
+    // DLE: imperativo tú de saber — sabe (sé — форма ser).
+    imperativo_afirmativo: ["-", "sabe", "sepa", "sepamos", "sabed", "sepan"]
   },
   salir: {
     ru: "выходить",
@@ -4848,6 +4851,13 @@ const IRREGULARS = {
     tags: ["неправильный", "акцентные формы"],
     presente: ["oigo", "oyes", "oye", "oímos", "oís", "oyen"],
     imperativo_afirmativo: ["-", "oye", "oiga", "oigamos", "oíd", "oigan"]
+  },
+  // DLE: rehúyo — ударная u в зиянии с e получает тильду, как в reúno.
+  rehuir: {
+    ru: "избегать, уклоняться",
+    tags: ["неправильный", "акцентные формы"],
+    presente: ["rehúyo", "rehúyes", "rehúye", "rehuimos", "rehuís", "rehúyen"],
+    subjuntivo_presente: ["rehúya", "rehúyas", "rehúya", "rehuyamos", "rehuyáis", "rehúyan"]
   },
   reunir: {
     ru: "собирать",
@@ -13428,6 +13438,8 @@ function regularIndefinido(verb) {
   if (orthographic) return orthographic;
   const type = verbType(verb);
   const endings = TENSES[2].endings[type];
+  // После ll и ñ безударная i окончания поглощается: engulló, engulleron, gruñó (DLE).
+  if (type !== "ar" && /(ll|ñ)$/.test(stem(verb))) return endings.map((ending) => stem(verb) + ending.replace(/^i(?=ó|eron$)/, ""));
   return endings.map((ending) => stem(verb) + ending);
 }
 
@@ -13439,7 +13451,9 @@ function regularIndefinidoPattern(verb) {
 function regularImperfecto(verb) {
   const type = verbType(verb);
   const endings = TENSES[3].endings[type];
-  return endings.map((ending) => stem(verb) + ending);
+  // ver и prever сохраняют e основы: veía, preveía (DLE).
+  const root = /^(pre)?ver$/.test(verb) ? verb.slice(0, -1) : stem(verb);
+  return endings.map((ending) => root + ending);
 }
 
 function regularFuture(verb) {
@@ -13522,7 +13536,11 @@ function generatedPresent(verb) {
     if (hasStemChange(verb, "e", "i")) root = stemChange(root, "e", "i");
     base[0] = root + "jo";
   }
-  else if (verb.endsWith("guir")) base[0] = stemChange(verb.slice(0, -4) + "g", "e", "i") + "o";
+  else if (verb.endsWith("guir")) {
+    // sigo, persigo — с чередованием e → i; distingo, extingo — без него.
+    const root = verb.slice(0, -4) + "g";
+    base[0] = (hasStemChange(verb, "e", "i") ? stemChange(root, "e", "i") : root) + "o";
+  }
   if (verb.endsWith("uir") && !verb.endsWith("guir")) {
     const root = stem(verb);
     base[0] = root + "yo";
@@ -13695,13 +13713,15 @@ function gerund(verb) {
   const s = stem(verb);
   const type = verbType(verb);
   // -ir verbs with e->ie or e->i change e->i in gerundio
-  if (type === "ir" && (hasStemChange(verb, "e", "ie") || hasStemChange(verb, "e", "i"))) {
+  if (type === "ir" && (hasIrStemShortening(verb) || hasStemChange(verb, "e", "i"))) {
     return stemChange(s, "e", "i") + "iendo";
   }
   // -ir verbs with o->ue change o->u in gerundio
   if (type === "ir" && hasStemChange(verb, "o", "ue")) {
     return stemChange(s, "o", "u") + "iendo";
   }
+  // После ll и ñ: engullendo, gruñendo.
+  if (type !== "ar" && /(ll|ñ)$/.test(s)) return s + "endo";
   // -uir verbs: y insertion (construir -> construyendo)
   if (verb.endsWith("uir") && !verb.endsWith("guir")) {
     return s + "yendo";
@@ -13807,9 +13827,8 @@ function irregularFutureStem(verb) {
 function thirdPersonStemChangeIndefinido(verb) {
   if (!verb.endsWith("ir")) return null;
   const base = regularIndefinido(verb);
-  // e->ie verbs that change to e->i in indefinido 3rd person
-  const eieToEI = ["preferir", "sentir", "mentir", "convertir", "divertir", "advertir", "sugerir"];
-  if (eieToEI.some((v) => verb.endsWith(v)) || hasStemChange(verb, "e", "i")) {
+  // У глаголов на -ir с e → ie в 3-м лице e → i (sintió, hirvieron), кроме discernir (hasIrStemShortening).
+  if (hasIrStemShortening(verb) || hasStemChange(verb, "e", "i")) {
     const changed = stemChange(stem(verb), "e", "i");
     base[2] = changed + "ió";
     base[5] = changed + "ieron";
@@ -13821,7 +13840,8 @@ function thirdPersonStemChangeIndefinido(verb) {
     base[5] = changed + "ieron";
     return base;
   }
-  if (verb.endsWith("uir")) {
+  // -uir: huyó, construyeron; в -guir u только смягчает g (distinguió).
+  if (verb.endsWith("uir") && !verb.endsWith("guir")) {
     const root = stem(verb);
     base[2] = root + "yó";
     base[5] = root + "yeron";
@@ -13843,6 +13863,10 @@ function orthographicIndefinido(verb) {
   if (verb.endsWith("zar")) {
     const root = verb.slice(0, -3) + "c";
     return [root + "é", stem(verb) + "aste", stem(verb) + "ó", stem(verb) + "amos", stem(verb) + "asteis", stem(verb) + "aron"];
+  }
+  // -guar: перед é нужна диéresis, чтобы u читалась: averigüé, apacigüé.
+  if (verb.endsWith("guar")) {
+    return [verb.slice(0, -4) + "güé", stem(verb) + "aste", stem(verb) + "ó", stem(verb) + "amos", stem(verb) + "asteis", stem(verb) + "aron"];
   }
   return null;
 }
@@ -13923,6 +13947,12 @@ function generatedSubjuntivoPresente(verb) {
       changedRoot + "en"
     ];
   }
+  // volcar: vuelque, vuelques, … volquemos.
+  if (verb.endsWith("car") && (hasStemChange(verb, "e", "ie") || hasStemChange(verb, "o", "ue"))) {
+    const baseRoot = verb.slice(0, -3);
+    const changedRoot = stemChange(baseRoot, hasStemChange(verb, "e", "ie") ? "e" : "o", hasStemChange(verb, "e", "ie") ? "ie" : "ue") + "qu";
+    return [changedRoot + "e", changedRoot + "es", changedRoot + "e", baseRoot + "quemos", baseRoot + "quéis", changedRoot + "en"];
+  }
   if (verb.endsWith("car")) return make(verb.slice(0, -3) + "qu", e);
   if (verb.endsWith("gar")) return make(verb.slice(0, -3) + "gu", e);
   if (verb.endsWith("zar")) {
@@ -13955,7 +13985,7 @@ function regularSubjuntivoWithStemChange(verb, from, to) {
       // nosotros/vosotros: no stem change for -ar/-er verbs
       // for -ir verbs with e->ie or o->ue, change to e->i or o->u
       if (from === "e" && to === "i") root = stemChange(root, "e", "i");
-      else if (from === "e" && to === "ie" && verb.endsWith("ir")) root = stemChange(root, "e", "i");
+      else if (from === "e" && to === "ie" && hasIrStemShortening(verb)) root = stemChange(root, "e", "i");
       else if (from === "o" && to === "ue" && verb.endsWith("ir")) root = stemChange(root, "o", "u");
       // for -ar/-er verbs, keep regular stem (no change)
     } else {
@@ -13966,11 +13996,14 @@ function regularSubjuntivoWithStemChange(verb, from, to) {
 }
 
 function generatedParticiple(verb) {
+  // ver и romper — только сами глаголы: mover, llover, corromper дают правильные movido, llovido, corrompido (DLE).
+  const exact = { ver: "visto", prever: "previsto", romper: "roto" };
+  if (exact[verb]) return exact[verb];
   const participles = [
-    ["satisfacer", "satisfecho"], ["absolver", "absuelto"],
-    ["abrir", "abierto"], ["cubrir", "cubierto"], ["escribir", "escrito"],
-    ["poner", "puesto"], ["volver", "vuelto"], ["resolver", "resuelto"],
-    ["romper", "roto"], ["ver", "visto"], ["hacer", "hecho"], ["decir", "dicho"],
+    ["satisfacer", "satisfecho"], ["solver", "suelto"],
+    ["abrir", "abierto"], ["cubrir", "cubierto"], ["scribir", "scrito"],
+    ["poner", "puesto"], ["volver", "vuelto"],
+    ["hacer", "hecho"], ["decir", "dicho"],
     ["morir", "muerto"], ["freir", "frito"], ["imprimir", "impreso"], ["pudrir", "podrido"],
     ["caer", "caído"], ["oir", "oído"], ["creer", "creído"], ["leer", "leído"],
     ["traer", "traído"], ["construir", "construido"], ["huir", "huido"]
@@ -13983,35 +14016,68 @@ function generatedParticiple(verb) {
   return null;
 }
 
+// Глаголы с чередованием в корне — полный список по DLE (dle.rae.es), сверено со спряжением всех глаголов списка.
+// Только целые глаголы, без окончаний: окончание pensar задело бы правильные compensar и dispensar, rogar — interrogar.
 const STEM_CHANGE_GROUPS = {
-  "e:ie": ["tener", "venir", "pensar", "cerrar", "empezar", "comenzar", "querer", "entender", "perder", "defender", "encender", "tender", "ascender", "preferir", "sentir", "mentir", "convertir", "divertir", "advertir", "sugerir", "atravesar", "calentar", "apretar", "acertar", "tropezar", "sentar", "despertar", "negar", "regar", "gobernar", "recomendar", "sembrar", "temblar", "enterrar", "manifestar", "cegar", "helar", "serrar", "quebrar", "nevar"],
-  "o:ue": ["torcer", "poder", "dormir", "morir", "volver", "devolver", "resolver", "recordar", "acordar", "contar", "costar", "mostrar", "demostrar", "probar", "almorzar", "soñar", "sonar", "mover", "morder", "doler", "encontrar", "acostar", "apostar", "colgar", "forzar", "esforzar", "rogar", "rodar", "soltar", "volar", "poblar"],
-  "e:i": ["decir", "pedir", "repetir", "servir", "vestir", "seguir", "conseguir", "perseguir", "elegir", "corregir", "competir", "impedir", "medir", "despedir", "reir", "sonreir", "freir", "rendir", "regir", "gemir", "concebir", "derretir"],
-  "u:ue": ["jugar"]
+  "e:ie": [
+    "arrepentir",
+    "abstener", "acertar", "acrecentar", "adherir", "advertir", "alentar", "apacentar", "apretar", "arrendar",
+    "ascender", "asentar", "asentir", "atender", "atravesar", "calentar", "cegar", "cerrar", "cimentar", "comenzar",
+    "concertar", "conferir", "confesar", "consentir", "contener", "contravenir", "convenir", "convertir", "defender",
+    "denegar", "desalentar", "descender", "desenterrar", "desmentir", "despertar", "desplegar", "desterrar",
+    "detener", "diferir", "discernir", "disentir", "distender", "divertir", "empezar", "encender", "encerrar",
+    "encomendar", "enmendar", "entender", "enterrar", "entretener", "extender", "fregar", "gobernar", "helar",
+    "herir", "hervir", "inferir", "ingerir", "interferir", "intervenir", "invertir", "manifestar", "mantener",
+    "mentir", "negar", "nevar", "obtener", "pensar", "perder", "plegar", "preferir", "prevenir", "provenir",
+    "quebrar", "querer", "recalentar", "recomendar", "recomenzar", "reconvertir", "referir", "regar", "remendar",
+    "repensar", "requerir", "retener", "reventar", "revertir", "sembrar", "sentar", "sentir", "serrar", "sostener",
+    "sugerir", "temblar", "tender", "tener", "tentar", "transferir", "trascender", "tropezar", "venir", "verter"
+  ],
+  "o:ue": [
+    "absolver", "acordar", "almorzar", "apostar", "aprobar", "avergonzar", "cocer", "colgar", "comprobar",
+    "concordar", "conmover", "contar", "costar", "demoler", "demostrar", "desaprobar", "descontar", "devolver",
+    "disolver", "doler", "dormir", "encontrar", "engrosar", "envolver", "esforzar", "forzar", "llover", "moler",
+    "morder", "morir", "mostrar", "mover", "poblar", "poder", "probar", "promover", "recordar", "reforzar",
+    "remover", "renovar", "repoblar", "reprobar", "resolver", "resonar", "retorcer", "revolver", "rodar", "rogar",
+    "sobrevolar", "soldar", "soltar", "sonar", "soñar", "torcer", "tronar", "volar", "volcar", "volver"
+  ],
+  "e:i": [
+    "bendecir", "competir", "concebir", "conseguir", "contradecir", "corregir", "decir", "derretir", "despedir",
+    "desvestir", "elegir", "embestir", "expedir", "freir", "gemir", "impedir", "maldecir", "medir", "pedir",
+    "perseguir", "predecir", "proseguir", "reelegir", "regir", "reir", "rendir", "repetir", "revestir", "seguir",
+    "servir", "sonreir", "vestir"
+  ],
+  "u:ue": [
+    "jugar"
+  ]
 };
-const STEM_CHANGE_EXCEPTIONS = ["agregar", "entregar", "presentar", "representar", "ausentar"];
-// RAE/DLE: modelos enviar y actuar, а также aislar, prohibir, enraizar, aunar, rehusar —
-// ударная i/u корня в формах yo, tú, él, ellos. Solo se incluyen verbos comprobados en esos modelos.
+// Ударная i/u корня в формах yo, tú, él, ellos (модели enviar, actuar, aislar, prohibir, reunir, rehusar) — по DLE.
 const STRESSED_IAR_VERBS = new Set([
-  "ampliar", "ansiar", "confiar", "criar", "desafiar", "desconfiar", "desviar",
-  "enfriar", "enviar", "fiar", "guiar", "reenviar", "vaciar", "variar",
-  "aislar", "enraizar", "prohibir"
+  "aislar", "ampliar", "ansiar", "chirriar", "confiar", "contrariar", "criar", "desafiar", "desconfiar", "desviar",
+  "enfriar", "enraizar", "enviar", "espiar", "fiar", "guiar", "paliar", "prohibir", "reenviar", "rociar", "vaciar",
+  "variar"
 ]);
 const STRESSED_UAR_VERBS = new Set([
-  "actuar", "acentuar", "continuar", "evaluar", "graduar", "situar",
-  "aunar", "rehusar"
+  "acentuar", "actuar", "atenuar", "aunar", "continuar", "desvirtuar", "efectuar", "evaluar", "fluctuar", "graduar",
+  "insinuar", "interactuar", "perpetuar", "rehusar", "reunir", "revaluar", "situar"
 ]);
 
 function hasStemChange(verb, from, to) {
-  const b = baseVerb(verb);
-  if (STEM_CHANGE_EXCEPTIONS.includes(b)) return false;
-  return STEM_CHANGE_GROUPS[`${from}:${to}`]?.some((ending) => b.endsWith(ending));
+  return Boolean(STEM_CHANGE_GROUPS[`${from}:${to}`]?.includes(baseVerb(verb)));
+}
+
+// Глаголы на -ir с e → ie обычно меняют e → i там, где ударение уходит с корня (sintió, sintamos, sintiendo).
+// discernir так не делает: discernió, discernamos, discerniendo (DLE).
+function hasIrStemShortening(verb) {
+  return verb.endsWith("ir") && hasStemChange(verb, "e", "ie") && baseVerb(verb) !== "discernir";
 }
 
 function stemChange(value, from, to) {
   const index = value.lastIndexOf(from);
   if (index < 0) return value;
-  return value.slice(0, index) + to + value.slice(index + from.length);
+  // После g дифтонг ue пишется с диéresis, иначе u не читается: avergüenzo, degüello.
+  const replacement = to === "ue" && value[index - 1] === "g" ? "üe" : to;
+  return value.slice(0, index) + replacement + value.slice(index + from.length);
 }
 
 // RAE, Ortografía 2010: сочетание безударной закрытой гласной с ударной (или двух закрытых) —
@@ -14128,10 +14194,48 @@ function subjunctiveSeVariant(form) {
   return form.split(" ").map((word) => word.replace(/ra(s|mos|is|n)?$/, "se$1")).join(" ");
 }
 
+// Двойное спряжение по DLE. Американские (descripto), книжные (plugo, habe) и прилагательные (bendito, electo)
+// формы не включены. REGULAR_ALTERNATIVE_VERBS допускают и правильное спряжение (erro, engroso, cimento, palio),
+// STRESSED_ALTERNATIVE_VERBS — и ударную u (adecúo, evacúo).
+const REGULAR_ALTERNATIVE_VERBS = new Set(["errar", "engrosar", "cimentar", "paliar"]);
+const STRESSED_ALTERNATIVE_VERBS = new Set(["adecuar", "evacuar"]);
+const STEM_ALTERNATIVES = { yacer: { from: "yazc", to: ["yazg", "yag"] }, roer: { from: "ro", to: ["roig", "roy"] } };
+const STRESSED_PERSONS = [0, 1, 2, 5];
+
+function dleVariantForms(verb, tense, person, form) {
+  if (tense === "imperativo_negativo") {
+    const words = form.split(" ");
+    return dleVariantForms(verb, "subjuntivo_presente", person, words.at(-1)).map((variant) => [...words.slice(0, -1), variant].join(" "));
+  }
+  const variants = [];
+  const regular = {
+    presente: () => regularPresentPattern(verb),
+    subjuntivo_presente: () => regularSubjuntivoPresentePattern(verb),
+    imperativo_afirmativo: () => regularImperativoAfirmativoPattern(verb)
+  }[tense];
+  if (REGULAR_ALTERNATIVE_VERBS.has(verb) && regular) variants.push(regular()[person]);
+  const personalTense = tense === "presente" || tense === "subjuntivo_presente" || (tense === "imperativo_afirmativo" && person === 1);
+  if (STRESSED_ALTERNATIVE_VERBS.has(verb) && personalTense && STRESSED_PERSONS.includes(person)) {
+    variants.push(accentLastLetter(stem(verb), "u") + form.slice(stem(verb).length));
+  }
+  const alternative = STEM_ALTERNATIVES[verb];
+  if (alternative && ((tense === "presente" && person === 0) || tense === "subjuntivo_presente")) {
+    alternative.to.forEach((root) => variants.push(root + form.slice(alternative.from.length)));
+  }
+  if (verb === "yacer" && tense === "imperativo_afirmativo" && person === 1) variants.push("yaz");
+  if (verb === "satisfacer" && tense === "imperativo_afirmativo" && person === 1) variants.push("satisfaz");
+  // pudrir/podrir: podr- там, где ударение не на корне (podrimos, podrí, podriré, podría).
+  if (verb === "pudrir" && form.startsWith("pudr") && !(["presente", "subjuntivo_presente"].includes(tense) && STRESSED_PERSONS.includes(person))) {
+    variants.push(form.replace(/^pudr/, "podr"));
+  }
+  return variants.filter((variant) => variant && variant !== form);
+}
+
 // Все допустимые ответы для формы глагола: сама форма и её варианты (без повторов).
 function acceptedConjugationForms(verb, tense, person, form) {
   const simpleVerb = baseVerb(verb);
   const answers = [form, ...(FORM_VARIANTS[simpleVerb]?.[tense]?.[person] || [])];
+  if (!isReflexive(verb)) answers.push(...dleVariantForms(simpleVerb, tense, person, form));
   if (COMPOUND_TENSE_IDS.includes(tense)) {
     const main = participle(simpleVerb);
     (PARTICIPLE_VARIANTS[simpleVerb] || []).forEach((variant) => answers.push(form.replace(new RegExp(`${main}$`), variant)));

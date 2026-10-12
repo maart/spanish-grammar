@@ -255,7 +255,7 @@ const REFERENCE = {
     futuro: ["valdré", "valdrás", "valdrá", "valdremos", "valdréis", "valdrán"],
     condicional: ["valdría", "valdrías", "valdría", "valdríamos", "valdríais", "valdrían"],
     subjuntivo_presente: ["valga", "valgas", "valga", "valgamos", "valgáis", "valgan"],
-    imperativo_afirmativo: ["-", "val", "valga", "valgamos", "valed", "valgan"],
+    imperativo_afirmativo: ["-", "vale", "valga", "valgamos", "valed", "valgan"],
     participle: "valido",
     gerund: "valiendo",
   },
@@ -1782,24 +1782,66 @@ for (const [verb, expectedStem] of Object.entries(irregularFutureVerbs)) {
 }
 
 // ─── Check compound verbs (prefix + base) ───────────────────────────────────
-const compoundChecks = [
-  { verb: "suponer", base: "poner", tense: "futuro" },
-  { verb: "proponer", base: "poner", tense: "futuro" },
-  { verb: "detener", base: "tener", tense: "futuro" },
-  { verb: "contener", base: "tener", tense: "futuro" },
-  { verb: "mantener", base: "tener", tense: "futuro" },
-  { verb: "obtener", base: "tener", tense: "futuro" },
-  { verb: "entretener", base: "tener", tense: "futuro" },
-  { verb: "deshacer", base: "hacer", tense: "futuro" },
-];
-for (const { verb, base, tense } of compoundChecks) {
-  if (!BASE_VERBS.includes(verb)) continue;
-  if (checkedVerbs.has(verb)) continue;
-  checkedVerbs.add(verb);
-  const refData = REFERENCE[verb];
-  if (!refData || !refData[tense]) continue;
-  const info = verbInfo(verb);
-  checkArray(verb, tense, refData[tense], info.forms[tense], "high");
+// Производный глагол спрягается как базовый с приставкой: proponer — propongo, propuse, propondré.
+// Ударение при этом не сдвигается, поэтому односложная форма базового глагола на гласную, -n или -s
+// с приставкой получает тильду (pon → propón, ve → prevé, vio → previó), а ударная i после приставки
+// на гласную стоит в зиянии (hice → rehíce). Отклонения от правила — по DLE — перечислены в DERIVED_EXCEPTIONS.
+const DERIVED_BASES = ["poner", "tener", "venir", "salir", "hacer", "decir", "traer", "caer", "ver"];
+const DERIVED_TENSES = ["presente", "indefinido", "futuro", "condicional", "subjuntivo_presente", "subjuntivo_imperfecto", "imperativo_afirmativo"];
+const regularDecirFuture = (prefix) => ["é", "ás", "á", "emos", "éis", "án"].map((ending) => `${prefix}deciré`.slice(0, -1) + ending);
+const regularDecirConditional = (prefix) => ["ía", "ías", "ía", "íamos", "íais", "ían"].map((ending) => `${prefix}decir${ending}`);
+// DLE: bendecir и maldecir — будущее и условное правильные, tú — bendice; predecir и contradecir — tú predice.
+const DERIVED_EXCEPTIONS = {
+  bendecir: { futuro: regularDecirFuture("ben"), condicional: regularDecirConditional("ben"), imperativo_afirmativo: { 1: "bendice" } },
+  maldecir: { futuro: regularDecirFuture("mal"), condicional: regularDecirConditional("mal"), imperativo_afirmativo: { 1: "maldice" } },
+  predecir: { imperativo_afirmativo: { 1: "predice" } },
+  contradecir: { imperativo_afirmativo: { 1: "contradice" } },
+};
+const DERIVED_ALSO_ACCEPTED = {
+  // DLE допускает и правильное будущее: predeciré, contradeciré.
+  predecir: { futuro: regularDecirFuture("pre"), condicional: regularDecirConditional("pre") },
+  contradecir: { futuro: regularDecirFuture("contra"), condicional: regularDecirConditional("contra") },
+};
+const derivedVowelGroups = (word) => word.match(/[aeiouáéíóúü]+/g) || [];
+function derivedForm(prefix, form) {
+  if (form === "-") return form;
+  const groups = derivedVowelGroups(form);
+  // Две открытые гласные подряд (tra-es, ca-e) — два слога, такая форма не односложная.
+  if (groups.length === 1 && !/[aeo]{2}/.test(groups[0]) && !/[áéíóú]/.test(form) && /[aeiouns]$/.test(form)) {
+    const nucleus = groups[0];
+    const strong = Math.max(nucleus.lastIndexOf("a"), nucleus.lastIndexOf("e"), nucleus.lastIndexOf("o"));
+    const offset = form.indexOf(nucleus) + (strong >= 0 ? strong : nucleus.length - 1);
+    return prefix + form.slice(0, offset) + accentChar(form[offset]) + form.slice(offset + 1);
+  }
+  if (/[aeiou]$/.test(prefix) && /^h[iu]/.test(form) && groups.length === 2 && /[aeiouns]$/.test(form)) {
+    return prefix + form[0] + accentChar(form[1]) + form.slice(2);
+  }
+  return prefix + form;
+}
+function accentChar(char) {
+  return ({ a: "á", e: "é", i: "í", o: "ó", u: "ú" })[char] || char;
+}
+let derivedChecked = 0;
+for (const base of DERIVED_BASES) {
+  const baseForms = formsFor(base);
+  for (const verb of BASE_VERBS.filter((item) => item.endsWith(base) && item !== base)) {
+    const prefix = verb.slice(0, -base.length);
+    // Не производные: prever уже проверяется ниже, а -ver в volver, mover и т. п. — часть корня.
+    if (base === "ver" && prefix !== "pre") continue;
+    derivedChecked++;
+    const forms = formsFor(verb);
+    for (const tense of DERIVED_TENSES) {
+      const override = DERIVED_EXCEPTIONS[verb]?.[tense];
+      const accepted = DERIVED_ALSO_ACCEPTED[verb]?.[tense];
+      baseForms[tense].forEach((form, index) => {
+        const expected = Array.isArray(override) ? override[index] : override?.[index] ?? derivedForm(prefix, form);
+        const actual = forms[tense][index];
+        if (actual !== expected && actual !== accepted?.[index]) {
+          issues.push({ verb, tense, person: PEOPLE[index] || index, expected, actual, severity: "high" });
+        }
+      });
+    }
+  }
 }
 
 // ─── Check gerund irregularities ────────────────────────────────────────────
@@ -1836,7 +1878,7 @@ const imperativoChecks = {
   ser: "sé", ir: "ve", tener: "ten", venir: "ven",
   poner: "pon", hacer: "haz", decir: "di", salir: "sal",
   ver: "ve", dar: "da", estar: "está", saber: "sé",
-  valer: "val",
+  valer: "vale",
 };
 for (const [verb, expectedTu] of Object.entries(imperativoChecks)) {
   if (!BASE_VERBS.includes(verb)) continue;
@@ -2075,6 +2117,7 @@ console.log(`Search cases checked: ${SEARCH_CASES.length}`);
 console.log(`Quiz cases checked: ${QUIZ_CASES.length}`);
 console.log(`Tense examples checked: ${tenseExampleCount}`);
 console.log(`Textbook answer words checked for tildes: ${textbookAnswerWords}`);
+console.log(`Derived verbs checked against their base: ${derivedChecked}`);
 console.log(`Static ids checked: ${checkedIds}`);
 console.log(`Static data attributes checked: ${markupAttrs.size}`);
 console.log(`Static functions checked: ${topFunctions.length}`);

@@ -4416,7 +4416,7 @@ select {
       <p id="viewAnnouncer" class="sr-only" role="status" aria-live="polite"></p>
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.79 · обновлено: 12.10.2026 21:08 CEST</span>
+        <span>Версия MVP 1.80 · обновлено: 12.10.2026 21:11 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -4659,7 +4659,8 @@ const IRREGULARS = {
     tags: ["yo irregular"],
     presente: ["valgo", "vales", "vale", "valemos", "valéis", "valen"],
     subjuntivo_presente: ["valga", "valgas", "valga", "valgamos", "valgáis", "valgan"],
-    imperativo_afirmativo: ["-", "val", "valga", "valgamos", "valed", "valgan"]
+    // DLE: imperativo tú — vale (форма val устарела).
+    imperativo_afirmativo: ["-", "vale", "valga", "valgamos", "valed", "valgan"]
   },
   querer: {
     ru: "хотеть, любить",
@@ -13584,7 +13585,17 @@ function regularImperativoAfirmativo(verb) {
   const present = regularPresent(verb);
   const subj = regularSubjuntivoPresente(verb);
   // vosotros строится от написания с тильдой: reír → reíd (ключ глагола — reir).
-  return ["-", present[2], subj[2], subj[3], displayInfinitive(baseVerb(verb)).slice(0, -1) + "d", subj[5]];
+  return ["-", compoundImperativoTu(baseVerb(verb)) || present[2], subj[2], subj[3], displayInfinitive(baseVerb(verb)).slice(0, -1) + "d", subj[5]];
+}
+
+// Производные от poner, tener, venir, salir и hacer берут краткую форму tú базового глагола (pon, ten, ven, sal, haz).
+// С приставкой форма становится многосложной: на -n она получает тильду (propón, mantén, convén), на -l и -z — нет
+// (sobresal, deshaz). RAE/DLE.
+const SHORT_TU_IMPERATIVE_BASES = { poner: "pón", tener: "tén", venir: "vén", salir: "sal", hacer: "haz" };
+
+function compoundImperativoTu(verb) {
+  const base = Object.keys(SHORT_TU_IMPERATIVE_BASES).find((item) => verb.endsWith(item) && verb !== item);
+  return base ? verb.slice(0, -base.length) + SHORT_TU_IMPERATIVE_BASES[base] : null;
 }
 
 function regularImperativoAfirmativoPattern(verb) {
@@ -13637,6 +13648,9 @@ function reflexiveImperativoNegativo(verb) {
 }
 
 function addWrittenAccentForEnclitic(form, pronoun) {
+  // Ударный последний слог с тильдой + одно местоимение дают слово с ударением на предпоследнем слоге,
+  // оканчивающееся на гласную, — тильда снимается: opón + te → oponte, está + te → estate.
+  if (/[áéíóú]n?$/.test(form)) return form.normalize("NFD").replace(/\u0301/g, "").normalize("NFC") + pronoun;
   if (/[áéíóú]/.test(form)) return form + pronoun;
   const vowelGroups = [...form.matchAll(/[aeiouü]+/gi)];
   if (vowelGroups.length <= 1) return form + pronoun;
@@ -13702,6 +13716,12 @@ function gerund(verb) {
 function irregularIndefinido(verb) {
   const irregular = IRREGULARS[verb]?.indefinido;
   if (irregular) return irregular;
+  // Производные от hacer (deshacer, rehacer) повторяют hice, hizo. После приставки на гласную ударная i
+  // стоит в зиянии и получает тильду: rehíce, rehízo (DLE).
+  if (verb.endsWith("hacer") && verb !== "hacer") {
+    const prefix = verb.slice(0, -5);
+    return IRREGULARS.hacer.indefinido.map((form, index) => prefix + (/[aeiou]$/.test(prefix) && (index === 0 || index === 2) ? form.replace("i", "í") : form));
+  }
   const stem = irregularIndefinidoStem(verb);
   if (stem) {
     const endings = stem.endsWith("j")

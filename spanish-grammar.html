@@ -58,6 +58,13 @@ body.dark {
   box-sizing: border-box;
 }
 
+/* Вкладки липкие (сверху) или закреплены снизу на телефоне; их высоту в переменные пишет
+   syncStickyTabsOffset(). Отступ нужен прокрутке к карточке и фокусу, чтобы их не закрывали вкладки. */
+html {
+  scroll-padding-top: calc(var(--sticky-top, 64px) + 8px);
+  scroll-padding-bottom: var(--sticky-bottom, 0px);
+}
+
 body {
   margin: 0;
   overflow-x: hidden;
@@ -330,10 +337,6 @@ input[type="search"] {
   width: 100%;
   padding: 16px;
   border-radius: 8px;
-}
-
-.info-card[id] {
-  scroll-margin-top: 72px;
 }
 
 .card-head {
@@ -779,11 +782,6 @@ input[type="search"] {
   border: 1px solid var(--line);
   border-radius: 10px;
   background: var(--surface);
-}
-
-.learning-module,
-.textbook-exercise {
-  scroll-margin-top: 72px;
 }
 
 .learning-module.is-current {
@@ -4410,7 +4408,7 @@ select {
       <p id="viewAnnouncer" class="sr-only" role="status" aria-live="polite"></p>
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.75 · обновлено: 12.10.2026 20:35 CEST</span>
+        <span>Версия MVP 1.76 · обновлено: 12.10.2026 20:38 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -19398,6 +19396,20 @@ function updateFloatingTopButton() {
 floatingTopButton.addEventListener("click", () => {
   scrollAppTop();
 });
+
+// Высота вкладок для scroll-padding: на широком экране они липнут сверху (и могут занять два ряда),
+// на телефоне закреплены внизу. Без отступа переход по адресу (#lesson-12, «Назад») прятал начало карточки под вкладками.
+const stickyTabs = document.querySelector(".tabs");
+function syncStickyTabsOffset() {
+  const style = getComputedStyle(stickyTabs);
+  const rootStyle = document.documentElement.style;
+  const height = stickyTabs.offsetHeight;
+  rootStyle.setProperty("--sticky-top", style.position === "sticky" ? `${(parseFloat(style.top) || 0) + height}px` : "0px");
+  rootStyle.setProperty("--sticky-bottom", style.position === "fixed" ? `${Math.max(0, window.innerHeight - stickyTabs.getBoundingClientRect().top)}px` : "0px");
+}
+syncStickyTabsOffset();
+window.addEventListener("resize", syncStickyTabsOffset);
+if ("ResizeObserver" in window) new ResizeObserver(syncStickyTabsOffset).observe(stickyTabs);
 
 window.addEventListener("scroll", updateFloatingTopButton, { passive: true });
 

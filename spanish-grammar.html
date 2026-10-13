@@ -4443,7 +4443,7 @@ select {
       </aside>
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.99 · обновлено: 13.10.2026 16:39 CEST</span>
+        <span>Версия MVP 2.00 · обновлено: 13.10.2026 16:44 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -9315,7 +9315,7 @@ const USEFUL_TABLES = [
     group: "Глаголы и управление",
     subgroup: "Возвратные глаголы",
     title: "Ir / irse и другие глаголы, меняющие значение с se",
-    description: "Частица se не всегда означает буквальную возвратность: у многих глаголов она меняет значение, вид действия или управление. Часто вместе с se появляется предлог: acordarse de, negarse a, parecerse a, encontrarse con.",
+    description: "Частица se не всегда означает буквальную возвратность: у многих глаголов она меняет значение, вид действия или управление. Часто вместе с se появляется предлог: acordarse de, negarse a, parecerse a, encontrarse con. Se, которое подчёркивает завершённость (comerse, beberse), — в отдельной шпаргалке.",
     summary: "Voy al trabajo — иду на работу; Me voy — ухожу. Duermo — сплю; Me duermo — засыпаю.",
     mistake: "Нельзя автоматически переводить форму с se как «себя»: irse, dormirse и acordarse de имеют самостоятельное значение.",
     table: `<table><thead><tr><th>Без se</th><th>С se</th><th>Контраст</th><th>Перевод</th></tr></thead><tbody>
@@ -9334,6 +9334,21 @@ const USEFUL_TABLES = [
       <tr><th>ocupar</th><td>ocuparse de</td><td>La mesa ocupa mucho sitio. / Yo me ocupo de la cena.</td><td>стол занимает много места / ужином займусь я</td></tr>
       <tr><th>quedar</th><td>quedarse</td><td>Hemos quedado a las ocho. Quedamos en vernos el lunes. / Me quedo en casa. Se quedó sorprendido.</td><td>договорились встретиться в восемь; договорились увидеться в понедельник / остаюсь дома; был поражён (quedarse + прилагательное — оказаться в состоянии)</td></tr>
       <tr><th>temer</th><td>temerse</td><td>Temo a los perros. / Me temo que no llegaremos a tiempo.</td><td>боюсь собак / боюсь (подозреваю), что не успеем</td></tr>
+      <tr><th>despedir</th><td>despedirse de</td><td>Despidieron a cien empleados. / Se despidió de todos y se fue.</td><td>уволили сто сотрудников / попрощался со всеми и ушёл</td></tr>
+      <tr><th>dejar</th><td>dejarse</td><td>¿Me dejas tu bici? / Me he dejado las llaves en casa.</td><td>одолжишь велосипед? / я забыл ключи дома</td></tr>
+      <tr><th>poner</th><td>ponerse</td><td>Pon la mesa. / Se puso rojo. Me pongo el abrigo.</td><td>накрой на стол / покраснел; надеваю пальто (ponerse a + inf. — начать)</td></tr>
+      <tr><th>volver</th><td>volverse</td><td>Vuelvo a las ocho. / Se volvió muy desconfiado. Me volví al oír mi nombre.</td><td>возвращаюсь в восемь / стал очень недоверчивым; обернулся, услышав своё имя</td></tr>
+      <tr><th>quitar</th><td>quitarse</td><td>Quita los platos de la mesa. / Quítate los zapatos.</td><td>убери тарелки со стола / сними обувь</td></tr>
+      <tr><th>marchar</th><td>marcharse</td><td>El negocio marcha bien. / Me marcho, ya es tarde.</td><td>дела идут хорошо / ухожу, уже поздно</td></tr>
+      <tr><th>caer</th><td>caerse</td><td>Cae la nieve. Ana me cae bien. / Me caí por la escalera.</td><td>идёт снег; Ана мне симпатична / упал с лестницы (нечаянно)</td></tr>
+      <tr><th>reír</th><td>reírse de</td><td>El bebé ríe. / No te rías de mí.</td><td>малыш смеётся / не смейся надо мной</td></tr>
+      <tr><th>probar</th><td>probarse</td><td>Prueba la sopa. / ¿Puedo probarme estos pantalones?</td><td>попробуй суп / можно примерить эти брюки?</td></tr>
+      <tr><th>sentar</th><td>sentarse</td><td>El café me sienta mal. / Siéntate aquí.</td><td>кофе мне не идёт на пользу / садись сюда</td></tr>
+      <tr><th>pasar</th><td>pasarse</td><td>¿Qué pasa? / Te has pasado con la sal. Me paso por tu casa luego.</td><td>что случилось? / ты пересолил (перебор); загляну к тебе позже</td></tr>
+      <tr><th>echar</th><td>echarse</td><td>Echa la carta al buzón. / Me echo un rato. Se echó a reír.</td><td>брось письмо в ящик / прилягу ненадолго; рассмеялся (echarse a + inf. — вдруг начать)</td></tr>
+      <tr><th>aprovechar</th><td>aprovecharse de</td><td>Aprovecho el tiempo libre. / Se aprovecha de su amigo.</td><td>использую свободное время / пользуется (злоупотребляет) другом</td></tr>
+      <tr><th>portar</th><td>portarse</td><td>Portaba una bandera. / Pórtate bien.</td><td>нёс флаг / веди себя хорошо</td></tr>
+      <tr><th>ocurrir</th><td>ocurrírsele (a alguien)</td><td>Ocurrió un accidente. / Se me ha ocurrido una idea.</td><td>произошла авария / мне пришла в голову идея</td></tr>
     </tbody></table>`
   },
 
@@ -19994,6 +20009,17 @@ const VERB_CHEATSHEET_LINKS = Object.freeze({
   acordarse: ["irIrse"],
   decidir: ["irIrse"],
   decidirse: ["irIrse"],
+  despedir: ["irIrse"],
+  dejar: ["irIrse"],
+  quitar: ["irIrse"],
+  marchar: ["irIrse"],
+  caer: ["irIrse"],
+  reir: ["irIrse"],
+  probar: ["irIrse"],
+  pasar: ["irIrse"],
+  aprovechar: ["irIrse"],
+  portar: ["irIrse"],
+  ocurrir: ["irIrse"],
   venir: ["motion"],
   llevar: ["llevar", "motion", "ageDuration", "irIrse"],
   traer: ["motion"],
@@ -20007,11 +20033,11 @@ const VERB_CHEATSHEET_LINKS = Object.freeze({
   conocer: ["saberConocer"],
   pedir: ["pedirPreguntar", "speechTransfer"],
   preguntar: ["pedirPreguntar", "speech", "speechTransfer"],
-  poner: ["become"],
-  volver: ["become"],
+  poner: ["become", "irIrse"],
+  volver: ["become", "irIrse"],
   convertir: ["become"],
   dar: ["darNoun"],
-  echar: ["echar"],
+  echar: ["echar", "irIrse"],
   hacer: ["hacer", "weather", "causative"],
   pensar: ["verbPrepositions"],
   "soñar": ["verbPrepositions"],
@@ -20030,7 +20056,7 @@ const VERB_CHEATSHEET_LINKS = Object.freeze({
   tocar: ["perception"],
   jugar: ["perception"],
   sentir: ["sentir"],
-  sentar: ["sentir"],
+  sentar: ["sentir", "irIrse"],
   sentarse: ["sentir"],
   decir: ["speech", "speechTransfer"],
   contar: ["speech"],

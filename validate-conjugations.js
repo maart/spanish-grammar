@@ -1339,7 +1339,7 @@ const QUIZ_CASES = [
   {
     label: "reflexive pair links a verb and its se form",
     actual: () => [reflexivePair("dormir")?.verb, reflexivePair("irse")?.verb, reflexivePair("reir")?.verb, String(reflexivePair("hablar")), BASE_VERBS.filter((verb) => reflexivePair(verb)?.withSe).length].join(","),
-    expected: "dormirse,ir,reirse,null,97",
+    expected: "dormirse,ir,reirse,null,99",
   },
   {
     label: "soler is defective: no futuro, condicional or imperativo in forms and in the quiz",

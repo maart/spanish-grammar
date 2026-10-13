@@ -4409,7 +4409,7 @@ select {
           </div>
           <p class="brand-kicker">Глаголы, времена, наклонения и шпаргалки в одном HTML-файле</p>
           <div class="brand-stats" aria-label="Кратко о справочнике">
-            <span id="verbCountStat">2104 глагола</span>
+            <span id="verbCountStat">2106 глаголов</span>
             <span>квиз</span>
             <span>офлайн</span>
           </div>
@@ -4443,7 +4443,7 @@ select {
       </aside>
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.97 · обновлено: 13.10.2026 16:32 CEST</span>
+        <span>Версия MVP 1.98 · обновлено: 13.10.2026 16:38 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -4941,6 +4941,8 @@ const TRANSLATIONS = {
   teñirse: "краситься (о волосах)", verse: "видеться; выглядеть", atarse: "завязывать (себе)",
   estarse: "оставаться (estarse quieto)", marcharse: "уходить, уезжать", comerse: "съедать",
   relacionarse: "общаться, поддерживать связи",
+  creerse: "считать себя (кем-то); принимать на веру",
+  temerse: "опасаться, подозревать (что-то плохое)",
   llamarse: "зваться", volverse: "становиться; оборачиваться", convertirse: "превращаться",
   darse: "(darse cuenta) осознавать; ударяться", encontrarse: "встречаться; находиться; чувствовать себя",
   maquillarse: "делать макияж", divorciarse: "разводиться", enamorarse: "влюбляться", alegrarse: "радоваться",
@@ -6189,7 +6191,7 @@ desnaturalizar aromatizar confraternizar pastorear enturbiar zozobrar agasajar e
 abrochar disecar desligar opacar recalentar alborotar apacentar desenganchar desenroscar recolocar
 apetecer anochecer esquiar ponerse divertirse caerse enfadarse lavarse afeitarse sentirse vestirse despertarse aburrirse bañarse acordarse despedirse quitarse callarse reirse
 dejarse conocerse subirse mirarse romperse morirse portarse pintarse mancharse defenderse cansarse acercarse refugiarse trasladarse independizarse producirse escaparse hacerse prepararse ocuparse reunirse desmayarse apagarse teñirse verse atarse estarse marcharse comerse relacionarse
-llamarse volverse convertirse darse encontrarse maquillarse divorciarse enamorarse alegrarse equivocarse dormirse perderse mudarse detenerse pararse fijarse negarse dedicarse interesarse llevarse probarse relajarse apuntarse matricularse graduarse jubilarse broncearse tumbarse asustarse sorprenderse arrepentirse comprometerse encargarse referirse tratarse parecerse esconderse alojarse empadronarse trasnochar merendar hornear enchufar desenchufar tuitear escanear pitar relampaguear atardecer surfear estornudar toser vomitar recetar roncar soler
+llamarse volverse convertirse darse encontrarse maquillarse divorciarse enamorarse alegrarse equivocarse dormirse perderse mudarse detenerse pararse fijarse negarse dedicarse interesarse llevarse probarse relajarse apuntarse matricularse graduarse jubilarse broncearse tumbarse asustarse sorprenderse arrepentirse comprometerse encargarse referirse tratarse parecerse esconderse alojarse empadronarse trasnochar merendar hornear enchufar desenchufar tuitear escanear pitar relampaguear atardecer surfear estornudar toser vomitar recetar roncar soler creerse temerse
 `.trim().split(/\s+/);
 
 const BASE_VERBS = Array.from(new Set(["irse", ...RAW_VERBS]));
@@ -19993,7 +19995,8 @@ const VERB_CHEATSHEET_LINKS = Object.freeze({
   decidir: ["irIrse"],
   decidirse: ["irIrse"],
   venir: ["motion"],
-  llevar: ["llevar", "motion", "ageDuration"],
+  // «Llevar: 5 конструкций» уже включает llevar + время, поэтому третье место — паре llevar / llevarse.
+  llevar: ["llevar", "motion", "irIrse", "ageDuration"],
   traer: ["motion"],
   gustar: ["gustar", "gustarFamily"],
   encantar: ["gustarFamily", "gustar"],
@@ -20044,7 +20047,9 @@ const VERB_CHEATSHEET_LINKS = Object.freeze({
   necesitar: ["infinitiveSubjunctive"],
   esperar: ["infinitiveSubjunctive"],
   preferir: ["infinitiveSubjunctive"],
-  creer: ["creer", "probability"],
+  creer: ["creer", "probability", "irIrse"],
+  creerse: ["irIrse"],
+  temerse: ["irIrse"],
   acostumbrar: ["habit"],
   tender: ["habit"],
   llover: ["weather"],

@@ -2305,6 +2305,9 @@ embestir pres0=embisto pres1=embistes pres2=embiste pres5=embisten indef2=embist
 recalentar pres0=recaliento pres1=recalientas pres2=recalienta pres5=recalientan sp0=recaliente sp1=recalientes sp2=recaliente sp5=recalienten imp1=recalienta
 apacentar pres0=apaciento pres1=apacientas pres2=apacienta pres5=apacientan sp0=apaciente sp1=apacientes sp2=apaciente sp5=apacienten imp1=apacienta
 acostar pres0=acuesto pres1=acuestas pres2=acuesta pres5=acuestan sp0=acueste sp1=acuestes sp2=acueste sp5=acuesten imp1=acuesta
+apetecer pres0=apetezco sp0=apetezca sp1=apetezcas sp2=apetezca sp3=apetezcamos sp4=apetezcáis sp5=apetezcan
+anochecer pres0=anochezco sp0=anochezca sp1=anochezcas sp2=anochezca sp3=anochezcamos sp4=anochezcáis sp5=anochezcan
+esquiar pres0=esquío pres1=esquías pres2=esquía pres5=esquían sp0=esquíe sp1=esquíes sp2=esquíe sp5=esquíen imp1=esquía
 `;
 const DLE_UNVERIFIED = ["reasignar","reprogramar","redirigir","reinventar","reestablecer","reconectar","reabastecer","argollar","recolocar"];
 // END DLE_REFERENCE

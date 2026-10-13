@@ -4437,7 +4437,7 @@ select {
       </aside>
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.86 · обновлено: 13.10.2026 04:05 CEST</span>
+        <span>Версия MVP 1.87 · обновлено: 13.10.2026 04:06 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -14703,13 +14703,22 @@ function verbKeyForWord(word) {
 }
 
 // Глаголы, инфинитивы которых встречаются в текстах задания; у возвратного добавляется и простой глагол.
+// Возвратный инфинитив, которого нет в списке (ponerse, reírse), узнаётся по основе: основа из списка
+// даёт и основу, и возвратный глагол, так что разбор работает для любого глагола + se.
 function verbsMentionedIn(texts) {
   const verbs = new Set();
   texts.join(" ").toLocaleLowerCase("es-ES").split(/[^\p{L}]+/u).forEach((word) => {
     const verb = word && verbKeyForWord(word);
-    if (!verb) return;
-    verbs.add(verb);
-    if (isReflexive(verb) && BASE_VERBS.includes(baseVerb(verb))) verbs.add(baseVerb(verb));
+    if (verb) {
+      verbs.add(verb);
+      if (isReflexive(verb) && BASE_VERBS.includes(baseVerb(verb))) verbs.add(baseVerb(verb));
+      return;
+    }
+    const base = word.endsWith("se") ? verbKeyForWord(word.slice(0, -2)) : undefined;
+    if (base) {
+      verbs.add(base);
+      verbs.add(`${base}se`);
+    }
   });
   return verbs;
 }

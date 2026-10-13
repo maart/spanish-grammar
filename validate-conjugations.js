@@ -1317,6 +1317,11 @@ const QUIZ_CASES = [
     expected: "null",
   },
   {
+    label: "diagnosis: reflexive verb named in the task but missing from the list",
+    actual: () => describeDiagnosis(diagnoseVerbMistake("te pones", "me pongo", ["(ponerse)"], 51)),
+    expected: "person: te pones = tú | yo",
+  },
+  {
     label: "schedule: correct twice in one day promotes once, mistake resets to box 1 for tomorrow",
     actual: () => {
       const saved = { schedule: state.formSchedule, cards: state.cards };

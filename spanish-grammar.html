@@ -4403,7 +4403,7 @@ select {
           </div>
           <p class="brand-kicker">Глаголы, времена, наклонения и шпаргалки в одном HTML-файле</p>
           <div class="brand-stats" aria-label="Кратко о справочнике">
-            <span id="verbCountStat">2018 глаголов</span>
+            <span id="verbCountStat">2048 глаголов</span>
             <span>квиз</span>
             <span>офлайн</span>
           </div>
@@ -4437,7 +4437,7 @@ select {
       </aside>
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.90 · обновлено: 13.10.2026 04:15 CEST</span>
+        <span>Версия MVP 1.91 · обновлено: 13.10.2026 04:22 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -4924,7 +4924,17 @@ const TRANSLATIONS = {
   enfadarse: "сердиться, злиться", lavarse: "умываться, мыться", afeitarse: "бриться",
   sentirse: "чувствовать себя", vestirse: "одеваться", despertarse: "просыпаться", aburrirse: "скучать",
   bañarse: "купаться, принимать ванну", acordarse: "вспоминать, помнить", despedirse: "прощаться",
-  quitarse: "снимать (с себя)", callarse: "замолчать", reirse: "смеяться"
+  quitarse: "снимать (с себя)", callarse: "замолчать", reirse: "смеяться",
+  dejarse: "позволять себе; забывать (где-то)", conocerse: "знакомиться", subirse: "забираться, садиться (в транспорт)",
+  mirarse: "смотреть на себя, смотреться", romperse: "ломаться, разбиваться", morirse: "умирать",
+  portarse: "вести себя", pintarse: "краситься", mancharse: "пачкаться", defenderse: "защищаться",
+  cansarse: "уставать", acercarse: "приближаться, подходить", refugiarse: "укрываться, прятаться",
+  trasladarse: "переезжать, перемещаться", independizarse: "становиться независимым", producirse: "происходить",
+  escaparse: "убегать, сбегать", hacerse: "становиться", prepararse: "готовиться", ocuparse: "заниматься (чем-то)",
+  reunirse: "собираться, встречаться", desmayarse: "падать в обморок", apagarse: "гаснуть, выключаться",
+  teñirse: "краситься (о волосах)", verse: "видеться; выглядеть", atarse: "завязывать (себе)",
+  estarse: "оставаться (estarse quieto)", marcharse: "уходить, уезжать", comerse: "съедать",
+  relacionarse: "общаться, поддерживать связи"
 };
 
 Object.assign(TRANSLATIONS, {
@@ -6154,6 +6164,7 @@ arrollar trenzar desvestir aguar cohabitar desfigurar hurtar reeditar adscribir 
 desnaturalizar aromatizar confraternizar pastorear enturbiar zozobrar agasajar embestir mordisquear revolotear
 abrochar disecar desligar opacar recalentar alborotar apacentar desenganchar desenroscar recolocar
 apetecer anochecer esquiar ponerse divertirse caerse enfadarse lavarse afeitarse sentirse vestirse despertarse aburrirse bañarse acordarse despedirse quitarse callarse reirse
+dejarse conocerse subirse mirarse romperse morirse portarse pintarse mancharse defenderse cansarse acercarse refugiarse trasladarse independizarse producirse escaparse hacerse prepararse ocuparse reunirse desmayarse apagarse teñirse verse atarse estarse marcharse comerse relacionarse
 `.trim().split(/\s+/);
 
 const BASE_VERBS = Array.from(new Set(["irse", ...RAW_VERBS]));
@@ -13828,7 +13839,9 @@ function gerund(verb) {
   const type = verbType(verb);
   // -ir verbs with e->ie or e->i change e->i in gerundio
   if (type === "ir" && (hasIrStemShortening(verb) || hasStemChange(verb, "e", "i"))) {
-    return stemChange(s, "e", "i") + "iendo";
+    // После ll и ñ i поглощается: tiñendo, riñendo (не tiñiendo).
+    const changed = stemChange(s, "e", "i");
+    return changed + (/(ll|ñ)$/.test(changed) ? "endo" : "iendo");
   }
   // -ir verbs with o->ue change o->u in gerundio
   if (type === "ir" && hasStemChange(verb, "o", "ue")) {
@@ -13944,8 +13957,10 @@ function thirdPersonStemChangeIndefinido(verb) {
   // У глаголов на -ir с e → ie в 3-м лице e → i (sintió, hirvieron), кроме discernir (hasIrStemShortening).
   if (hasIrStemShortening(verb) || hasStemChange(verb, "e", "i")) {
     const changed = stemChange(stem(verb), "e", "i");
-    base[2] = changed + "ió";
-    base[5] = changed + "ieron";
+    // После ll и ñ i окончания поглощается: tiñó, tiñeron, engulló (как в regularIndefinido).
+    const absorbed = /(ll|ñ)$/.test(changed);
+    base[2] = changed + (absorbed ? "ó" : "ió");
+    base[5] = changed + (absorbed ? "eron" : "ieron");
     return base;
   }
   if (hasStemChange(verb, "o", "u")) {
@@ -14159,7 +14174,7 @@ const STEM_CHANGE_GROUPS = {
     "bendecir", "competir", "concebir", "conseguir", "contradecir", "corregir", "decir", "derretir", "despedir",
     "desvestir", "elegir", "embestir", "expedir", "freir", "gemir", "impedir", "maldecir", "medir", "pedir",
     "perseguir", "predecir", "proseguir", "reelegir", "regir", "reir", "rendir", "repetir", "revestir", "seguir",
-    "servir", "sonreir", "vestir"
+    "servir", "sonreir", "teñir", "vestir"
   ],
   "u:ue": [
     "jugar"

@@ -1230,7 +1230,7 @@ const SEARCH_CASES = [
   { query: "tener", first: "tener", count: 1 },
   { query: "tengo", first: "tener", count: 1 },
   { query: "делать", first: "hacer", count: 1 },
-  { query: "hecho", first: "hacer", count: 1 },
+  { query: "hecho", first: "hacer", count: 2 }, // + hacerse: se ha hecho
   { query: "покупать", first: "comprar", count: 1 },
   { query: "reír", first: "reir", count: 1 },
   { query: "irse", first: "irse", count: 1 },
@@ -2314,6 +2314,7 @@ acostar pres0=acuesto pres1=acuestas pres2=acuesta pres5=acuestan sp0=acueste sp
 apetecer pres0=apetezco sp0=apetezca sp1=apetezcas sp2=apetezca sp3=apetezcamos sp4=apetezcáis sp5=apetezcan
 anochecer pres0=anochezco sp0=anochezca sp1=anochezcas sp2=anochezca sp3=anochezcamos sp4=anochezcáis sp5=anochezcan
 esquiar pres0=esquío pres1=esquías pres2=esquía pres5=esquían sp0=esquíe sp1=esquíes sp2=esquíe sp5=esquíen imp1=esquía
+teñir pres0=tiño pres1=tiñes pres2=tiñe pres5=tiñen indef2=tiñó indef5=tiñeron sp0=tiña sp1=tiñas sp2=tiña sp3=tiñamos sp4=tiñáis sp5=tiñan si0=tiñera si1=tiñeras si2=tiñera si3=tiñéramos si4=tiñerais si5=tiñeran imp1=tiñe ger=tiñendo
 `;
 const DLE_UNVERIFIED = ["reasignar","reprogramar","redirigir","reinventar","reconectar","reabastecer","argollar","recolocar"];
 // END DLE_REFERENCE

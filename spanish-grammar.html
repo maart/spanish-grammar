@@ -4403,7 +4403,7 @@ select {
           </div>
           <p class="brand-kicker">Глаголы, времена, наклонения и шпаргалки в одном HTML-файле</p>
           <div class="brand-stats" aria-label="Кратко о справочнике">
-            <span id="verbCountStat">2048 глаголов</span>
+            <span id="verbCountStat">2103 глагола</span>
             <span>квиз</span>
             <span>офлайн</span>
           </div>
@@ -4437,7 +4437,7 @@ select {
       </aside>
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.91 · обновлено: 13.10.2026 04:22 CEST</span>
+        <span>Версия MVP 1.92 · обновлено: 13.10.2026 04:23 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -4934,7 +4934,24 @@ const TRANSLATIONS = {
   reunirse: "собираться, встречаться", desmayarse: "падать в обморок", apagarse: "гаснуть, выключаться",
   teñirse: "краситься (о волосах)", verse: "видеться; выглядеть", atarse: "завязывать (себе)",
   estarse: "оставаться (estarse quieto)", marcharse: "уходить, уезжать", comerse: "съедать",
-  relacionarse: "общаться, поддерживать связи"
+  relacionarse: "общаться, поддерживать связи",
+  llamarse: "зваться", volverse: "становиться; оборачиваться", convertirse: "превращаться",
+  darse: "(darse cuenta) осознавать; ударяться", encontrarse: "встречаться; находиться; чувствовать себя",
+  maquillarse: "делать макияж", divorciarse: "разводиться", enamorarse: "влюбляться", alegrarse: "радоваться",
+  equivocarse: "ошибаться", dormirse: "засыпать", perderse: "теряться, заблудиться", mudarse: "переезжать",
+  detenerse: "останавливаться", pararse: "останавливаться", fijarse: "обращать внимание", negarse: "отказываться",
+  dedicarse: "заниматься (профессионально)", interesarse: "интересоваться", llevarse: "уносить; ладить (llevarse bien)",
+  probarse: "примерять", relajarse: "расслабляться", apuntarse: "записываться", matricularse: "записываться на курс, поступать",
+  graduarse: "оканчивать учёбу", jubilarse: "выходить на пенсию", broncearse: "загорать", tumbarse: "ложиться, растягиваться",
+  asustarse: "пугаться", sorprenderse: "удивляться", arrepentirse: "раскаиваться, сожалеть",
+  comprometerse: "обязываться; обручаться", encargarse: "брать на себя, заниматься", referirse: "иметь в виду, относиться",
+  tratarse: "(tratarse de) речь идёт о", parecerse: "быть похожим", esconderse: "прятаться",
+  alojarse: "останавливаться (в гостинице)", empadronarse: "регистрироваться по месту жительства",
+  trasnochar: "поздно ложиться, не спать ночь", merendar: "полдничать", hornear: "печь (в духовке)",
+  enchufar: "включать в розетку", desenchufar: "выключать из розетки", tuitear: "писать в Твиттер",
+  escanear: "сканировать", pitar: "свистеть; сигналить", relampaguear: "сверкать (о молнии)",
+  atardecer: "вечереть", surfear: "заниматься сёрфингом", estornudar: "чихать", toser: "кашлять",
+  vomitar: "тошнить, рвать", recetar: "выписывать (лекарство)", roncar: "храпеть"
 };
 
 Object.assign(TRANSLATIONS, {
@@ -6165,6 +6182,7 @@ desnaturalizar aromatizar confraternizar pastorear enturbiar zozobrar agasajar e
 abrochar disecar desligar opacar recalentar alborotar apacentar desenganchar desenroscar recolocar
 apetecer anochecer esquiar ponerse divertirse caerse enfadarse lavarse afeitarse sentirse vestirse despertarse aburrirse bañarse acordarse despedirse quitarse callarse reirse
 dejarse conocerse subirse mirarse romperse morirse portarse pintarse mancharse defenderse cansarse acercarse refugiarse trasladarse independizarse producirse escaparse hacerse prepararse ocuparse reunirse desmayarse apagarse teñirse verse atarse estarse marcharse comerse relacionarse
+llamarse volverse convertirse darse encontrarse maquillarse divorciarse enamorarse alegrarse equivocarse dormirse perderse mudarse detenerse pararse fijarse negarse dedicarse interesarse llevarse probarse relajarse apuntarse matricularse graduarse jubilarse broncearse tumbarse asustarse sorprenderse arrepentirse comprometerse encargarse referirse tratarse parecerse esconderse alojarse empadronarse trasnochar merendar hornear enchufar desenchufar tuitear escanear pitar relampaguear atardecer surfear estornudar toser vomitar recetar roncar
 `.trim().split(/\s+/);
 
 const BASE_VERBS = Array.from(new Set(["irse", ...RAW_VERBS]));
@@ -14157,7 +14175,7 @@ const STEM_CHANGE_GROUPS = {
     "detener", "diferir", "discernir", "disentir", "distender", "divertir", "empezar", "encender", "encerrar",
     "encomendar", "enmendar", "entender", "enterrar", "entretener", "extender", "fregar", "gobernar", "helar",
     "herir", "hervir", "inferir", "ingerir", "interferir", "intervenir", "invertir", "manifestar", "mantener",
-    "mentir", "negar", "nevar", "obtener", "pensar", "perder", "plegar", "preferir", "prevenir", "provenir",
+    "mentir", "merendar", "negar", "nevar", "obtener", "pensar", "perder", "plegar", "preferir", "prevenir", "provenir",
     "quebrar", "querer", "recalentar", "recomendar", "recomenzar", "reconvertir", "referir", "regar", "remendar",
     "repensar", "requerir", "retener", "reventar", "revertir", "sembrar", "sentar", "sentir", "serrar", "sostener",
     "sugerir", "temblar", "tender", "tener", "tentar", "transferir", "trascender", "tropezar", "venir", "verter"

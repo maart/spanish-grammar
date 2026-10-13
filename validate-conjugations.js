@@ -2315,6 +2315,8 @@ apetecer pres0=apetezco sp0=apetezca sp1=apetezcas sp2=apetezca sp3=apetezcamos 
 anochecer pres0=anochezco sp0=anochezca sp1=anochezcas sp2=anochezca sp3=anochezcamos sp4=anochezcáis sp5=anochezcan
 esquiar pres0=esquío pres1=esquías pres2=esquía pres5=esquían sp0=esquíe sp1=esquíes sp2=esquíe sp5=esquíen imp1=esquía
 teñir pres0=tiño pres1=tiñes pres2=tiñe pres5=tiñen indef2=tiñó indef5=tiñeron sp0=tiña sp1=tiñas sp2=tiña sp3=tiñamos sp4=tiñáis sp5=tiñan si0=tiñera si1=tiñeras si2=tiñera si3=tiñéramos si4=tiñerais si5=tiñeran imp1=tiñe ger=tiñendo
+merendar pres0=meriendo pres1=meriendas pres2=merienda pres5=meriendan sp0=meriende sp1=meriendes sp2=meriende sp5=merienden imp1=merienda
+atardecer pres0=atardezco sp0=atardezca sp1=atardezcas sp2=atardezca sp3=atardezcamos sp4=atardezcáis sp5=atardezcan
 `;
 const DLE_UNVERIFIED = ["reasignar","reprogramar","redirigir","reinventar","reconectar","reabastecer","argollar","recolocar"];
 // END DLE_REFERENCE

@@ -2342,6 +2342,12 @@ td.irregular {
   font-weight: 900;
 }
 
+.verb-pair {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
 .verb-cheatsheets {
   display: grid;
   gap: 8px;
@@ -4437,7 +4443,7 @@ select {
       </aside>
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.94 · обновлено: 13.10.2026 04:32 CEST</span>
+        <span>Версия MVP 1.95 · обновлено: 13.10.2026 04:35 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -14961,6 +14967,7 @@ function renderVerbCard(verb) {
     item.innerHTML = `<dt>${label}</dt><dd lang="es">${value}</dd>`;
     line.appendChild(item);
   });
+  line.insertAdjacentHTML("afterend", reflexivePairMarkup(verb));
 
   // Спряжение — главное в карточке, поэтому связанные шпаргалки и уроки идут после таблицы.
   const verbLessons = lessonLinksMarkup(VERB_LESSONS[baseVerb(verb)]);
@@ -15021,6 +15028,22 @@ function verbCheatsheetItems(verb) {
     items.push(item);
   });
   return items.slice(0, 3);
+}
+
+let baseVerbSet = null;
+
+// Пара «глагол — глагол + se» из списка: для возвратного — его основа (withSe: false), для невозвратного — его se-форма
+// (withSe: true). Если пары в списке нет, — null.
+function reflexivePair(verb) {
+  if (!baseVerbSet) baseVerbSet = new Set(BASE_VERBS);
+  if (isReflexive(verb)) return baseVerbSet.has(baseVerb(verb)) ? { verb: baseVerb(verb), withSe: false } : null;
+  return baseVerbSet.has(`${verb}se`) ? { verb: `${verb}se`, withSe: true } : null;
+}
+
+function reflexivePairMarkup(verb) {
+  const pair = reflexivePair(verb);
+  if (!pair) return "";
+  return html`<p class="verb-pair">${pair.withSe ? "С se: " : "Без se: "}${rawHtml(verbLink(pair.verb))} — ${translationFor(pair.verb)}. <a href="#table-vozvratnye-glagoly-obychnyi-vs-vozvratnyi">Чем отличаются</a></p>`;
 }
 
 function verbCheatsheetsMarkup(verb) {

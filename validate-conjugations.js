@@ -115,6 +115,7 @@ const REFERENCE = {
     participle: "ido",
     gerund: "yéndose",
   },
+  caerse: { imperativo_afirmativo: ["-", "cáete", "cáigase", "caigámonos", "caeos", "cáiganse"] },
   ducharse: {
     presente: ["me ducho", "te duchas", "se ducha", "nos duchamos", "os ducháis", "se duchan"],
     perfecto: ["me he duchado", "te has duchado", "se ha duchado", "nos hemos duchado", "os habéis duchado", "se han duchado"],
@@ -1320,6 +1321,11 @@ const QUIZ_CASES = [
     label: "diagnosis: reflexive verb named in the task but missing from the list",
     actual: () => describeDiagnosis(diagnoseVerbMistake("te pones", "me pongo", ["(ponerse)"], 51)),
     expected: "person: te pones = tú | yo",
+  },
+  {
+    label: "enclitic tilde after a hiatus: cáete, léase, créanse, provéete",
+    actual: () => ["traerse", "leerse", "creerse", "verse", "proveerse"].map((verb) => formsFor(verb).imperativo_afirmativo.slice(1).join(" ")).join(" | "),
+    expected: "tráete tráigase traigámonos traeos tráiganse | léete léase leámonos leeos léanse | créete créase creámonos creeos créanse | vete véase veámonos veos véanse | provéete provéase proveámonos proveeos provéanse",
   },
   {
     label: "schedule: correct twice in one day promotes once, mistake resets to box 1 for tomorrow",

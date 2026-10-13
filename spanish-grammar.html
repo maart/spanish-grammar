@@ -4437,7 +4437,7 @@ select {
       </aside>
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.89 · обновлено: 13.10.2026 04:09 CEST</span>
+        <span>Версия MVP 1.90 · обновлено: 13.10.2026 04:15 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -13777,12 +13777,14 @@ function reflexiveImperativoNegativo(verb) {
   ];
 }
 
+// Тильда при присоединении местоимения. Слоги — это группы гласных: зияние (ca-e, le-a, cre-e) даёт два слога,
+// а дифтонги (ai, ie, ua, ui) остаются одним слогом.
 function addWrittenAccentForEnclitic(form, pronoun) {
   // Ударный последний слог с тильдой + одно местоимение дают слово с ударением на предпоследнем слоге,
   // оканчивающееся на гласную, — тильда снимается: opón + te → oponte, está + te → estate.
   if (/[áéíóú]n?$/.test(form)) return form.normalize("NFD").replace(/\u0301/g, "").normalize("NFC") + pronoun;
   if (/[áéíóú]/.test(form)) return form + pronoun;
-  const vowelGroups = [...form.matchAll(/[aeiouü]+/gi)];
+  const vowelGroups = [...form.matchAll(/[iuü]*[aeo][iuü]*|[iuü]+/gi)];
   if (vowelGroups.length <= 1) return form + pronoun;
   const normalized = form.toLowerCase();
   const stressGroupIndex = /[aeiouns]$/.test(normalized)

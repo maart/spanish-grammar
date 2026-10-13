@@ -4443,7 +4443,7 @@ select {
       </aside>
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.98 · обновлено: 13.10.2026 16:38 CEST</span>
+        <span>Версия MVP 1.99 · обновлено: 13.10.2026 16:39 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -15040,7 +15040,7 @@ function verbCheatsheetItems(verb) {
     seen.add(item.index);
     items.push(item);
   });
-  return items.slice(0, 3);
+  return items;
 }
 
 let baseVerbSet = null;
@@ -19995,8 +19995,7 @@ const VERB_CHEATSHEET_LINKS = Object.freeze({
   decidir: ["irIrse"],
   decidirse: ["irIrse"],
   venir: ["motion"],
-  // «Llevar: 5 конструкций» уже включает llevar + время, поэтому третье место — паре llevar / llevarse.
-  llevar: ["llevar", "motion", "irIrse", "ageDuration"],
+  llevar: ["llevar", "motion", "ageDuration", "irIrse"],
   traer: ["motion"],
   gustar: ["gustar", "gustarFamily"],
   encantar: ["gustarFamily", "gustar"],

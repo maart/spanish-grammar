@@ -40,7 +40,7 @@ const sandbox = {
 // Execute the JS in the sandbox
 const fn = new Function(
   ...Object.keys(sandbox),
-  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, TENSE_EXAMPLES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, VERB_TENSE_GROUPS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize, generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer, cardAccuracy, isCardMastered, cardNeedsReview, cardsForFilter, studyCardCounts, validateData, normalizeTextbookAnswer, diagnoseVerbMistake, scheduleFormReview, dueFormReviews, dayKey, addDays, staticChecksData: { TRANSLATIONS, TENSES, TENSE_EXAMPLES, TENSE_LESSONS, USEFUL_TABLES, TABLE_GROUPS, MOODS, LEARNING_MODULES, TEXTBOOK_LESSONS, BASE_VERBS, LEARNING_AFTER_B2 } };"
+  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, TENSE_EXAMPLES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, VERB_TENSE_GROUPS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize, generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer, cardAccuracy, isCardMastered, cardNeedsReview, cardsForFilter, studyCardCounts, validateData, normalizeTextbookAnswer, diagnoseVerbMistake, verbSynonyms, scheduleFormReview, dueFormReviews, dayKey, addDays, staticChecksData: { TRANSLATIONS, TENSES, TENSE_EXAMPLES, TENSE_LESSONS, USEFUL_TABLES, TABLE_GROUPS, MOODS, LEARNING_MODULES, TEXTBOOK_LESSONS, BASE_VERBS, LEARNING_AFTER_B2 } };"
 );
 const api = fn(...Object.values(sandbox));
 
@@ -59,7 +59,7 @@ const {
   regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern,
   regularParticiplePattern, irregularIndefinidoStem,
   isReflexive, baseVerb, state, filteredVerbs,
-  generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer,
+  generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer, verbSynonyms,
   cardAccuracy, isCardMastered, cardNeedsReview, cardsForFilter, studyCardCounts,
   validateData, normalizeTextbookAnswer, diagnoseVerbMistake,
   scheduleFormReview, dueFormReviews, dayKey, addDays,
@@ -1321,6 +1321,15 @@ const QUIZ_CASES = [
     label: "diagnosis: reflexive verb named in the task but missing from the list",
     actual: () => describeDiagnosis(diagnoseVerbMistake("te pones", "me pongo", ["(ponerse)"], 51)),
     expected: "person: te pones = tú | yo",
+  },
+  {
+    label: "infinitive quiz accepts verbs that share a meaning, from the whole list",
+    actual: () => [
+      evaluateAnswer("trasladarse", generateInfinitiveQuestions(["mudarse"], 1)[0]).status,
+      evaluateAnswer("hablar", generateInfinitiveQuestions(["decir"], 1)[0]).status,
+      evaluateAnswer("comer", generateInfinitiveQuestions(["decir"], 1)[0]).status,
+    ].join(","),
+    expected: "correct,correct,wrong",
   },
   {
     label: "soler is defective: no futuro, condicional or imperativo in forms and in the quiz",

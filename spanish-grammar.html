@@ -4437,7 +4437,7 @@ select {
       </aside>
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.93 · обновлено: 13.10.2026 04:24 CEST</span>
+        <span>Версия MVP 1.94 · обновлено: 13.10.2026 04:32 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -18255,6 +18255,49 @@ function infinitiveAnswers(verb, cards) {
     .map(displayInfinitive);
 }
 
+// Значения перевода: «переезжать, перемещаться» → две части; пояснения в скобках («(darse cuenta)») не учитываются.
+function translationMeanings(verb) {
+  return translationFor(verb)
+    .replace(/\([^)]*\)/g, "")
+    .split(/[,;]/)
+    .map((item) => item.trim())
+    .filter((item) => item.length > 1);
+}
+
+let meaningIndex = null;
+
+// Значение (без диакритики) → глаголы из всего списка. Строится один раз.
+function verbsByMeaning() {
+  if (!meaningIndex) {
+    meaningIndex = new Map();
+    BASE_VERBS.forEach((verb) => {
+      translationMeanings(verb).forEach((meaning) => {
+        const key = quizAnswerKey(meaning, true);
+        if (!meaningIndex.has(key)) meaningIndex.set(key, new Set());
+        meaningIndex.get(key).add(verb);
+      });
+    });
+  }
+  return meaningIndex;
+}
+
+const VERB_SYNONYMS_CACHE = new Map();
+
+// Глаголы из всего списка, у которых есть хотя бы одно общее значение с verb (сам verb не входит), как displayInfinitive.
+function verbSynonyms(verb) {
+  if (!VERB_SYNONYMS_CACHE.has(verb)) {
+    const index = verbsByMeaning();
+    const found = new Set();
+    translationMeanings(verb).forEach((meaning) => {
+      index.get(quizAnswerKey(meaning, true))?.forEach((other) => {
+        if (other !== verb) found.add(displayInfinitive(other));
+      });
+    });
+    VERB_SYNONYMS_CACHE.set(verb, [...found].sort((a, b) => a.localeCompare(b, "es")));
+  }
+  return VERB_SYNONYMS_CACHE.get(verb);
+}
+
 function generateInfinitiveQuestions(cards, count) {
   const shuffled = shuffle([...cards]);
   const selected = count > 0 ? shuffled.slice(0, count) : shuffled;
@@ -18324,9 +18367,12 @@ function generateConjugationQuestions(cards, tenses, persons, count) {
 
 function evaluateAnswer(userInput, question) {
   // Варианты спряжения вычисляются при проверке, поэтому работают и в сохранённых до их появления сессиях.
+  // Синонимы считаются при проверке, поэтому работают и в сохранённых до их появления сессиях квиза.
   const candidates = question.type === "conjugation"
     ? acceptedConjugationForms(question.verb, question.tense, question.person, question.answer)
-    : question.acceptedAnswers?.length ? question.acceptedAnswers : [question.answer];
+    : question.type === "infinitive"
+      ? [...(question.acceptedAnswers?.length ? question.acceptedAnswers : [question.answer]), ...verbSynonyms(question.verb)]
+      : question.acceptedAnswers?.length ? question.acceptedAnswers : [question.answer];
   const exact = quizAnswerKey(userInput);
   if (candidates.some((answer) => exact === quizAnswerKey(answer))) {
     return { status: "correct", message: "Верно!" };
@@ -19301,7 +19347,9 @@ function renderCardQuiz(content) {
     const enteredAnswer = state.cardQuizInput || "Ответ не указан";
     const alternatives = isConjugation
       ? acceptedConjugationForms(question.verb, question.tense, question.person, question.answer).filter((answer) => quizAnswerKey(answer) !== quizAnswerKey(isCorrect ? state.cardQuizInput : question.answer))
-      : [];
+      : question.type === "infinitive"
+        ? verbSynonyms(question.verb).filter((answer) => quizAnswerKey(answer, true) !== quizAnswerKey(state.cardQuizInput, true)).slice(0, 6)
+        : [];
     answerHTML = html`
       <input class="quiz-input is-${result.status}" type="text" value="${enteredAnswer}" readonly aria-label="Данный ответ">
       <div class="quiz-feedback is-${result.status}" role="status">

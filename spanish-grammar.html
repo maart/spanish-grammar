@@ -4443,7 +4443,7 @@ select {
       </aside>
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.96 · обновлено: 13.10.2026 04:34 CEST</span>
+        <span>Версия MVP 1.97 · обновлено: 13.10.2026 16:32 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -9312,8 +9312,8 @@ const USEFUL_TABLES = [
     id: "ir-irse-i-drugie-pary-s-se", level: "a2", lessons: [54],
     group: "Глаголы и управление",
     subgroup: "Возвратные глаголы",
-    title: "Ir / Irse и другие пары с -se",
-    description: "Частица se не всегда означает буквальную возвратность: у многих глаголов она меняет значение, вид действия или управление.",
+    title: "Ir / irse и другие глаголы, меняющие значение с se",
+    description: "Частица se не всегда означает буквальную возвратность: у многих глаголов она меняет значение, вид действия или управление. Часто вместе с se появляется предлог: acordarse de, negarse a, parecerse a, encontrarse con.",
     summary: "Voy al trabajo — иду на работу; Me voy — ухожу. Duermo — сплю; Me duermo — засыпаю.",
     mistake: "Нельзя автоматически переводить форму с se как «себя»: irse, dormirse и acordarse de имеют самостоятельное значение.",
     table: `<table><thead><tr><th>Без se</th><th>С se</th><th>Контраст</th><th>Перевод</th></tr></thead><tbody>
@@ -9321,9 +9321,17 @@ const USEFUL_TABLES = [
       <tr><th>dormir</th><td>dormirse</td><td>El niño duerme. / El niño se duerme.</td><td>ребёнок спит / засыпает</td></tr>
       <tr><th>acordar</th><td>acordarse de</td><td>Acordamos la fecha. / Me acuerdo de la fecha.</td><td>согласовали дату / помню дату</td></tr>
       <tr><th>encontrar</th><td>encontrarse</td><td>Encontré las llaves. / Me encuentro mejor.</td><td>нашёл ключи / чувствую себя лучше</td></tr>
+      <tr><th>encontrar</th><td>encontrarse con</td><td>Encontré el libro que buscaba. / Me encontré con Luis en el metro.</td><td>нашёл (искал) / случайно встретил Луиса</td></tr>
       <tr><th>llevar</th><td>llevarse</td><td>Llevo el libro. / Me llevo el libro.</td><td>несу книгу / забираю книгу с собой</td></tr>
       <tr><th>decidir</th><td>decidirse a</td><td>Decidí el destino. / Me decidí a llamar.</td><td>выбрал направление / решился позвонить</td></tr>
       <tr><th>parecer</th><td>parecerse a</td><td>Me parece bien. / Se parece a Ana.</td><td>мне кажется хорошим / похож на Ану</td></tr>
+      <tr><th>llamar</th><td>llamarse</td><td>Llamo a mi madre. / Me llamo Lucía.</td><td>звоню маме / меня зовут Лусия</td></tr>
+      <tr><th>creer</th><td>creerse</td><td>Creo que tienes razón. / Se cree muy listo.</td><td>думаю, что ты прав / считает себя очень умным (без оснований); creerse algo — принять на веру</td></tr>
+      <tr><th>fijar</th><td>fijarse en</td><td>Hemos fijado la fecha. / Fíjate en ese cartel.</td><td>назначили дату / обрати внимание на ту вывеску</td></tr>
+      <tr><th>negar</th><td>negarse a</td><td>Niega haberlo visto. / Se negó a firmar.</td><td>отрицает, что видел / отказался подписывать</td></tr>
+      <tr><th>ocupar</th><td>ocuparse de</td><td>La mesa ocupa mucho sitio. / Yo me ocupo de la cena.</td><td>стол занимает много места / ужином займусь я</td></tr>
+      <tr><th>quedar</th><td>quedarse</td><td>Hemos quedado a las ocho. Quedamos en vernos el lunes. / Me quedo en casa. Se quedó sorprendido.</td><td>договорились встретиться в восемь; договорились увидеться в понедельник / остаюсь дома; был поражён (quedarse + прилагательное — оказаться в состоянии)</td></tr>
+      <tr><th>temer</th><td>temerse</td><td>Temo a los perros. / Me temo que no llegaremos a tiempo.</td><td>боюсь собак / боюсь (подозреваю), что не успеем</td></tr>
     </tbody></table>`
   },
 
@@ -19586,6 +19594,13 @@ function validateData() {
     ids.filter((id) => !lessonExists(id)).forEach((id) => issues.push(`Нет урока ${id} для времени ${tenseId}`));
   });
   Object.keys(TENSE_LEVELS).filter((tenseId) => TENSE_LESSONS[tenseId]).forEach((tenseId) => issues.push("Уровень времени задан дважды: " + tenseId));
+  // Карточка глагола находит шпаргалку по точному названию: после переименования шпаргалки ссылка пропала бы молча.
+  Object.entries(VERB_CHEATSHEET_TITLES).forEach(([key, title]) => {
+    if (!USEFUL_TABLES.some((item) => item.title === title)) issues.push(`Нет шпаргалки для связи с глаголами (${key}): ${title}`);
+  });
+  Object.entries(VERB_CHEATSHEET_LINKS).forEach(([verb, keys]) => {
+    keys.filter((key) => !VERB_CHEATSHEET_TITLES[key]).forEach((key) => issues.push(`Нет ключа шпаргалки ${key} для глагола ${verb}`));
+  });
   Object.entries(VERB_LESSONS).forEach(([verb, ids]) => {
     if (!BASE_VERBS.includes(verb)) issues.push("Нет глагола для связи с уроками: " + verb);
     ids.filter((id) => !lessonExists(id)).forEach((id) => issues.push(`Нет урока ${id} для глагола ${verb}`));
@@ -19919,7 +19934,7 @@ const VERB_CHEATSHEET_TITLES = Object.freeze({
   obligation: "Deber / Tener que / Hay que: долженствование",
   ageDuration: "Возраст и длительность: tener, cumplir, llevar",
   motion: "Ir/venir/llevar/traer: идти, приходить, нести",
-  irIrse: "Ir / Irse и другие пары с -se",
+  irIrse: "Ir / irse и другие глаголы, меняющие значение с se",
   futureChoice: "Futuro: ir a + infinitivo или Futuro Simple",
   llevar: "Llevar: 5 конструкций",
   gustar: "Gustar и похожие глаголы",
@@ -19959,6 +19974,24 @@ const VERB_CHEATSHEET_LINKS = Object.freeze({
   tener: ["tenerNoun", "obligation", "ageDuration"],
   ir: ["motion", "irIrse", "futureChoice"],
   irse: ["irIrse"],
+  // Пары, у которых se меняет значение (шпаргалка irIrse): dormir / dormirse, llamar / llamarse, temer / temerse…
+  dormir: ["irIrse"],
+  dormirse: ["irIrse"],
+  llevarse: ["irIrse"],
+  encontrar: ["irIrse"],
+  encontrarse: ["irIrse"],
+  llamar: ["irIrse"],
+  llamarse: ["irIrse"],
+  fijar: ["irIrse"],
+  fijarse: ["irIrse"],
+  negarse: ["irIrse"],
+  ocupar: ["irIrse"],
+  ocuparse: ["irIrse"],
+  temer: ["irIrse"],
+  parecerse: ["irIrse"],
+  acordarse: ["irIrse"],
+  decidir: ["irIrse"],
+  decidirse: ["irIrse"],
   venir: ["motion"],
   llevar: ["llevar", "motion", "ageDuration"],
   traer: ["motion"],
@@ -19981,11 +20014,11 @@ const VERB_CHEATSHEET_LINKS = Object.freeze({
   pensar: ["verbPrepositions"],
   "soñar": ["verbPrepositions"],
   depender: ["verbPrepositions"],
-  parecer: ["parecer", "gustarFamily"],
-  quedar: ["quedar", "faltar"],
-  quedarse: ["quedar"],
+  parecer: ["parecer", "gustarFamily", "irIrse"],
+  quedar: ["quedar", "faltar", "irIrse"],
+  quedarse: ["quedar", "irIrse"],
   recordar: ["recordar"],
-  acordar: ["recordar"],
+  acordar: ["recordar", "irIrse"],
   olvidar: ["recordar"],
   olvidarse: ["recordar"],
   ver: ["perception", "causative"],
@@ -20004,7 +20037,7 @@ const VERB_CHEATSHEET_LINKS = Object.freeze({
   senalar: ["speechTransfer"],
   "señalar": ["speechTransfer"],
   admitir: ["speechTransfer"],
-  negar: ["speechTransfer"],
+  negar: ["speechTransfer", "irIrse"],
   deber: ["obligation", "probability"],
   poder: ["politeRequests", "probability"],
   querer: ["infinitiveSubjunctive", "politeRequests"],

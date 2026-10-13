@@ -2309,7 +2309,7 @@ apetecer pres0=apetezco sp0=apetezca sp1=apetezcas sp2=apetezca sp3=apetezcamos 
 anochecer pres0=anochezco sp0=anochezca sp1=anochezcas sp2=anochezca sp3=anochezcamos sp4=anochezcáis sp5=anochezcan
 esquiar pres0=esquío pres1=esquías pres2=esquía pres5=esquían sp0=esquíe sp1=esquíes sp2=esquíe sp5=esquíen imp1=esquía
 `;
-const DLE_UNVERIFIED = ["reasignar","reprogramar","redirigir","reinventar","reestablecer","reconectar","reabastecer","argollar","recolocar"];
+const DLE_UNVERIFIED = ["reasignar","reprogramar","redirigir","reinventar","reconectar","reabastecer","argollar","recolocar"];
 // END DLE_REFERENCE
 const dleReference = new Map(DLE_REFERENCE.trim().split("\n").filter(Boolean).map((line) => {
   const [verb, ...pairs] = line.split(" ");

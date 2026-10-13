@@ -1860,7 +1860,8 @@ for (const base of DERIVED_BASES) {
 }
 
 // ─── DLE reference: every verb of the list ──────────────────────────────────
-// Спряжение всех глаголов списка сверено с DLE (dle.rae.es). Эталон хранит только формы, которые
+// Спряжение всех глаголов списка сверено с DLE (dle.rae.es); основы возвратных глаголов (acostarse → acostar) тоже,
+// даже если их нет в списке. Эталон хранит только формы, которые
 // отличаются от правильного спряжения: правильные глаголы в нём не перечислены, у неправильных — лишь
 // особые формы. Правильное спряжение строит dleRegularForms — независимо от движка приложения.
 // Метки: pres/indef/fut/cond/sp (subjuntivo presente)/si (imperfecto de subjuntivo на -ra)/impf + номер лица 0–5,
@@ -2298,6 +2299,7 @@ adscribir part=adscrito
 embestir pres0=embisto pres1=embistes pres2=embiste pres5=embisten indef2=embistió indef5=embistieron sp0=embista sp1=embistas sp2=embista sp3=embistamos sp4=embistáis sp5=embistan si0=embistiera si1=embistieras si2=embistiera si3=embistiéramos si4=embistierais si5=embistieran imp1=embiste ger=embistiendo
 recalentar pres0=recaliento pres1=recalientas pres2=recalienta pres5=recalientan sp0=recaliente sp1=recalientes sp2=recaliente sp5=recalienten imp1=recalienta
 apacentar pres0=apaciento pres1=apacientas pres2=apacienta pres5=apacientan sp0=apaciente sp1=apacientes sp2=apaciente sp5=apacienten imp1=apacienta
+acostar pres0=acuesto pres1=acuestas pres2=acuesta pres5=acuestan sp0=acueste sp1=acuestes sp2=acueste sp5=acuesten imp1=acuesta
 `;
 const DLE_UNVERIFIED = ["reasignar","reprogramar","redirigir","reinventar","reestablecer","reconectar","reabastecer","argollar","recolocar"];
 // END DLE_REFERENCE
@@ -2306,8 +2308,9 @@ const dleReference = new Map(DLE_REFERENCE.trim().split("\n").filter(Boolean).ma
   return [verb, Object.fromEntries(pairs.map((pair) => pair.split("=")))];
 }));
 let dleChecked = 0;
-for (const verb of BASE_VERBS) {
-  if (isReflexive(verb)) continue;
+// Основы возвратных глаголов (acostarse → acostar) сверяются, даже если самой основы нет в списке.
+const dleVerbs = [...new Set(BASE_VERBS.map((verb) => isReflexive(verb) ? baseVerb(verb) : verb))];
+for (const verb of dleVerbs) {
   const shown = api.DISPLAY_INFINITIVES[verb] || verb;
   if (DLE_UNVERIFIED.includes(shown)) continue;
   dleChecked++;

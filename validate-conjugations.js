@@ -1323,6 +1323,11 @@ const QUIZ_CASES = [
     expected: "person: te pones = tú | yo",
   },
   {
+    label: "soler is defective: no futuro, condicional or imperativo in forms and in the quiz",
+    actual: () => [formsFor("soler").presente[0], formsFor("soler").futuro.join(""), formsFor("soler").condicional_compuesto.join(""), formsFor("soler").imperativo_afirmativo.join(""), formsFor("soler").imperativo_negativo.join(""), generateConjugationQuestions(["soler"], ["futuro", "condicional", "imperativo_afirmativo"], [0, 1, 2, 3, 4, 5], 0).length].join(","),
+    expected: "suelo,------,------,------,------,0",
+  },
+  {
     label: "enclitic tilde after a hiatus: cáete, léase, créanse, provéete",
     actual: () => ["traerse", "leerse", "creerse", "verse", "proveerse"].map((verb) => formsFor(verb).imperativo_afirmativo.slice(1).join(" ")).join(" | "),
     expected: "tráete tráigase traigámonos traeos tráiganse | léete léase leámonos leeos léanse | créete créase creámonos creeos créanse | vete véase veámonos veos véanse | provéete provéase proveámonos proveeos provéanse",
@@ -2317,6 +2322,7 @@ esquiar pres0=esquío pres1=esquías pres2=esquía pres5=esquían sp0=esquíe sp
 teñir pres0=tiño pres1=tiñes pres2=tiñe pres5=tiñen indef2=tiñó indef5=tiñeron sp0=tiña sp1=tiñas sp2=tiña sp3=tiñamos sp4=tiñáis sp5=tiñan si0=tiñera si1=tiñeras si2=tiñera si3=tiñéramos si4=tiñerais si5=tiñeran imp1=tiñe ger=tiñendo
 merendar pres0=meriendo pres1=meriendas pres2=merienda pres5=meriendan sp0=meriende sp1=meriendes sp2=meriende sp5=merienden imp1=merienda
 atardecer pres0=atardezco sp0=atardezca sp1=atardezcas sp2=atardezca sp3=atardezcamos sp4=atardezcáis sp5=atardezcan
+soler pres0=suelo pres1=sueles pres2=suele pres5=suelen sp0=suela sp1=suelas sp2=suela sp5=suelan fut0=- fut1=- fut2=- fut3=- fut4=- fut5=- cond0=- cond1=- cond2=- cond3=- cond4=- cond5=- imp1=- imp4=-
 `;
 const DLE_UNVERIFIED = ["reasignar","reprogramar","redirigir","reinventar","reconectar","reabastecer","argollar","recolocar"];
 // END DLE_REFERENCE

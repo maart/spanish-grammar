@@ -4403,7 +4403,7 @@ select {
           </div>
           <p class="brand-kicker">Глаголы, времена, наклонения и шпаргалки в одном HTML-файле</p>
           <div class="brand-stats" aria-label="Кратко о справочнике">
-            <span id="verbCountStat">2103 глагола</span>
+            <span id="verbCountStat">2104 глагола</span>
             <span>квиз</span>
             <span>офлайн</span>
           </div>
@@ -4437,7 +4437,7 @@ select {
       </aside>
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.92 · обновлено: 13.10.2026 04:23 CEST</span>
+        <span>Версия MVP 1.93 · обновлено: 13.10.2026 04:24 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -4951,7 +4951,8 @@ const TRANSLATIONS = {
   enchufar: "включать в розетку", desenchufar: "выключать из розетки", tuitear: "писать в Твиттер",
   escanear: "сканировать", pitar: "свистеть; сигналить", relampaguear: "сверкать (о молнии)",
   atardecer: "вечереть", surfear: "заниматься сёрфингом", estornudar: "чихать", toser: "кашлять",
-  vomitar: "тошнить, рвать", recetar: "выписывать (лекарство)", roncar: "храпеть"
+  vomitar: "тошнить, рвать", recetar: "выписывать (лекарство)", roncar: "храпеть",
+  soler: "иметь обыкновение (soler + инфинитив)"
 };
 
 Object.assign(TRANSLATIONS, {
@@ -6182,7 +6183,7 @@ desnaturalizar aromatizar confraternizar pastorear enturbiar zozobrar agasajar e
 abrochar disecar desligar opacar recalentar alborotar apacentar desenganchar desenroscar recolocar
 apetecer anochecer esquiar ponerse divertirse caerse enfadarse lavarse afeitarse sentirse vestirse despertarse aburrirse bañarse acordarse despedirse quitarse callarse reirse
 dejarse conocerse subirse mirarse romperse morirse portarse pintarse mancharse defenderse cansarse acercarse refugiarse trasladarse independizarse producirse escaparse hacerse prepararse ocuparse reunirse desmayarse apagarse teñirse verse atarse estarse marcharse comerse relacionarse
-llamarse volverse convertirse darse encontrarse maquillarse divorciarse enamorarse alegrarse equivocarse dormirse perderse mudarse detenerse pararse fijarse negarse dedicarse interesarse llevarse probarse relajarse apuntarse matricularse graduarse jubilarse broncearse tumbarse asustarse sorprenderse arrepentirse comprometerse encargarse referirse tratarse parecerse esconderse alojarse empadronarse trasnochar merendar hornear enchufar desenchufar tuitear escanear pitar relampaguear atardecer surfear estornudar toser vomitar recetar roncar
+llamarse volverse convertirse darse encontrarse maquillarse divorciarse enamorarse alegrarse equivocarse dormirse perderse mudarse detenerse pararse fijarse negarse dedicarse interesarse llevarse probarse relajarse apuntarse matricularse graduarse jubilarse broncearse tumbarse asustarse sorprenderse arrepentirse comprometerse encargarse referirse tratarse parecerse esconderse alojarse empadronarse trasnochar merendar hornear enchufar desenchufar tuitear escanear pitar relampaguear atardecer surfear estornudar toser vomitar recetar roncar soler
 `.trim().split(/\s+/);
 
 const BASE_VERBS = Array.from(new Set(["irse", ...RAW_VERBS]));
@@ -6712,7 +6713,7 @@ const TENSE_LEVELS = {
 const VERB_LESSONS = {
   ser: [42, 44], estar: [43, 44, 47, 56], tener: [45, 95], haber: [46, 47, 60, 66],
   gustar: [55], encantar: [55], ir: [69], deber: [95], poder: [95], llevar: [96],
-  volver: [96], dejar: [94, 97], acabar: [94], echar: [94], permitir: [97], prohibir: [97],
+  volver: [96], soler: [96], dejar: [94, 97], acabar: [94], echar: [94], permitir: [97], prohibir: [97],
   recordar: [97], olvidar: [97]
 };
 
@@ -14186,7 +14187,7 @@ const STEM_CHANGE_GROUPS = {
     "disolver", "doler", "dormir", "encontrar", "engrosar", "envolver", "esforzar", "forzar", "llover", "moler",
     "morder", "morir", "mostrar", "mover", "poblar", "poder", "probar", "promover", "recordar", "reforzar",
     "remover", "renovar", "repoblar", "reprobar", "resolver", "resonar", "retorcer", "revolver", "rodar", "rogar",
-    "sobrevolar", "soldar", "soltar", "sonar", "soñar", "torcer", "tronar", "volar", "volcar", "volver"
+    "sobrevolar", "soldar", "soler", "soltar", "sonar", "soñar", "torcer", "tronar", "volar", "volcar", "volver"
   ],
   "e:i": [
     "bendecir", "competir", "concebir", "conseguir", "contradecir", "corregir", "decir", "derretir", "despedir",
@@ -14198,6 +14199,8 @@ const STEM_CHANGE_GROUPS = {
     "jugar"
   ]
 };
+// Неполные глаголы (DPD): у перечисленных времён форм нет, на их месте прочерк, как у yo в повелительном.
+const DEFECTIVE_TENSES = { soler: ["futuro", "futuro_perfecto", "condicional", "condicional_compuesto", "imperativo_afirmativo", "imperativo_negativo"] };
 // Ударная i/u корня в формах yo, tú, él, ellos (модели enviar, actuar, aislar, prohibir, reunir, rehusar) — по DLE.
 const STRESSED_IAR_VERBS = new Set([
   "aislar", "ampliar", "ansiar", "chirriar", "confiar", "contrariar", "criar", "desafiar", "desconfiar", "desviar",
@@ -14293,6 +14296,10 @@ function buildFormsFor(verb) {
       : (irregular.subjuntivo_presente || regularSubjuntivoPresente(simpleVerb)).map((form, index) => index === 0 ? "-" : `no ${form}`),
     formas_no_personales: [verb, gerund(verb), participle(verb), "-", "-", "-"]
   };
+
+  (DEFECTIVE_TENSES[simpleVerb] || []).forEach((tenseId) => {
+    forms[tenseId] = forms[tenseId].map(() => "-");
+  });
 
   Object.keys(forms).forEach((tenseId) => {
     if (tenseId !== "formas_no_personales") forms[tenseId] = applyMonosyllableSpelling(forms[tenseId]);
@@ -15172,6 +15179,7 @@ function buildVerbExceptionLabels(verb) {
   if (irregularFutureStem(simpleVerb)) labels.push("futuro/condicional: особая основа");
   if (hasSpecialSubjuntivo(simpleVerb)) labels.push("subjuntivo: особая форма");
   if (hasIrregularParticiple(simpleVerb)) labels.push("participio: особая форма");
+  if (DEFECTIVE_TENSES[simpleVerb]) labels.push("неполный: нет futuro, condicional и imperativo");
   return Array.from(new Set(labels));
 }
 

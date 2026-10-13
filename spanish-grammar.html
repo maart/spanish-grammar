@@ -4443,7 +4443,7 @@ select {
       </aside>
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 1.95 · обновлено: 13.10.2026 04:35 CEST</span>
+        <span>Версия MVP 1.96 · обновлено: 13.10.2026 04:34 CEST</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -6722,6 +6722,9 @@ const VERB_LESSONS = {
   volver: [96], soler: [96], dejar: [94, 97], acabar: [94], echar: [94], permitir: [97], prohibir: [97],
   recordar: [97], olvidar: [97]
 };
+
+// Уроки о возвратных глаголах (se): карточка любого возвратного глагола ссылается на них в первую очередь.
+const REFLEXIVE_VERB_LESSONS = [40, 53, 54, 77];
 
 function tenseLevel(id) {
   const lessonId = TENSE_LESSONS[id]?.[0];
@@ -14970,7 +14973,7 @@ function renderVerbCard(verb) {
   line.insertAdjacentHTML("afterend", reflexivePairMarkup(verb));
 
   // Спряжение — главное в карточке, поэтому связанные шпаргалки и уроки идут после таблицы.
-  const verbLessons = lessonLinksMarkup(VERB_LESSONS[baseVerb(verb)]);
+  const verbLessons = lessonLinksMarkup(verbLessonIds(verb));
   node.querySelector(".table-wrap").insertAdjacentHTML("afterend", `<div data-verb-examples></div>${verbLessons}`);
   // Индекс примеров строится один раз (~0,3 с), поэтому карточка показывается сразу, а примеры — следом.
   setTimeout(() => {
@@ -15038,6 +15041,12 @@ function reflexivePair(verb) {
   if (!baseVerbSet) baseVerbSet = new Set(BASE_VERBS);
   if (isReflexive(verb)) return baseVerbSet.has(baseVerb(verb)) ? { verb: baseVerb(verb), withSe: false } : null;
   return baseVerbSet.has(`${verb}se`) ? { verb: `${verb}se`, withSe: true } : null;
+}
+
+// Уроки для карточки: у возвратного сначала уроки о se-глаголах, затем уроки основы; без повторов.
+function verbLessonIds(verb) {
+  const reflexiveIds = isReflexive(verb) ? REFLEXIVE_VERB_LESSONS : [];
+  return [...new Set([...reflexiveIds, ...(VERB_LESSONS[baseVerb(verb)] || [])])];
 }
 
 function reflexivePairMarkup(verb) {
@@ -19581,6 +19590,7 @@ function validateData() {
     if (!BASE_VERBS.includes(verb)) issues.push("Нет глагола для связи с уроками: " + verb);
     ids.filter((id) => !lessonExists(id)).forEach((id) => issues.push(`Нет урока ${id} для глагола ${verb}`));
   });
+  REFLEXIVE_VERB_LESSONS.filter((id) => !lessonExists(id)).forEach((id) => issues.push(`Нет урока ${id} для возвратных глаголов`));
   USEFUL_TABLES.forEach((item) => (item.lessons || []).filter((id) => !lessonExists(id)).forEach((id) => issues.push(`Нет урока ${id} для шпаргалки ${item.title}`)));
   const tableIds = new Set();
   DATA.usefulTables.forEach((item) => {

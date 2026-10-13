@@ -40,7 +40,7 @@ const sandbox = {
 // Execute the JS in the sandbox
 const fn = new Function(
   ...Object.keys(sandbox),
-  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, TENSE_EXAMPLES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, VERB_TENSE_GROUPS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize, generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer, cardAccuracy, isCardMastered, cardNeedsReview, cardsForFilter, studyCardCounts, validateData, normalizeTextbookAnswer, diagnoseVerbMistake, verbSynonyms, reflexivePair, scheduleFormReview, dueFormReviews, dayKey, addDays, staticChecksData: { TRANSLATIONS, TENSES, TENSE_EXAMPLES, TENSE_LESSONS, USEFUL_TABLES, TABLE_GROUPS, MOODS, LEARNING_MODULES, TEXTBOOK_LESSONS, BASE_VERBS, LEARNING_AFTER_B2 } };"
+  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, TENSE_EXAMPLES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, VERB_TENSE_GROUPS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize, generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer, cardAccuracy, isCardMastered, cardNeedsReview, cardsForFilter, studyCardCounts, validateData, normalizeTextbookAnswer, diagnoseVerbMistake, verbSynonyms, reflexivePair, verbLessonIds, scheduleFormReview, dueFormReviews, dayKey, addDays, staticChecksData: { TRANSLATIONS, TENSES, TENSE_EXAMPLES, TENSE_LESSONS, USEFUL_TABLES, TABLE_GROUPS, MOODS, LEARNING_MODULES, TEXTBOOK_LESSONS, BASE_VERBS, LEARNING_AFTER_B2 } };"
 );
 const api = fn(...Object.values(sandbox));
 
@@ -59,7 +59,7 @@ const {
   regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern,
   regularParticiplePattern, irregularIndefinidoStem,
   isReflexive, baseVerb, state, filteredVerbs,
-  generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer, verbSynonyms, reflexivePair,
+  generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer, verbSynonyms, reflexivePair, verbLessonIds,
   cardAccuracy, isCardMastered, cardNeedsReview, cardsForFilter, studyCardCounts,
   validateData, normalizeTextbookAnswer, diagnoseVerbMistake,
   scheduleFormReview, dueFormReviews, dayKey, addDays,
@@ -1330,6 +1330,11 @@ const QUIZ_CASES = [
       evaluateAnswer("comer", generateInfinitiveQuestions(["decir"], 1)[0]).status,
     ].join(","),
     expected: "correct,correct,wrong",
+  },
+  {
+    label: "reflexive verbs link to the textbook lessons on se verbs, keeping the base verb's lessons",
+    actual: () => [verbLessonIds("acostarse").join(" "), verbLessonIds("irse").join(" "), verbLessonIds("ir").join(" "), verbLessonIds("hablar").length].join(" | "),
+    expected: "40 53 54 77 | 40 53 54 77 69 | 69 | 0",
   },
   {
     label: "reflexive pair links a verb and its se form",

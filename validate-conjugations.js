@@ -40,7 +40,7 @@ const sandbox = {
 // Execute the JS in the sandbox
 const fn = new Function(
   ...Object.keys(sandbox),
-  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, TENSE_EXAMPLES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, VERB_TENSE_GROUPS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize, generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer, cardAccuracy, isCardMastered, cardNeedsReview, cardsForFilter, studyCardCounts, validateData, normalizeTextbookAnswer, diagnoseVerbMistake, verbSynonyms, reflexivePair, verbLessonIds, scheduleFormReview, dueFormReviews, dayKey, addDays, staticChecksData: { TRANSLATIONS, TENSES, TENSE_EXAMPLES, TENSE_LESSONS, USEFUL_TABLES, TABLE_GROUPS, MOODS, LEARNING_MODULES, TEXTBOOK_LESSONS, BASE_VERBS, LEARNING_AFTER_B2 } };"
+  jsCode + "\nreturn { IRREGULARS, RAW_VERBS, BASE_VERBS, TENSES, TENSE_EXAMPLES, PEOPLE, HABER_FORMS, TRANSLATIONS, DISPLAY_INFINITIVES, COMMON_VERB_SUGGESTIONS, VERB_TENSE_GROUPS, verbType, stem, regularPresent, regularIndefinido, regularImperfecto, regularFuture, regularCondicional, regularSubjuntivoPresente, regularImperativoAfirmativo, participle, gerund, generatedPresent, generatedSubjuntivoPresente, irregularIndefinido, irregularFutureStem, thirdPersonStemChangeIndefinido, orthographicIndefinido, generatedParticiple, hasStemChange, stemChange, formsFor, verbInfo, regularPresentPattern, regularIndefinidoPattern, regularFuturePattern, regularCondicionalPattern, regularSubjuntivoPresentePattern, regularImperativoAfirmativoPattern, regularParticiplePattern, irregularIndefinidoStem, regularSubjuntivoImperfecto, regularSubjuntivoFuturo, compound, compoundPattern, isReflexive, baseVerb, tenseById, state, filteredVerbs, searchMatchFor, normalize, generateInfinitiveQuestions, generateConjugationQuestions, evaluateAnswer, cardAccuracy, isCardMastered, cardNeedsReview, cardsForFilter, studyCardCounts, validateData, normalizeTextbookAnswer, diagnoseVerbMistake, verbKeyForWord, acceptedConjugationForms, verbSynonyms, reflexivePair, verbLessonIds, scheduleFormReview, dueFormReviews, dayKey, addDays, staticChecksData: { TRANSLATIONS, TENSES, TENSE_EXAMPLES, TENSE_LESSONS, USEFUL_TABLES, TABLE_GROUPS, MOODS, LEARNING_MODULES, TEXTBOOK_LESSONS, BASE_VERBS, LEARNING_AFTER_B2 } };"
 );
 const api = fn(...Object.values(sandbox));
 
@@ -2479,6 +2479,121 @@ for (const lesson of api.staticChecksData.TEXTBOOK_LESSONS) {
   }
 }
 
+// ─── Textbook answers vs the verb named in the hint ──────────────────────────
+// Страховка для правок учебника. Если подсказка в конце задания называет ровно
+// один глагол («___ el periódico. (yo, leer)»), каждый вариант ответа обязан
+// содержать его форму (проверка А), а лицо из подсказки (yo, tú, usted…) должно
+// быть среди лиц этой формы (проверка Б). Сравнивается последнее слово формы
+// и её вариантов RAE (puesto в «me he puesto», hablase) без тильд — тильды
+// проверяет предыдущий раздел.
+// Энклитики снимаются (pídeme → pide, quedaos → quedad, sentémonos → sentemos),
+// причастие согласуется в роде и числе (abierta), у haber есть безличное hay.
+// Задание, где подсказка — не глагол-цель, внеси в HINT_VERB_EXCEPTIONS с причиной.
+const HINT_VERB_EXCEPTIONS = {
+  "91.1 #5": "второй вариант ответа — другой глагол: si te aburres наряду с si estás aburrida",
+};
+const HINT_PEOPLE = {
+  yo: 0, "tú": 1, "él": 2, ella: 2, usted: 2,
+  nosotros: 3, nosotras: 3, vosotros: 4, vosotras: 4, ellos: 5, ellas: 5, ustedes: 5,
+};
+const ENCLITICS = ["los", "las", "les", "nos", "me", "te", "se", "lo", "la", "le", "os"];
+// Слово ответа и его варианты без местоимений-энклитик (не больше двух).
+function encliticBases(word) {
+  const bases = [word];
+  let current = [word];
+  for (let round = 0; round < 2; round++) {
+    const next = [];
+    for (const base of current) {
+      for (const pronoun of ENCLITICS) {
+        if (!base.endsWith(pronoun) || base.length <= pronoun.length + 1) continue;
+        const rest = base.slice(0, -pronoun.length);
+        next.push(rest);
+        if (pronoun === "os") next.push(`${rest}d`);
+        if (pronoun === "nos") next.push(`${rest}s`);
+      }
+    }
+    bases.push(...next);
+    current = next;
+  }
+  return bases.map(stripTilde);
+}
+// Последнее слово каждой формы глагола без тильд → [{ tense, person }].
+function hintFormIndex(verb) {
+  const index = new Map();
+  const add = (word, entry) => {
+    const key = stripTilde(word);
+    if (!index.has(key)) index.set(key, []);
+    index.get(key).push(entry);
+  };
+  const verbs = api.isReflexive(verb) && BASE_VERBS.includes(api.baseVerb(verb)) ? [verb, api.baseVerb(verb)] : [verb];
+  for (const key of verbs) {
+    for (const [tense, values] of Object.entries(formsFor(key))) {
+      if (!Array.isArray(values)) continue;
+      values.forEach((form, person) => {
+        if (typeof form !== "string" || form === "-") return;
+        if (tense !== "formas_no_personales") {
+          for (const variant of api.acceptedConjugationForms(key, tense, person, form)) {
+            add(api.normalizeTextbookAnswer(variant).split(" ").pop(), { tense, person });
+          }
+          return;
+        }
+        // ducharse, acostándose: местоимение снимается, как и в ответе (ducharme, acostándonos).
+        const word = api.normalizeTextbookAnswer(form).replace(/se$/, "");
+        add(word, { tense, person });
+        if (word.endsWith("o")) {
+          for (const ending of ["a", "os", "as"]) add(word.slice(0, -1) + ending, { tense, person });
+        }
+      });
+    }
+  }
+  if (verbs.includes("haber")) add("hay", { tense: "presente", person: 2 });
+  return index;
+}
+let hintVerbItems = 0;
+for (const lesson of api.staticChecksData.TEXTBOOK_LESSONS) {
+  for (const exercise of lesson.exercises) {
+    if (exercise.kind !== "text") continue;
+    exercise.items.forEach((item, index) => {
+      const ref = `${exercise.id} #${index + 1}`;
+      const hint = String(item.prompt).match(/\(([^()]*)\)[\s.?!»…]*$/);
+      if (!hint || HINT_VERB_EXCEPTIONS[ref]) return;
+      const words = hint[1].toLocaleLowerCase("es-ES").split(/[^\p{L}]+/u).filter(Boolean);
+      const verbs = new Set(words.map((word) => api.verbKeyForWord(word)).filter(Boolean));
+      if (verbs.size !== 1) return;
+      const [verb] = verbs;
+      const formIndex = hintFormIndex(verb);
+      // Лицо после «a» — дательный падеж (a nosotras, gustar), а не подлежащее.
+      const people = words.filter((word, i) => word in HINT_PEOPLE && words[i - 1] !== "a");
+      hintVerbItems++;
+      for (const answer of [item.answer].flat()) {
+        const entries = api.normalizeTextbookAnswer(answer).split(" ")
+          .flatMap((word) => encliticBases(word).flatMap((base) => formIndex.get(base) || []));
+        if (!entries.length) {
+          issues.push({
+            verb: `textbook ${ref}`,
+            tense: "answer_verb",
+            person: "-",
+            expected: `форма глагола ${verb} из подсказки (или исключение в HINT_VERB_EXCEPTIONS)`,
+            actual: `«${answer}» в задании «${item.prompt}»`,
+            severity: "high",
+          });
+          continue;
+        }
+        if (people.length !== 1 || entries.some((entry) => entry.tense === "formas_no_personales")) continue;
+        if (entries.some((entry) => entry.person === HINT_PEOPLE[people[0]])) continue;
+        issues.push({
+          verb: `textbook ${ref}`,
+          tense: "answer_person",
+          person: people[0],
+          expected: `форма ${verb} для лица «${people[0]}» (или исключение в HINT_VERB_EXCEPTIONS)`,
+          actual: `«${answer}» в задании «${item.prompt}»`,
+          severity: "high",
+        });
+      }
+    });
+  }
+}
+
 // ─── Static integrity checks ────────────────────────────────────────────────
 // Проверки исходника страницы: id и data-атрибуты в разметке, неиспользуемый код
 // и текст данных, который выводится в HTML без экранирования. Работают с текстом
@@ -3138,6 +3253,7 @@ async function report() {
   console.log(`Storage and backup cases checked: ${STORAGE_CASES.length}`);
   console.log(`Tense examples checked: ${tenseExampleCount}`);
   console.log(`Textbook answer words checked for tildes: ${textbookAnswerWords}`);
+  console.log(`Textbook answers checked against the hint verb: ${hintVerbItems}`);
   console.log(`Derived verbs checked against their base: ${derivedChecked}`);
   console.log(`Verbs checked against the DLE reference: ${dleChecked}`);
   console.log(`Static ids checked: ${checkedIds}`);

@@ -1,5 +1,7 @@
 # Learning progress implementation plan
 
+> **Status:** completed in MVP 1.85 (commit bf64044, 2026-10-12). Kept as an archive.
+
 > **For agentic workers:** Use superpowers:executing-plans to implement this plan inline, with TDD and a final independent review.
 
 **Goal:** Distinguish completed lessons from mastered lessons and preserve unfinished level checks.

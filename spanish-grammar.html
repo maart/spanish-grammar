@@ -294,8 +294,13 @@ input[type="search"] {
   margin: 12px 0 0;
   padding: 8px 0 6px;
   overflow-x: auto;
-  background: color-mix(in srgb, var(--bg) 88%, transparent);
   backdrop-filter: blur(12px);
+}
+
+/* Фон только у прилипших вкладок (класс ставит syncStickyTabsBackground): в покое он закрывал тень шапки
+   и рисовал над вкладками светлую полосу. */
+.tabs.is-stuck {
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
 }
 
 .tab {
@@ -4449,7 +4454,7 @@ select {
       </aside>
       <section id="content" class="content"></section>
       <footer class="app-footer">
-        <span>Версия MVP 2.03 · обновлено: 31.10.2026 00:48 CET</span>
+        <span>Версия MVP 2.04 · обновлено: 31.10.2026 00:53 CET</span>
         <a href="mailto:m.g.manoli@gmail.com">Написать автору</a>
         <span class="footer-backup">
           <button class="small-button" id="exportProgressButton" type="button" title="Скачать JSON-файл с избранным, статистикой, прогрессом учебника и плана">Сохранить прогресс</button>
@@ -20435,6 +20440,16 @@ function syncStickyTabsOffset() {
 syncStickyTabsOffset();
 window.addEventListener("resize", syncStickyTabsOffset);
 if ("ResizeObserver" in window) new ResizeObserver(syncStickyTabsOffset).observe(stickyTabs);
+
+// Прилипшим вкладкам нужен фон, чтобы под ними не просвечивал текст; на телефоне (position: fixed) фон задан в CSS.
+function syncStickyTabsBackground() {
+  const style = getComputedStyle(stickyTabs);
+  const stuck = style.position === "sticky" && stickyTabs.getBoundingClientRect().top <= (parseFloat(style.top) || 0) + 1;
+  stickyTabs.classList.toggle("is-stuck", stuck);
+}
+syncStickyTabsBackground();
+window.addEventListener("resize", syncStickyTabsBackground);
+window.addEventListener("scroll", syncStickyTabsBackground, { passive: true });
 
 window.addEventListener("scroll", updateFloatingTopButton, { passive: true });
 
